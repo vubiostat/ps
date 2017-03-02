@@ -1,0 +1,10 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<Title>mhcorrected</Title>
+</HEAD>
+<BODY>
+Do you plan to use a continuity correction when testing this odds ratio?  Mantel and Haenzsel (1959) used a continuity correction in their original paper.  The corrected test is more conservative (less likely to be statistically significant) than the uncorrected test.  However, the published results of Wittes and Wallenstein (1987) are based on the uncorrected statistic.
+</BODY>
+</HTML>

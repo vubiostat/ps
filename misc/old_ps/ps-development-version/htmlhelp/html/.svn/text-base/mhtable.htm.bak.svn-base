@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<Title>mhtable</Title>
+</HEAD>
+<BODY>
+<P><A NAME="mhtable"></A><B>Input Tables</B></P>
+
+Enter the proportion of cases, the number of controls per case, and the proportion of exposed controls that you anticipate for each of the T  tables in you study.  For example, suppose there will be T = 2 strata with subjects divided as follows: 
+<p>&nbsp;</p>
+<table border="1">
+  <tr>
+    <td>Table 1</td>
+    <td>Cases</td>
+    <td>Controls</td>
+  </tr>
+  <tr>
+    <td>Exposed</td>
+    <td>?</td>
+    <td>10</td>
+  </tr>
+  <tr>
+    <td>Unexposed</td>
+    <td>?</td>
+    <td>?</td>
+  </tr>
+  <tr>
+    <td>Total</td>
+    <td>20</td>
+    <td>40</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1">
+  <tr>
+    <td>Table 2</td>
+    <td>Cases</td>
+    <td>Controls</td>
+  </tr>
+  <tr>
+    <td>Exposed</td>
+    <td>?</td>
+    <td>30</td>
+  </tr>
+  <tr>
+    <td>Unexposed</td>
+    <td>?</td>
+    <td>?</td>
+  </tr>
+  <tr>
+    <td>Total</td>
+    <td>80</td>
+    <td>40</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+Then the table required by the PS program will be as follows:
+<p>&nbsp;</p>
+<table border="1">
+  <tr>
+    <td>Table</td>
+    <td>Proportion of<br>Cases in the<br>ith table</td>
+    <td>Number of<br>controls<br>per case</td>
+    <td>Proportion<br>of controls<br>exposed</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>0.2</td>
+    <td>2</td>
+    <td>0.25</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>0.8</td>
+    <td>0.5</td>
+    <td>0.75</td>
+  </tr>
+</table>
+
+</BODY>
+</HTML>

@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Input variables on the Dichotomous dialog box</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><SUP><A NAME="dichot_input"></A></SUP><B>Input variables on the <I>Dichotomous</I> dialog box</B></P>
+
+<P><B><i>&alpha;</i></B><br>The Type I error probability for a two sided test.  This is the probability that we will falsely reject the null hypothesis.</P>
+
+<P><B><I>n </I></B><br>For case-control studies <i>n</i> is the number of case patients.&nbsp; For prospective studies <i>n</i> is the number of patients receiving the
+experimental treatment.</P>
+
+<P><B><I>power </I></B><br>the probability of correctly rejecting the null hypothesis that the relative risk (odds ratio) equals 1 given <I>n</I> case patients, <I>m</I> control patients per experimental patient, and a Type I error probability &alpha;.  </P>
+
+<P><b><i>p</i><sub>0 </sub></b><br>For case-control studies, <i>p</i><sub>0</sub>
+is the probability of exposure in controls.  In prospective studies, <i>p</i><sub>0</sub>
+is the probability of the outcome for a control patient.</P>
+
+<P><B><i>p</i><sub>1 </sub></B><br>For case-control studies, <i>p</i><sub>1</sub> is the probability of exposure in cases.  In prospective studies,
+<i>p</i><sub>1</sub> is the probability of the outcome in an experimental
+subject.</P>
+
+<P><B><I>m</I></B> <br>For independent prospective studies <i>m</i> is the ratio of control to experimental subjects.&nbsp;
+For matched prospective studies <i>m</i> is the number of controls subjects matched to each experimental
+	subject.  For independent case-control studies&nbsp; <i>m</i> is the ratio of control to case patients.&nbsp;
+For matched case-control studies <i>m</i> is the number of control patients matched to each case.</P>
+
+<P><B><I>R </I></B><br>Relative risk of failure for experimental subjects relative to controls.</P>
+
+<P><b><font face="Symbol">f</font> </b><br>For case-control studies
+<font face="Symbol">f</font> is the correlation coefficient for exposure
+between matched cases and controls.&nbsp; For prospective studies
+<font face="Symbol">f</font> is the correlation coefficient for the outcome
+between matched experimental and control subjects.</P>
+
+<P><B>&psi; </B><br>Odds ratio of exposure in cases relative to controls.
+For a matched study design &psi; is the odds ratio adjusted for the matching variable(s).
+For an independent design it is the unadjusted odds ratio.
+If the cases and
+controls are unbiased samples from respective target populations then &psi; also
+equals the odds ratio for disease in exposed subjects relative to unexposed
+subjects.&nbsp; The odds ratio approximates the relative risk in case-control studies when the disease is rare in the general population.</P>
+
+<p>&nbsp;</p>
+
+</BODY>
+</HTML>

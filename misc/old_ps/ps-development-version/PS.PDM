@@ -1,0 +1,684 @@
+[Root]
+Most Recent Package=production script (wdp)
+
+
+[Package|Standard Setup Package|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=C:\user\plummer\Projects\ps-development-version\Package
+
+[Package|Standard Setup Package|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Standard Setup Package|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Standard Setup Package|Files Found]
+
+[Package|Standard Setup Package|Files Released]
+pshelp.CHI=
+
+[Package|Standard Setup Package|Missing Dependency Information]
+
+[Package|Standard Setup Package|Out-of-Date Dependency Information]
+
+[Package|Standard Setup Package|Files Added]
+C:\user\plummer\Projects\ps-development-version\ps_icon.ico=
+
+[Package|Standard Setup Package|Files Removed]
+
+[Package|Standard Setup Package|Files In Project]
+C:\user\plummer\Projects\ps-development-version\PS.exe=Yes
+C:\WINNT\system32\MSVBVM60.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\user\plummer\Projects\ps-development-version\psDll.dll=Yes
+C:\WINNT\system32\hhctrl.ocx=Yes
+C:\WINNT\system32\itss.dll=Yes
+C:\WINNT\system32\itircl.dll=Yes
+C:\WINNT\system32\hh.exe=Yes
+C:\WINNT\system32\COMDLG32.OCX=Yes
+C:\WINNT\system32\TABCTL32.OCX=Yes
+C:\WINNT\system32\Vcfi5.ocx=Yes
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=Yes
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=Yes
+C:\WINNT\system32\VB6STKIT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+C:\user\plummer\Projects\ps-development-version\ps_icon.ico=Yes
+
+[Package|Standard Setup Package|Configure Registry Files]
+Applicable=No
+
+[Package|Standard Setup Package|Configure Remote Servers]
+Applicable=No
+
+[Package|Standard Setup Package|Install Locations]
+C:\user\plummer\Projects\ps-development-version\PS.exe=$(AppPath)
+C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\psDll.dll=$(AppPath)
+C:\WINNT\system32\hhctrl.ocx=$(WinSysPath)
+C:\WINNT\system32\itss.dll=$(WinSysPath)
+C:\WINNT\system32\itircl.dll=$(WinSysPath)
+C:\WINNT\system32\hh.exe=$(WinSysPath)
+C:\WINNT\system32\COMDLG32.OCX=$(WinSysPath)
+C:\WINNT\system32\TABCTL32.OCX=$(WinSysPath)
+C:\WINNT\system32\Vcfi5.ocx=$(WinSysPath)
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=$(WinSysPath)
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINNT\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+C:\user\plummer\Projects\ps-development-version\ps_icon.ico=$(AppPath)
+
+[Package|Standard Setup Package|Configure Shared Files]
+Applicable=Yes
+C:\user\plummer\Projects\ps-development-version\PS.exe=No
+C:\user\plummer\Projects\ps-development-version\psDll.dll=No
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=No
+C:\user\plummer\Projects\ps-development-version\ps_icon.ico=No
+
+[Package|Standard Setup Package|Distribution]
+Type=single
+Size=
+Title=PS - Power and Sample Size Calculation
+
+[Package|Standard Setup Package|IconGroups]
+Group0=PS - Power and Sample Size Calculation
+PrivateGroup0=-1
+Parent0=$(Programs)
+
+[Package|Standard Setup Package|PS - Power and Sample Size Calculation]
+Icon1=PS.exe
+Title1=PS - Power and Sample Size Calculation
+StartIn1=$(AppPath)
+Key1=Icon1
+
+[Package|Standard Setup Package|Package]
+PackageFolder=C:\user\plummer\Projects\ps-development-version\Package
+ProjectFolder=C:\user\plummer\Projects\ps-development-version
+ServerSideCab=
+File1=C:\user\plummer\Projects\ps-development-version\Package\setup.exe
+File2=C:\user\plummer\Projects\ps-development-version\Package\Setup.Lst
+File3=C:\user\plummer\Projects\ps-development-version\Package\PS.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+
+[Package|PS Development Version Setup Package|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=C:\user\plummer\Projects\ps-development-version\Package
+
+[Package|PS Development Version Setup Package|Configure DAO ISAMs]
+Applicable=No
+
+[Package|PS Development Version Setup Package|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|PS Development Version Setup Package|Files Found]
+
+[Package|PS Development Version Setup Package|Files Released]
+pshelp.CHI=
+
+[Package|PS Development Version Setup Package|Missing Dependency Information]
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=
+C:\WINDOWS\system32\shdocvw.dll=
+C:\WINDOWS\system32\mshtml.dll=
+
+[Package|PS Development Version Setup Package|Out-of-Date Dependency Information]
+
+[Package|PS Development Version Setup Package|Files Added]
+c:\user\plummer\projects\ps-development-version\ps_icon.ico=
+c:\user\plummer\projects\ps-development-version\harrow.cur=
+c:\user\plummer\projects\ps-development-version\support\vcfi5.hlp=
+c:\windows\system32\shdocvw.dll=
+c:\windows\system32\mshtml.dll=
+
+[Package|PS Development Version Setup Package|Files Removed]
+c:\windows\system32\mshtml.dll=
+c:\windows\system32\shdocvw.dll=
+
+[Package|PS Development Version Setup Package|Files In Project]
+C:\user\plummer\Projects\ps-development-version\PS.exe=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\user\plummer\Projects\ps-development-version\psDll.dll=Yes
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=Yes
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+C:\user\plummer\Projects\ps-development-version\ps_icon.ico=Yes
+C:\WINDOWS\system32\msvbvm60.dll=Yes
+C:\WINDOWS\system32\hhctrl.ocx=Yes
+C:\WINDOWS\system32\itss.dll=Yes
+C:\WINDOWS\system32\itircl.dll=Yes
+C:\WINDOWS\system32\COMDLG32.OCX=Yes
+C:\WINDOWS\system32\TABCTL32.OCX=Yes
+C:\VCI\VCIMPRE5\Vcfi5.ocx=Yes
+C:\WINDOWS\system32\comctl32.dll=Yes
+C:\WINDOWS\system32\comdlg32.dll=Yes
+C:\WINDOWS\system32\VB6STKIT.DLL=Yes
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=Yes
+C:\WINDOWS\hh.exe=Yes
+C:\user\plummer\Projects\ps-development-version\support\VCFI5.HLP=Yes
+C:\WINDOWS\system32\shdocvw.dll=No
+C:\WINDOWS\system32\mshtml.dll=No
+C:\WINDOWS\system32\RICHTX32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=Yes
+
+[Package|PS Development Version Setup Package|Configure Registry Files]
+Applicable=No
+
+[Package|PS Development Version Setup Package|Configure Remote Servers]
+Applicable=No
+
+[Package|PS Development Version Setup Package|Install Locations]
+C:\user\plummer\Projects\ps-development-version\PS.exe=$(AppPath)
+C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\psDll.dll=$(AppPath)
+C:\WINNT\system32\hhctrl.ocx=$(WinSysPath)
+C:\WINNT\system32\itss.dll=$(WinSysPath)
+C:\WINNT\system32\itircl.dll=$(WinSysPath)
+C:\WINNT\system32\hh.exe=$(WinSysPath)
+C:\WINNT\system32\COMDLG32.OCX=$(WinSysPath)
+C:\WINNT\system32\TABCTL32.OCX=$(WinSysPath)
+C:\WINNT\system32\Vcfi5.ocx=$(WinSysPath)
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=$(WinSysPath)
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINNT\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+C:\user\plummer\Projects\ps-development-version\ps_icon.ico=$(AppPath)
+C:\WINDOWS\system32\msvbvm60.dll=$(WinSysPathSysFile)
+C:\WINDOWS\system32\hhctrl.ocx=$(WinSysPath)
+C:\WINDOWS\system32\itss.dll=$(WinSysPath)
+C:\WINDOWS\system32\itircl.dll=$(WinSysPath)
+C:\WINDOWS\system32\hh.exe=$(WinSysPath)
+C:\WINDOWS\system32\COMDLG32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\TABCTL32.OCX=$(WinSysPath)
+C:\VCI\VCIMPRE5\Vcfi5.ocx=$(WinSysPath)
+C:\WINDOWS\system32\comctl32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\system32\comdlg32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=$(AppPath)
+C:\WINDOWS\hh.exe=$(WinSysPath)
+C:\user\plummer\Projects\ps-development-version\support\VCFI5.HLP=$(AppPath)
+C:\WINDOWS\system32\shdocvw.dll=$(WinSysPath)
+C:\WINDOWS\system32\mshtml.dll=$(WinSysPath)
+C:\WINDOWS\system32\RICHTX32.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=$(WinSysPathSysFile)
+
+[Package|PS Development Version Setup Package|Configure Shared Files]
+Applicable=Yes
+C:\user\plummer\Projects\ps-development-version\PS.exe=No
+C:\user\plummer\Projects\ps-development-version\psDll.dll=No
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=No
+C:\user\plummer\Projects\ps-development-version\ps_icon.ico=No
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=No
+C:\user\plummer\Projects\ps-development-version\support\VCFI5.HLP=No
+
+[Package|PS Development Version Setup Package|Distribution]
+Type=single
+Size=
+Title=PS - Power and Sample Size Calculation
+
+[Package|PS Development Version Setup Package|Package]
+PackageFolder=C:\user\plummer\Projects\ps-development-version\Package
+ProjectFolder=C:\user\plummer\Projects\ps-development-version
+ServerSideCab=
+File1=C:\user\plummer\Projects\ps-development-version\Package\setup.exe
+File2=C:\user\plummer\Projects\ps-development-version\Package\Setup.Lst
+File3=C:\user\plummer\Projects\ps-development-version\Package\PS.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+[Package|PS Development Version Setup Package|IconGroups]
+Group0=PS - Power and Sample Size Calculation
+PrivateGroup0=-1
+Parent0=$(Programs)
+
+[Package|PS Development Version Setup Package|PS - Power and Sample Size Calculation]
+Icon1=PS.exe
+Title1=PS - Power and Sample Size Calculation
+StartIn1=$(AppPath)
+Key1=Icon1
+
+
+[Package|Standard Setup Package 1|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=C:\user\plummer\Projects\ps-development-version\Package
+
+[Package|Standard Setup Package 1|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Standard Setup Package 1|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Standard Setup Package 1|Files Found]
+
+[Package|Standard Setup Package 1|Files Released]
+pshelp.CHI=
+
+[Package|Standard Setup Package 1|Missing Dependency Information]
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=
+
+[Package|Standard Setup Package 1|Out-of-Date Dependency Information]
+
+[Package|Standard Setup Package 1|Files Added]
+
+[Package|Standard Setup Package 1|Files Removed]
+
+[Package|Standard Setup Package 1|Files In Project]
+C:\user\plummer\Projects\ps-development-version\PS.exe=Yes
+C:\WINDOWS\system32\msvbvm60.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\user\plummer\Projects\ps-development-version\psDll.dll=Yes
+C:\WINDOWS\system32\hhctrl.ocx=Yes
+C:\WINDOWS\system32\itss.dll=Yes
+C:\WINDOWS\system32\itircl.dll=Yes
+C:\WINDOWS\hh.exe=Yes
+C:\WINDOWS\system32\COMDLG32.OCX=Yes
+C:\WINDOWS\system32\TABCTL32.OCX=Yes
+C:\VCI\VCIMPRE5\Vcfi5.ocx=Yes
+C:\WINDOWS\system32\comctl32.dll=Yes
+C:\WINDOWS\system32\comdlg32.dll=Yes
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=Yes
+C:\WINDOWS\system32\RICHTX32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=Yes
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=Yes
+C:\WINDOWS\system32\VB6STKIT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+
+[Package|Standard Setup Package 1|Configure Registry Files]
+Applicable=No
+
+[Package|Standard Setup Package 1|Configure Remote Servers]
+Applicable=No
+
+[Package|Standard Setup Package 1|Install Locations]
+C:\user\plummer\Projects\ps-development-version\PS.exe=$(AppPath)
+C:\WINDOWS\system32\msvbvm60.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\psDll.dll=$(AppPath)
+C:\WINDOWS\system32\hhctrl.ocx=$(WinSysPath)
+C:\WINDOWS\system32\itss.dll=$(WinSysPath)
+C:\WINDOWS\system32\itircl.dll=$(WinSysPath)
+C:\WINDOWS\hh.exe=$(WinSysPath)
+C:\WINDOWS\system32\COMDLG32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\TABCTL32.OCX=$(WinSysPath)
+C:\VCI\VCIMPRE5\Vcfi5.ocx=$(WinSysPath)
+C:\WINDOWS\system32\comctl32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\system32\comdlg32.dll=$(WinSysPathSysFile)
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=$(WinSysPath)
+C:\WINDOWS\system32\RICHTX32.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINDOWS\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+
+[Package|Standard Setup Package 1|Configure Shared Files]
+Applicable=Yes
+C:\user\plummer\Projects\ps-development-version\PS.exe=No
+C:\user\plummer\Projects\ps-development-version\psDll.dll=No
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=No
+
+[Package|Standard Setup Package 1|Distribution]
+Type=single
+Size=
+Title=PS - Power and Sample Size Calculation
+
+[Package|Standard Setup Package 1|IconGroups]
+Group0=PS - Power and Sample Size Calculation
+PrivateGroup0=-1
+Parent0=$(Programs)
+
+[Package|Standard Setup Package 1|PS - Power and Sample Size Calculation]
+Icon1=PS.exe
+Title1=PS - Power and Sample Size Calculation
+StartIn1=$(AppPath)
+Key1=Icon1
+
+[Package|Standard Setup Package 1|Package]
+PackageFolder=C:\user\plummer\Projects\ps-development-version\Package
+ProjectFolder=C:\user\plummer\Projects\ps-development-version
+ServerSideCab=
+File1=C:\user\plummer\Projects\ps-development-version\Package\setup.exe
+File2=C:\user\plummer\Projects\ps-development-version\Package\Setup.Lst
+File3=C:\user\plummer\Projects\ps-development-version\Package\PS.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+
+[Package|Standard Setup Package 2|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=C:\user\plummer\Projects\ps-development-version\Package
+
+[Package|Standard Setup Package 2|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Standard Setup Package 2|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Standard Setup Package 2|Files Found]
+
+[Package|Standard Setup Package 2|Files Released]
+pshelp.CHI=
+
+[Package|Standard Setup Package 2|Missing Dependency Information]
+C:\Program Files\PS\RICHTX32.OCX=
+C:\Program Files\PS\Vcfi5.ocx=
+C:\Program Files\PS\TABCTL32.OCX=
+C:\Program Files\PS\COMDLG32.OCX=
+C:\WINDOWS\system32\Vcfi5.ocx=
+
+[Package|Standard Setup Package 2|Out-of-Date Dependency Information]
+
+[Package|Standard Setup Package 2|Files Added]
+c:\user\plummer\projects\ps-development-version\harrow.cur=
+
+[Package|Standard Setup Package 2|Files Removed]
+c:\windows\system32\comctl32.dll=
+c:\windows\system32\comdlg32.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\riched32.dll=
+
+[Package|Standard Setup Package 2|Files In Project]
+C:\user\plummer\Projects\ps-development-version\PS.exe=Yes
+C:\WINDOWS\system32\msvbvm60.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\user\plummer\Projects\ps-development-version\psDll.dll=Yes
+C:\WINDOWS\system32\hhctrl.ocx=Yes
+C:\WINDOWS\system32\itss.dll=Yes
+C:\WINDOWS\system32\itircl.dll=Yes
+C:\WINDOWS\hh.exe=Yes
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=Yes
+C:\WINDOWS\system32\VB6STKIT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=Yes
+C:\WINDOWS\system32\Vcfi5.ocx=Yes
+C:\WINDOWS\system32\ubGrid.ocx=Yes
+C:\Program Files\PS\COMDLG32.OCX=Yes
+C:\Program Files\PS\TABCTL32.OCX=Yes
+C:\Program Files\PS\RICHTX32.OCX=Yes
+
+[Package|Standard Setup Package 2|Configure Registry Files]
+Applicable=No
+
+[Package|Standard Setup Package 2|Configure Remote Servers]
+Applicable=No
+
+[Package|Standard Setup Package 2|Install Locations]
+C:\user\plummer\Projects\ps-development-version\PS.exe=$(AppPath)
+C:\WINDOWS\system32\msvbvm60.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\psDll.dll=$(AppPath)
+C:\WINDOWS\system32\hhctrl.ocx=$(AppPath)
+C:\WINDOWS\system32\itss.dll=$(AppPath)
+C:\WINDOWS\system32\itircl.dll=$(AppPath)
+C:\WINDOWS\hh.exe=$(AppPath)
+C:\WINDOWS\system32\COMDLG32.OCX=$(AppPath)
+C:\WINDOWS\system32\TABCTL32.OCX=$(AppPath)
+C:\VCI\VCIMPRE5\Vcfi5.ocx=$(AppPath)
+C:\WINDOWS\system32\comctl32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\system32\comdlg32.dll=$(WinSysPathSysFile)
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=$(AppPath)
+C:\WINDOWS\system32\RICHTX32.OCX=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINDOWS\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=$(AppPath)
+C:\Program Files\PS\COMDLG32.OCX=$(WinSysPath)
+C:\Program Files\PS\TABCTL32.OCX=$(WinSysPath)
+C:\Program Files\PS\Vcfi5.ocx=$(WinSysPath)
+C:\Program Files\PS\ubGrid.ocx=$(WinSysPath)
+C:\Program Files\PS\RICHTX32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\Vcfi5.ocx=$(WinSysPath)
+C:\WINDOWS\system32\ubGrid.ocx=$(WinSysPath)
+
+[Package|Standard Setup Package 2|Configure Shared Files]
+Applicable=Yes
+C:\user\plummer\Projects\ps-development-version\PS.exe=No
+C:\user\plummer\Projects\ps-development-version\psDll.dll=No
+C:\WINDOWS\system32\hhctrl.ocx=No
+C:\WINDOWS\system32\itss.dll=No
+C:\WINDOWS\system32\itircl.dll=No
+C:\WINDOWS\hh.exe=No
+C:\WINDOWS\system32\COMDLG32.OCX=No
+C:\WINDOWS\system32\TABCTL32.OCX=No
+C:\VCI\VCIMPRE5\Vcfi5.ocx=No
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=No
+C:\WINDOWS\system32\RICHTX32.OCX=No
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=No
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=No
+
+[Package|Standard Setup Package 2|Distribution]
+Type=single
+Size=
+Title=PS - Power and Sample Size Calculation
+
+[Package|Standard Setup Package 2|Package]
+PackageFolder=C:\user\plummer\Projects\ps-development-version\Package
+ProjectFolder=C:\user\plummer\Projects\ps-development-version
+ServerSideCab=
+File1=C:\user\plummer\Projects\ps-development-version\Package\setup.exe
+File2=C:\user\plummer\Projects\ps-development-version\Package\Setup.Lst
+File3=C:\user\plummer\Projects\ps-development-version\Package\PS.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+[Package|Standard Setup Package 2|IconGroups]
+Group0=PS - Power and Sample Size Calculation
+PrivateGroup0=-1
+Parent0=$(Programs)
+
+[Package|Standard Setup Package 2|PS - Power and Sample Size Calculation]
+Icon1=PS.exe
+Title1=PS - Power and Sample Size Calculation
+StartIn1=$(AppPath)
+Key1=Icon1
+
+
+[Package|production script (wdp)|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=C:\user\plummer\Projects\ps-development-version\Package
+
+[Package|production script (wdp)|Configure DAO ISAMs]
+Applicable=No
+
+[Package|production script (wdp)|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|production script (wdp)|Files Found]
+
+[Package|production script (wdp)|Files Released]
+pshelp.CHI=
+
+[Package|production script (wdp)|Missing Dependency Information]
+C:\Program Files\PS\RICHTX32.OCX=
+C:\Program Files\PS\Vcfi5.ocx=
+C:\Program Files\PS\TABCTL32.OCX=
+C:\Program Files\PS\COMDLG32.OCX=
+C:\WINDOWS\system32\Vcfi5.ocx=
+C:\user\plummer\Projects\ps-development-version\ubGrid.ocx=
+C:\Documents and Settings\dalep.VANDERBILT\My Documents\Brew City Software\ubGrid\ubGrid.ocx=
+C:\Program Files\PS\ubGrid.ocx=
+
+[Package|production script (wdp)|Out-of-Date Dependency Information]
+
+[Package|production script (wdp)|Files Added]
+c:\user\plummer\projects\ps-development-version\harrow.cur=
+
+[Package|production script (wdp)|Files Removed]
+c:\windows\system32\comctl32.dll=
+c:\windows\system32\comdlg32.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\riched32.dll=
+
+[Package|production script (wdp)|Files In Project]
+C:\user\plummer\Projects\ps-development-version\PS.exe=Yes
+C:\WINDOWS\system32\msvbvm60.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\user\plummer\Projects\ps-development-version\psDll.dll=Yes
+C:\WINDOWS\system32\hhctrl.ocx=Yes
+C:\WINDOWS\system32\itss.dll=Yes
+C:\WINDOWS\system32\itircl.dll=Yes
+C:\WINDOWS\hh.exe=Yes
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=Yes
+C:\WINDOWS\system32\VB6STKIT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=Yes
+C:\WINDOWS\system32\COMDLG32.OCX=Yes
+C:\WINDOWS\system32\TABCTL32.OCX=Yes
+C:\VCI\VCIMPRE5\Vcfi5.ocx=Yes
+C:\WINDOWS\system32\comctl32.dll=No
+C:\WINDOWS\system32\comdlg32.dll=No
+C:\WINDOWS\system32\RICHTX32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=No
+C:\user\plummer\Projects\ps-development-version\ubGrid.ocx=Yes
+
+[Package|production script (wdp)|Configure Registry Files]
+Applicable=No
+
+[Package|production script (wdp)|Configure Remote Servers]
+Applicable=No
+
+[Package|production script (wdp)|Install Locations]
+C:\user\plummer\Projects\ps-development-version\PS.exe=$(AppPath)
+C:\WINDOWS\system32\msvbvm60.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\psDll.dll=$(AppPath)
+C:\WINDOWS\system32\hhctrl.ocx=$(AppPath)
+C:\WINDOWS\system32\itss.dll=$(AppPath)
+C:\WINDOWS\system32\itircl.dll=$(AppPath)
+C:\WINDOWS\hh.exe=$(AppPath)
+C:\WINDOWS\system32\COMDLG32.OCX=$(AppPath)
+C:\WINDOWS\system32\TABCTL32.OCX=$(AppPath)
+C:\VCI\VCIMPRE5\Vcfi5.ocx=$(AppPath)
+C:\WINDOWS\system32\comctl32.dll=$(WinSysPathSysFile)
+C:\WINDOWS\system32\comdlg32.dll=$(WinSysPathSysFile)
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=$(AppPath)
+C:\WINDOWS\system32\RICHTX32.OCX=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=$(WinSysPathSysFile)
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINDOWS\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=$(AppPath)
+C:\Program Files\PS\COMDLG32.OCX=$(AppPath)
+C:\Program Files\PS\TABCTL32.OCX=$(AppPath)
+C:\Program Files\PS\Vcfi5.ocx=$(AppPath)
+C:\Program Files\PS\ubGrid.ocx=$(AppPath)
+C:\Program Files\PS\RICHTX32.OCX=$(AppPath)
+C:\WINDOWS\system32\Vcfi5.ocx=$(AppPath)
+C:\WINDOWS\system32\ubGrid.ocx=$(AppPath)
+C:\user\plummer\Projects\ps-development-version\ubGrid.ocx=$(AppPath)
+C:\Documents and Settings\dalep.VANDERBILT\My Documents\Brew City Software\ubGrid\ubGrid.ocx=$(AppPath)
+
+[Package|production script (wdp)|Configure Shared Files]
+Applicable=Yes
+C:\user\plummer\Projects\ps-development-version\PS.exe=No
+C:\user\plummer\Projects\ps-development-version\psDll.dll=No
+C:\WINDOWS\system32\hhctrl.ocx=No
+C:\WINDOWS\system32\itss.dll=No
+C:\WINDOWS\system32\itircl.dll=No
+C:\WINDOWS\hh.exe=No
+C:\WINDOWS\system32\COMDLG32.OCX=No
+C:\WINDOWS\system32\TABCTL32.OCX=No
+C:\VCI\VCIMPRE5\Vcfi5.ocx=No
+C:\Program Files\Dev4Dev\ubGrid\ubGrid.ocx=No
+C:\WINDOWS\system32\RICHTX32.OCX=No
+C:\user\plummer\Projects\ps-development-version\pshelp.chm=No
+C:\user\plummer\Projects\ps-development-version\HARROW.CUR=No
+C:\Program Files\PS\COMDLG32.OCX=No
+C:\Program Files\PS\TABCTL32.OCX=No
+C:\WINDOWS\system32\Vcfi5.ocx=Yes
+C:\WINDOWS\system32\ubGrid.ocx=Yes
+C:\Program Files\PS\RICHTX32.OCX=No
+C:\user\plummer\Projects\ps-development-version\ubGrid.ocx=Yes
+C:\Program Files\PS\Vcfi5.ocx=No
+C:\Documents and Settings\dalep.VANDERBILT\My Documents\Brew City Software\ubGrid\ubGrid.ocx=No
+C:\Program Files\PS\ubGrid.ocx=No
+
+[Package|production script (wdp)|Distribution]
+Type=single
+Size=
+Title=PS - Power and Sample Size Calculation
+
+[Package|production script (wdp)|Package]
+PackageFolder=C:\user\plummer\Projects\ps-development-version\Package
+ProjectFolder=C:\user\plummer\Projects\ps-development-version
+ServerSideCab=
+File1=C:\user\plummer\Projects\ps-development-version\Package\setup.exe
+File2=C:\user\plummer\Projects\ps-development-version\Package\Setup.Lst
+File3=C:\user\plummer\Projects\ps-development-version\Package\PS.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+[Package|production script (wdp)|IconGroups]
+Group0=PS - Power and Sample Size Calculation
+PrivateGroup0=-1
+Parent0=$(Programs)
+
+[Package|production script (wdp)|PS - Power and Sample Size Calculation]
+Icon1=PS.exe
+Title1=PS - Power and Sample Size Calculation
+StartIn1=$(AppPath)
+Key1=Icon1

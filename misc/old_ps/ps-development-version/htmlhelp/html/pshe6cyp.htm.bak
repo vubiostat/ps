@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>lr2_estsigma</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="lr2_estsigma"></A><B>How is &sigma; obtained?</B></P>
+
+<P>The parameters &sigma;, &lambda;<sub>1</sub>, &sigma;<sub>x<sub>1</sub></sub>, &sigma;<sub>y<sub>1</sub></sub>
+and &rho;<sub>1</sub> are all interrelated (see <A HREF="pshe23av.htm#ref4">Dupont and
+Plummer 1998</A>).   You may estimate &sigma; directly.  However, you may also
+estimate &sigma; indirectly by entering estimates of one of the following
+sets of parameters from pilot data.  </P>
+
+<P>&sigma;<sub>x<sub>1</sub></sub><sub>1</sub>, &sigma;<sub>y<sub>1</sub></sub> and &lambda;<sub>1</sub></P>
+
+<P>&sigma;<sub>x</sub>, &rho;<sub>1</sub> and &lambda;<sub>1</sub> </P>
+
+<P>It is important that the preceding all come from the same pilot data.  The values of
+&sigma;, &lambda;<sub>1</sub>, &sigma;<sub>x<sub>1</sub></sub>, &sigma;<sub>y<sub>1</sub></sub>
+and &rho;<sub>1</sub> used to estimate &sigma; need not be the same as the values of
+these statistics for your planned study.</P>
+
+<P>&lambda;<sub>1</sub> is the slope estimate in the control group (group1)</P>
+
+<P>&sigma;<sub>x<sub>1</sub></sub> is the standard deviation of the independent variable for the control subjects</P>
+
+<P>&sigma;<sub>y<sub>1</sub></sub> is the standard deviation of the dependent variable in the control group (group 1)</P>
+
+<P>&rho;<sub>1</sub> is the correlation coefficient between the dependent and independent variables for the control subjects</P>
+
+</BODY>
+</HTML>

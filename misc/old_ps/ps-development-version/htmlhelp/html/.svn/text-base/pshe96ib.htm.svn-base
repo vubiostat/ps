@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Graphics</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<H2><SUP><A NAME="graphics_overview"></A></SUP>Graphics</H2>
+
+<dl>
+  <dt><A HREF="#availablegraphs">Available Graphs</A></dt>
+  <dt><A HREF="#plotting">Plotting</A></dt>
+  <dt><A HREF="#multiplelines">Multiple Lines on One Graph</A></dt>
+  <dt><A HREF="#logaxes">Logarithmic Axes</A></dt>
+  <dt><A HREF="#editing">Editing</A> </dt>
+  <dt><A HREF="#ed1">Modifying a power or sample size curve</A></dt>
+  <dt><A HREF="#ed2">Deleting a curve</A></dt>
+  <dt><A HREF="#ed3">Modifying the axis titles</A></dt>
+  <dt><A HREF="#ed4">Modifying the axis labels</A></dt>
+  <dt><A HREF="#ed5">Deleting the figure legend or footnote</A></dt>
+  <dt><A HREF="#ed6">Using your own graphics editor</A></dt>
+  <dt><A HREF="#saving">Saving</A></dt>
+  <dt><A HREF="#printing">Printing</A></dt>
+</dl>
+
+<P><B><A NAME="availablegraphs"></A>Available Graphs</B></P>
+
+<P>The following graphs are available for all study designs.</P>
+
+<table border="0">
+  <tr>
+    <td><I>Y Axis</I></td>
+    <td><I>X Axis</I></td>
+  </tr>
+  <tr>
+    <td>Sample size</td>
+    <td>Power</td>
+  </tr>
+  <tr>
+    <td>Sample size</td>
+    <td>Detectable alternative hypothesis</td>
+  </tr>
+  <tr>
+    <td>Power</td>
+    <td>Sample size</td>
+  </tr>
+  <tr>
+    <td>Power</td>
+    <td>Detectable alternative hypothesis</td>
+  </tr>
+</table>
+
+<P><B><A NAME="plotting"></A>Plotting</B></P>
+
+<P>To plot a graph you must</P>
+
+<ol>
+  <li><A HREF="pshe23av.htm#overview_using">Select a tab</A> on the main <I>PS</I> window to specify the study design.</li>
+  <li>Specify the desired output in the "What do you want to know?" field.  This choice determines one of the axes of the graphic.</li>
+  <li>Complete the data entry for your study design and press the calculate button.  The <I>Graphs</I> button will darken to indicate that you may now proceed to the graphics window.</li>
+  <li>Press the <I>Graphs</I> button.  The graphics dialog box will appear.</li>
+  <li>If you selected Sample size or Power in step 2, you will be asked to specify which variable you want on the <I>x</I> axis.  Make this choice and provide the range of values for this axis on your graph.  The <I>y</I> axis will be determined by your choice in step 2.  Specify a range for the y axis.  The <I>Plot </I>button will darken to indicate that all the needed data has been supplied.  Another field will appear specifying the value of the variable that was not selected for the x axis.  The default value of this variable is what it was after step 3.  You may alter this value if you wish.</li>
+</ol>
+
+<P>Press the <I>Plot </I>button<I>.</I>  The desired graphic will appear.  In this graph, the variable that was not specified for the x axis will be held constant at the indicated value.  A figure legend will give this value.  Other parameter values that were specified in the main window will be written near the bottom of the graphic.  Click on parameter definitions near the bottom of the graphics window to see the definitions of these parameters.</P>
+
+<P><B><A NAME="multiplelines"></A>Multiple Lines on One Graph</B></P>
+
+<P>We can show the interactions between the power, sample size and detectable alternative hypothesis of a study by plotting multiple lines on one graph.  For example, we might plot sample size against detectable alternative hypothesis holding power constant; our graph might have three such curves with power set to 0.80, 0.90, and 0.95, respectively.  To do this with the <I>PS</I> program you plot one graph, change the value of the variable that is not on either axis and press the <I>Plot</I> button.  A new line and figure legend will be added to you graphic.  You may repeat this process as often as desired.</P>
+
+<P><B><A NAME="logaxes"></A>Logarithmic Axes</B></P>
+
+<P>You can plot either <I>X, Y</I> or both axes on a logarithmic scale.  Let us refer to the axis that you wish to draw on a logarithmic scale the logarithmic axis.  To create your graph you must</P>
+
+<ol>
+  <li>Plot the desired graph on the default (linear) scale.  For best results choose the range of the logarithmic axis to be 1% less than the desired range in your final graphic.</li>
+  <li>Double click on the logarithmic axis.  The <I>Chart Designer</I> dialog box will appear.  The logarithmic axis should be highlighted in the large white field on the left of this dialog box.</li>
+  <li>Click on the <I>Scale Type</I> tab.</li>
+  <li>Click the logarithmic selection.  Change the log base if you do not want a log base 10 scale.</li>
+  <li>Press the <I>Apply</I> button.  Then press <I>OK</I>.  The desired graphic should appear.  If the range of the logarithmic axis is too large, repeat the above procedure using a slightly smaller range for this variable.</li>
+</ol>
+<p>You may need to do some minor editing of your graphic in a graphics editor.  For example, suppose that the logarithmic axis is the <I>Y</I> axis and denotes sample size, you are plotting sample size against detectable difference for t-tests, and the ranges of the <I>X </I>and <I>Y</I> axes are from 0 to 5 and from 0 to 1000, respectively.  The resulting sample size curve will be correctly plotted for all values of <I>X</I> that correspond to sample sizes less than 1000.  For <I>X</I> between 0 and the true difference that can be detected with sample size 1000, there will be a spurious horizontal line at <I>Y</I> = 1000.  This spurious horizontal line should be deleted with a graphics editor before using this graph in a presentation of publication.  This spurious line only occurs when one of the axes is plotted on a logarithmic scale.</p>
+
+<P><B><A NAME="editing"></A>Editing </B></P>
+
+<P><I>PS</I> graphs are generated with the <A HREF="pshe23av.htm#ref9">First Impression</A> graphics control.  This software permits the user considerable freedom in customizing her graphics.  For detailed help on this software create a graph following the directions given above and then double click on different components of the graphic.  Various context specific dialog boxes will appear.  Highlighted text in the white box on the left of the dialog box indicates which component of the graph you have selected.  A help button at the lower right of these boxes will provide detailed guidance on using this software.  What follows is far from complete but outlines some of the more useful modifications that you can make to <I>PS</I> graphics.</P>
+
+<ul>
+  <li><B><A NAME="ed1"></A>Modifying a power or sample size curve:  </B>Double click on the curve.  The <I>Chart Designer</I> dialog box for the selected curve (series) will appear. Selecting the <I>Lines</I> tab will permit you to change the color, thickness or style of the selected line.</li>
+  <li><B><A NAME="ed2"></A>Deleting a curve:  </B>Double click on the curve and check the <I>hide series</I> box on the Options tab of the Chart Designer dialog box.</li>
+  <li><B><A NAME="ed3"></A>Modifying the axis titles:  </B>Double click on the axis title.  Select the text tab to modify the title.  Select the font tab to modify the font, style, color or size of the title.</li>
+  <li><B><A NAME="ed4"></A>Modifying the axis labels:  </B>Double click on an axis label.  Select the font tab to modify the font, style, color or size of the label.</li>
+  <li><B><A NAME="ed5"></A>Deleting the figure legend or footnote:  </B>Double click on the text to be deleted.  On the location tab click in the <I>Visible</I> check box controls whether the selected legend or footnote is displayed on the graph.</li>
+  <li><A NAME="ed6"></A><B>Using your own graphics editor</B>:  It is also likely that you can use your favorite graphics editor to modify your graphic.  Right-click on the graphic and select copy.  Then paste the graph into your editor.  With <I>Microsoft PowerPoint 97</I> you must then ungroup the pasted graph before editing it.  In some editors you may need to resize the graph before ungrouping it.</li>
+</ul>
+
+<P><B><A NAME="saving"></A>Saving</B></P>
+
+<P>Pressing the <I>Save</I> button on the graphics window pops up a dialog box that allows you to specify the file name and folder where your graphic is to be saved.  <I>PS</I> graphs are saved in Windows Metafile format.  Saving and then opening a <I>PS</I> graph is an alternate route for exporting <I>PS</I> graphs to your graphic editor.</P>
+
+<P><B><A NAME="printing"></A>Printing</B></P>
+
+<P>Pressing the <I>Print</I> button on the graphics window pops up a standard windows print dialog box.</P>
+
+</BODY>
+</HTML>

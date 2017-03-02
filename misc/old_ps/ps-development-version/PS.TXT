@@ -1,0 +1,3 @@
+The cab file for your application has been built as 'c:\user\plummer\Projects\ps\Package\PS.CAB'.
+
+There is also a batch file in the support directory (c:\user\plummer\Projects\ps\Package\Support\PS.BAT) that will allow you to recreate the cab file in case you make changes to some of the files.

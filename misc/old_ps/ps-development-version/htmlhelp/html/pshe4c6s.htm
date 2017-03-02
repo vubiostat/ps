@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Input variables on the Survival dialog box</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><SUP><A NAME="survival_input"></A></SUP><B>Input variables on the <I>Survival</I> dialog box</B></P>
+
+<P><b>&alpha;</b><br>The Type I error probability for a two sided test.  This is the probability that we will falsely reject the null hypothesis.</P>
+
+<P><B><I>power </I></B><br>The probability of correctly rejecting the null hypothesis of equal treatment survival times given <I>n</I> experimental patients, <I>m</I> control patients per experimental patient, Type I error probability
+&alpha;, a true median survival time <i>m</i><sub>1</sub> on the control treatment and a hazard ratio <i>R</i> for the control treatment relative to the experimental treatment.</P>
+
+<P><I><B>n</B>  </I><br>The number of patients who receive the experimental treatment.</P>
+
+<P><b><i>m<sub>1</sub></i></b><br>The median survival time on control treatment.</P>
+
+If you do not have a direct estimate of <i>m</i><sub>1</sub>, proceed as follows.  Let <i>p</i> be the probability that a control subject survives until some time <i>t</i>. Then we can estimate <i>m</i><sub>1</sub> by<br>
+
+<i>m</i><sub>1</sub> = <i>t</i> log<sub>e</sub>(1/2)/log<sub>e</sub>(<i>p</i>)
+
+<P><b><i>m<sub>2</sub></i></b><br>The median survival time on experimental treatment.</P>
+
+<P><B><I>R  </I></B><br>Hazard ratio (relative risk) of the control treatment relative to the experimental treatment.
+If the hazard is constant in each group then <i>R=m</i><sub>2</sub> / <i>m</i><sub>1</sub>.</P>
+
+
+<P><B><I>A</I>  </B><br>Accrual time during which patients are recruited.</P>
+
+<P><B><I>F</I></B><br>Additional follow-up time after end of recruitment.</P>
+
+<P><B><I>m  </I></B><br>Ratio of control to experimental patients.</P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>dichot_result_ss</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><A NAME="dichot_result_ss"></A>Sample size</B></P>
+
+<P>Number of case patients needed to detect one of the following:</P>
+
+<P>a. The true different failure rates  and  </P>
+
+<P>b. The true relative risk <I>R</I></P>
+
+<P>c. The true odds ratio &psi;</P>
+
+</BODY>
+</HTML>

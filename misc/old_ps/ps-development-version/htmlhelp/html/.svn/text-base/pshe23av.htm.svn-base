@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Overview</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><SUP><A NAME="overview"></A></SUP><B>Overview</B></P>
+
+<dl>
+  <dt><A HREF="#overview_introduction">Introduction</A></dt>
+  <dt><A HREF="#overview_using">Using the PS Program</A></dt>
+  <dt><A HREF="#overview_programoutput">Program Output</A></dt>
+  <dt><A HREF="#overview_help">Interactive Help</A></dt>
+  <dt><A HREF="#overview_designs">Study Designs</A></dt>
+  <dt><A HREF="#overview_logfiles">Log Files</A></dt>
+  <dt><A HREF="#overview_graphicsoutput">Graphics Output</A></dt>
+  <dt><A HREF="#overview_examples">Examples</A></dt>
+  <dt><A HREF="#overview_references">References</A></dt>
+</dl>
+
+<P><B><A NAME="overview_introduction"></A>Introduction</B></P>
+
+<P><I>PS </I>is a program for performing power and sample size calculations.  The program runs under the Microsoft Windows operating systems (Windows 2000 and later).  It can be used for studies with dichotomous, continuous, or survival response measures.  The alternative hypothesis of interest may be specified either in terms of differing means, survival times, regression slopes or intercepts, or in terms of relative risks or odds ratios.  Studies with dichotomous or continuous outcomes may involve either a matched or independent study designs.  Studies involving linear regression may have one or two treatment groups.  </P>
+
+<P><B><A NAME="overview_using"></A>Using the PS Program</B></P>
+
+<P>There are seven tabs at the top of the main <I>PS</I> window.  The first six tabs correspond to different study designs.  The seventh tab is where a log of the user's power and sample size calculations are written.
+The names of the design tabs and the corresponding study designs are given below.</P>
+
+<TABLE cols=2 width=488>
+
+<TR VALIGN="top">
+<TD width=23%><b>Tab Label</b></TD>
+<TD width=77%><b>Study Design</b></TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=23%>Dichotomous</TD>
+<TD width=77%>Comparing matched or independent dichotomous outcomes </TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=23%>Manten-Haenszel</TD>
+<TD width=77%>Test for common odds ratio within multiple 2 X 2 tables </TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=23%>Regression 1</TD>
+<TD width=77%>Testing the slope of a simple linear regression line </TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=23%>Regression 2</TD>
+<TD width=77%>Comparing two linear regression lines </TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=23%>Survival</TD>
+<TD width=77%>Comparing survival data for two groups </TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=23%> t-test</TD>
+<TD width=77%>Comparing matched or independent continuous outcomes </TD>
+</TR>
+</TABLE><BR>
+
+To use the program select (click on) the tab that corresponds to the design of interest.  The program will present a dialog box broken into four sections labeled <I>Output</I>, <I>Design</I>, <I>Input</I>, and <I>Description</I>.  The first three sections have white fields that you must fill in.  Complete the Output and Design fields first.  Input fields, and other design fields will appear as appropriate depending on your output and design selections.  A black triangle to the right of a field indicates that you must select one of several choices.  Click on the triangle and then select an option from the list.  Other fields require you to enter a numeric value.  When all fields have been entered click the <I>Calculate</I><B> </B>button to obtain the desired sample size, power or detectable alternative hypothesis.
+
+<P><B><A NAME="overview_programoutput"></A>Program Output</B></P>
+
+<P>The program can determine the sample size needed to detect a specified alternative hypothesis with the required power, the power with which a specific alternative hypothesis can be detected with a given sample size, or the specific alternative hypotheses that can be detected with a given power and sample size.  </P>
+
+<P><B><A NAME="overview_help"></A>Interactive Help</B></P>
+
+<P>To the left of each input field is an underlined question, symbol or variable name that indicates the information that should be entered in the field.  We will refer to such text as a field name.  Clicking on any field name will cause a help message to pop up and explain what is needed.  Some of these help messages themselves contain underlined text.  Clicking on this text provides further information.  For example, clicking on either of the references given in the next sentence will cause their complete citations to pop up.</P>
+
+<P>The variable names chosen for the design and input fields correspond to the notation used in <A HREF="#ref3">Dupont and Plummer (1990)</A> and <A HREF="#ref4">Dupont and Plummer (1998)</A>.  These papers provide additional information about the PS program and the methods of power and sample size calculations that are used.  However, the interactive help associated with these field names makes the program completely self-documented.</P>
+
+<P>Additional help can be obtained by pulling down the help menu at the upper left of the main PS window.</P>
+
+<P><B><A NAME="overview_designs"></A>Study Designs</B></P>
+
+<P>The following study designs may be used.</P>
+
+<ol>
+  <li>Case-Control Studies -- Corrected and uncorrected chi-squared contingency table tests, Fisher’s exact-test: The method of <A HREF="#ref7">Schlesselman  (1982)</A> is used for studies with independent case and control groups that will be analyzed using an uncorrected  chi-squared test;  the method of <A HREF="#ref1">Casagrande et al. (1978)</A> is used for independent studies that will be analyzed using continuity corrected chi-squared statistics or Fisher’s exact-test.  When the case and control sample sizes are unequal, PS uses the generalization of Casagrande’s method proposed by <A HREF="#ref5">Fleiss (1981)</A>.  The alternative hypotheses may be specified in terms of odds ratios or exposure prevalence rates.</li>
+
+  <li>Matched Case-Control Studies -- McNemar’s Test: The method of <A HREF="#ref2">Dupont (1988)</A> is used for studies with paired or matched cases  and controls. The alternative hypotheses are specified in terms of odds ratios.</li>
+
+  <li>Multiple 2 X 2 tables -- Mantel-Haenszel Test: The method of Wittes and Wallenstein (1987) is used.  Assume
+  that each 2 X 2 table consists of cases and controls selected from a different stratum that is defined
+  by one or more confounding variables.  The odds ratio for disease in exposed subjects compared to
+  unexposed subjects is assumed to be equal within all strata.  The alternative hypotheses are specified
+  in terms of this odds ratio.</li>
+
+  <li>Cohort Studies With Dichotomous Outcomes -- Independent contingency table tests, McNemar’s test:  The methods of  <A HREF="#ref7">Schlesselman (1982)</A>, <A HREF="#ref1">Casagrande et al. (1978)</A>, <A HREF="#ref5">Fleiss (1981)</A>, and <A HREF="#ref2">Dupont (1988)</A>  are available.  The alternative hypotheses may be specified in terms of relative risks or outcome probabilities.</li>
+
+  <li>Linear Regression (1 Treatment) -- Testing the slope of a simple linear regression line: The method of <A HREF="#ref4">Dupont and Plummer (1998)</A> is used to design studies in which we wish to detect a regression slope of a given magnitude.  The values of the independent (x) variable of the regression line may either be specified by the investigator or determined observationally when the study is performed.  In the latter case, the investigator must estimate the standard deviation of the independent
+    variable(s).</li>
+
+  <li>Linear Regression (2 Treatments) -- Comparing the slopes and intercepts of two independent linear regressions: The approach of <A HREF="#ref4">Dupont and Plummer (1998)</A> is used to design studies in which we wish to determine whether the  slopes or intercepts of two independent regression lines differ by  a given amount.  The values of the independent (x) variables of the regression lines may either be specified by the investigator or determined observationally when the study is performed.  In the latter case, the investigator must estimate the standard deviations of the independent variables.</li>
+
+  <li>Survival Studies -- Evaluating independent cohorts using the log-rank test:  The approach of <A HREF="#ref8">Schoenfeld and Richter (1982)</A> is used.  The ratio of the number of control subjects per experimental subject in the cohorts being compared may be specified by the user.  The alternative hypotheses are specified in terms of the hazard ratio for control subjects relative to experimental subjects or the median survival times for control and experimental subjects.
+  </li>
+
+  <li>Continuous Response Measures in Two Groups -- Paired and independent t-tests:  The approach of <A HREF="#ref3">Dupont and Plummer (1990)</A> is used for paired and independent samples.  The ratio of the number of control subjects per experimental subject may be specified by the user.  This method produces results that are in close agreement with those of <A HREF="#ref6">Pearson and Hartley (1970)</A>.</li>
+</ol>
+
+<P><B><A NAME="overview_logfiles"></A>Log Files</B></P>
+
+<P>You may keep a record of you power and sample size calculations in a log file.  To do this, pull down the <I>File</I> menu and select <I>Open.</I>  A conventional windows dialog box will ask for the name of your log file.  This file is automatically saved when you exit from the program.</P>
+
+<P>At the bottom of the <I>PS</I> window is a field that either gives the name and folder of the log file or states that no log file is open.</P>
+
+<P><B><A NAME="overview_graphicsoutput"></A>Graphics Output</B></P>
+
+<P>The <I>PS</I> program can be used to explore three interrelated variables: power, sample size and detectable alternative hypothesis.  It is often helpful to hold one of these variables constant and plot the other two against each other.  The program can generate graphs of sample size versus power for a specific alternative hypothesis, sample size versus detectable alternative hypotheses for a specified power, or power versus detectable alternative hypotheses for a specified sample size.  Linear or logarithmic axes  may be used for either axes.  Multiple curves can be plotted on a single graphic.  For example, if you were considering performing a study with either 100, 150 or 200 patients you could plot three power curves that showed the power with which you will be able to detect different alternative hypotheses for each of these sample sizes. </P>
+
+<P>PS graphics may be saved as Windows Metafiles, printed, or copied and pasted into other programs.  It uses the <I>First Impression</I> graphics control that was written by <A HREF="#ref10">Visual Components</A>.  This software allows the user considerable flexibility in how the graphics are formatted.  However, graphics may also be pasted into graphics editors such as Microsoft PowerPoint for additional editing.  If you paste a PS graph into a PowerPoint document, we recommend that you choose <U>Paste Special</U> from the <U>Edit</U> menu and then select <U>Picture (Windows Metafile)</U>.</P>
+
+<P><B><A NAME="overview_examples"></A>Examples Described in <A HREF="#ref4">Dupont and Plummer (1998)</A></B></P>
+
+<P>The design of the user interface for this program was finalized after Dupont and Plummer (1998) was accepted for publication.  This paper provides three examples of calculations for linear regression problems.  These notes describe how to perform the calculations in these examples using the current version of the <I>PS</I> program.</P>
+
+<P><I>Linear Regression in an Observational Study</I></P>
+
+<ol>
+  <li>Select the <I>Regression 1</I> tab.</li>
+  <li>Answer the question <I>What do you want to know?</I> by <I>Power</I>.</li>
+  <li>Answer the question <I>Investigator chooses treatment level? </I>by<I> No.</I></li>
+  <li>Answer the question <I>How is &sigma; obtained?</I>  by <I> Estimated by Sigma_X, Sigma_Y and Lambda.</I>  The <I>Regression 1 Estimate of Sigma</I> dialog box will appear.</li>
+  <li>Enter 7.5, -.0667, and 4 for the values of <I>&sigma;<sub>x</sub> , &lambda; ,</I> and <I>&sigma;<sub>y</sub></I> , respectively.</li>
+  <li>Press the <I>Calculate</I> button.  The derived values of <font face="Symbol">r</font>
+    = -0.13 and <I>&sigma; </I>  = 3.969 appear.</li>
+  <li>Press the <I>Close</I> button or click in the main PS window.  Note that the value of <I>&sigma; </I>in the <I>Input Section</I> is now 3.969.</li>
+  <li>Enter 0.05, 100, 7.5 and -0.0667 for the values of &alpha;, <I>n</I>,
+    <I>&sigma;<sub>x</sub></I> , and &lambda;
+    respectively.</li>
+  <li>Press the <I>Calculate</I> Button.  A study power of 0.24 is given in the <I>Output</I> Section.</li>
+</ol>
+
+<P><I>Linear Regression in an Experimental Study</I></P>
+
+<ol>
+  <li>Select the <I>Regression 1</I> tab.</li>
+  <li>Answer the question <I>What do you want to know?</I> by <I>Sample size</I>.</li>
+  <li>Answer the question <I>Investigator chooses treatment level? </I>by<I> Yes.</I>  The <I>Treatment Levels and Proportions</I> window will appear.</li>
+  <li>Enter 10, 30 and 50 as the treatment levels.</li>
+  <li>Press the <I>Calculate</I> button.  The derived value <I>&sigma;
+    <sub>x</sub></I> = 16.33 will appear.</li>
+  <li>Press <I>Close</I> or click on the main PS window to return to the main window.</li>
+  <li>Answer the question <I>How is &sigma;&nbsp;&nbsp; obtained?</I>  by <I> Estimated by Sigma_X, Rho and Lambda.</I>  The <I>Regression 1 Estimate of Sigma</I> dialog box will appear.</li>
+  <li>Enter 0.01 and 0.40 for the values &lambda; and <font face="Symbol">r</font>
+    and, respectively.  Note that the value of <I>&sigma; <sub>x
+    </sub></I>=16.33 derived above has been automatically entered.</li>
+  <li>Press the <I>Calculate</I> button.  The derived values of <I>&sigma;
+    <sub>y</sub></I>= 0.408 and &sigma; = 0.374 appear.</li>
+  <li>Press the <I>Close</I> button or click on the main PS window.  Note that the values of &sigma;
+    and &sigma;<sub>x</sub>&nbsp; in the <I>Input Section</I> are now 0.374 and 16.33, respectively.</li>
+  <li>Enter 0.05, 0.9 and 0.01 for the values of &alpha;, <I>power</I>, and
+    &lambda;, respectively.</li>
+  <li>Press the <I>Calculate</I> Button.  A study sample size of 57 is given in the <I>Output</I> Section.</li>
+</ol>
+
+<P><I>Comparing the Slopes of Two Linear Regression Lines</I></P>
+
+<ol>
+  <li>Select the <I>Regression 2</I> tab.</li>
+  <li>Answer the question <I>What do you want to know?</I> by <I>Sample size</I>.</li>
+  <li>Answer the question <I>Investigator chooses treatment level? </I>by<I> No.</I>  </li>
+  <li>Answer the question <I>How is &sigma; obtained?</I>  by <I> Entered directly.</I>  </li>
+  <li>Answer the question <I>What do you want to compare?</I> by <I>Slopes.</I></li>
+  <li>Enter 0.05, 0.8, 1.57, 0.574, -0.0159, 12 and 9.19 for the values of <i>&alpha;,
+    power, m, &sigma; , &lambda;<sub>1</sub>
+    - &lambda;<sub>2</sub> , &sigma;<sub>x1</sub></i>
+    , and <i>&sigma;<sub>x2</sub></i> , respectively.</li>
+  <li>Press the <I>Calculate</I> Button.  A study sample size of 167 is given in the <I>Output</I> Section.</li>
+</ol>
+
+<P><B><A NAME="overview_references"></A>References</B></P>
+
+<ol>
+  <li><A NAME="ref1"></A>Casagrande JT, Pike MC, Smith PG:  "An Improved Approximate Formula for Calculating Sample Sizes for Comparing Two Binomial Distributions", Biometrics, 1978; 34:483-486.</li>
+  <li><A NAME="ref2"></A>Dupont, WD: "Power Calculations for Matched Case-Control Studies", Biometrics, 1988; 44:1157-1168.</li>
+  <li><A NAME="ref3"></A>Dupont WD, Plummer WD: "Power and Sample Size Calculations: A Review and Computer Program", Controlled Clinical Trials 1990; 11:116-28.</li>
+  <li><A NAME="ref4"></A>Dupont WD, Plummer WD:  "Power and Sample Size Calculations for Studies Involving Linear Regression", Controlled Clinical Trials 1998; 19:589-601.</li>
+  <li><A NAME="ref5"></A>Fleiss JL:  "Statistical Methods for Rates and Proportions" 2nd Ed. NewYork: John Wiley, 1981:38-46.</li>
+  <li><A NAME="ref6"></A>Pearson ES and Hartley HO: "Biometrika Tables for Statisticians Vol I", 3rd Ed., Cambridge:  Cambridge U. Press, 1970.</li>
+  <li><A NAME="ref7"></A>Schlesselman:  Case-control Studies: Design, Conduct, Analysis. New York: Oxford U. Press; 1982:144-152.</li>
+  <li><A NAME="ref8"></A>Schoenfeld DA, Richter JR: "Nomograms for Calculating the Number of Patients Needed for a Clinical Trial With Survival as an Endpoint" Biometrics 1982; 38:163-170.</li>
+  <li><A NAME="ref9"></A>Wittes J, Wallenstein S:  "The Power of the Mantel-Haenszel Test" J Am Stat Assoc, 1987; 82:1104-1109.</li>
+  <li><A NAME="ref10"></A>Visual Components Sybase Inc.  First Impression Active X User's Guide: High Performance Software for Charting Data for Microsoft Visual Basic, Visual C++, and Other Languages. Version 5.0.  Overland Park, KS: Visual Components Sybase Inc.</li>
+  <li><A NAME="ref11"></A>Mantel, N., & Haenszel, W. (1959) Statistical aspects of the analysis of data from retrospective studies of disease. Journal of the National Cancer Institute, 22, 719-748.</li>
+  <li><A NAME="ref12"></A>Dupont, WD (2008). Statistical Modeling for Biomedical Researchers, 2nd Edition. Cambridge, U.K.: Cambridge University Press.</li>
+  <li><A NAME="ref13"></A>Dupont WD and Plummer WD: PS power and sample size program available for free on the Internet.  Controlled Clin Trials,1997;18:274</li>
+</ol>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>power</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><I><A NAME="idh_power"></A>power</I></B>  </P>
+
+<P>The probability of correctly rejecting the null hypothesis of equal treatment survival times given <I>n</I> experimental patients, <I>m</I> control patients per experimental patient, Type I error probability
+&alpha;, and true median survival time <i>m</i><sub>1</sub> and hazard ratio <i>R</i> on the control and experimental treatments, respectively.</P>
+
+</BODY>
+</HTML>

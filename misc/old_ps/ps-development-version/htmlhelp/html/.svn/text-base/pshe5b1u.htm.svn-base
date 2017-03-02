@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>dichot_power</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><I><A NAME="dichot_power"></A>power&nbsp;  </I></B>  </P>
+
+<P>the probability of correctly rejecting the null hypothesis that the relative risk (odds ratio) equals 1 given <I>n</I> case patients, <I>m</I> control patients per experimental patient, and a Type I error probability &alpha;.  </P>
+
+</BODY>
+</HTML>

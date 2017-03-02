@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>r</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><I><A NAME="idh_r"></A>R</I></B><br>
+Hazard ratio (relative risk) of the control treatment relative to the experimental treatment.
+If the hazard is constant in each group then <i>R=m</i><sub>2</sub> / <i>m</i><sub>1</sub>.</P>
+
+</BODY>
+</HTML>

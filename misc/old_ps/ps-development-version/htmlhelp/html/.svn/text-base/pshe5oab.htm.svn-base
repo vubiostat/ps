@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>lr2_result_ss</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><A NAME="lr2_result_ss"></A>Sample size</B></P>
+
+<P>Number of experimental (group 2) patients who must be studied to detect a true difference in regression slopes  (or regression intercepts )) with the specified power, <I>m</I> controls per experimental subject, and Type I error probability &alpha;.</P>
+
+</BODY>
+</HTML>

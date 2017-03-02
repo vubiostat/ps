@@ -1,0 +1,23 @@
+	DOUBLE PRECISION FUNCTION R3(X)
+	IMPLICIT NONE
+	DOUBLE PRECISION X,P(0:4),Q(0:4),NUMER,DENOM
+        INTEGER J
+	DATA P/-2.9961 0707 7035 4217 4D-3,
+     .         -4.9473 0910 6232 5073 4D-2,
+     .         -2.2695 6593 5396 8693 0D-1,
+     .         -2.7866 1308 6096 4778 8D-1,
+     .         -2.2319 2459 7341 8468 6D-2/
+	DATA Q/ 1.0620 9230 5284 6791 8D-2,
+     .          1.9130 8926 1078 2984 1D-1,
+     .          1.0516 7510 7067 9320 7,
+     .          1.9873 3201 8171 3525 6,
+     .          1.0000 0000 0000 0000 0/
+      NUMER = 0
+      DENOM = 0
+	DO 10 J=0,4
+	    NUMER=NUMER +P(J)*X**(-2*J)
+          DENOM=DENOM + Q(J)*X**(-2**J)
+10	CONTINUE
+      R3= NUMER/DENOM
+	RETURN
+	END

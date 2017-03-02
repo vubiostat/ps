@@ -1,0 +1,13 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<Title>mhintro</Title>
+</HEAD>
+<BODY>
+
+<P><A NAME="mhintro"></A><B>Studies that are analyses by Mantel-Haenszel tests</B></P>
+
+Suppose that study subjects are either cases or controls and are either exposed or not exposed to some risk factor.  These subjects are stratified by some confounding variable into T distinct strata.  For each statum we have a separate 2x2 contingency table for cases and controls who are or are not exposed.  We postulate that the within stratum odds-ratio for disease in exposed versus unexposed subjects is constant across strata. This is the odds-ratio for disease associated with exposure that is adjusted for the confounding variable.  The null hypothesis of the Mantel-Haenszel test is that this adjusted odds ratio equals 1.  We use Wittes and Wallenstein's (1987) method for sample size and power calculations for this test.
+</BODY>
+</HTML>

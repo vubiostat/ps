@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>mhpowergraph</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="mhpowergraph"></A><B>Power Graphs for <i>Mantel-Haenszel</i> Tests</B></P>
+
+<P>
+This window is used to produce plots of power vs. alternative hypotheses or power vs. sample size for Mantel-Haenszel Tests. The alternative hypotheses may be expressed as an (adjusted) odds ratio. The variable that is not chosen for the x-axis is held constant for each sample size curve. You may plot multiple curves on the same graph with different values of this third variable.
+
+</P>
+
+</BODY>
+</HTML>

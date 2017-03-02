@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<Title>Mantel-Haenzsel Design</Title>
+</HEAD>
+<BODY>
+
+<P><SUP><A NAME="Mantel-Haenzsel Design"></A></SUP><B>Design section of the Mantel-Haenzsel dialog box</B></P>
+
+<P><B>Corrected or uncorrected result?</B></P>
+
+<P>Do you plan to use a continuity correction when testing this odds ratio?  <A HREF="pshe23av.htm#ref11">Mantel and Haenzsel (1959)</A> used a continuity correction in their original paper.  The corrected test is more conservative (less likely to be statistically significant) than the uncorrected test.  However, the published results of <A HREF="pshe23av.htm#ref9">Wittes and Wallenstein (1987)</A> are based on the uncorrected statistic.</P>
+</BODY>
+</HTML>

@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>sample size</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><A NAME="idh_samplesizeresult"></A>Sample size</B></P>
+
+<P>Number of experimental patients <I>n</I> that must be recruited to detect a true ratio of median survival times <A HREF="pshe8hte.htm"><I>R</I></A><I> </I> = / with a specified <I>power</I>, with <I>m</I> controls per experimental subject and Type I error probability &alpha;.   and  are the median survival times on the control treatment and experimental treatment, respectively.</P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>graph_xaxis</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><A NAME="graph_xaxis"></A><B>What should be on the <I>X </I>axis?</B></P>
+
+<P>The <I>X </I>axis of a <I>PS</I> graphic shows either sample size, power, or detectable alternative hypotheses.  The <I>Y</I> axis shows either sample size or power.  Your choice of the <I>Y</I> axis was made in the main <I>PS</I> window in the Output section.  The <I>X </I>axis must be one of the remaining two choices.  Make the desired selection from the list box on the right.</P>
+
+</BODY>
+</HTML>

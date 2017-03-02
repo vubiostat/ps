@@ -1,0 +1,22 @@
+	DOUBLE PRECISION FUNCTION ERFC(X)	
+	IMPLICIT NONE
+	DOUBLE PRECISION X,R2,R3,ERF,PI
+	DATA PI/3.1415 9265 3589 7932D0/
+	IF (X.GE.0.AND.X.LT.0.46875) THEN
+	    ERFC=1.-ERF(X)
+	ELSE IF (X.GE.0.46875.AND.X.LT.4.0) THEN
+	    ERFC=EXP(-X**2)*R2(X)
+	ELSE IF (X.GE.4.0) THEN
+C
+C    Check for argument to EXP that causes underflow.
+C
+	    IF (X.GT.9.3) THEN
+		    ERFC=0.0
+	    ELSE
+		    ERFC=(EXP(-X**2)/X)*(1.D0/DSQRT(PI)+X**(-2)*R3(X**(-2)))
+	    END IF
+	ELSE
+	    STOP
+	END IF
+	RETURN
+	END

@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>lr2_exp_levels</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><A NAME="lr2_exp_levels"></A>Number of levels for the experimental treatment</B></P>
+
+<P>Enter the number of distinct values of the independent variable for the experimental group (group 2).  You may have between 1 and 12 levels.</P>
+
+</BODY>
+</HTML>

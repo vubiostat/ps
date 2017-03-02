@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>lr2_power</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><I><A NAME="lr2_power"></A>power&nbsp;   </I></B></P>
+
+<P>Probability of correctly rejecting the null hypothesis that the regression lines have equal slopes (or equal <I>y</I> intercepts) given <I>n</I> experimental patients studied, <I>m</I> controls per experimental subject,
+Type I error probability &alpha;, and a true difference in the regression slopes &lambda;<sub>2</sub> - &lambda;<sub>1</sub>
+(or y intercepts &gamma;<sub>2</sub> - &gamma;<sub>1</sub>).</P>
+
+</BODY>
+</HTML>

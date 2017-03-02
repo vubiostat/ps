@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Input variables on the t-test dialog box</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><SUP><A NAME="ttest_input"></A></SUP><B>Input variables on the <I>t-test</I> dialog box</B></P>
+
+<P><b>&alpha; </b><br>The Type I error probability for a two sided test.  This is the probability that we will falsely reject the null hypothesis.</P>
+
+<P><B><I>n </I></B><br>For independent t-tests <I>n</I> is the number of experimental subjects.  For pair test <I>n</I> is the number of pairs.</P>
+
+<P><B><I>power </I></B><br>For independent tests <I>power</I>  is probability of correctly rejecting the null hypothesis of equal population means given <I>n</I> experimental patients, <I>m</I> control patients per experimental patient,  a Type I error probability &alpha; and a true difference in population means of &delta;.  For paired tests it is the probability of correctly rejecting the null hypothesis of equal population means given <I>n</I> pairs of patients, a Type I error probability &alpha; and a true difference in population means of &delta;.</P>
+
+<P><B>&delta;</B><b> </b><br>A difference in population means</P>
+
+<P><B>&sigma;</B><b> </b><br>For independent tests &sigma; is the within group standard deviation.  For paired designs it is the standard deviation of difference in the response of matched pairs.</P>
+
+<P><B><I>m </I></B><br>For independent tests <I>m</I> is the ratio of control to experimental patients.  <I>m</I> is not defined for paired studies.</P>
+
+</BODY>
+</HTML>

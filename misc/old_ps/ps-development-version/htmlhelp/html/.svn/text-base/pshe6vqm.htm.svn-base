@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Design section of the Regression 1 dialog box</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><SUP><A NAME="lr1_design"></A></SUP><B>Design section of the Regression 1 dialog box</B></P>
+
+<P><B>Investigator chooses treatment levels?</B></P>
+
+<P>Select <I>yes</I><B> </B>if the independent variable of the linear regression will take distinct values that are known in advance of the conduct of the study.  In this case the program will prompt you for the number of levels and the values of these levels. </P>
+
+<P>Select <I>no</I> if the independent variable is an observed characteristic of the patient (e.g. body weight).  You will have to estimate the standard deviation of this independent variable.  For normally distributed data 95% of a sample will lie within plus or minus 2 standard deviations of the mean.</P>
+
+<P><B><A NAME="lr1_example1"></A>Example:</B>  You might wish to assess some response of patients receiving either 50, 100, or 200 mg of treatment drug per day.  In this case you must tell the program that there will be 3 treatment levels whose values are 50, 100, and 200 respectively.  You will also need to state whether equal numbers of patients will receive each treatment level or specify the proportion of patients who will receive each level.</P>
+
+<P><B>How is </B><B>&sigma;</B><B> obtained?</B></P>
+
+<P>The parameters <b>&sigma;, &lambda;, &sigma;<sub>x</sub></b>,
+<b>&sigma;<sub>y</sub></b>  and <b>&rho;</b>
+are all interrelated (see <A HREF="pshe23av.htm#ref4">Dupont and Plummer 1998</A>).   You may estimate <B>&sigma;</B> directly.  However, you may also estimate <B>&sigma;</B> indirectly by entering estimates of one of the following sets of parameters from pilot data.  </P>
+
+<P><b>&sigma;<sub>x</sub></b>, <b>&sigma;<sub>y</sub></b>  and
+<b>&lambda;</b></P>
+
+<P><b>&sigma;<sub>x</sub></b>, <b>&rho;</b>  and
+<b>&lambda;</b> </P>
+
+<P>It is important that the preceding all come from the same pilot data.  The values of
+<b>&sigma;<sub>x</sub></b>, <b>&sigma;<sub>y</sub>, &lambda;</b> and <b>&rho;</b>  used to estimate <B>&sigma;</B> need not be the same as the values of these statistics for your planned study.</P>
+
+<P><b>&sigma;<sub>x</sub></b> is the standard deviation of the independent (<I>x</I>) variable.  For normally distributed data 95% of a sample will lie within plus or minus 2 standard deviations of the mean.</P>
+
+<P><b>&sigma;<sub>y</sub></b> is the standard deviation of the dependent variable.</P>
+
+</BODY>
+</HTML>

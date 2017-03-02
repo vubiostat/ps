@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<Title>mhtable</Title>
+</HEAD>
+<BODY>
+
+<P><A NAME="mhtable"></A><B>Input Tables</B></P>
+
+<P>Enter the proportion of cases in each table.  The sum of these
+proportions must equal one.  For each table enter the number of controls per case
+and the proportion of
+exposed controls that you anticipate in you study.
+For example, suppose there will be T = 2 strata with subjects divided as follows:</P>
+<p>
+<table border="1">
+  <tr>
+    <td>Table 1</td>
+    <td>Cases</td>
+    <td>Controls</td>
+  </tr>
+  <tr>
+    <td>Exposed</td>
+    <td>?</td>
+    <td>10</td>
+  </tr>
+  <tr>
+    <td>Unexposed</td>
+    <td>?</td>
+    <td>?</td>
+  </tr>
+  <tr>
+    <td>Total</td>
+    <td>20</td>
+    <td>40</td>
+  </tr>
+</table>
+</p>
+<p>
+<table border="1">
+  <tr>
+    <td>Table 2</td>
+    <td>Cases</td>
+    <td>Controls</td>
+  </tr>
+  <tr>
+    <td>Exposed</td>
+    <td>?</td>
+    <td>30</td>
+  </tr>
+  <tr>
+    <td>Unexposed</td>
+    <td>?</td>
+    <td>?</td>
+  </tr>
+  <tr>
+    <td>Total</td>
+    <td>80</td>
+    <td>40</td>
+  </tr>
+</table>
+</p>
+<p>Then the total number of cases is n = 20+80 = 100.  The table required by the PS program will be as follows:</p>
+<p>
+<table border="1">
+  <tr>
+    <td>Table</td>
+    <td>Proportion of<br>Cases in the<br>ith table</td>
+    <td>Number of<br>controls<br>per case</td>
+    <td>Proportion<br>of controls<br>exposed</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>0.2</td>
+    <td>2</td>
+    <td>0.25</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>0.8</td>
+    <td>0.5</td>
+    <td>0.75</td>
+  </tr>
+</table>
+</p>
+
+<p>
+Our notation is consistent with the other PS modules but is different from that
+used by Wittes and Wallenstein (1987).  In their notation N is the total number of
+cases and controls.  In the first row of Table 2 of their paper we have n=160
+cases while they have N=400 case-control subjects. The following table shows
+the input needed to do these calculations.  &rho;<sub>i</sub>&lambda;<sub>i</sub>
+and &pi;<sub>i2</sub> are defined as in Wittes and Wallenstein (1987).
+</p>
+
+<p>
+<table border="1">
+  <tr>
+    <td>Table</td>
+    <td>Proportion of<br>Cases in the<br>ith table</td>
+    <td>Number of<br>controls<br>per case</td>
+    <td>Proportion<br>of controls<br>exposed</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>&rho;<sub>1</sub>&lambda;<sub>1</sub>N/n = 0.125</td>
+    <td>(1-&rho;<sub>1</sub>)/&rho;<sub>1</sub> = 4</td>
+    <td>&pi;<sub>12</sub> = .2</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>&rho;<sub>2</sub>&lambda;<sub>2</sub>N/n = 0.375</td>
+    <td>(1-&rho;<sub>2</sub>)/&rho;<sub>2</sub> = .667</td>
+    <td>&pi;<sub>22</sub> = .4</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>&rho;<sub>3</sub>&lambda;<sub>3</sub>N/n = 0.5</td>
+    <td>(1-&rho;<sub>3</sub>)/&rho;<sub>3</sub> = 1.5</td>
+    <td>&pi;<sub>32</sub> = .65</td>
+  </tr>
+</table>
+</p>
+<p>
+Select an uncorrected test statistic and let &alpha;=0.05, n=160, T=3, and &psi;=2.  Then the input in the previous table gives a power estimate of .85 which agrees
+with Equation (3.2) of Wittes and Wallenstein (1987).  (See their
+Table 2, row 1, column 8.)
+</p>
+
+</BODY>
+</HTML>

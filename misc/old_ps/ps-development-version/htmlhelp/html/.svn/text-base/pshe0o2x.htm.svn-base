@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>dichot_chi_or_fishers</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B>Design section of the Dichotomous dialog box</B></P>
+
+<P><B><A NAME="dichot_chi_or_fishers"></A>Uncorrected Chi-square or Fisher’s Exact-test?</B></P>
+
+<P>Select<B> </B><I>Uncorrected Chi-square test</I> if data will be analyzed with an uncorrected chi-squared test.</P>
+
+<P>Select <I>Fisher’s Exact-test</I> if data will be analyzed with Fisher's exact-test or with a continuity corrected chi-squared test.</P>
+
+</BODY>
+</HTML>

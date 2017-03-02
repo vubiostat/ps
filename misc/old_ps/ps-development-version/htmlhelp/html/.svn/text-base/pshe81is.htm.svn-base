@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>lr2_comparewhat</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B>Design section of the Regression 2 dialog box </B></P>
+
+<P><A NAME="lr2_comparewhat"></A><B>What do you want to compare?</B></P>
+
+<P>Select</P>
+
+<P><I>Slopes</I> if you wish to compare the slopes of the regression lines or</P>
+
+<P><I>Intercepts</I> if you wish to compare the values of the intercepts of the regression lines with their respective dependent (<I>y</I>) axes.</P>
+
+</BODY>
+</HTML>

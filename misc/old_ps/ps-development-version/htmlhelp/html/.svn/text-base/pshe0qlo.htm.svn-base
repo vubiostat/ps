@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>proportion_of_experimental</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<P><B><A NAME="proportion_of_experimental"></A>Is proportion of experimental patients equal at each level?</B></P>
+
+<P>Select <I>yes</I> if the proportion of patients at each treatment level is the same.  In this case the percentages will be calculated and filled in automatically.  </P>
+
+<P>Select <I>no</I><B> </B>if the proportions of patients at each treatment level are not equal.  In this case you must enter the percentages in the appropriate cells.  The percentage values must total 100.</P>
+
+<P>The experimental group is group 2.</P>
+
+</BODY>
+</HTML>

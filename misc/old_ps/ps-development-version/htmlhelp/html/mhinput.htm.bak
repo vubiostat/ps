@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<Title>mhinput</Title>
+</HEAD>
+<BODY>
+
+
+<P><B>&alpha; </B></P>
+<P>The Type I error probability for a two sided test of the null hypothesis that the true within-stratum odds ratio equals 1.</P>
+<P><B>power</B></P>
+<P>The probability of correctly rejecting the null hypothesis that the within-stratum (adjusted) odds ratio equals 1. </P>
+<P><B>n</B></P>
+<P>samplesize blah blah...</P>
+<P><B>T</B></P>
+<P>The number of tables (strata).</P>
+<P><B>&psi; </B></P>
+<P>The within-stratum (adjusted) odds ratio of exposure in cases relative to controls. This odds ratio also equals the odds ratio for disease in exposed subjects relative to unexposed subjects.  It approximates the within-stratum (adjusted) relative risk in case-control studies when the disease is rare in the general population.</P>
+
+
+
+</BODY>
+</HTML>
