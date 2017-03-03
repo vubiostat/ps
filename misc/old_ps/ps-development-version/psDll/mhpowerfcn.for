@@ -1,5 +1,5 @@
 	REAL FUNCTION 
-     .	MHPOWERFCN[dllexport](n_prime,bigt,c_prime,m_prime,
+     .	MHPOWERFCN(n_prime,bigt,c_prime,m_prime,
      .					theta_prime,pi_arg,alpha,corrected)
 	USE MSIMSL
 	IMPLICIT NONE

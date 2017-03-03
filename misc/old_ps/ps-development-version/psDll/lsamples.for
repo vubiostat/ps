@@ -1,5 +1,5 @@
 	REAL*4 FUNCTION
-     .	LSAMPLESIZE[dllexport]
+     .	LSAMPLESIZE
      .               (NTR,XBAR,SX,SLOPES,XALPHA,POWER,
      .                LAMBDA,SIGMA,
      .	            D_LAMBDA,XM,D_GAMMA)
