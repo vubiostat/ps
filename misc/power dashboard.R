@@ -133,4 +133,4 @@ segments(y0=0.5,x0=mu.1-moe,x1=mu.1+moe,lty=1,lwd=2,col="maroon")
 
 ###
 ##
-#
+# 
