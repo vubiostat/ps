@@ -1,1 +1,9 @@
+.tab-pane {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-top: 0;
+}
 
+.tab-pane.active {
+  background: white;
+}

@@ -1,186 +1,149 @@
-doc <- list(
-  survOutputHelp = list(
-    helpContent = tagList(
-      p(
-        "The Output section is where the user selects the result to be generated",
-        "by the PS program. In the Output field select one of the following (to",
-        "make a selection, click in the Output box then click the desired",
-        "output).",
-        style = "margin-bottom: 20px"
-      ),
-      h4("Sample size"),
-      p(
-        "Number of experimental patients", em("n"), "that must be recruited",
-        "to detect a true hazard ratio (relative risk)", em("R"), "with a",
-        "specified", em("power,"), "given", em("m"), "controls per",
-        "experimental subject, Type I error probability", em("α,"), "and",
-        "median survival time", em("m₁"), "on the control treatment. The",
-        "alternative hypothesis may also be specified in terms of",
-        em("m₁"), "and", em("m₂,"), "the median survival time on the",
-        "experiment treatment."
-      )
-    ),
-    helpTitle = "Output section of the Survival dialog box"
-  ),
-  survDesignHelp = list(
-    helpContent = tagList(
-      p(
-        "Choose how the alternative hypothesis is expressed. The choices are:",
-        style = "margin-bottom: 20px"
-      ),
-      h4("Two survival times"),
-      p(
-        "You specify the mean survival time on control treatment", em("m₁"),
-        "and the median survival time on experimental treatment", em("m₂."),
-        style = "margin-bottom: 20px"
-      ),
-      h4("Hazard ratio or relative risk"),
-      p(
-        "You specify the median survival time on control treatment", em("m₁"),
-        "and the hazard ratio", em("R"), "(or relative risk) of the control",
-        "treatment relative to the experimental treatment."
-      )
-    ),
-    helpTitle = "Design section of the Survival dialog box"
-  ),
-  ttestOverviewHelp = list(
-    helpContent = tagList(
-      p(
-        "Continuous Response Measures in Two Groups -- Paired and independent",
-        "t-tests: The approach of Dupont and Plummer (1990) is used for paired and",
-        "independent samples.  The ratio of number of patients in the samples",
-        "being compared may be specified by the user.  This method produces",
-        "results that are in close agreement with those of Pearson and Hartley",
-        "(1970)."
-      ),
-      p(
-        "The", em("t-test"), "dialog box has four sections: Output, Design,",
-        "Input, and Description."
-      ),
-      p(
-        "Each null hypothesis is tested with respect to a two-sided alternative",
-        "hypothesis."
-      )
-    ),
-    helpTitle = "t-test Overview"
-  ),
-  ttestOutputHelp = list(
-    helpContent = tagList(
-      p(
-        "The Output section is where the user selects the result to be generated",
-        "by the PS program.  In the Output field select one of the following (to",
-        "make a selection, click in the Output box then click the desired",
-        "output).",
-        style = "margin-bottom: 20px"
-      ),
-      h4("Sample size"),
-      p(
-        "For independent t-tests this is the number of experimental patients",
-        "that must be studied to detect a true difference in population means δ",
-        "with Type I error probability α given a standard deviation σ and",
-        em("m"), "controls per experimental patient.  For paired t-tests it is",
-        "the number of pairs of patients needed to detect a true difference in",
-        "population means δ with Type I error probability α given a standard",
-        "deviation σ.",
-        style = "margin-bottom: 20px"
-      ),
-      h4("Power"),
-      p(
-        "For independent studies it is the probability of rejecting the null",
-        "hypothesis with Type I error probability α given the specified sample",
-        "size, a standard deviation σ and a control/experimental patient ratio",
-        em("m"), "when the true difference in population means is δ.  For paired",
-        "studies it is the probability of rejecting the null hypothesis with",
-        "Type I error probability α given the specified sample size, a standard",
-        "deviation σ when the true difference in population means is δ.",
-        style = "margin-bottom: 20px"
-      ),
-      h4("Detectable alternative"),
-      p(
-        "A difference in population means that can be detected with the",
-        "specified power and Type I error probability α given a standard",
-        "deviation σ, and the specified sample size."
-      )
-    ),
-    helpTitle = "Output section of the t-test dialog box"
-  ),
-  ttestDesignHelp = list(
-    helpContent = tagList(
-      p(
-        "In the Design section indicate whether you wish to analyze a paired",
-        "or independent study. Specify:"
-      ),
-      tags$ul(
-        tags$li(
-          em("paired"), "for studies of paired responses that may be correlated,"
-        ),
-        tags$li(
-          em("independent"), "for studies in which all observations are",
-          "independent."
-        )
-      )
-    ),
-    helpTitle = "Design section of the t-test dialog box"
-  ),
-  ttestInputHelp = list(
-    helpContent = tagList(
-      h4("α"),
-      p(
-        "The Type I error probability for a two sided test.  This is the",
-        "probability that we will falsely reject the null hypothesis.",
-        style = "margin-bottom: 20px"
-      ),
-      h4(em("n")),
-      p(
-        "For independent t-tests", em("n"), "is the number of experimental",
-        "subjects.  For pair test", em("n"), "is the number of pairs.",
-        style = "margin-bottom: 20px"
-      ),
-      h4(em("power")),
-      p(
-        "For independent tests", em("power"), "is probability of correctly",
-        "rejecting the null hypothesis of equal population means given", em("n"),
-        "experimental patients,", em("m"), "control patients per experimental",
-        "patient,  a Type I error probability α and a true difference in",
-        "population means of δ.  For paired tests it is the probability of",
-        "correctly rejecting the null hypothesis of equal population means given",
-        em("n"), "pairs of patients, a Type I error probability α and a true",
-        "difference in population means of δ.",
-        style = "margin-bottom: 20px"
-      ),
-      h4("δ"),
-      p(
-        "A difference in population means",
-        style = "margin-bottom: 20px"
-      ),
-      h4("σ"),
-      p(
-        "For independent tests σ is the within group standard deviation.  For",
-        "paired designs it is the standard deviation of difference in the",
-        "response of matched pairs.",
-        style = "margin-bottom: 20px"
-      ),
-      h4(em("m")),
-      p(
-        "For independent tests", em("m"), "is the ratio of control to experimental",
-        "patients.", em("m"), "is not defined for paired studies."
-      )
-    ),
-    helpTitle = "Input variables on the t-test dialog box"
-  )
-)
+doPlot <- function() {
+  ## http://powerandsamplesize.com/Calculators/Test-1-Mean/1-Sample-Equality
+
+  layout(matrix(c(1,2,3,3), 2, 2, byrow = TRUE))
+  #######################
+
+  mu=2
+  mu0=1.5
+  sd=1
+  alpha=0.05
+  beta=0.20
+  (n=(sd*(qnorm(1-alpha/2)+qnorm(1-beta))/(mu-mu0))^2)
+  ceiling(n)# 32
+  z=(mu-mu0)/sd*sqrt(n)
+  (Power=pnorm(z-qnorm(1-alpha/2))+pnorm(-z-qnorm(1-alpha/2)))
+
+  #########################################
+  ########
+  ## Graph: Top Left
+  ########
+  ## fixed inputs
+  alpha=0.05
+  mu.0=0
+  mu.1=1
+  sigma=1
+
+  desired.pow=0.8
+
+  ## Moving imputs (x-axis)
+  n=seq(0,30,1)
+
+  #### Computation of power as a funciton of sample size
+  alt.z=(mu.1-mu.0)/sigma	 #Standardied Alternative
+  power=pnorm(alt.z*sqrt(n)-qnorm(1-alpha/2))+pnorm(-alt.z*sqrt(n)-qnorm(1-alpha/2))
+
+  ## Locate desired sample size
+  find=min(which(power>=desired.pow))
+  target.n=n[find]
+  target.pow=power[find]
+
+  ## Plotting
+  plot(n,power,type="n",ylab="Power",xlab="Sample Size")
+  title(main="Power vs. Sample Size")
+  lines(n,power,col="dodgerblue",lwd=2,lty=1)
+
+  segments(x0=target.n,y0=0,y1=target.pow,lty=2,lwd=1,col="firebrick")
+  segments(x0=0,x1=target.n,y0=target.pow,lty=2,lwd=1,col="firebrick")
+  points(target.n,target.pow,col="firebrick",pch=19)
+  #########################################
+
+  #########################################
+  ########
+  ## Graph: Top Left
+  ########
+
+  ## fixed inputs
+  alpha=0.05
+  mu.0=0
+
+  sigma=1
+  n=8
+
+  desired.pow=0.8
+
+  ## Moving imputs (x-axis)
+  mu.1=seq(-2,2,0.01)
+
+  #### Computation of power as a funciton of sample size
+  alt.z=(mu.1-mu.0)/sigma	 #Standardied Alternative
+  power=pnorm(alt.z*sqrt(n)-qnorm(1-alpha/2))+pnorm(-alt.z*sqrt(n)-qnorm(1-alpha/2))
+
+  ## Locate desired alternative (two-points; symmetric)
+  find.hi=min(which(power[mu.1>=mu.0]>=desired.pow))
+  target.alt.hi=mu.1[mu.1>=mu.0][find.hi]
+  target.pow.hi=power[mu.1<=mu.0][find.hi]
+
+  find.lo=max(which(power[mu.1<=mu.0]>=desired.pow))
+  target.alt.lo=mu.1[mu.1<=mu.0][find.lo]
+  target.pow.lo=power[mu.1<=mu.0][find.lo]
+
+  ## Plotting
+  plot(mu.1,power,type="n",ylab="Power",xlab="Alternative")
+  title(main="Power vs. Alternative")
+  lines(mu.1,power,col="dodgerblue",lwd=2,lty=1)
+
+  segments(x0=target.alt.hi,y0=0,y1=target.pow.hi,lty=2,lwd=1,col="firebrick")
+  segments(x0=min(mu.1),x1=target.alt.hi,y0=target.pow.hi,lty=2,lwd=1,col="firebrick")
+  points(target.alt.hi,target.pow.hi,col="firebrick",pch=19)
+
+  # segments(x0=target.alt.lo,y0=0,y1=target.pow.lo,lty=2,lwd=1,col="firebrick")
+  # segments(x0=min(mu.1),x1=target.alt.lo,y0=target.pow.hi,lty=2,lwd=1,col="firebrick")
+  # points(target.alt.lo,target.pow.lo,col="firebrick",pch=19)
+
+  abline(h=alpha,lty=2,lwd=0.5,col="black")
+  mtext(-2.4,0.05,"0.05")
+  axis(side=2,at=alpha,tick="False",padj=0.5,hadj=0.75,las=1)
+
+  #########################################
+
+  #########################################
+  ########
+  ## Graph: Bottom
+  ########
+
+  ## fixed inputs
+  alpha=0.05
+  mu.0=0
+  mu.1=1
+
+  sigma=1
+  n=8
+
+  moe=qnorm(1-alpha/2)*sigma/sqrt(n)
+  p.space=seq(-2,2,0.01)
+
+  ## Plotting
+  # par(mar=c(16,5,16,5))
+  plot(p.space,p.space,type="n",ylab=" ",xlab="Parameter Space",ylim=c(0,1),yaxt="n")
+  title(main="Precision vs. Effect size",line=1)
+  abline(h=0.5,lty=2,lwd=0.5,col="black")
+
+  points(mu.0,0.5,pch=18,cex=2,col="darkseagreen")
+  points(mu.1,0.5,pch=18,cex=2,col="maroon")
+
+  points(mu.1-moe,0.5,pch="[",cex=2,col="maroon")
+  points(mu.1+moe,0.5,pch="]",cex=2,col="maroon")
+
+  segments(y0=0.5,x0=mu.1-moe,x1=mu.1+moe,lty=1,lwd=2,col="maroon")
+
+  #########################################
+
+
+
+  ###
+  ##
+  #
+}
 
 function(input, output) {
-  for (actionName in names(doc)) {
-    dialogInfo <- doc[[actionName]]
-    eventExpr <- substitute(input$actionName, list(actionName = actionName))
-    handlerExpr <- substitute({
-      showModal(modalDialog(
-        helpContent,
-        title = helpTitle
-      ))
-    }, dialogInfo)
-    observeEvent(eventExpr, handlerExpr, event.quoted = TRUE,
-      handler.quoted = TRUE)
-  }
+  output$plot <- renderPlot({
+    validate(
+      if (input$ssAlpha > 0) NULL else FALSE,
+      if (input$ssPower > input$ssAlpha) NULL else FALSE,
+      if (input$ssDelta > 0) NULL else FALSE,
+      if (input$ssSigma > 0) NULL else FALSE
+    )
+    doPlot()
+  })
 }
