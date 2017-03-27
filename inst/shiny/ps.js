@@ -20,6 +20,5 @@ $(document).on('shiny:connected', function() {
     if (sliderInfo.mouseDown) {
       event.preventDefault();
     }
-    console.log(event);
   });
 });
