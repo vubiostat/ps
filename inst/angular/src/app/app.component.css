@@ -1,0 +1,24 @@
+#sidebar {
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+:host /deep/ .tab-pane {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-top: 0;
+}
+
+:host /deep/ .tab-pane.active {
+  background: white;
+}
+
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form) {
+  border-left: 5px solid #a94442; /* red */
+}

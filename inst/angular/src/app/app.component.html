@@ -1,3 +1,98 @@
-<h1>
-  {{title}}
-</h1>
+<h1>{{title}}</h1>
+
+<div class="container-fluid">
+  <div class="row">
+    <div id="sidebar" class="col-sm-4">
+      <ngb-tabset>
+        <ngb-tab title="Start">
+          <template ngbTabContent>
+            <form (ngSubmit)="onSubmit()" #ttestForm="ngForm">
+              <div class="form-group">
+                <label for="output">What do you want to know?</label>
+                <select class="form-control" id="output"
+                        required
+                        [(ngModel)]="ttest.output" name="output">
+                  <option></option>
+                  <option value="sampleSize">Sample size</option>
+                  <option value="power">Power</option>
+                  <option value="detAlt">Detectable alternative</option>
+                </select>
+              </div>
+              <!--
+              <div class="form-group" *ngIf="ttest.output">
+                <label for="design">Paired or independent?</label>
+                <select class="form-control" id="design"
+                        required
+                        [(ngModel)]="ttest.design" name="design">
+                  <option></option>
+                  <option>Paired</option>
+                  <option>Independent</option>
+                </select>
+              </div>
+              -->
+              <div *ngIf="ttest.output == 'sampleSize'">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="alpha">Type I Error (&alpha;)</label>
+                      <input class="form-control" id="alpha"
+                             type="number"
+                             required
+                             [(ngModel)]="ttest.alpha" name="alpha">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="power">Power</label>
+                      <input class="form-control" id="power"
+                             type="number"
+                             required
+                             [(ngModel)]="ttest.power" name="power">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="case-mean">Case mean</label>
+                      <input class="form-control" id="case-mean"
+                             type="number"
+                             required
+                             [(ngModel)]="ttest.caseMean" name="caseMean">
+                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="control-mean">Control mean</label>
+                      <input class="form-control" id="control-mean"
+                             type="number"
+                             required
+                             [(ngModel)]="ttest.controlMean" name="controlMean">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="sigma">Standard deviation (&sigma;)</label>
+                      <input class="form-control" id="sigma"
+                             type="number"
+                             required
+                             [(ngModel)]="ttest.sigma" name="sigma">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success"
+                      [disabled]="!ttestForm.form.valid">
+                Calculate
+              </button>
+            </form>
+          </template>
+        </ngb-tab>
+      </ngb-tabset>
+    </div>
+    <div class="col-sm-8">
+    </div>
+  </div>
+</div>
