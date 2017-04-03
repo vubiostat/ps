@@ -8,11 +8,12 @@ import {
 
 import 'rxjs/add/operator/toPromise';
 
+import { environment } from '../environments/environment';
 import { TTest } from './t-test';
 
 @Injectable()
 export class PlotService {
-  private plotUrl = "http://localhost:7788"
+  private plotUrl = environment.plotUrl;
 
   constructor(private http: Http) { }
 
