@@ -5,7 +5,7 @@ PsApp <- setRefClass("PsApp",
   fields = c("allowHost"),
   methods = list(
     plotGraph = function(alpha, power, caseMean, controlMean, sigma, width, height) {
-      allBeta <- seq(0.95, alpha + 0.05, -0.05)
+      allBeta <- seq(0.99, alpha + 0.01, -0.01)
       allN <- (sigma*(qnorm(1-alpha/2)+qnorm(1-allBeta))/(caseMean-controlMean))^2
       allZ <- (caseMean-controlMean)/sigma*sqrt(allN)
       allPower <- pnorm(allZ-qnorm(1-alpha/2))+pnorm(-allZ-qnorm(1-alpha/2))

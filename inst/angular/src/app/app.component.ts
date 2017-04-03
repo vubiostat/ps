@@ -19,6 +19,7 @@ export class AppComponent implements OnChanges {
   width: number;
   height: number;
   plotSource: SafeUrl;
+  selectedTTest: TTest;
 
   @ViewChild('main') mainElement: ElementRef; // for plot width/height
   @ViewChild('tabset') tabset: NgbTabset;
@@ -37,7 +38,15 @@ export class AppComponent implements OnChanges {
     setTimeout(() => {
       this.tabset.select(`test-${this.ttests.length}`);
     }, 100)
-    this.getPlot();
+  }
+
+  onTabChange(event: any): void {
+    let md = event.nextId.match(/\d+/);
+    if (md) {
+      let index = md[0] - 1;
+      this.selectedTTest = this.ttests[index];
+      this.getPlot();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -45,11 +54,13 @@ export class AppComponent implements OnChanges {
   }
 
   private getPlot(): void {
-    this.setDimensions();
-    this.plotService.
-      getPlot(this.ttest, this.width, this.height).
-      then(blob => this.setPlotSource(blob)).
-      catch(err => console.error(err));
+    if (this.selectedTTest) {
+      this.setDimensions();
+      this.plotService.
+        getPlot(this.selectedTTest, this.width, this.height).
+        then(blob => this.setPlotSource(blob)).
+        catch(err => console.error(err));
+    }
   }
 
   private setPlotSource(blob: Blob): void {
@@ -65,6 +76,5 @@ export class AppComponent implements OnChanges {
     let elt = this.mainElement.nativeElement;
     this.width = Math.round(elt.offsetWidth * 0.90);
     this.height = elt.offsetHeight;
-    console.log(this.width, this.height);
   }
 }

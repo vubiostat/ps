@@ -3,7 +3,7 @@
 
   <div class="row" style="height: 90%">
     <div id="sidebar" class="col-sm-4">
-      <ngb-tabset #tabset>
+      <ngb-tabset #tabset (tabChange)="onTabChange($event)">
         <ngb-tab title="Start">
           <template ngbTabContent>
             <form (ngSubmit)="onSubmit()" #ttestForm="ngForm">
@@ -36,7 +36,7 @@
                     <div class="form-group">
                       <label for="alpha">Type I Error (&alpha;)</label>
                       <input class="form-control" id="alpha"
-                             type="number" step="0.05"
+                             type="number" step="0.01"
                              required
                              [(ngModel)]="ttest.alpha" name="alpha">
                     </div>
@@ -45,7 +45,7 @@
                     <div class="form-group">
                       <label for="power">Power</label>
                       <input class="form-control" id="power"
-                             type="number" step="0.05"
+                             type="number" step="0.01"
                              required
                              [(ngModel)]="ttest.power" name="power">
                     </div>
