@@ -6,10 +6,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { PlotService } from './plot.service';
+import { StartComponent } from './start/start.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    StartComponent,
   ],
   imports: [
     BrowserModule,
