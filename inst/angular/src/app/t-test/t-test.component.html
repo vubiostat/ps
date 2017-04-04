@@ -1,0 +1,96 @@
+<div class="output">Output: {{model.output}}</div>
+<div class="row slider-group">
+  <div class="col-sm-4">Type I Error (&alpha;)</div>
+  <div class="col-sm-6 slider">
+    <div class="row">
+      <div class="col-sm-2">{{min.alpha}}</div>
+      <div class="col-sm-8">
+        <input type="range" step="0.01"
+               min="{{min.alpha}}" max="{{max.alpha}}"
+               [(ngModel)]="model.alpha" (change)="inputChanged()" />
+      </div>
+      <div class="col-sm-2">{{max.alpha}}</div>
+    </div>
+  </div>
+  <div class="col-sm-2">
+    <input type="number" step="0.01"
+           min="{{min.alpha}}" max="{{max.alpha}}"
+           [(ngModel)]="model.alpha" (change)="inputChanged()" />
+  </div>
+</div>
+<div class="row slider-group">
+  <div class="col-sm-4">Power</div>
+  <div class="col-sm-6 slider">
+    <div class="row">
+      <div class="col-sm-2">{{min.power}}</div>
+      <div class="col-sm-8">
+        <input type="range" step="0.01"
+               min="{{min.power}}" max="{{max.power}}"
+               [(ngModel)]="model.power" (change)="inputChanged()" />
+      </div>
+      <div class="col-sm-2">{{max.power}}</div>
+    </div>
+  </div>
+  <div class="col-sm-2">
+    <input type="number" step="0.01"
+           min="{{min.power}}" max="{{max.power}}"
+           [(ngModel)]="model.power" (change)="inputChanged()" />
+  </div>
+</div>
+<div class="row slider-group">
+  <div class="col-sm-4">Case mean</div>
+  <div class="col-sm-6 slider">
+    <div class="row">
+      <div class="col-sm-2">{{min.caseMean}}</div>
+      <div class="col-sm-8">
+        <input type="range" step="1"
+               min="{{min.caseMean}}" max="{{max.caseMean}}"
+               [(ngModel)]="model.caseMean" (change)="inputChanged()" />
+      </div>
+      <div class="col-sm-2">{{max.caseMean}}</div>
+    </div>
+  </div>
+  <div class="col-sm-2">
+    <input type="number" step="1"
+           min="{{min.caseMean}}" max="{{max.caseMean}}"
+           [(ngModel)]="model.caseMean" (change)="inputChanged()" />
+  </div>
+</div>
+<div class="row slider-group">
+  <div class="col-sm-4">Control mean</div>
+  <div class="col-sm-6 slider">
+    <div class="row">
+      <div class="col-sm-2">{{min.controlMean}}</div>
+      <div class="col-sm-8">
+        <input type="range" step="1"
+               min="{{min.controlMean}}" max="{{max.controlMean}}"
+               [(ngModel)]="model.controlMean" (change)="inputChanged()" />
+      </div>
+      <div class="col-sm-2">{{max.controlMean}}</div>
+    </div>
+  </div>
+  <div class="col-sm-2">
+    <input type="number" step="1"
+           min="{{min.controlMean}}" max="{{max.controlMean}}"
+           [(ngModel)]="model.controlMean" (change)="inputChanged()" />
+  </div>
+</div>
+<div class="row slider-group">
+  <div class="col-sm-4">Std. deviation (&sigma;)</div>
+  <div class="col-sm-6 slider">
+    <div class="row">
+      <div class="col-sm-2">{{min.sigma}}</div>
+      <div class="col-sm-8">
+        <input type="range" step="0.1"
+               min="{{min.sigma}}" max="{{max.sigma}}"
+               [(ngModel)]="model.sigma" (change)="inputChanged()" />
+      </div>
+      <div class="col-sm-2">{{max.sigma}}</div>
+    </div>
+  </div>
+  <div class="col-sm-2">
+    <input type="number" step="0.1"
+           min="{{min.sigma}}" max="{{max.sigma}}"
+           [(ngModel)]="model.sigma" (change)="inputChanged()" />
+  </div>
+</div>
