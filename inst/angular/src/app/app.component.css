@@ -14,19 +14,3 @@
 :host /deep/ .tab-pane.active {
   background: white;
 }
-
-.ng-valid[required], .ng-valid.required  {
-  border-left: 5px solid #42A948; /* green */
-}
-
-.ng-invalid:not(form) {
-  border-left: 5px solid #a94442; /* red */
-}
-
-table th {
-  border-bottom: 2px solid gray;
-  padding: 3px 5px;
-}
-table td {
-  padding: 5px;
-}

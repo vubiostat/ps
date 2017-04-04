@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
@@ -12,14 +12,14 @@ import { PlotService } from './plot.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnChanges {
+export class AppComponent {
   title = 'PS: Power and Sample Size Calculation';
-  ttest = new TTest();
-  ttests: TTest[] = [];
+  newModel = new TTest();
+  models: TTest[] = [];
   width: number;
   height: number;
   plotSource: SafeUrl;
-  selectedTTest: TTest;
+  selectedModel: TTest;
 
   @ViewChild('main') mainElement: ElementRef; // for plot width/height
   @ViewChild('tabset') tabset: NgbTabset;
@@ -29,14 +29,10 @@ export class AppComponent implements OnChanges {
     private sanitizer: DomSanitizer
   ) {}
 
-  onResize(): void {
-    this.getPlot();
-  }
-
-  onSubmit(): void {
-    this.ttests.push(Object.assign({}, this.ttest));
+  onCalculate(): void {
+    this.models.push(Object.assign({}, this.newModel));
     setTimeout(() => {
-      this.tabset.select(`test-${this.ttests.length}`);
+      this.tabset.select(`test-${this.models.length}`);
     }, 100)
   }
 
@@ -44,20 +40,16 @@ export class AppComponent implements OnChanges {
     let md = event.nextId.match(/\d+/);
     if (md) {
       let index = md[0] - 1;
-      this.selectedTTest = this.ttests[index];
+      this.selectedModel = this.models[index];
       this.getPlot();
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
-
-  private getPlot(): void {
-    if (this.selectedTTest) {
+  getPlot(): void {
+    if (this.selectedModel) {
       this.setDimensions();
       this.plotService.
-        getPlot(this.selectedTTest, this.width, this.height).
+        getPlot(this.selectedModel, this.width, this.height).
         then(blob => this.setPlotSource(blob)).
         catch(err => console.error(err));
     }
