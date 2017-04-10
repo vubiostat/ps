@@ -1,8 +1,23 @@
+#header {
+  margin: 10px 0;
+  line-height: 40px;
+}
+#header img {
+  vertical-align: text-bottom;
+}
+#header div.title span {
+  font-size: 32px;
+}
+#header div.logo {
+  text-align: right;
+}
+
 #sidebar {
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
   padding: 10px;
+  margin: 10px;
 }
 
 :host /deep/ .tab-pane {

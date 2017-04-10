@@ -1,21 +1,31 @@
 <div class="container-fluid" style="height: 99vh">
-  <h1>{{title}}</h1>
+  <div id="header" class="row">
+    <div class="col-sm-8 title">
+      <img src="assets/ps.jpg">
+      <span>Power and Sample Size Calculation</span>
+    </div>
+    <div class="col-sm-4 logo">
+      <img src="assets/vu02a.jpg" height="40">
+    </div>
+  </div>
 
   <div class="row" style="height: 90%">
-    <div id="sidebar" class="col-sm-4">
-      <ngb-tabset #tabset (tabChange)="onTabChange($event)">
-        <ngb-tab title="Start">
-          <template ngbTabContent>
-            <app-start [model]="newModel" (onCalculate)="onCalculate()"></app-start>
-          </template>
-        </ngb-tab>
-        <ngb-tab *ngFor="let model of models; let i = index"
-          title="Test {{i+1}}" id="test-{{i+1}}">
-          <template ngbTabContent>
-            <app-t-test [model]="model" (onChange)="getPlot()"></app-t-test>
-          </template>
-        </ngb-tab>
-      </ngb-tabset>
+    <div class="col-sm-4">
+      <div id="sidebar">
+        <ngb-tabset #tabset (tabChange)="onTabChange($event)">
+          <ngb-tab title="Start">
+            <template ngbTabContent>
+              <app-start [model]="newModel" (onCalculate)="onCalculate()"></app-start>
+            </template>
+          </ngb-tab>
+          <ngb-tab *ngFor="let model of models; let i = index"
+            title="Test {{i+1}}" id="test-{{i+1}}">
+            <template ngbTabContent>
+              <app-t-test [model]="model" (onChange)="getPlot()"></app-t-test>
+            </template>
+          </ngb-tab>
+        </ngb-tabset>
+      </div>
     </div>
     <div #main id="main" class="col-sm-8" (window:resize)="getPlot()">
       <div *ngIf="plotSource">
