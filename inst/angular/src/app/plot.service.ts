@@ -13,7 +13,7 @@ import { TTest } from './t-test';
 
 @Injectable()
 export class PlotService {
-  private plotUrl = environment.plotUrl;
+  private plotUrl = `${environment.apiUrl}/plot`;
 
   constructor(private http: Http) { }
 
