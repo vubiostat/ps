@@ -6,6 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { PlotService } from './plot.service';
+import { CalcService } from './calc.service';
 import { StartComponent } from './start/start.component';
 import { TTestComponent } from './t-test/t-test.component';
 
@@ -21,7 +22,7 @@ import { TTestComponent } from './t-test/t-test.component';
     HttpModule,
     NgbModule.forRoot()
   ],
-  providers: [PlotService],
+  providers: [PlotService, CalcService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
