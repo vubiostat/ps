@@ -6,4 +6,5 @@ export class TTest {
   caseMean: number;
   controlMean: number;
   sigma: number;
+  sampleSize: number;
 }
