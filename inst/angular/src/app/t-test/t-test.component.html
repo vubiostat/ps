@@ -1,0 +1,130 @@
+<div class="form-group">
+  <label>
+    Output
+    <select class="form-control" name="output" [(ngModel)]="model.output">
+      <option value="sampleSize">Sample size</option>
+      <option value="power">Power</option>
+      <option value="delta">Detectable alternative</option>
+    </select>
+  </label>
+</div>
+<div class="slider-group">
+  <div class="label">Type I Error (&alpha;)</div>
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="slider">
+        <div class="min">{{min.alpha}}</div>
+        <input name="alpha" type="range" step="0.01"
+               min="{{min.alpha}}" max="{{max.alpha}}"
+               [(ngModel)]="model.alpha" (change)="inputChanged($event)" />
+        <div class="max">{{max.alpha}}</div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="number">
+        <input name="alpha" type="number" step="0.01"
+               min="{{min.alpha}}" max="{{max.alpha}}"
+               [(ngModel)]="model.alpha" (change)="inputChanged($event)" />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="slider-group">
+  <div class="label">Std. deviation (&sigma;)</div>
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="slider">
+        <div class="min">{{min.sigma}}</div>
+        <input name="sigma" type="range" step="0.1"
+               min="{{min.sigma}}" max="{{max.sigma}}"
+               [(ngModel)]="model.sigma" (change)="inputChanged($event)" />
+        <div class="max">{{max.sigma}}</div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="number">
+        <input name="sigma" type="number" step="0.1"
+               min="{{min.sigma}}" max="{{max.sigma}}"
+               [(ngModel)]="model.sigma" (change)="inputChanged($event)" />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="slider-group" [class.output]="model.output == 'power'">
+  <div class="label">
+    Power
+    <span *ngIf="model.output == 'power'">(Output)</span>
+  </div>
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="slider">
+        <div class="min">{{min.power}}</div>
+        <input name="power" type="range" step="0.01"
+               min="{{min.power}}" max="{{max.power}}"
+               [disabled]="model.output == 'power'"
+               [(ngModel)]="model.power" (change)="inputChanged($event)" />
+        <div class="max">{{max.power}}</div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="number">
+        <input name="power" type="number" step="0.01"
+               min="{{min.power}}" max="{{max.power}}"
+               [disabled]="model.output == 'power'"
+               [(ngModel)]="model.power" (change)="inputChanged($event)" />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="slider-group" [class.output]="model.output == 'delta'">
+  <div class="label">
+    Difference in population means (&delta;)
+    <span *ngIf="model.output == 'delta'">(Output)</span>
+  </div>
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="slider">
+        <div class="min">{{min.delta}}</div>
+        <input name="delta" type="range" step="1"
+               min="{{min.delta}}" max="{{max.delta}}"
+               [disabled]="model.output == 'delta'"
+               [(ngModel)]="model.delta" (change)="inputChanged($event)" />
+        <div class="max">{{max.delta}}</div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="number">
+        <input name="delta" type="number" step="1"
+               min="{{min.delta}}" max="{{max.delta}}"
+               [disabled]="model.output == 'delta'"
+               [(ngModel)]="model.delta" (change)="inputChanged($event)" />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="slider-group" [class.output]="model.output == 'sampleSize'">
+  <div class="label">
+    Sample size
+    <span *ngIf="model.output == 'sampleSize'">(Output)</span>
+  </div>
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="slider">
+        <div class="min">{{min.n}}</div>
+        <input name="n" type="range" step="1"
+               min="{{min.n}}" max="{{max.n}}"
+               [disabled]="model.output == 'sampleSize'"
+               [(ngModel)]="model.n" (change)="inputChanged($event)" />
+        <div class="max">{{max.n}}</div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="number">
+        <input name="n" type="number" step="1"
+               min="{{min.n}}" max="{{max.n}}"
+               [disabled]="model.output == 'sampleSize'"
+               [(ngModel)]="model.n" (change)="inputChanged($event)" />
+      </div>
+    </div>
+  </div>
+</div>

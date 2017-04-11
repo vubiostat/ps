@@ -1,0 +1,43 @@
+#app {
+  height: 95vh;
+}
+
+#header {
+  line-height: 10vh;
+  height: 10vh;
+}
+#header img {
+  vertical-align: text-bottom;
+  height: 5vh;
+}
+#header div.title span {
+  font-size: 5vh;
+}
+#header div.logo {
+  text-align: right;
+}
+
+#main {
+}
+
+#sidebar {
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px;
+}
+
+#plot {
+  min-height: 100%;
+}
+
+:host /deep/ .tab-pane {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-top: 0;
+}
+
+:host /deep/ .tab-pane.active {
+  background: white;
+}
