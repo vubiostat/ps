@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { TTest } from './t-test';
 import { PlotService } from './plot.service';
+import { CalcService } from './calc.service';
 
 @Component({
   selector: 'app-root',
@@ -15,25 +16,38 @@ import { PlotService } from './plot.service';
 export class AppComponent {
   title = 'PS: Power and Sample Size Calculation';
   newModel = new TTest();
-  models: TTest[] = [];
+  models: TTest[] = [
+    {output: 'sampleSize', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32} as TTest
+  ];
   width: number;
   height: number;
   plotSource: SafeUrl;
   selectedModel: TTest;
 
-  @ViewChild('main') mainElement: ElementRef; // for plot width/height
+  @ViewChild('plot') plotElement: ElementRef; // for plot width/height
   @ViewChild('tabset') tabset: NgbTabset;
 
   constructor(
     private plotService: PlotService,
+    private calcService: CalcService,
     private sanitizer: DomSanitizer
   ) {}
 
   onCalculate(): void {
-    this.models.push(Object.assign({}, this.newModel));
-    setTimeout(() => {
-      this.tabset.select(`test-${this.models.length}`);
-    }, 100)
+    this.updateModel(this.newModel).
+      then(() => {
+        this.models.push(Object.assign({}, this.newModel));
+        setTimeout(() => {
+          this.tabset.select(`test-${this.models.length}`);
+        }, 100);
+      }).
+      catch(err => console.error(err));
+  }
+
+  onResize(): void {
+    if (this.selectedModel) {
+      this.getPlot(this.selectedModel);
+    }
   }
 
   onTabChange(event: any): void {
@@ -41,17 +55,40 @@ export class AppComponent {
     if (md) {
       let index = md[0] - 1;
       this.selectedModel = this.models[index];
-      this.getPlot();
+      setTimeout(() => {
+        this.getPlot(this.selectedModel);
+      }, 1);
     }
   }
 
-  getPlot(): void {
-    if (this.selectedModel) {
-      this.setDimensions();
-      this.plotService.
-        getPlot(this.selectedModel, this.width, this.height).
-        then(blob => this.setPlotSource(blob)).
-        catch(err => console.error(err));
+  onModelChange(model: TTest): void {
+    this.updateModel(model).
+      then(() => {
+        this.getPlot(model);
+      });
+  }
+
+  getPlot(model: TTest): void {
+    this.setDimensions();
+    this.plotService.
+      getPlot(model, this.width, this.height).
+      then(blob => this.setPlotSource(blob)).
+      catch(err => console.error(err));
+  }
+
+  updateModel(model: TTest): Promise<any> {
+    switch (model.output) {
+      case 'sampleSize':
+        return this.calcService.calcSS(model).
+          then(result => model.n = result);
+
+      case 'power':
+        return this.calcService.calcPower(model).
+          then(result => model.power = result);
+
+      case 'delta':
+        return this.calcService.calcDelta(model).
+          then(result => model.delta = result);
     }
   }
 
@@ -65,7 +102,7 @@ export class AppComponent {
   }
 
   private setDimensions(): void {
-    let elt = this.mainElement.nativeElement;
+    let elt = this.plotElement.nativeElement;
     this.width = Math.round(elt.offsetWidth * 0.90);
     this.height = elt.offsetHeight;
   }

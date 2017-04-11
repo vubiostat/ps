@@ -1,19 +1,19 @@
-<div class="container-fluid" style="height: 99vh">
+<div id="app" class="container-fluid">
   <div id="header" class="row">
     <div class="col-sm-8 title">
       <img src="assets/ps.jpg">
       <span>Power and Sample Size Calculation</span>
     </div>
     <div class="col-sm-4 logo">
-      <img src="assets/vu02a.jpg" height="40">
+      <img src="assets/vu02a.jpg">
     </div>
   </div>
 
-  <div class="row" style="height: 90%">
+  <div id="main" class="row">
     <div class="col-sm-4">
       <div id="sidebar">
         <ngb-tabset #tabset (tabChange)="onTabChange($event)">
-          <ngb-tab title="Start">
+          <ngb-tab title="Start" id="start">
             <template ngbTabContent>
               <app-start [model]="newModel" (onCalculate)="onCalculate()"></app-start>
             </template>
@@ -21,13 +21,13 @@
           <ngb-tab *ngFor="let model of models; let i = index"
             title="Test {{i+1}}" id="test-{{i+1}}">
             <template ngbTabContent>
-              <app-t-test [model]="model" (onChange)="getPlot()"></app-t-test>
+              <app-t-test [model]="model" (onChange)="onModelChange(model)"></app-t-test>
             </template>
           </ngb-tab>
         </ngb-tabset>
       </div>
     </div>
-    <div #main id="main" class="col-sm-8" (window:resize)="getPlot()">
+    <div #plot id="plot" class="col-sm-8" (window:resize)="onResize()">
       <div *ngIf="plotSource">
         <img [src]="plotSource">
       </div>
