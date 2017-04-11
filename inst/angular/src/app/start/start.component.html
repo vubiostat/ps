@@ -7,7 +7,7 @@
       <option></option>
       <option value="sampleSize">Sample size</option>
       <option value="power">Power</option>
-      <option value="detAlt">Detectable alternative</option>
+      <option value="delta">Detectable alternative</option>
     </select>
   </div>
   <!--
@@ -22,61 +22,45 @@
     </select>
   </div>
   -->
-  <div *ngIf="model.output == 'sampleSize'">
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="form-group">
-          <label for="alpha">Type I Error (&alpha;)</label>
-          <input class="form-control" id="alpha"
-                 type="number" step="0.01"
-                 required
-                 [(ngModel)]="model.alpha" name="alpha">
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="form-group">
-          <label for="power">Power</label>
-          <input class="form-control" id="power"
-                 type="number" step="0.01"
-                 required
-                 [(ngModel)]="model.power" name="power">
-        </div>
-      </div>
+  <div *ngIf="model.output">
+    <div class="form-group">
+      <label for="alpha">Type I Error (&alpha;)</label>
+      <input class="form-control" id="alpha"
+             type="number" step="0.01"
+             required
+             [(ngModel)]="model.alpha" name="alpha">
     </div>
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="form-group">
-          <label for="case-mean">Case mean</label>
-          <input class="form-control" id="case-mean"
-                 type="number"
-                 required
-                 [(ngModel)]="model.caseMean" name="caseMean">
-         </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="form-group">
-          <label for="control-mean">Control mean</label>
-          <input class="form-control" id="control-mean"
-                 type="number"
-                 required
-                 [(ngModel)]="model.controlMean" name="controlMean">
-        </div>
-      </div>
+    <div class="form-group">
+      <label for="sigma">Standard deviation (&sigma;)</label>
+      <input class="form-control" id="sigma"
+             type="number" step="0.1"
+             required
+             [(ngModel)]="model.sigma" name="sigma">
     </div>
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="form-group">
-          <label for="sigma">Standard deviation (&sigma;)</label>
-          <input class="form-control" id="sigma"
-                 type="number" step="0.1"
-                 required
-                 [(ngModel)]="model.sigma" name="sigma">
-        </div>
-      </div>
+    <div *ngIf="model.output != 'power'" class="form-group">
+      <label for="power">Power</label>
+      <input class="form-control" id="power"
+             type="number" step="0.01"
+             required
+             [(ngModel)]="model.power" name="power">
     </div>
+    <div *ngIf="model.output != 'delta'" class="form-group">
+      <label for="delta">Difference in population means (&delta;)</label>
+      <input class="form-control" id="delta"
+             type="number"
+             required
+             [(ngModel)]="model.delta" name="delta">
+    </div>
+    <div *ngIf="model.output != 'sampleSize'" class="form-group">
+      <label for="sampleSize">Sample size</label>
+      <input class="form-control" id="sampleSize"
+             type="number"
+             required
+             [(ngModel)]="model.sampleSize" name="sampleSize">
+    </div>
+    <button type="submit" class="btn btn-success"
+            [disabled]="!startForm.form.valid">
+      Calculate
+    </button>
   </div>
-  <button type="submit" class="btn btn-success"
-          [disabled]="!startForm.form.valid">
-    Calculate
-  </button>
 </form>

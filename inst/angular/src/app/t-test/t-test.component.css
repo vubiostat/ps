@@ -1,24 +1,37 @@
 div.slider-group {
-  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
 }
-div.slider-group .label,
+
+div.slider-group.output {
+  background-color: #d8ecf3;
+}
+
+div.slider-group .label span {
+  font-weight: bold;
+}
+
 div.slider-group .slider,
 div.slider-group .number {
   padding-top: 2ex;
 }
+
 div.slider-group input {
   width: 100%;
 }
-div.slider {
+
+div.slider-group div.slider {
   position: relative;
   padding-left: 0;
   padding-right: 0;
 }
-div.slider input {
+
+div.slider-group div.slider input {
   display: block;
 }
-div.slider div.min,
-div.slider div.max {
+
+div.slider-group div.slider div.min,
+div.slider-group div.slider div.max {
   position: absolute;
   font-size: x-small;
   top: 0;
@@ -26,9 +39,16 @@ div.slider div.max {
   border-radius: 1ex;
   padding: 0.5ex;
 }
-div.slider div.min {
+
+div.slider-group.output div.slider div.min,
+div.slider-group.output div.slider div.max {
+  background-color: #ccc;
+}
+
+div.slider-group div.slider div.min {
   left: 0;
 }
-div.slider div.max {
+
+div.slider-group div.slider div.max {
   right: 0;
 }

@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 
 import { TTest } from '../t-test';
-import { CalcService } from '../calc.service';
 
 @Component({
   selector: 'app-t-test',
@@ -21,8 +20,6 @@ export class TTestComponent implements OnInit {
   max: TTest;
   prev: TTest;
 
-  constructor(private calcService: CalcService) { }
-
   ngOnInit(): void {
     this.min = Object.assign({}, this.model);
     this.max = Object.assign({}, this.model);
@@ -34,16 +31,14 @@ export class TTestComponent implements OnInit {
     this.min.power = 0;
     this.max.power = 1;
 
-    this.min.caseMean = this.getMin(this.model.caseMean);
-    this.max.caseMean = this.getMax(this.model.caseMean);
+    this.min.n = this.getMin(this.model.n);
+    this.max.n = this.getMax(this.model.n);
 
-    this.min.controlMean = this.getMin(this.model.controlMean);
-    this.max.controlMean = this.getMax(this.model.controlMean);
+    this.min.delta = this.getMin(this.model.delta);
+    this.max.delta = this.getMax(this.model.delta);
 
     this.min.sigma = this.getMin(this.model.sigma);
     this.max.sigma = this.getMax(this.model.sigma);
-
-    this.setSampleSize();
   }
 
   inputChanged(event: any): void {
@@ -56,15 +51,7 @@ export class TTestComponent implements OnInit {
         this.max[key] = value;
       }
     }
-    this.setSampleSize();
     this.onChange.emit();
-  }
-
-  private setSampleSize(): void {
-    this.calcService.
-      calcSS(this.model).
-      then(result => this.model.sampleSize = result).
-      catch(err => console.error(err));
   }
 
   private getMin(n: number): number {

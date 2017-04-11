@@ -14,7 +14,6 @@ export class StartComponent {
   constructor() {}
 
   onSubmit(): void {
-    console.log('emitting event from StartComponent');
     this.onCalculate.emit();
   }
 }
