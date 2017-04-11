@@ -18,6 +18,18 @@ export class CalcService {
   constructor(private http: Http) { }
 
   calcSS(model: TTest): Promise<number> {
+    return this.calculate(`${this.calcUrl}/ss`, model);
+  }
+
+  calcPower(model: TTest): Promise<number> {
+    return this.calculate(`${this.calcUrl}/power`, model);
+  }
+
+  calcDelta(model: TTest): Promise<number> {
+    return this.calculate(`${this.calcUrl}/delta`, model);
+  }
+
+  private calculate(url: string, model: TTest): Promise<number> {
     let params: any = Object.assign({}, model);
 
     let headers = new Headers();
@@ -25,7 +37,6 @@ export class CalcService {
 
     let options = new RequestOptions({ headers: headers });
 
-    let url = `${this.calcUrl}/ss`;
     return this.http.
       post(url, JSON.stringify(params), options).
       toPromise().
