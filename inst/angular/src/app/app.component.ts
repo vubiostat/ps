@@ -17,7 +17,7 @@ export class AppComponent {
   title = 'PS: Power and Sample Size Calculation';
   newModel = new TTest();
   models: TTest[] = [
-    {output: 'sampleSize', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32} as TTest
+    {output: 'n', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32} as TTest
   ];
   width: number;
   height: number;
@@ -77,19 +77,10 @@ export class AppComponent {
   }
 
   updateModel(model: TTest): Promise<any> {
-    switch (model.output) {
-      case 'sampleSize':
-        return this.calcService.calcSS(model).
-          then(result => model.n = result);
-
-      case 'power':
-        return this.calcService.calcPower(model).
-          then(result => model.power = result);
-
-      case 'delta':
-        return this.calcService.calcDelta(model).
-          then(result => model.delta = result);
-    }
+    return this.calcService.calculate(model).
+      then(result => {
+        Object.assign(model, result);
+      });
   }
 
   private setPlotSource(blob: Blob): void {

@@ -5,7 +5,7 @@
             required
             [(ngModel)]="model.output" name="output">
       <option></option>
-      <option value="sampleSize">Sample size</option>
+      <option value="n">Sample size</option>
       <option value="power">Power</option>
       <option value="delta">Detectable alternative</option>
     </select>
@@ -47,16 +47,16 @@
     <div *ngIf="model.output != 'delta'" class="form-group">
       <label for="delta">Difference in population means (&delta;)</label>
       <input class="form-control" id="delta"
-             type="number"
+             type="number" step="0.1"
              required
              [(ngModel)]="model.delta" name="delta">
     </div>
-    <div *ngIf="model.output != 'sampleSize'" class="form-group">
-      <label for="sampleSize">Sample size</label>
-      <input class="form-control" id="sampleSize"
+    <div *ngIf="model.output != 'n'" class="form-group">
+      <label for="n">Sample size</label>
+      <input class="form-control" id="n"
              type="number"
              required
-             [(ngModel)]="model.sampleSize" name="sampleSize">
+             [(ngModel)]="model.n" name="n">
     </div>
     <button type="submit" class="btn btn-success"
             [disabled]="!startForm.form.valid">

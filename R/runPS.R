@@ -3,79 +3,7 @@ require(httpuv)
 require(jpeg)
 
 # helper functions
-doValidate <- function(expectedKeys, params) {
-  errors <- list()
-  keys <- names(params)
-  extra <- setdiff(keys, expectedKeys)
-
-  if (length(extra) > 0) {
-    errors$base < paste0("invalid keys: ", paste(extra, collapse=", "))
-  }
-
-  if (("alpha" %in% expectedKeys)) {
-    if (!("alpha" %in% keys)) {
-      errors$alpha <- "is required"
-    } else if (!is.numeric(params$alpha)) {
-      errors$alpha <- "must be numeric"
-    } else if (params$alpha < 0 || params$alpha > 1) {
-      errors$alpha <- "must be within the range 0..1"
-    }
-  }
-
-  if (("power" %in% expectedKeys)) {
-    if (!("power" %in% keys)) {
-      errors$power <- "is required"
-    } else if (!is.numeric(params$power)) {
-      errors$power <- "must be numeric"
-    } else if (params$power < 0 || params$power > 1) {
-      errors$power <- "must be within the range 0..1"
-    }
-  }
-
-  if (("delta" %in% expectedKeys)) {
-    if (!("delta" %in% keys)) {
-      errors$delta <- "is required"
-    } else if (!is.numeric(params$delta)) {
-      errors$delta <- "must be numeric"
-    } else if (params$delta <= 0) {
-      errors$delta <- "must be greater than 0"
-    }
-  }
-
-  if (("sigma" %in% expectedKeys)) {
-    if (!("sigma" %in% keys)) {
-      errors$sigma <- "is required"
-    } else if (!is.numeric(params$sigma)) {
-      errors$sigma <- "must be numeric"
-    } else if (params$sigma <= 0) {
-      errors$sigma <- "must be greater than 0"
-    }
-  }
-
-  if (("width" %in% expectedKeys)) {
-    if (!("width" %in% keys)) {
-      errors$width <- "is required"
-    } else if (!is.integer(params$width)) {
-      errors$width <- "must be numeric"
-    } else if (params$width <= 0) {
-      errors$width <- "must be greater than 0"
-    }
-  }
-
-  if (("height" %in% expectedKeys)) {
-    if (!("height" %in% keys)) {
-      errors$height <- "is required"
-    } else if (!is.integer(params$height)) {
-      errors$height <- "must be numeric"
-    } else if (params$height <= 0) {
-      errors$height <- "must be greater than 0"
-    }
-  }
-
-  errors
-}
-
-calculateSampleSize <- function(alpha, delta, sigma, power) {
+calculateN <- function(alpha, delta, sigma, power) {
   (sigma * (qnorm(1 - alpha/2) + qnorm(power)) / delta) ^ 2
 }
 
@@ -89,154 +17,156 @@ calculateDelta <- function(alpha, sigma, n, power) {
   sqrt((qnorm(1 - alpha/2) - qnorm(1 - power)) ^ 2 * (sigma ^ 2) / n)
 }
 
+paramTitles <- list(
+  power = "Power",
+  n = "Sample Size",
+  delta = "Detectable Alternative"
+)
+
+TTest <- setRefClass("TTest",
+  fields = c("alpha", "power", "n", "delta", "sigma", "output"),
+  methods = list(
+    initialize = function(params) {
+      alpha  <<- params$alpha
+      power  <<- params$power
+      n      <<- params$n
+      delta  <<- params$delta
+      sigma  <<- params$sigma
+      output <<- params$output
+
+      update()
+    },
+    update = function() {
+      if (output == "n") {
+        n <<- ceiling(calculateN(alpha, delta, sigma, power))
+      } else if (output == "power") {
+        power <<- calculatePower(alpha, delta, sigma, n)
+      } else if (output == "delta") {
+        delta <<- calculateDelta(alpha, sigma, n, power)
+      }
+    },
+    outputResult = function() {
+      if (output == "n") {
+        list(n = unbox(n))
+      } else if (output == "power") {
+        list(power = unbox(power))
+      } else if (output == "delta") {
+        list(delta = unbox(delta))
+      }
+    },
+    guessDeltaRange = function() {
+      mu.0 <- 0
+      lo <- mu.0 - max(4 * sigma, delta + sigma/2)
+      high <- mu.0 + max(4 * sigma, delta + sigma/2)
+      seq(lo, high, 0.01)
+    },
+    plotModel = function() {
+      layout(matrix(c(1, 2, 1, 2, 1, 2, 3, 3), 4, 2, byrow = TRUE))
+
+      if (output == "n") {
+        nRange <- seq(floor(n * 0.5), ceiling(n * 1.5), 1)
+        powerRange <- calculatePower(alpha, delta, sigma, nRange)
+        deltaRange <- calculateDelta(alpha, sigma, nRange, power)
+
+        plotXY("power", powerRange, power, "n", nRange, n)
+        plotXY("delta", deltaRange, delta, "n", nRange, n)
+
+      } else if (output == "power") {
+        powerRange <- seq(alpha + 0.01, 0.99, 0.01)
+        nRange <- calculateN(alpha, delta, sigma, powerRange)
+        plotXY("n", nRange, n, "power", powerRange, power)
+
+        deltaRange <- guessDeltaRange()
+        powerRange <- calculatePower(alpha, deltaRange, sigma, n)
+        plotXY("delta", deltaRange, delta, "power", powerRange, power)
+
+      } else if (output == "delta") {
+        deltaRange <- seq(floor(delta * 0.5), ceiling(delta * 1.5), 0.1)
+        nRange <- calculateN(alpha, deltaRange, sigma, power)
+        powerRange <- calculatePower(alpha, deltaRange, sigma, n)
+
+        plotXY("n", nRange, n, "delta", deltaRange, delta)
+        plotXY("power", powerRange, power, "delta", deltaRange, delta)
+      }
+
+      plotPrecisionVsEffectSize()
+    },
+    plotXY = function(xName, x, xTarget, yName, y, yTarget) {
+      yLabel <- paramTitles[[yName]]
+      xLabel <- paramTitles[[xName]]
+
+      plot(x, y, type="n", ylab=yLabel, xlab=xLabel, cex.lab=1.5)
+      title(main=paste(yLabel, "vs.", xLabel), line=1, cex.main=2)
+      lines(x, y, col="dodgerblue", lwd=2, lty=1)
+      segments(x0=xTarget, y0=min(y), y1=yTarget, lty=2, lwd=1, col="firebrick")
+      segments(x0=min(x), x1=xTarget, y0=yTarget, lty=2, lwd=1, col="firebrick")
+      points(xTarget, yTarget, col="firebrick", pch=19)
+    },
+    plotPrecisionVsEffectSize = function() {
+      moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
+
+      mu.0 <- 0
+      p.space.lo <- mu.0 - max(4 * sigma, delta + sigma/2)
+      p.space.high <- mu.0 + max(4 * sigma, delta + sigma/2)
+      p.space <- seq(p.space.lo, p.space.high, 0.01)
+
+      plot(p.space, p.space, type="n", ylab=" ", xlab="Parameter Space", ylim=c(0,1), yaxt="n", cex.lab=1.5)
+      title(main="Precision vs. Effect size", line=1, cex.main=2)
+      abline(h=0.5, lty=2, lwd=0.5, col="black")
+
+      points(0, 0.5, pch=18, cex=2, col="darkseagreen")
+      points(delta, 0.5, pch=18, cex=2, col="maroon")
+      points(-delta, 0.5, pch=18, cex=2, col="maroon")
+
+      points(delta - moe, 0.5, pch="[", cex=2, col="maroon")
+      points(delta + moe, 0.5, pch="]", cex=2, col="maroon")
+      points(-delta - moe, 0.5, pch="[", cex=2, col="maroon")
+      points(-delta + moe, 0.5, pch="]", cex=2, col="maroon")
+
+      segments(y0=0.5, x0=delta - moe, x1=delta + moe, lty=1, lwd=2, col="maroon")
+      segments(y0=0.5, x0=-delta - moe, x1=-delta + moe, lty=1, lwd=2, col="maroon")
+    }
+  )
+)
+
 PlotAction <- setRefClass("PlotAction",
   fields = c("params"),
   methods = list(
+    initialize = function(params) {
+      params <<- params
+    },
     validate = function() {
-      doValidate(c("alpha", "power", "delta", "sigma", "n", "width", "height"), params)
+      errors <- c()
+      keys <- names(params)
+      if (!("width" %in% keys)) {
+        errors$width <- "is required"
+      }
+      if (!("height" %in% keys)) {
+        errors$height <- "is required"
+      }
+      errors
     },
-
-    plotPvSS = function() {
-      with(params, {
-        allPower <- seq(alpha + 0.01, 0.99, 0.01)
-        allN <- calculateSampleSize(alpha, delta, sigma, allPower)
-        allPower <- calculatePower(alpha, delta, sigma, allN)
-
-        n <- calculateSampleSize(alpha, delta, sigma, power)
-        power <- calculatePower(alpha, delta, sigma, n)
-
-        x.range <- c(allN[1], allN[length(allN)])
-        y.range <- c(0, 1)
-        plot(x.range, y.range, type="n", ylab="Power", xlab="Sample Size")
-        title(main="Power vs. Sample Size")
-        lines(allN, allPower, col="dodgerblue", lwd=2, lty=1)
-        segments(x0=n, y0=0, y1=power, lty=2, lwd=1, col="firebrick")
-        segments(x0=0, x1=n, y0=power, lty=2, lwd=1, col="firebrick")
-        points(n, power, col="firebrick", pch=19)
-      })
-    },
-
-    plotPvDA = function() {
-      with(params, {
-        mu.0 <- 0
-        allDelta.lo <- mu.0 - max(4 * sigma, delta + sigma/2)
-        allDelta.high <- mu.0 + max(4 * sigma, delta + sigma/2)
-        allDelta <- seq(allDelta.lo, allDelta.high, 0.01)
-        allPower <- calculatePower(alpha, allDelta, sigma, n)
-
-        ## Locate desired alternative (two-points; symmetric)
-        find.hi <- min(which(allPower[allDelta >= 0] >= power))
-        target.alt.hi <- allDelta[allDelta >= 0][find.hi]
-        target.pow.hi <- allPower[allDelta >= 0][find.hi]
-
-        find.lo <- max(which(allPower[allDelta <= 0] >= power))
-        target.alt.lo <- allDelta[allDelta <= 0][find.lo]
-        target.pow.lo <- allPower[allDelta <= 0][find.lo]
-
-        x.range <- c(allDelta[1], allDelta[length(allDelta)])
-        y.range <- c(0, 1)
-        plot(x.range, y.range, type="n", ylab="Power", xlab="Alternative")
-        title(main="Power vs. Alternative")
-        lines(allDelta, allPower, col="dodgerblue", lwd=2, lty=1)
-
-        segments(x0=target.alt.hi, y0=0, y1=target.pow.hi, lty=2, lwd=1, col="firebrick")
-        segments(x0=min(allDelta), x1=target.alt.hi, y0=target.pow.hi, lty=2, lwd=1, col="firebrick")
-        points(target.alt.hi, target.pow.hi, col="firebrick", pch=19)
-
-        segments(x0=target.alt.lo, y0=0, y1=target.pow.lo, lty=2, lwd=1, col="firebrick")
-        #segments(x0=min(allDelta), x1=target.alt.lo, y0=target.pow.hi, lty=2, lwd=1, col="firebrick")
-        points(target.alt.lo, target.pow.lo, col="firebrick", pch=19)
-
-        abline(h=alpha, lty=2, lwd=0.5,col="black")
-        #mtext(-2.4, 0.05, "0.05")
-        #axis(side=2, at=alpha, tick="False", padj=0.5, hadj=0.75, las=1)
-      })
-    },
-
-    plotPvES = function() {
-      with(params, {
-        moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
-
-        mu.0 <- 0
-        p.space.lo <- mu.0 - max(4 * sigma, delta + sigma/2)
-        p.space.high <- mu.0 + max(4 * sigma, delta + sigma/2)
-        p.space <- seq(p.space.lo, p.space.high, 0.01)
-
-        plot(p.space, p.space, type="n", ylab=" ", xlab="Parameter Space", ylim=c(0,1), yaxt="n")
-        title(main="Precision vs. Effect size", line=1)
-        abline(h=0.5, lty=2, lwd=0.5, col="black")
-
-        points(0, 0.5, pch=18, cex=2, col="darkseagreen")
-        points(delta, 0.5, pch=18, cex=2, col="maroon")
-        points(-delta, 0.5, pch=18, cex=2, col="maroon")
-
-        points(delta - moe, 0.5, pch="[", cex=2, col="maroon")
-        points(delta + moe, 0.5, pch="]", cex=2, col="maroon")
-        points(-delta - moe, 0.5, pch="[", cex=2, col="maroon")
-        points(-delta + moe, 0.5, pch="]", cex=2, col="maroon")
-
-        segments(y0=0.5, x0=delta - moe, x1=delta + moe, lty=1, lwd=2, col="maroon")
-        segments(y0=0.5, x0=-delta - moe, x1=-delta + moe, lty=1, lwd=2, col="maroon")
-      })
-    },
-
     run = function() {
+      model <- TTest(params)
       fn <- tempfile("ps-plot", fileext=".png")
       png(filename = fn, width = params$width, height = params$height)
-      layout(matrix(c(1, 2, 1, 2, 1, 2, 3, 3), 4, 2, byrow = TRUE))
-      plotPvSS()
-      plotPvDA()
-      plotPvES()
+      model$plotModel()
       dev.off()
       c(file = fn)
     }
   )
 )
 
-CalcSSAction <- setRefClass("CalcSSAction",
+CalculateAction <- setRefClass("CalculateAction",
   fields = c("params"),
   methods = list(
-    validate = function() {
-      doValidate(c("alpha", "power", "delta", "sigma", "n"), params)
+    initialize = function(params) {
+      params <<- params
     },
-
+    validate = function() { c() },
     run = function() {
-      with(params, {
-        n <- ceiling(calculateSampleSize(alpha, delta, sigma, power))
-        list(result = unbox(n))
-      })
-    }
-  )
-)
-
-CalcPowerAction <- setRefClass("CalcPowerAction",
-  fields = c("params"),
-  methods = list(
-    validate = function() {
-      doValidate(c("alpha", "power", "delta", "sigma", "n"), params)
-    },
-
-    run = function() {
-      with(params, {
-        power <- calculatePower(alpha, delta, sigma, n)
-        list(result = unbox(power))
-      })
-    }
-  )
-)
-
-CalcDeltaAction <- setRefClass("CalcDeltaAction",
-  fields = c("params"),
-  methods = list(
-    validate = function() {
-      doValidate(c("alpha", "power", "delta", "sigma", "n"), params)
-    },
-
-    run = function() {
-      with(params, {
-        delta <- ceiling(calculateDelta(alpha, sigma, n, power))
-        list(result = unbox(delta))
-      })
+      model <- TTest(params)
+      model$outputResult()
     }
   )
 )
@@ -245,13 +175,105 @@ PsApp <- setRefClass("PsApp",
   fields = c("allowHost", "routes"),
   methods = list(
     initialize = function(allowHost) {
-      .self$allowHost <- allowHost
-      .self$routes <- list(
+      allowHost <<- allowHost
+      routes <<- list(
         "/plot" = list(action = PlotAction, type = "png"),
-        "/calc/ss" = list(action = CalcSSAction, type = "json"),
-        "/calc/power" = list(action = CalcPowerAction, type = "json"),
-        "/calc/delta" = list(action = CalcDeltaAction, type = "json")
+        "/calc" = list(action = CalculateAction, type = "json")
       )
+    },
+
+    validate = function(params) {
+      errors <- list()
+      keys <- names(params)
+      expectedKeys <- c("alpha", "sigma", "n", "power", "delta", "output", "width", "height")
+      extra <- setdiff(keys, expectedKeys)
+
+      if (length(extra) > 0) {
+        errors$base < paste0("invalid keys: ", paste(extra, collapse=", "))
+      }
+
+      if (!("alpha" %in% keys)) {
+        errors$alpha <- "is required"
+      } else if (!is.numeric(params$alpha)) {
+        errors$alpha <- "must be numeric"
+      } else if (params$alpha < 0 || params$alpha > 1) {
+        errors$alpha <- "must be within the range 0..1"
+      }
+
+      if (!("sigma" %in% keys)) {
+        errors$sigma <- "is required"
+      } else if (!is.numeric(params$sigma)) {
+        errors$sigma <- "must be numeric"
+      } else if (params$sigma <= 0) {
+        errors$sigma <- "must be greater than 0"
+      }
+
+      if ("n" %in% keys) {
+        if (!is.numeric(params$n)) {
+          errors$n <- "must be numeric"
+        } else if (params$n <= 0) {
+          errors$n <- "must be greater than 0"
+        }
+      }
+
+      if ("power" %in% keys) {
+        if (!is.numeric(params$power)) {
+          errors$power <- "must be numeric"
+        } else if (params$power < 0 || params$power > 1) {
+          errors$power <- "must be within the range 0..1"
+        }
+      }
+
+      if ("delta" %in% keys) {
+        if (!is.numeric(params$delta)) {
+          errors$delta <- "must be numeric"
+        } else if (params$delta <= 0) {
+          errors$delta <- "must be greater than 0"
+        }
+      }
+
+      if (!("output" %in% keys)) {
+        errors$output <- "is required"
+      } else if (params$output == "n") {
+        if (!("power" %in% keys)) {
+          errors$power <- "is required when output is 'n'"
+        }
+        if (!("delta" %in% keys)) {
+          errors$delta <- "is required when output is 'n'"
+        }
+      } else if (params$output == "power") {
+        if (!("n" %in% keys)) {
+          errors$n <- "is required when output is 'power'"
+        }
+        if (!("delta" %in% keys)) {
+          errors$delta <- "is required when output is 'power'"
+        }
+      } else if (params$output == "delta") {
+        if (!("n" %in% keys)) {
+          errors$n <- "is required when output is 'delta'"
+        }
+        if (!("power" %in% keys)) {
+          errors$power <- "is required when output is 'delta'"
+        }
+      }
+
+      if ("width" %in% keys) {
+        if (!is.integer(params$width)) {
+          errors$width <- "must be numeric"
+        } else if (params$width <= 0) {
+          errors$width <- "must be greater than 0"
+        }
+      }
+
+      if ("height" %in% keys) {
+        if (!is.integer(params$height)) {
+          errors$height <- "must be numeric"
+        } else if (params$height <= 0) {
+          errors$height <- "must be greater than 0"
+        }
+      }
+
+      errors
     },
 
     fail = function(errors, status = 400L) {
@@ -299,10 +321,18 @@ PsApp <- setRefClass("PsApp",
       if (inherits(params, "try-error")) {
         return(fail(list(base = "invalid JSON")))
       }
-      action <- route$action(params = params)
-      errors <- action$validate()
-      if (length(errors) > 0) {
-        return(fail(errors))
+
+      generalErrors <- validate(params)
+      if (length(generalErrors) > 0) {
+        print(generalErrors)
+        return(fail(generalErrors))
+      }
+
+      action <- route$action(params)
+      actionErrors <- action$validate()
+      if (length(actionErrors) > 0) {
+        print(actionErrors)
+        return(fail(actionErrors))
       }
 
       result <- try(action$run())

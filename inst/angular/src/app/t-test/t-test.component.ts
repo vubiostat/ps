@@ -43,7 +43,7 @@ export class TTestComponent implements OnInit {
 
   inputChanged(event: any): void {
     let key = event.target.name;
-    if (key != 'alpha' && key != 'power') {
+    if (key != 'alpha' && key != 'power' && key != 'output') {
       let value = event.target.value;
       if (value < this.min[key]) {
         this.min[key] = value;
