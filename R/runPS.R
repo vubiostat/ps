@@ -104,11 +104,7 @@ TTest <- setRefClass("TTest",
     },
     plotPrecisionVsEffectSize = function() {
       moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
-
-      mu.0 <- 0
-      p.space.lo <- mu.0 - max(4 * sigma, delta + sigma/2)
-      p.space.high <- mu.0 + max(4 * sigma, delta + sigma/2)
-      p.space <- seq(p.space.lo, p.space.high, 0.01)
+      p.space <- guessDeltaRange()
 
       plot(p.space, p.space, type="n", ylab=" ", xlab="Parameter Space", ylim=c(0,1), yaxt="n", cex.lab=1.5)
       title(main="Precision vs. Effect size", line=1, cex.main=2)
