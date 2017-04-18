@@ -38,7 +38,7 @@ TTest <- setRefClass("TTest",
     },
     update = function() {
       if (output == "n") {
-        n <<- ceiling(calculateN(alpha, delta, sigma, power))
+        n <<- calculateN(alpha, delta, sigma, power)
       } else if (output == "power") {
         power <<- calculatePower(alpha, delta, sigma, n)
       } else if (output == "delta") {
@@ -47,7 +47,7 @@ TTest <- setRefClass("TTest",
     },
     outputResult = function() {
       if (output == "n") {
-        list(n = unbox(n))
+        list(n = unbox(ceiling(n)))
       } else if (output == "power") {
         list(power = unbox(power))
       } else if (output == "delta") {
@@ -112,15 +112,15 @@ TTest <- setRefClass("TTest",
 
       points(0, 0.5, pch=18, cex=2, col="darkseagreen")
       points(delta, 0.5, pch=18, cex=2, col="maroon")
-      points(-delta, 0.5, pch=18, cex=2, col="maroon")
+      #points(-delta, 0.5, pch=18, cex=2, col="maroon")
 
       points(delta - moe, 0.5, pch="[", cex=2, col="maroon")
       points(delta + moe, 0.5, pch="]", cex=2, col="maroon")
-      points(-delta - moe, 0.5, pch="[", cex=2, col="maroon")
-      points(-delta + moe, 0.5, pch="]", cex=2, col="maroon")
+      #points(-delta - moe, 0.5, pch="[", cex=2, col="maroon")
+      #points(-delta + moe, 0.5, pch="]", cex=2, col="maroon")
 
       segments(y0=0.5, x0=delta - moe, x1=delta + moe, lty=1, lwd=2, col="maroon")
-      segments(y0=0.5, x0=-delta - moe, x1=-delta + moe, lty=1, lwd=2, col="maroon")
+      #segments(y0=0.5, x0=-delta - moe, x1=-delta + moe, lty=1, lwd=2, col="maroon")
     }
   )
 )
