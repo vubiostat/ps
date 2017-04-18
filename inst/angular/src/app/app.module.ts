@@ -9,12 +9,14 @@ import { PlotService } from './plot.service';
 import { CalcService } from './calc.service';
 import { StartComponent } from './start/start.component';
 import { TTestComponent } from './t-test/t-test.component';
+import { OutputPaneComponent } from './output-pane/output-pane.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     StartComponent,
     TTestComponent,
+    OutputPaneComponent,
   ],
   imports: [
     BrowserModule,

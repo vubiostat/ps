@@ -27,10 +27,8 @@
         </ngb-tabset>
       </div>
     </div>
-    <div #plot id="plot" class="col-sm-8" (window:resize)="onResize()">
-      <div *ngIf="plotSource">
-        <img [src]="plotSource">
-      </div>
+    <div class="col-sm-8">
+      <app-output-pane [model]="selectedModel"></app-output-pane>
     </div>
   </div>
 </div>

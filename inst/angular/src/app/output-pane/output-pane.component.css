@@ -1,0 +1,14 @@
+.plot {
+  height: 80%;
+}
+.output-text {
+  height: 20%;
+}
+.output-text div {
+  background-color: #eee;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 5px;
+  text-align: justify;
+  overflow: auto;
+}

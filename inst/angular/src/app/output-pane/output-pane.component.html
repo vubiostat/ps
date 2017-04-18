@@ -1,0 +1,35 @@
+<div #plot class="plot" (window:resize)="onResize()">
+  <div *ngIf="plotSource">
+    <img [src]="plotSource">
+  </div>
+</div>
+<div class="output-text" *ngIf="model">
+  <div *ngIf="model.output == 'n'">
+    We are planning a study of a continuous response variable from matched pairs
+    of study subjects.  Prior data indicate that the difference in the response
+    of matched pairs is normally distributed with standard deviation
+    {{model.sigma}}.  If the true difference in the mean response of matched
+    pairs is {{model.delta}}, we will need to study {{model.n}} pairs of subjects
+    to be able to reject the null hypothesis that this response difference is
+    zero with probability (power) {{model.power}}.   The Type I error probability
+    associated with this test of this null hypothesis is {{model.alpha}}.
+  </div>
+  <div *ngIf="model.output == 'power'">
+    We are planning a study with {{model.n}} pairs of subjects.  Prior data
+    indicate that the difference in the response of matched pairs is normally
+    distributed with standard deviation {{model.sigma}}.  If the true difference
+    in the mean response of matched pairs is {{model.delta}}, we will be able to
+    reject the null hypothesis that this response difference is zero with
+    probability (power) {{model.power}}.   The Type I error probability
+    associated with this test of this null hypothesis is {{model.alpha}}.
+  </div>
+  <div *ngIf="model.output == 'delta'">
+    We are planning a study with {{model.n}} pairs of subjects.  Prior data
+    indicate that the difference in the response of matched pairs is normally
+    distributed with standard deviation {{model.sigma}}.  We will be able to
+    detect a true difference in the mean response of matched pairs of
+    -{{model.delta}} or {{model.delta}} with probability (power) {{model.power}}.
+    The Type I error probability associated with this test of the null hypothesis
+    that this response difference is zero is {{model.alpha}}.
+  </div>
+</div>

@@ -1,12 +1,9 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Component, ViewChild } from '@angular/core';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
-import { Observable } from 'rxjs/Observable';
-
 import { TTest } from './t-test';
-import { PlotService } from './plot.service';
 import { CalcService } from './calc.service';
+import { OutputPaneComponent } from './output-pane/output-pane.component'
 
 @Component({
   selector: 'app-root',
@@ -19,19 +16,12 @@ export class AppComponent {
   models: TTest[] = [
     {output: 'n', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32} as TTest
   ];
-  width: number;
-  height: number;
-  plotSource: SafeUrl;
   selectedModel: TTest;
 
-  @ViewChild('plot') plotElement: ElementRef; // for plot width/height
+  @ViewChild('outputPane') outputPane: OutputPaneComponent;
   @ViewChild('tabset') tabset: NgbTabset;
 
-  constructor(
-    private plotService: PlotService,
-    private calcService: CalcService,
-    private sanitizer: DomSanitizer
-  ) {}
+  constructor(private calcService: CalcService) {}
 
   onCalculate(): void {
     this.updateModel(this.newModel).
@@ -44,36 +34,18 @@ export class AppComponent {
       catch(err => console.error(err));
   }
 
-  onResize(): void {
-    if (this.selectedModel) {
-      this.getPlot(this.selectedModel);
-    }
-  }
-
   onTabChange(event: any): void {
     let md = event.nextId.match(/\d+/);
     if (md) {
       let index = md[0] - 1;
-      this.selectedModel = this.models[index];
       setTimeout(() => {
-        this.getPlot(this.selectedModel);
+        this.selectedModel = this.models[index];
       }, 1);
     }
   }
 
   onModelChange(model: TTest): void {
-    this.updateModel(model).
-      then(() => {
-        this.getPlot(model);
-      });
-  }
-
-  getPlot(model: TTest): void {
-    this.setDimensions();
-    this.plotService.
-      getPlot(model, this.width, this.height).
-      then(blob => this.setPlotSource(blob)).
-      catch(err => console.error(err));
+    this.updateModel(model);
   }
 
   updateModel(model: TTest): Promise<any> {
@@ -81,20 +53,5 @@ export class AppComponent {
       then(result => {
         Object.assign(model, result);
       });
-  }
-
-  private setPlotSource(blob: Blob): void {
-    if (this.plotSource) {
-      window.URL.revokeObjectURL(this.plotSource as string);
-      this.plotSource = undefined;
-    }
-    this.plotSource = this.sanitizer.
-      bypassSecurityTrustUrl(window.URL.createObjectURL(blob));
-  }
-
-  private setDimensions(): void {
-    let elt = this.plotElement.nativeElement;
-    this.width = Math.round(elt.offsetWidth * 0.90);
-    this.height = elt.offsetHeight;
   }
 }
