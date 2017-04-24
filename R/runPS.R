@@ -64,7 +64,7 @@ TTest <- setRefClass("TTest",
       layout(matrix(c(1, 2, 1, 2, 1, 2, 3, 3), 4, 2, byrow = TRUE))
 
       if (output == "n") {
-        nRange <- seq(floor(n * 0.5), ceiling(n * 1.5), 1)
+        nRange <- seq(n * 0.5, n * 1.5, 0.1)
         powerRange <- calculatePower(alpha, delta, sigma, nRange)
         deltaRange <- calculateDelta(alpha, sigma, nRange, power)
 
@@ -81,7 +81,7 @@ TTest <- setRefClass("TTest",
         plotXY("delta", deltaRange, delta, "power", powerRange, power)
 
       } else if (output == "delta") {
-        deltaRange <- seq(floor(delta * 0.5), ceiling(delta * 1.5), 0.1)
+        deltaRange <- seq(delta * 0.5, delta * 1.5, 0.1)
         nRange <- calculateN(alpha, deltaRange, sigma, power)
         powerRange <- calculatePower(alpha, deltaRange, sigma, n)
 
@@ -168,10 +168,11 @@ CalculateAction <- setRefClass("CalculateAction",
 )
 
 PsApp <- setRefClass("PsApp",
-  fields = c("allowHost", "routes"),
+  fields = c("allowHost", "allowPort", "routes"),
   methods = list(
-    initialize = function(allowHost) {
+    initialize = function(allowHost, allowPort = 4200) {
       allowHost <<- allowHost
+      allowPort <<- allowPort
       routes <<- list(
         "/plot" = list(action = PlotAction, type = "png"),
         "/calc" = list(action = CalculateAction, type = "json")
@@ -278,7 +279,7 @@ PsApp <- setRefClass("PsApp",
         body = toJSON(list(errors = errors)),
         headers = list(
           'Content-Type' = 'application/json',
-          "Access-Control-Allow-Origin" = paste0("http://", allowHost, ":4200"),
+          "Access-Control-Allow-Origin" = paste0("http://", allowHost, ":", allowPort),
           "Access-Control-Allow-Headers" = "Content-Type"
         )
       ))
@@ -289,7 +290,7 @@ PsApp <- setRefClass("PsApp",
         status = 200L,
         body = "",
         headers = list(
-          "Access-Control-Allow-Origin" = paste0("http://", allowHost, ":4200"),
+          "Access-Control-Allow-Origin" = paste0("http://", allowHost, ":", allowPort),
           "Access-Control-Allow-Headers" = "Content-Type"
         )
       )
@@ -338,7 +339,7 @@ PsApp <- setRefClass("PsApp",
       print(result)
 
       headers <- list(
-        "Access-Control-Allow-Origin" = paste0("http://", allowHost, ":4200"),
+        "Access-Control-Allow-Origin" = paste0("http://", allowHost, ":", allowPort),
         "Access-Control-Allow-Headers" = "Content-Type"
       )
       if (route$type == "png") {
@@ -352,8 +353,8 @@ PsApp <- setRefClass("PsApp",
   )
 )
 
-runPS <- function(host = "127.0.0.1", port = 7788) {
+runPS <- function(host = "127.0.0.1", port = 7788, sourcePort = 4200) {
   allowHost <- if (host == "127.0.0.1") "localhost" else host
-  app <- PsApp(allowHost = allowHost)
+  app <- PsApp(allowHost = allowHost, allowPort = sourcePort)
   runServer(host, port, app)
 }
