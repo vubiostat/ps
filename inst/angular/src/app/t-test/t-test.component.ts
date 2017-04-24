@@ -21,9 +21,9 @@ export class TTestComponent implements OnInit {
   prev: TTest;
 
   ngOnInit(): void {
-    this.min = Object.assign({}, this.model);
-    this.max = Object.assign({}, this.model);
-    this.prev = Object.assign({}, this.model);
+    this.min = new TTest(this.model);
+    this.max = new TTest(this.model);
+    this.prev = new TTest(this.model);
 
     this.min.alpha = 0;
     this.max.alpha = 1;

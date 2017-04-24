@@ -44,8 +44,7 @@
     </div>
     <div class="col-sm-3">
       <div class="number">
-        <input name="sigma" type="number" step="0.1"
-               min="{{min.sigma}}" max="{{max.sigma}}"
+        <input name="sigma" type="number" step="0.1" min="1"
                [(ngModel)]="model.sigma" (change)="inputChanged($event)" />
       </div>
     </div>
@@ -95,8 +94,7 @@
     </div>
     <div class="col-sm-3">
       <div class="number">
-        <input name="delta" type="number" step="0.1"
-               min="{{min.delta}}" max="{{max.delta}}"
+        <input name="delta" type="number" step="0.1" min="1"
                [disabled]="model.output == 'delta'"
                [(ngModel)]="model.delta" (change)="inputChanged($event)" />
       </div>
@@ -121,8 +119,7 @@
     </div>
     <div class="col-sm-3">
       <div class="number">
-        <input name="n" type="number" step="1"
-               min="{{min.n}}" max="{{max.n}}"
+        <input name="n" type="number" step="1" min="1"
                [disabled]="model.output == 'n'"
                [(ngModel)]="model.n" (change)="inputChanged($event)" />
       </div>

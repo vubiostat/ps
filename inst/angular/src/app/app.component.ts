@@ -14,7 +14,7 @@ export class AppComponent {
   title = 'PS: Power and Sample Size Calculation';
   newModel = new TTest();
   models: TTest[] = [
-    {output: 'n', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32} as TTest
+    new TTest({output: 'n', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32})
   ];
   selectedModel: TTest;
 
@@ -26,7 +26,8 @@ export class AppComponent {
   onCalculate(): void {
     this.updateModel(this.newModel).
       then(() => {
-        this.models.push(Object.assign({}, this.newModel));
+        let model = new TTest(this.newModel);
+        this.models.push(model);
         setTimeout(() => {
           this.tabset.select(`test-${this.models.length}`);
         }, 100);
@@ -49,6 +50,10 @@ export class AppComponent {
   }
 
   updateModel(model: TTest): Promise<any> {
+    if (!model.isValid()) {
+      return;
+    }
+
     return this.calcService.calculate(model).
       then(result => {
         Object.assign(model, result);

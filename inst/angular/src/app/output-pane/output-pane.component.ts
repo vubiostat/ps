@@ -41,7 +41,7 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
     }
 
     if (!this.prevModel) {
-      this.prevModel = Object.assign({}, this.model);
+      this.prevModel = new TTest(this.model);
       return;
     }
 
@@ -63,7 +63,7 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
   }
 
   drawPlot(): void {
-    if (this.model) {
+    if (this.model && this.model.isValid()) {
       this.setDimensions();
       this.plotService.
         getPlot(this.model, this.width, this.height).
