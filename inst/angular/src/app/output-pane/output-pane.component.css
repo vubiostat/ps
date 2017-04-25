@@ -1,5 +1,24 @@
 .plot {
   height: 80%;
+  position: relative;
+}
+.plot .fa-cog {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: x-large;
+}
+.plot .plot-options {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 75px;
+  width: 200px;
+  background-color: white;
+  border: 2px solid #aaa;
+  border-radius: 5px;
+  padding: 5px;
 }
 .output-text {
   height: 20%;

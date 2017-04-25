@@ -18,8 +18,7 @@ export class CalcService {
   constructor(private http: Http) { }
 
   calculate(model: TTest): Promise<number> {
-    let params: any = Object.assign({}, model);
-
+    let params = { model: model };
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 

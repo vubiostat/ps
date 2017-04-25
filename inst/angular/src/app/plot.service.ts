@@ -10,6 +10,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { environment } from '../environments/environment';
 import { TTest } from './t-test';
+import { GlobalPlotOptions } from './plot-options';
 
 @Injectable()
 export class PlotService {
@@ -17,10 +18,11 @@ export class PlotService {
 
   constructor(private http: Http) { }
 
-  getPlot(model: TTest, width: number, height: number): Promise<Blob> {
-    let params: any = Object.assign({}, model);
-    params.width = width;
-    params.height = height;
+  getPlot(model: TTest, globalPlotOptions: GlobalPlotOptions): Promise<Blob> {
+    let params = {
+      model: model,
+      plotOptions: globalPlotOptions
+    };
 
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');

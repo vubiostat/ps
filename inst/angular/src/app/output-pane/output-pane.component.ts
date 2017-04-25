@@ -10,6 +10,7 @@ import {
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 import { TTest } from '../t-test';
+import { GlobalPlotOptions } from '../plot-options';
 import { PlotService } from '../plot.service';
 
 @Component({
@@ -20,16 +21,22 @@ import { PlotService } from '../plot.service';
 export class OutputPaneComponent implements OnChanges, DoCheck {
   @Input() model: TTest;
   prevModel: TTest;
-  width: number;
-  height: number;
-  plotSource: SafeUrl;
+
+  globalPlotOptions = new GlobalPlotOptions();
+  prevGlobalPlotOptions: GlobalPlotOptions;
+  showPlotOptions = false;
 
   @ViewChild('plot') plotElement: ElementRef; // for plot width/height
+  plotSource: SafeUrl;
 
   constructor(
     private plotService: PlotService,
     private sanitizer: DomSanitizer
   ) {}
+
+  togglePlotOptions(): void {
+    this.showPlotOptions = !this.showPlotOptions;
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.drawPlot();
@@ -40,16 +47,27 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
       return;
     }
 
+    let changeDetected = false;
     if (!this.prevModel) {
       this.prevModel = new TTest(this.model);
-      return;
+    } else {
+      for (let key in this.model) {
+        if (this.prevModel[key] !== this.model[key]) {
+          this.prevModel[key] = this.model[key];
+          changeDetected = true;
+        }
+      }
     }
 
-    let changeDetected = false;
-    for (let key in this.model) {
-      if (this.prevModel[key] !== this.model[key]) {
-        this.prevModel[key] = this.model[key];
-        changeDetected = true;
+    if (!this.prevGlobalPlotOptions) {
+      this.prevGlobalPlotOptions = new GlobalPlotOptions();
+      Object.assign(this.prevGlobalPlotOptions, this.globalPlotOptions);
+    } else {
+      for (let key in this.globalPlotOptions) {
+        if (this.prevGlobalPlotOptions[key] !== this.globalPlotOptions[key]) {
+          this.prevGlobalPlotOptions[key] = this.globalPlotOptions[key];
+          changeDetected = true;
+        }
       }
     }
 
@@ -66,7 +84,7 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
     if (this.model && this.model.isValid()) {
       this.setDimensions();
       this.plotService.
-        getPlot(this.model, this.width, this.height).
+        getPlot(this.model, this.globalPlotOptions).
         then(blob => this.setPlotSource(blob)).
         catch(err => console.error(err));
     }
@@ -83,7 +101,7 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
 
   private setDimensions(): void {
     let elt = this.plotElement.nativeElement;
-    this.width = Math.round(elt.offsetWidth * 0.90);
-    this.height = elt.offsetHeight;
+    this.globalPlotOptions.width = Math.round(elt.offsetWidth * 0.90);
+    this.globalPlotOptions.height = elt.offsetHeight;
   }
 }
