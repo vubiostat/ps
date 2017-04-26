@@ -1,0 +1,109 @@
+<div class="header">
+  t-test Overview
+  <button type="button" class="close fa fa-times-circle" (click)="close()"></button>
+</div>
+<div class="content">
+  <p>
+    Continuous Response Measures in Two Groups -- Paired and independent t-tests:
+    The approach of <a href="#ref3">Dupont and Plummer (1990)</a> is used for
+    paired and independent samples.  The ratio of number of patients in the
+    samples being compared may be specified by the user.  This method produces
+    results that are in close agreement with those of
+    <a href="#ref6">Pearson and Hartley (1970)</a>.
+  </p>
+
+  <p>
+    Each null hypothesis is tested with respect to a two-sided alternative
+    hypothesis.
+  </p>
+
+  <h4>Output</h4>
+
+  <h5>Sample size</h5>
+  <p>
+    For independent t-tests this is the number of experimental patients
+    that must be studied to detect a true difference in population means
+    &delta; with Type I error probability &alpha; given a standard
+    deviation &sigma; and <i>m</i> controls per experimental patient.  For
+    paired t-tests it is the number of pairs of patients needed to detect a
+    true difference in population means &delta; with Type I error
+    probability &alpha; given a standard deviation &sigma;.
+  </p>
+
+  <h5>Power</h5>
+  <p>
+    For independent studies it is the probability of rejecting the null
+    hypothesis with Type I error probability &alpha; given the specified
+    sample size, a standard deviation &sigma; and a control/experimental
+    patient ratio <i>m</i> when the true difference in population means is
+    &delta;.  For paired studies it is the probability of rejecting the
+    null hypothesis with Type I error probability &alpha; given the
+    specified sample size, a standard deviation &sigma; when the true
+    difference in population means is &delta;.
+  </p>
+
+  <h5>Detectable alternative</h5>
+  <p>
+    A difference in population means that can be detected with the
+    specified power and Type I error probability &alpha; given a standard
+    deviation &sigma;, and the specified sample size.
+  </p>
+
+  <h4>Input</h4>
+
+  <h5>Type I error (&alpha;)</h5>
+  <p>
+    The Type I error probability for a two sided test.  This is the probability
+    that we will falsely reject the null hypothesis.
+  </p>
+
+  <h5>Sample size (<em>n</em>)</h5>
+  <p>
+    For independent t-tests <em>n</em> is the number of experimental subjects.  For
+    pair test <em>n</em> is the number of pairs.
+  </p>
+
+  <h5>Power</h5>
+  <p>
+    For independent tests <i>power</i> is probability of correctly rejecting the
+    null hypothesis of equal population means given <i>n</i> experimental
+    patients, <i>m</i> control patients per experimental patient,  a Type I error
+    probability &alpha; and a true difference in population means of &delta;.
+    For paired tests it is the probability of correctly rejecting the null
+    hypothesis of equal population means given <i>n</i> pairs of patients, a Type
+    I error probability &alpha; and a true difference in population means of
+    &delta;.
+  </p>
+
+  <h5>Difference in population means (&delta;)</h5>
+
+  <h5>Standard deviation (&sigma;)</h5>
+  <p>
+    For independent tests &sigma; is the within group standard deviation.  For
+    paired designs it is the standard deviation of difference in the response of
+    matched pairs.
+  </p>
+
+  <h5>Ratio (<i>m</i>)</h5>
+  <p>
+    For independent tests <i>m</i> is the ratio of control to experimental
+    patients.  <i>m</i> is not defined for paired studies.
+  </p>
+
+  <h4>References</h4>
+  <ol>
+    <li><a name="ref1"></a>Casagrande JT, Pike MC, Smith PG:  "An Improved Approximate Formula for Calculating Sample Sizes for Comparing Two Binomial Distributions", Biometrics, 1978; 34:483-486.</li>
+    <li><a name="ref2"></a>Dupont, WD: "Power Calculations for Matched Case-Control Studies", Biometrics, 1988; 44:1157-1168.</li>
+    <li><a name="ref3"></a>Dupont WD, Plummer WD: "Power and Sample Size Calculations: A Review and Computer Program", Controlled Clinical Trials 1990; 11:116-28.</li>
+    <li><a name="ref4"></a>Dupont WD, Plummer WD:  "Power and Sample Size Calculations for Studies Involving Linear Regression", Controlled Clinical Trials 1998; 19:589-601.</li>
+    <li><a name="ref5"></a>Fleiss JL:  "Statistical Methods for Rates and Proportions" 2nd Ed. NewYork: John Wiley, 1981:38-46.</li>
+    <li><a name="ref6"></a>Pearson ES and Hartley HO: "Biometrika Tables for Statisticians Vol I", 3rd Ed., Cambridge:  Cambridge U. Press, 1970.</li>
+    <li><a name="ref7"></a>Schlesselman:  Case-control Studies: Design, Conduct, Analysis. New York: Oxford U. Press; 1982:144-152.</li>
+    <li><a name="ref8"></a>Schoenfeld DA, Richter JR: "Nomograms for Calculating the Number of Patients Needed for a Clinical Trial With Survival as an Endpoint" Biometrics 1982; 38:163-170.</li>
+    <li><a name="ref9"></a>Wittes J, Wallenstein S:  "The Power of the Mantel-Haenszel Test" J Am Stat Assoc, 1987; 82:1104-1109.</li>
+    <li><a name="ref10"></a>Visual Components Sybase Inc.  First Impression Active X User's Guide: High Performance Software for Charting Data for Microsoft Visual Basic, Visual C++, and Other Languages. Version 5.0.  Overland Park, KS: Visual Components Sybase Inc.</li>
+    <li><a name="ref11"></a>Mantel, N., &amp; Haenszel, W. (1959) Statistical aspects of the analysis of data from retrospective studies of disease. Journal of the National Cancer Institute, 22, 719-748.</li>
+    <li><a name="ref12"></a>Dupont, WD (2008). Statistical Modeling for Biomedical Researchers, 2nd Edition. Cambridge, U.K.: Cambridge University Press.</li>
+    <li><a name="ref13"></a>Dupont WD and Plummer WD: PS power and sample size program available for free on the Internet.  Controlled Clin Trials,1997;18:274</li>
+  </ol>
+</div>

@@ -10,6 +10,7 @@ import { CalcService } from './calc.service';
 import { StartComponent } from './start/start.component';
 import { TTestComponent } from './t-test/t-test.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
+import { HelpComponent } from './help/help.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { OutputPaneComponent } from './output-pane/output-pane.component';
     StartComponent,
     TTestComponent,
     OutputPaneComponent,
+    HelpComponent,
   ],
   imports: [
     BrowserModule,

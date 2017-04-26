@@ -17,11 +17,20 @@ export class AppComponent {
     new TTest({output: 'n', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32})
   ];
   selectedModel: TTest;
+  helpOpen = false;
 
   @ViewChild('outputPane') outputPane: OutputPaneComponent;
   @ViewChild('tabset') tabset: NgbTabset;
 
   constructor(private calcService: CalcService) {}
+
+  onOpenHelp(): void {
+    this.helpOpen = true;
+  }
+
+  onCloseHelp(): void {
+    this.helpOpen = false;
+  }
 
   onCalculate(): void {
     this.updateModel(this.newModel).

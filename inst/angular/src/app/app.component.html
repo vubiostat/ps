@@ -15,7 +15,10 @@
         <ngb-tabset #tabset (tabChange)="onTabChange($event)">
           <ngb-tab title="Start" id="start">
             <template ngbTabContent>
-              <app-start [model]="newModel" (onCalculate)="onCalculate()"></app-start>
+              <app-start [model]="newModel"
+                (onCalculate)="onCalculate()"
+                (onOpenHelp)="onOpenHelp()">
+              </app-start>
             </template>
           </ngb-tab>
           <ngb-tab *ngFor="let model of models; let i = index"
@@ -27,7 +30,8 @@
         </ngb-tabset>
       </div>
     </div>
-    <div class="col-sm-8">
+    <div id="right-panel" class="col-sm-8">
+      <app-help *ngIf="helpOpen" (onClose)="onCloseHelp()"></app-help>
       <app-output-pane [model]="selectedModel"></app-output-pane>
     </div>
   </div>

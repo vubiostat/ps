@@ -1,0 +1,31 @@
+:host {
+  position: absolute;
+  left: 10px;
+  top: 0;
+  width: 40%;
+  z-index: 100;
+  background: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 3px 3px 2px #aaa;
+}
+
+.header {
+  font-size: larger;
+  font-weight: bold;
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px 5px 0 0;
+}
+.close {
+  float: right;
+  margin: 5px;
+}
+
+.content {
+  overflow: auto;
+  height: 50vh;
+  padding: 10px;
+  margin: 5px;
+}

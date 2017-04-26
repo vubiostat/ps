@@ -1,62 +1,15 @@
 <div class="overview">
-  Overview
-  <i class="fa fa-info-circle" aria-hidden="true"
-    [ngbPopover]="overviewHelp" popoverTitle="t-test Overview"
-    placement="bottom" container="body" triggers="hover"></i>
+  <button type="button" class="btn btn-secondary" (click)="openHelp()">
+    Overview <i class="fa fa-question-circle"></i>
+  </button>
 </div>
-<ng-template #overviewHelp>
-  <p>
-    Continuous Response Measures in Two Groups -- Paired and independent
-    t-tests: The approach of Dupont and Plummer (1990) is used for paired and
-    independent samples.  The ratio of number of patients in the samples being
-    compared may be specified by the user.  This method produces results that
-    are in close agreement with those of Pearson and Hartley (1970).
-  </p>
-  <p>
-    Each null hypothesis is tested with respect to a two-sided alternative
-    hypothesis.
-  </p>
-</ng-template>
 <form (ngSubmit)="onSubmit()" #startForm="ngForm">
   <div class="form-group">
     <label for="output">
       What do you want to know?
-      <i class="fa fa-info-circle" aria-hidden="true"
-        [ngbPopover]="outputHelp" popoverTitle="t-test Output"
-        placement="bottom" triggers="hover">
-      </i>
+      <button type="button" class="btn btn-secondary fa fa-question-circle"
+        (click)="openHelp()"></button>
     </label>
-    <ng-template #outputHelp>
-      <h5>Sample size</h5>
-      <p>
-        For independent t-tests this is the number of experimental patients
-        that must be studied to detect a true difference in population means
-        &delta; with Type I error probability &alpha; given a standard
-        deviation &sigma; and <I>m</I> controls per experimental patient.  For
-        paired t-tests it is the number of pairs of patients needed to detect a
-        true difference in population means &delta; with Type I error
-        probability &alpha; given a standard deviation &sigma;.
-      </p>
-
-      <h5>Power</h5>
-      <p>
-        For independent studies it is the probability of rejecting the null
-        hypothesis with Type I error probability &alpha; given the specified
-        sample size, a standard deviation &sigma; and a control/experimental
-        patient ratio <I>m</I> when the true difference in population means is
-        &delta;.  For paired studies it is the probability of rejecting the
-        null hypothesis with Type I error probability &alpha; given the
-        specified sample size, a standard deviation &sigma; when the true
-        difference in population means is &delta;.
-      </p>
-
-      <h5>Detectable alternative</h5>
-      <p>
-        A difference in population means that can be detected with the
-        specified power and Type I error probability &alpha; given a standard
-        deviation &sigma;, and the specified sample size.
-      </p>
-    </ng-template>
     <select class="form-control" id="output"
             required
             [(ngModel)]="model.output" name="output">
