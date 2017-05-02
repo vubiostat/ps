@@ -1,5 +1,5 @@
 <div class="overview">
-  <button type="button" class="btn btn-secondary" (click)="openHelp()">
+  <button type="button" class="btn btn-secondary" (click)="toggleHelp()">
     Overview <i class="fa fa-question-circle"></i>
   </button>
 </div>
@@ -8,7 +8,7 @@
     <label for="output">
       What do you want to know?
       <button type="button" class="btn btn-secondary fa fa-question-circle"
-        (click)="openHelp()"></button>
+        (click)="toggleHelp()"></button>
     </label>
     <select class="form-control" id="output"
             required

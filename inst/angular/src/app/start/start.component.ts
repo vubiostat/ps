@@ -10,12 +10,12 @@ import { TTest } from '../t-test';
 export class StartComponent {
   @Input() model: TTest;
   @Output() onCalculate = new EventEmitter();
-  @Output() onOpenHelp = new EventEmitter();
+  @Output() onToggleHelp = new EventEmitter();
 
   constructor() {}
 
-  openHelp(): void {
-    this.onOpenHelp.emit();
+  toggleHelp(): void {
+    this.onToggleHelp.emit();
   }
 
   onSubmit(): void {

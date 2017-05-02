@@ -24,8 +24,8 @@ export class AppComponent {
 
   constructor(private calcService: CalcService) {}
 
-  onOpenHelp(): void {
-    this.helpOpen = true;
+  onToggleHelp(): void {
+    this.helpOpen = !this.helpOpen;
   }
 
   onCloseHelp(): void {
