@@ -1,0 +1,403 @@
+require(jsonlite)
+require(openssl)
+
+validateModelParams <- function(params) {
+  errors <- list()
+
+  modelParams <- NULL
+  if (!("model" %in% names(params))) {
+    errors$model <- "is required"
+    modelParams <- list()
+  } else if (!is.list(params$model)) {
+    errors$model <- "must be a list"
+    modelParams <- list()
+  } else {
+    modelParams <- params$model
+  }
+
+  keys <- names(modelParams)
+  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "output", "design")
+  extraKeys <- setdiff(keys, expectedKeys)
+
+  if (length(extraKeys) > 0) {
+    msg <- paste("had unexpected keys:", paste(extraKeys, collapse=", "))
+    errors$model <- if (is.character(errors$model)) c(errors$model, msg) else msg
+  }
+
+  if (!("alpha" %in% keys)) {
+    errors$model.alpha <- "is required"
+  } else if (!is.numeric(modelParams$alpha)) {
+    errors$model.alpha <- "must be numeric"
+  } else if (modelParams$alpha < 0 || modelParams$alpha > 1) {
+    errors$model.alpha <- "must be within the range 0..1"
+  }
+
+  if (!("sigma" %in% keys)) {
+    errors$model.sigma <- "is required"
+  } else if (!is.numeric(modelParams$sigma)) {
+    errors$model.sigma <- "must be numeric"
+  } else if (modelParams$sigma <= 0) {
+    errors$model.sigma <- "must be greater than 0"
+  }
+
+  if ("n" %in% keys) {
+    if (!is.numeric(modelParams$n)) {
+      errors$model.n <- "must be numeric"
+    } else if (modelParams$n <= 0) {
+      errors$model.n <- "must be greater than 0"
+    }
+  }
+
+  if ("power" %in% keys) {
+    if (!is.numeric(modelParams$power)) {
+      errors$model.power <- "must be numeric"
+    } else if (modelParams$power < 0 || modelParams$power > 1) {
+      errors$model.power <- "must be within the range 0..1"
+    }
+  }
+
+  if ("delta" %in% keys) {
+    if (!is.numeric(modelParams$delta)) {
+      errors$model.delta <- "must be numeric"
+    } else if (modelParams$delta <= 0) {
+      errors$model.delta <- "must be greater than 0"
+    }
+  }
+
+  if (!("output" %in% keys)) {
+    errors$model.output <- "is required"
+  } else if (modelParams$output == "n") {
+    if (!("power" %in% keys)) {
+      errors$model.power <- "is required when output is 'n'"
+    }
+    if (!("delta" %in% keys)) {
+      errors$model.delta <- "is required when output is 'n'"
+    }
+  } else if (modelParams$output == "power") {
+    if (!("n" %in% keys)) {
+      errors$model.n <- "is required when output is 'power'"
+    }
+    if (!("delta" %in% keys)) {
+      errors$model.delta <- "is required when output is 'power'"
+    }
+  } else if (modelParams$output == "delta") {
+    if (!("n" %in% keys)) {
+      errors$model.n <- "is required when output is 'delta'"
+    }
+    if (!("power" %in% keys)) {
+      errors$model.power <- "is required when output is 'delta'"
+    }
+  }
+
+  errors
+}
+
+TTestRepository <- setRefClass("TTestRepository",
+  fields = c("ttests"),
+  methods = list(
+    initialize = function() {
+      ttests <<- list()
+    },
+    find = function(id) {
+      ttests[[id]]
+    },
+    create = function(model) {
+      ok <- FALSE
+      while (!ok) {
+        id <- paste(as.character(rand_bytes(10)), collapse="")
+        ok <- is.null(ttests[[id]])
+      }
+      ttests[[id]] <<- model
+      id
+    },
+    update = function(id, model) {
+      if (!(id %in% names(ttests))) {
+        return(FALSE)
+      }
+      ttests[[id]] <<- model
+      TRUE
+    },
+    delete = function(id) {
+      if (!(id %in% names(ttests))) {
+        return(FALSE)
+      }
+      ttests[[id]] <<- NULL
+      TRUE
+    }
+  )
+)
+
+TTestCreateAction <- setRefClass("TTestCreateAction",
+  fields = c("repo"),
+  methods = list(
+    initialize = function(repo) {
+      repo <<- repo
+    },
+
+    validate = function(params) {
+      validateModelParams(params)
+    },
+
+    run = function(params) {
+      errors <- validate(params)
+      if (length(errors) > 0) {
+        return(list(errors = errors))
+      }
+
+      model <- TTest(params$model)
+      id <- repo$create(model)
+      model$id <- id
+      list(model = model$attributes())
+    }
+  )
+)
+
+TTestUpdateAction <- setRefClass("TTestUpdateAction",
+  fields = c("repo"),
+  methods = list(
+    initialize = function(repo) {
+      repo <<- repo
+    },
+
+    validate = function(params) {
+      errors <- validateModelParams(params)
+
+      if (!("modelId" %in% names(params))) {
+        errors$modelId <- "is required"
+      } else if (!is.character(params$modelId)) {
+        errors$modelId <- "must be a string"
+      }
+
+      errors
+    },
+
+    run = function(params) {
+      errors <- validate(params)
+      if (length(errors) > 0) {
+        return(list(errors = errors))
+      }
+
+      model <- repo$find(params$modelId)
+      if (is.null(model)) {
+        print(params)
+        return(list(errors = list(modelId = "is invalid")))
+      }
+
+      for (key in names(params$model)) {
+        model[[key]] <- params$model[[key]]
+      }
+      model$update()
+      list(model = model$attributes())
+    }
+  )
+)
+
+TTestPlotAction <- setRefClass("TTestPlotAction",
+  fields = c("repo"),
+  methods = list(
+    initialize = function(repo) {
+      repo <<- repo
+    },
+
+    validate = function(params) {
+      errors <- c()
+      expectedKeys <- c("modelId", "plotOptions")
+      keys <- names(params)
+      extra <- setdiff(keys, expectedKeys)
+
+      if (length(extra) > 0) {
+        errors$base < paste0("invalid keys: ", paste(extra, collapse=", "))
+      }
+
+      if (!("modelId" %in% keys)) {
+        errors$modelId <- "is required"
+      } else if (!is.character(params$modelId)) {
+        errors$modelId <- "must be a string"
+      }
+
+      if (!("plotOptions" %in% keys)) {
+        errors$plotOptions <- "is required"
+        plotParams <- list()
+      } else if (!is.list(params$plotOptions)) {
+        errors$plotOptions <- "must be a list"
+        plotParams <- list()
+      } else {
+        plotParams <- params$plotOptions
+      }
+
+      plotKeys <- names(plotParams)
+      if (!("width" %in% plotKeys)) {
+        errors$plotOptions.width <- "is required"
+      } else if (!is.numeric(plotParams$width)) {
+        errors$plotOptions.width <- "must be a number"
+      } else if (plotParams$width <= 0) {
+        errors$plotOptions.width <- "is too small"
+      }
+
+      if (!("height" %in% plotKeys)) {
+        errors$plotOptions.height <- "is required"
+      } else if (!is.numeric(plotParams$height)) {
+        errors$plotOptions.height <- "must be a number"
+      } else if (plotParams$height <= 0) {
+        errors$plotOptions.height <- "is too small"
+      }
+
+      if ("fontFamily" %in% plotKeys) {
+        if (!(plotParams$fontFamily %in% c("", "serif", "sans", "mono"))) {
+          errors$plotOptions.fontFamily <- "is not valid"
+        }
+      }
+
+      if ("fontSize" %in% plotKeys) {
+        if (!is.numeric(plotParams$fontSize)) {
+          errors$plotOptions.fontSize <- "must be numeric"
+        } else if (plotParams$fontSize < 0.1 || plotParams$fontSize > 5) {
+          errors$plotOptions.fontSize <- "is out of range"
+        }
+      }
+
+      if ("lineWidth" %in% plotKeys) {
+        if (!is.numeric(plotParams$lineWidth)) {
+          errors$plotOptions.lineWidth <- "must be numeric"
+        } else if (plotParams$lineWidth < 0.1 || plotParams$lineWidth > 5) {
+          errors$plotOptions.lineWidth <- "is out of range"
+        }
+      }
+
+      errors
+    },
+
+    run = function(params) {
+      errors <- validate(params)
+      if (length(errors) > 0) {
+        return(list(errors = errors))
+      }
+
+      model <- repo$find(params$modelId)
+      if (is.null(model)) {
+        return(list(errors = list(modelId = "is invalid")))
+      }
+
+      plotOptions <- params$plotOptions
+      fn <- tempfile("ps-plot", fileext=".png")
+      png(filename = fn, width = plotOptions$width, height = plotOptions$height)
+      tryCatch({
+        model$plotModel(plotOptions)
+      }, error = function(e) print(e), finally = dev.off())
+      c(file = fn)
+    }
+  )
+)
+
+TTestHandler <- setRefClass("TTestHandler",
+  fields = c("app", "repo", "createAction", "plotAction", "updateAction", "routes"),
+  methods = list(
+    initialize = function(app) {
+      app <<- app
+      repo <<- TTestRepository()
+      createAction <<- TTestCreateAction(repo)
+      plotAction   <<- TTestPlotAction(repo)
+      updateAction <<- TTestUpdateAction(repo)
+      routes <<- list(
+        list(
+          pattern = "^/ttests$",
+          method = "POST",
+          action = createAction,
+          type = "json"
+        ),
+        list(
+          pattern = "^/ttests/(?<modelId>[a-fA-F0-9]+)$",
+          method = "PUT",
+          action = updateAction,
+          type = "json"
+        ),
+        list(
+          pattern = "^/ttests/(?<modelId>[a-fA-F0-9]+)/plot$",
+          method = "POST",
+          action = plotAction,
+          type = "png"
+        )
+      )
+    },
+
+
+    fail = function(errors, status = 400L) {
+      return(list(
+        status = status,
+        body = toJSON(errors),
+        headers = list('Content-Type' = 'application/json')
+      ))
+    },
+
+    call = function(req) {
+      if (req$CONTENT_TYPE != "application/json") {
+        return(fail(list(errors = list(base = "invalid mime type"))))
+      }
+
+      # find matching route
+      route <- NULL
+      path <- req$PATH_INFO
+      pathParams <- list()
+      for (candidate in routes) {
+        if (req$REQUEST_METHOD != candidate$method) {
+          next
+        }
+        md <- regexpr(candidate$pattern, path, perl = TRUE)
+        if (md[1] >= 0) {
+          route <- candidate
+
+          # extract params from path if specified
+          captureNames <- attr(md, "capture.names")
+          if (is.null(captureNames)) {
+            captureNames <- c()
+          }
+          for (captureName in captureNames) {
+            cStart <- attr(md, "capture.start")[, captureName]
+            cStop  <- cStart + attr(md, "capture.length")[, captureName] - 1
+            captureValue <- substr(path, cStart, cStop)
+            pathParams[[captureName]] <- captureValue
+          }
+          break
+        }
+      }
+
+      if (is.null(route)) {
+        # didn't match route, call next app
+        return(app$call(req))
+      }
+
+      # parse params from JSON
+      params <- try({
+        fromJSON(rawToChar(req$rook.input$read()))
+      }, silent = TRUE)
+      if (inherits(params, "try-error")) {
+        return(fail(list(errors = list(base = "invalid JSON"))))
+      }
+
+      # add path params
+      for (paramName in names(pathParams)) {
+        params[[paramName]] <- pathParams[[paramName]]
+      }
+
+      action <- route$action
+      result <- try(action$run(params))
+      if (inherits(result, "try-error")) {
+        print(result)
+        return(fail(list(errors = list(base = as.character(result)))))
+      }
+      if ("errors" %in% names(result)) {
+        print(result)
+        return(fail(result))
+      }
+
+      headers <- list()
+      if (route$type == "png") {
+        headers[["Content-Type"]] <- "image/png"
+      } else if (route$type == "json") {
+        headers[["Content-Type"]] <- "application/json"
+        result <- toJSON(result)
+      }
+      list(status = 200L, body = result, headers = headers)
+    }
+  )
+)

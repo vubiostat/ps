@@ -11,7 +11,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 import { TTest } from '../t-test';
 import { GlobalPlotOptions } from '../plot-options';
-import { PlotService } from '../plot.service';
+import { TTestService } from '../t-test.service';
 
 @Component({
   selector: 'app-output-pane',
@@ -30,7 +30,7 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
   plotSource: SafeUrl;
 
   constructor(
-    private plotService: PlotService,
+    private ttestService: TTestService,
     private sanitizer: DomSanitizer
   ) {}
 
@@ -83,7 +83,7 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
   drawPlot(): void {
     if (this.model && this.model.isValid()) {
       this.setDimensions();
-      this.plotService.
+      this.ttestService.
         getPlot(this.model, this.globalPlotOptions).
         then(blob => this.setPlotSource(blob)).
         catch(err => console.error(err));

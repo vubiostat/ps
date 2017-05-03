@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 
 import { TTest } from '../t-test';
+import { TTestService } from '../t-test.service';
 
 @Component({
   selector: 'app-t-test',
@@ -15,10 +16,11 @@ import { TTest } from '../t-test';
 })
 export class TTestComponent implements OnInit {
   @Input() model: TTest;
-  @Output() onChange = new EventEmitter();
   min: TTest;
   max: TTest;
   prev: TTest;
+
+  constructor(private ttestService: TTestService) { }
 
   ngOnInit(): void {
     this.min = new TTest(this.model);
@@ -50,8 +52,11 @@ export class TTestComponent implements OnInit {
       } else if (value > this.max[key]) {
         this.max[key] = value;
       }
+      setTimeout(() => {
+        event.target.value = value;
+      }, 1);
     }
-    this.onChange.emit();
+    this.updateModel();
   }
 
   private getMin(n: number): number {
@@ -60,5 +65,12 @@ export class TTestComponent implements OnInit {
 
   private getMax(n: number): number {
     return Math.round(n + (n * 0.5));
+  }
+
+  private updateModel(): void {
+    this.ttestService.update(this.model).
+      then(result => {
+        Object.assign(this.model, result.model);
+      });
   }
 }

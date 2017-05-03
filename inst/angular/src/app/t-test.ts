@@ -1,4 +1,5 @@
 export class TTest {
+  id: string;
   output: string;
   design = "paired";
   alpha: number;
@@ -9,6 +10,7 @@ export class TTest {
 
   constructor(attribs?: any) {
     if (attribs) {
+      this.id = attribs.id;
       this.output = attribs.output;
       this.design = attribs.design;
       this.alpha = attribs.alpha;
