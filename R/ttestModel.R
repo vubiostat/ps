@@ -112,7 +112,7 @@ TTest <- setRefClass("TTest",
       moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
       p.space <- guessDeltaRange()
 
-      plot(p.space, p.space, type="n", ylab=" ", xlab="Parameter Space", ylim=c(0,1), yaxt="n")
+      plot(p.space, p.space, type="n", ylab=" ", xlab="Parameter Space", ylim=c(0,1), yaxt="n", bty="n")
       title(main="Precision vs. Effect size", line=1)
       abline(h=0.5, lty=2, lwd=par("lwd")/4, col="black")
 
