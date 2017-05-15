@@ -1,0 +1,51 @@
+.plot-options {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  width: 90%;
+  z-index: 100;
+  background-color: white;
+  border: 2px solid #aaa;
+  border-radius: 5px;
+  box-shadow: 3px 3px 2px #aaa;
+}
+
+.plot-options .header {
+  font-size: larger;
+  font-weight: bold;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px 5px 0 0;
+}
+
+.plot-options .close {
+  float: right;
+  margin: 5px;
+}
+
+.plot-options .content {
+  overflow: auto;
+  height: 50vh;
+  padding: 10px;
+  margin: 5px;
+}
+
+.plot-options fieldset {
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.plot-options fieldset legend {
+  font-size: inherit;
+  font-weight: bold;
+  display: table;
+  width: auto;
+}
+
+.plot-options .form-group {
+  padding: 0 5px;
+}

@@ -10,6 +10,7 @@ import { StartComponent } from './start/start.component';
 import { TTestComponent } from './t-test/t-test.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 import { HelpComponent } from './help/help.component';
+import { PlotOptionsComponent } from './plot-options/plot-options.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { HelpComponent } from './help/help.component';
     TTestComponent,
     OutputPaneComponent,
     HelpComponent,
+    PlotOptionsComponent,
   ],
   imports: [
     BrowserModule,
