@@ -27,10 +27,20 @@
   border-radius: 4px;
   padding: 10px;
   margin: 10px;
+  position: relative;
 }
 
 #plot {
   min-height: 100%;
+}
+
+#plot-options-button {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: x-large;
+  z-index: 100;
 }
 
 :host /deep/ .tab-pane {

@@ -12,27 +12,38 @@
   <div id="main" class="row">
     <div class="col-sm-4">
       <div id="sidebar">
-        <ngb-tabset #tabset (tabChange)="onTabChange($event)">
+        <ngb-tabset #tabsetChild (tabChange)="onTabChange($event)">
           <ngb-tab title="Start" id="start">
             <template ngbTabContent>
               <app-start [model]="newModel"
-                (onCalculate)="onCalculate()"
-                (onToggleHelp)="onToggleHelp()">
+                (onCalculate)="calculate()"
+                (onToggleHelp)="toggleHelp()">
               </app-start>
             </template>
           </ngb-tab>
-          <ngb-tab *ngFor="let model of models; let i = index"
+          <ngb-tab *ngFor="let modelSet of modelSets; let i = index"
             title="Test {{i+1}}" id="test-{{i+1}}">
             <template ngbTabContent>
-              <app-t-test [model]="model" (onChange)="onModelChange(model)"></app-t-test>
+              <app-t-test [modelSet]="modelSet"></app-t-test>
             </template>
           </ngb-tab>
         </ngb-tabset>
       </div>
+      <app-plot-options #plotOptionsChild
+        [selectedModelSet]="selectedModelSet"
+        [plotOptions]="plotOptions">
+      </app-plot-options>
     </div>
     <div id="right-panel" class="col-sm-8">
-      <app-help *ngIf="helpOpen" (onClose)="onCloseHelp()"></app-help>
-      <app-output-pane [model]="selectedModel"></app-output-pane>
+      <app-help *ngIf="helpOpen" (onClose)="closeHelp()"></app-help>
+      <button id="plot-options-button" class="btn btn-secondary"
+        (click)="togglePlotOptions()" *ngIf="plotOptionsAvailable">
+        <i class="fa fa-cog"></i>
+      </button>
+      <app-output-pane
+        [selectedModelSet]="selectedModelSet"
+        [plotOptions]="plotOptions">
+      </app-output-pane>
     </div>
   </div>
 </div>

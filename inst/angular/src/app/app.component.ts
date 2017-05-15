@@ -1,9 +1,15 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
-import { TTest } from './t-test';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/switch';
+
+import { TTest, TTestRanges, TTestSet } from './t-test';
+import { PlotOptions } from './plot-options';
 import { TTestService } from './t-test.service';
-import { OutputPaneComponent } from './output-pane/output-pane.component'
+
+import { PlotOptionsComponent } from './plot-options/plot-options.component'
 
 @Component({
   selector: 'app-root',
@@ -13,12 +19,16 @@ import { OutputPaneComponent } from './output-pane/output-pane.component'
 export class AppComponent implements OnInit {
   title = 'PS: Power and Sample Size Calculation';
   newModel = new TTest();
-  models: TTest[] = [];
-  selectedModel: TTest;
-  helpOpen = false;
+  modelSets: TTestSet[] = [];
+  plotOptions = new PlotOptions();
 
-  @ViewChild('outputPane') outputPane: OutputPaneComponent;
-  @ViewChild('tabset') tabset: NgbTabset;
+  helpOpen = false;
+  plotOptionsAvailable = false;
+
+  @ViewChild('plotOptionsChild') plotOptionsChild: PlotOptionsComponent;
+  @ViewChild('tabsetChild') tabsetChild: NgbTabset;
+
+  selectedModelSet = new Subject<TTestSet>();
 
   constructor(private ttestService: TTestService) {}
 
@@ -29,15 +39,19 @@ export class AppComponent implements OnInit {
     this.addModel(model, false);
   }
 
-  onToggleHelp(): void {
+  toggleHelp(): void {
     this.helpOpen = !this.helpOpen;
   }
 
-  onCloseHelp(): void {
+  closeHelp(): void {
     this.helpOpen = false;
   }
 
-  onCalculate(): void {
+  togglePlotOptions(): void {
+    this.plotOptionsChild.toggle();
+  }
+
+  calculate(): void {
     this.addModel(this.newModel);
   }
 
@@ -45,9 +59,8 @@ export class AppComponent implements OnInit {
     let md = event.nextId.match(/\d+/);
     if (md) {
       let index = md[0] - 1;
-      setTimeout(() => {
-        this.selectedModel = this.models[index];
-      }, 1);
+      this.selectedModelSet.next(this.modelSets[index]);
+      this.plotOptionsAvailable = true;
     }
   }
 
@@ -55,10 +68,13 @@ export class AppComponent implements OnInit {
     this.ttestService.create(model).
       then(result => {
         let model = new TTest(result.model);
-        this.models.push(model);
+        let ranges = TTestRanges.fromArrays(result.ranges);
+        let modelSet = new TTestSet(model, ranges);
+        this.modelSets.push(modelSet);
+
         if (select) {
           setTimeout(() => {
-            this.tabset.select(`test-${this.models.length}`);
+            this.tabsetChild.select(`test-${this.modelSets.length}`);
           }, 1);
         }
       }).
