@@ -16,7 +16,7 @@ validateModelParams <- function(params) {
   }
 
   keys <- names(modelParams)
-  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "output", "design")
+  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "output", "design", "ranges")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {
@@ -147,7 +147,7 @@ TTestCreateAction <- setRefClass("TTestCreateAction",
       model <- TTest(params$model)
       id <- repo$create(model)
       model$id <- id
-      list(model = model$attributes())
+      list(model = model$attributes(), ranges = model$ranges())
     }
   )
 )
@@ -187,7 +187,7 @@ TTestUpdateAction <- setRefClass("TTestUpdateAction",
         model[[key]] <- params$model[[key]]
       }
       model$update()
-      list(model = model$attributes())
+      list(model = model$attributes(), ranges = model$ranges())
     }
   )
 )
@@ -201,12 +201,12 @@ TTestPlotAction <- setRefClass("TTestPlotAction",
 
     validate = function(params) {
       errors <- c()
-      expectedKeys <- c("modelId", "plotOptions")
+      expectedKeys <- c("modelId", "plotOptions", "ranges")
       keys <- names(params)
-      extra <- setdiff(keys, expectedKeys)
+      extraKeys <- setdiff(keys, expectedKeys)
 
-      if (length(extra) > 0) {
-        errors$base < paste0("invalid keys: ", paste(extra, collapse=", "))
+      if (length(extraKeys) > 0) {
+        errors$base < paste0("invalid keys: ", paste(extraKeys, collapse=", "))
       }
 
       if (!("modelId" %in% keys)) {
@@ -226,6 +226,14 @@ TTestPlotAction <- setRefClass("TTestPlotAction",
       }
 
       plotKeys <- names(plotParams)
+      expectedPlotKeys <- c("width", "height", "fontFamily", "fontSize", "lineWidth")
+      extraPlotKeys <- setdiff(plotKeys, expectedPlotKeys)
+
+      if (length(extraPlotKeys) > 0) {
+        msg <- paste0("invalid keys: ", paste(extraPlotKeys, collapse=", "))
+        errors$plotOptions <- if (is.character(errors$plotOptions)) c(errors$plotOptions, msg) else msg
+      }
+
       if (!("width" %in% plotKeys)) {
         errors$plotOptions.width <- "is required"
       } else if (!is.numeric(plotParams$width)) {
@@ -264,6 +272,70 @@ TTestPlotAction <- setRefClass("TTestPlotAction",
         }
       }
 
+      if ("ranges" %in% keys) {
+        if (!is.list(params$ranges)) {
+          errors$ranges <- "must be a list"
+        } else {
+          rangeParams <- params$ranges
+
+          rangeKeys <- names(rangeParams)
+          expectedRangeKeys <- c("n", "power", "delta", "defaultDelta", "pSpace")
+          extraRangeKeys <- setdiff(rangeKeys, expectedRangeKeys)
+
+          if (length(extraRangeKeys) > 0) {
+            errors$ranges <- paste0("invalid keys: ", paste(extraRangeKeys, collapse=", "))
+          }
+
+          if ("n" %in% rangeKeys) {
+            if (!is.numeric(rangeParams$n)) {
+              errors$ranges.n <- "must be numeric"
+            } else if (length(rangeParams$n) != 2) {
+              errors$ranges.n <- "must have length of 2"
+            } else if (any(is.na(rangeParams$n))) {
+              errors$ranges.n <- "must not have NA values"
+            } else if (rangeParams$n[1] > rangeParams$n[2]) {
+              errors$ranges.n <- "must be in order"
+            }
+          }
+
+          if ("power" %in% rangeKeys) {
+            if (!is.numeric(rangeParams$power)) {
+              errors$ranges.power <- "must be numeric"
+            } else if (length(rangeParams$power) != 2) {
+              errors$ranges.power <- "must have length of 2"
+            } else if (any(is.na(rangeParams$power))) {
+              errors$ranges.power <- "must not have NA values"
+            } else if (rangeParams$power[1] > rangeParams$power[2]) {
+              errors$ranges.power <- "must be in order"
+            }
+          }
+
+          if ("delta" %in% rangeKeys) {
+            if (!is.numeric(rangeParams$delta)) {
+              errors$ranges.delta <- "must be numeric"
+            } else if (length(rangeParams$delta) != 2) {
+              errors$ranges.delta <- "must have length of 2"
+            } else if (any(is.na(rangeParams$delta))) {
+              errors$ranges.delta <- "must not have NA values"
+            } else if (rangeParams$delta[1] > rangeParams$delta[2]) {
+              errors$ranges.delta <- "must be in order"
+            }
+          }
+
+          if ("pSpace" %in% rangeKeys) {
+            if (!is.numeric(rangeParams$pSpace)) {
+              errors$ranges.pSpace <- "must be numeric"
+            } else if (length(rangeParams$pSpace) != 2) {
+              errors$ranges.pSpace <- "must have length of 2"
+            } else if (any(is.na(rangeParams$pSpace))) {
+              errors$ranges.pSpace <- "must not have NA values"
+            } else if (rangeParams$pSpace[1] > rangeParams$pSpace[2]) {
+              errors$ranges.pSpace <- "must be in order"
+            }
+          }
+        }
+      }
+
       errors
     },
 
@@ -279,10 +351,11 @@ TTestPlotAction <- setRefClass("TTestPlotAction",
       }
 
       plotOptions <- params$plotOptions
+      ranges <- if ("ranges" %in% names(params)) params$ranges else list()
       fn <- tempfile("ps-plot", fileext=".png")
       png(filename = fn, width = plotOptions$width, height = plotOptions$height)
       tryCatch({
-        model$plotModel(plotOptions)
+        model$plotModel(plotOptions, ranges)
       }, error = function(e) print(e), finally = dev.off())
       c(file = fn)
     }
