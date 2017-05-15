@@ -9,8 +9,8 @@ import {
 import 'rxjs/add/operator/toPromise';
 
 import { environment } from '../environments/environment';
-import { TTest } from './t-test';
-import { GlobalPlotOptions } from './plot-options';
+import { TTest, TTestRanges, TTestSet } from './t-test';
+import { PlotOptions } from './plot-options';
 
 @Injectable()
 export class TTestService {
@@ -19,7 +19,7 @@ export class TTestService {
   constructor(private http: Http) { }
 
   create(model: TTest): Promise<any> {
-    let params = { model: model };
+    let params = { model: model.attributes() };
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
@@ -37,7 +37,7 @@ export class TTestService {
       throw new Error("model has no id");
     }
 
-    let params = { model: model };
+    let params = { model: model.attributes() };
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
@@ -50,17 +50,20 @@ export class TTestService {
       catch(this.handleError);
   }
 
-  getPlot(model: TTest, globalPlotOptions: GlobalPlotOptions): Promise<Blob> {
-    if (!model.id) {
+  getPlot(modelSet: TTestSet, plotOptions: PlotOptions): Promise<Blob> {
+    if (!modelSet.model.id) {
       throw new Error("model has no id");
     }
 
-    let params = { plotOptions: globalPlotOptions };
+    let params = {
+      plotOptions: plotOptions.attributes(),
+      ranges: modelSet.ranges.attributes()
+    };
 
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    let url = `${this.apiUrl}/${model.id}/plot`;
+    let url = `${this.apiUrl}/${modelSet.model.id}/plot`;
     let options = new RequestOptions({
       headers: headers,
       responseType: ResponseContentType.Blob
