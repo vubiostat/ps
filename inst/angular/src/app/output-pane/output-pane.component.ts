@@ -1,16 +1,13 @@
-import {
-  Component,
-  ViewChild,
-  ElementRef,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  DoCheck
-} from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
-import { TTest } from '../t-test';
-import { GlobalPlotOptions } from '../plot-options';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/observable/merge';
+
+import { TTest, TTestRanges, TTestSet } from '../t-test';
+import { PlotOptions } from '../plot-options';
 import { TTestService } from '../t-test.service';
 
 @Component({
@@ -18,13 +15,11 @@ import { TTestService } from '../t-test.service';
   templateUrl: './output-pane.component.html',
   styleUrls: ['./output-pane.component.css']
 })
-export class OutputPaneComponent implements OnChanges, DoCheck {
-  @Input() model: TTest;
-  prevModel: TTest;
-
-  globalPlotOptions = new GlobalPlotOptions();
-  prevGlobalPlotOptions: GlobalPlotOptions;
-  showPlotOptions = false;
+export class OutputPaneComponent implements OnInit {
+  @Input() selectedModelSet: Observable<TTestSet>;
+  @Input() plotOptions: PlotOptions;
+  modelSet: TTestSet;
+  subscription: Subscription;
 
   @ViewChild('plot') plotElement: ElementRef; // for plot width/height
   plotSource: SafeUrl;
@@ -34,46 +29,21 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
     private sanitizer: DomSanitizer
   ) {}
 
-  togglePlotOptions(): void {
-    this.showPlotOptions = !this.showPlotOptions;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.drawPlot();
-  }
-
-  ngDoCheck(): void {
-    if (!this.model) {
-      return;
-    }
-
-    let changeDetected = false;
-    if (!this.prevModel) {
-      this.prevModel = new TTest(this.model);
-    } else {
-      for (let key in this.model) {
-        if (this.prevModel[key] !== this.model[key]) {
-          this.prevModel[key] = this.model[key];
-          changeDetected = true;
-        }
+  ngOnInit(): void {
+    this.selectedModelSet.subscribe(modelSet => {
+      if (this.subscription) {
+        this.subscription.unsubscribe();
       }
-    }
+      this.modelSet = modelSet;
 
-    if (!this.prevGlobalPlotOptions) {
-      this.prevGlobalPlotOptions = new GlobalPlotOptions();
-      Object.assign(this.prevGlobalPlotOptions, this.globalPlotOptions);
-    } else {
-      for (let key in this.globalPlotOptions) {
-        if (this.prevGlobalPlotOptions[key] !== this.globalPlotOptions[key]) {
-          this.prevGlobalPlotOptions[key] = this.globalPlotOptions[key];
-          changeDetected = true;
-        }
-      }
-    }
-
-    if (changeDetected) {
+      let obs = Observable.merge(modelSet.onChange, this.plotOptions.onChange);
+      this.subscription = obs.
+        debounceTime(100).
+        subscribe(changes => {
+          this.drawPlot();
+        });
       this.drawPlot();
-    }
+    });
   }
 
   onResize(): void {
@@ -81,10 +51,10 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
   }
 
   drawPlot(): void {
-    if (this.model && this.model.isValid()) {
+    if (this.modelSet && this.modelSet.model.isValid()) {
       this.setDimensions();
       this.ttestService.
-        getPlot(this.model, this.globalPlotOptions).
+        getPlot(this.modelSet, this.plotOptions).
         then(blob => this.setPlotSource(blob)).
         catch(err => console.error(err));
     }
@@ -101,7 +71,7 @@ export class OutputPaneComponent implements OnChanges, DoCheck {
 
   private setDimensions(): void {
     let elt = this.plotElement.nativeElement;
-    this.globalPlotOptions.width = Math.round(elt.offsetWidth * 0.90);
-    this.globalPlotOptions.height = elt.offsetHeight;
+    this.plotOptions.width = Math.round(elt.offsetWidth * 0.90);
+    this.plotOptions.height = elt.offsetHeight;
   }
 }

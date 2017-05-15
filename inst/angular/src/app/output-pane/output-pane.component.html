@@ -1,73 +1,38 @@
 <div #plot class="plot" (window:resize)="onResize()">
   <div *ngIf="plotSource">
-    <button type="button" class="btn btn-secondary fa fa-cog"
-      (click)="togglePlotOptions()">
-    </button>
-    <div class="plot-options" *ngIf="showPlotOptions">
-      <h3>Plot options</h3>
-      <div class="form-group">
-        <label for="plot-font-family">Font family</label>
-        <select id="plot-font-family" class="form-control"
-          [(ngModel)]="globalPlotOptions.fontFamily">
-          <option value="">Default</option>
-          <option value="serif">Serif</option>
-          <option value="sans">Sans-serif</option>
-          <option value="mono">Monospace</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="plot-font-size">Font size (multiplier)</label>
-        <div class="input-group">
-          <input id="plot-font-size" class="form-control"
-            type="range" min="0.1" max="2" step="0.1"
-            [(ngModel)]="globalPlotOptions.fontSize" />
-          <input class="form-control"
-            type="number" min="0.1" max="2" step="0.1"
-          [(ngModel)]="globalPlotOptions.fontSize" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="plot-line-width">Line width</label>
-        <div class="input-group">
-          <input id="plot-font-size" class="form-control"
-            type="range" min="0.1" max="5" step="0.1"
-            [(ngModel)]="globalPlotOptions.lineWidth" />
-          <input class="form-control"
-            type="number" min="0.1" max="5" step="0.1"
-          [(ngModel)]="globalPlotOptions.lineWidth" />
-        </div>
-      </div>
-    </div>
     <img [src]="plotSource">
   </div>
 </div>
-<div class="output-text" *ngIf="model">
-  <div *ngIf="model.output == 'n'">
-    We are planning a study of a continuous response variable from matched pairs
-    of study subjects.  Prior data indicate that the difference in the response
-    of matched pairs is normally distributed with standard deviation
-    {{model.sigma}}.  If the true difference in the mean response of matched
-    pairs is {{model.delta}}, we will need to study {{model.n}} pairs of subjects
-    to be able to reject the null hypothesis that this response difference is
-    zero with probability (power) {{model.power}}.   The Type I error probability
-    associated with this test of this null hypothesis is {{model.alpha}}.
+<div class="output-text" *ngIf="modelSet">
+  <div *ngIf="modelSet.model.output == 'n'">
+    We are planning a study of a continuous response variable from matched
+    pairs of study subjects. Prior data indicate that the difference in the
+    response of matched pairs is normally distributed with standard deviation
+    {{modelSet.model.sigma}}. If the true difference in the mean response of
+    matched pairs is {{modelSet.model.delta}}, we will need to study
+    {{modelSet.model.n}} pairs of subjects to be able to reject the null
+    hypothesis that this response difference is zero with probability (power)
+    {{modelSet.model.power}}. The Type I error probability associated with this
+    test of this null hypothesis is {{modelSet.model.alpha}}.
   </div>
-  <div *ngIf="model.output == 'power'">
-    We are planning a study with {{model.n}} pairs of subjects.  Prior data
-    indicate that the difference in the response of matched pairs is normally
-    distributed with standard deviation {{model.sigma}}.  If the true difference
-    in the mean response of matched pairs is {{model.delta}}, we will be able to
-    reject the null hypothesis that this response difference is zero with
-    probability (power) {{model.power}}.   The Type I error probability
-    associated with this test of this null hypothesis is {{model.alpha}}.
+  <div *ngIf="modelSet.model.output == 'power'">
+    We are planning a study with {{modelSet.model.n}} pairs of subjects. Prior
+    data indicate that the difference in the response of matched pairs is
+    normally distributed with standard deviation {{modelSet.model.sigma}}. If
+    the true difference in the mean response of matched pairs is
+    {{modelSet.model.delta}}, we will be able to reject the null hypothesis
+    that this response difference is zero with probability (power)
+    {{modelSet.model.power}}. The Type I error probability associated with this
+    test of this null hypothesis is {{modelSet.model.alpha}}.
   </div>
-  <div *ngIf="model.output == 'delta'">
-    We are planning a study with {{model.n}} pairs of subjects.  Prior data
-    indicate that the difference in the response of matched pairs is normally
-    distributed with standard deviation {{model.sigma}}.  We will be able to
-    detect a true difference in the mean response of matched pairs of
-    -{{model.delta}} or {{model.delta}} with probability (power) {{model.power}}.
-    The Type I error probability associated with this test of the null hypothesis
-    that this response difference is zero is {{model.alpha}}.
+  <div *ngIf="modelSet.model.output == 'delta'">
+    We are planning a study with {{modelSet.model.n}} pairs of subjects. Prior
+    data indicate that the difference in the response of matched pairs is
+    normally distributed with standard deviation {{modelSet.model.sigma}}. We
+    will be able to detect a true difference in the mean response of matched
+    pairs of -{{modelSet.model.delta}} or {{modelSet.model.delta}} with
+    probability (power) {{modelSet.model.power}}. The Type I error probability
+    associated with this test of the null hypothesis that this response
+    difference is zero is {{modelSet.model.alpha}}.
   </div>
 </div>
