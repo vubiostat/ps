@@ -6,7 +6,7 @@ import {
   OnInit
 } from '@angular/core';
 
-import { TTest } from '../t-test';
+import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { TTestService } from '../t-test.service';
 
 @Component({
@@ -15,17 +15,18 @@ import { TTestService } from '../t-test.service';
   styleUrls: ['./t-test.component.css']
 })
 export class TTestComponent implements OnInit {
-  @Input() model: TTest;
+  @Input() modelSet: TTestSet;
+  model: TTest;
   min: TTest;
   max: TTest;
-  prev: TTest;
 
   constructor(private ttestService: TTestService) { }
 
   ngOnInit(): void {
+    this.model = this.modelSet.model;
+
     this.min = new TTest(this.model);
     this.max = new TTest(this.model);
-    this.prev = new TTest(this.model);
 
     this.min.alpha = 0;
     this.max.alpha = 1;
@@ -56,7 +57,7 @@ export class TTestComponent implements OnInit {
         event.target.value = value;
       }, 1);
     }
-    this.updateModel();
+    this.updateModelSet();
   }
 
   private getMin(n: number): number {
@@ -67,10 +68,10 @@ export class TTestComponent implements OnInit {
     return Math.round(n + (n * 0.5));
   }
 
-  private updateModel(): void {
-    this.ttestService.update(this.model).
+  private updateModelSet(): void {
+    this.ttestService.update(this.modelSet.model).
       then(result => {
-        Object.assign(this.model, result.model);
+        this.modelSet.update(result.model, result.ranges);
       });
   }
 }
