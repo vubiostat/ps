@@ -111,6 +111,7 @@ TTest <- setRefClass("TTest",
       lwd <- plotOptions$lineWidth
       par(family = family, cex = cex, lwd = lwd, mex = 0.8)
 
+      alphaValues <- list(alpha, alpha * 1.25, alpha * 0.75)
       if (output == "n") {
         if (is.null(ranges$n)) {
           nValues <- seq(nRange[1], nRange[2], 0.1)
@@ -119,16 +120,20 @@ TTest <- setRefClass("TTest",
         }
         nLimits <- range(nValues)
 
-        powerValues <- calculatePower(alpha, delta, sigma, nValues)
+        powerValues <- lapply(alphaValues, function(alpha) {
+          calculatePower(alpha, delta, sigma, nValues)
+        })
         if (is.null(ranges$power)) {
-          powerLimits <- range(powerValues)
+          powerLimits <- range(powerValues[[1]])
         } else {
           powerLimits <- ranges$power
         }
 
-        deltaValues <- calculateDelta(alpha, sigma, nValues, power)
+        deltaValues <- lapply(alphaValues, function(alpha) {
+          calculateDelta(alpha, sigma, nValues, power)
+        })
         if (is.null(ranges$delta)) {
-          deltaLimits <- range(deltaValues)
+          deltaLimits <- range(deltaValues[[1]])
         } else {
           deltaLimits <- ranges$delta
         }
@@ -144,9 +149,11 @@ TTest <- setRefClass("TTest",
         }
         powerLimits <- range(powerValues)
 
-        nValues <- calculateN(alpha, delta, sigma, powerValues)
+        nValues <- lapply(alphaValues, function(alpha) {
+          calculateN(alpha, delta, sigma, powerValues)
+        })
         if (is.null(ranges$n)) {
-          nLimits <- range(nValues)
+          nLimits <- range(nValues[[1]])
         } else {
           nLimits <- ranges$n
         }
@@ -158,9 +165,11 @@ TTest <- setRefClass("TTest",
           deltaValues <- seq(ranges$delta[1], ranges$delta[2], 0.01)
         }
         deltaLimits <- range(deltaValues)
-        powerValues <- calculatePower(alpha, deltaValues, sigma, n)
+        powerValues <- lapply(alphaValues, function(alpha) {
+          calculatePower(alpha, deltaValues, sigma, n)
+        })
 
-        plotXY("delta", deltaValues, delta, "power", powerValues, power, deltaLimits, powerLimits)
+        plotXY("delta", deltaValues, delta, "power", powerValues, power, deltaLimits, powerLimits, "y")
 
       } else if (output == "delta") {
         if (is.null(ranges$delta)) {
@@ -170,16 +179,20 @@ TTest <- setRefClass("TTest",
         }
         deltaLimits <- range(deltaValues)
 
-        nValues <- calculateN(alpha, deltaValues, sigma, power)
+        nValues <- lapply(alphaValues, function(alpha) {
+          calculateN(alpha, deltaValues, sigma, power)
+        })
         if (is.null(ranges$n)) {
-          nLimits <- range(nValues)
+          nLimits <- range(nValues[[1]])
         } else {
           nLimits <- ranges$n
         }
 
-        powerValues <- calculatePower(alpha, deltaValues, sigma, n)
+        powerValues <- lapply(alphaValues, function(alpha) {
+          calculatePower(alpha, deltaValues, sigma, n)
+        })
         if (is.null(ranges$power)) {
-          powerLimits <- range(powerValues)
+          powerLimits <- range(powerValues[[1]])
         } else {
           powerLimits <- ranges$power
         }
@@ -195,13 +208,22 @@ TTest <- setRefClass("TTest",
       }
       plotPrecisionVsEffectSize(xLimits)
     },
-    plotXY = function(xName, x, xTarget, yName, y, yTarget, xLimits, yLimits) {
+    plotXY = function(xName, x, xTarget, yName, y, yTarget, xLimits, yLimits, which = c("x", "y")) {
+      which <- match.arg(which)
       yLabel <- paramTitles[[yName]]
       xLabel <- paramTitles[[xName]]
 
-      plot(xLimits, yLimits, type="n", ylab=yLabel, xlab=xLabel)
+      plot(xLimits, yLimits, type="n", ylab=yLabel, xlab=xLabel, las=1)
       title(main=paste(yLabel, "vs.", xLabel), line=1)
-      lines(x, y, col="dodgerblue", lty=1)
+      if (which == "x") {
+        lines(x[[1]], y, col="dodgerblue", lty=1)
+        lines(x[[2]], y, col="lightblue", lty=1)
+        lines(x[[3]], y, col="lightblue", lty=1)
+      } else {
+        lines(x, y[[1]], col="dodgerblue", lty=1)
+        lines(x, y[[2]], col="lightblue", lty=1)
+        lines(x, y[[3]], col="lightblue", lty=1)
+      }
       segments(x0=xTarget, y0=min(yLimits), y1=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
       segments(x0=min(xLimits), x1=xTarget, y0=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
       points(xTarget, yTarget, col="firebrick", pch=19)
