@@ -1,15 +1,17 @@
 .plot {
   height: 80%;
+  min-height: 500px;
   position: relative;
 }
 .output-text {
   height: 20%;
 }
 .output-text div {
-  background-color: #eee;
-  border: 1px solid #ddd;
+  background-color: #e5e5e5;
+  border: 1px solid #aaa;
   border-radius: 5px;
-  padding: 5px;
+  padding: 10px;
   text-align: justify;
   overflow: auto;
+  margin-top: 5px;
 }

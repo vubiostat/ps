@@ -3,18 +3,22 @@
 }
 
 #header {
-  line-height: 10vh;
-  height: 10vh;
-}
-#header img {
-  vertical-align: text-bottom;
-  height: 5vh;
+  line-height: 7vh;
+  height: 7vh;
 }
 #header div.title span {
-  font-size: 5vh;
+  font-size: 4vh;
+}
+#header div.title img {
+  height: 4vh;
+  vertical-align: text-bottom;
 }
 #header div.logo {
   text-align: right;
+}
+#header div.logo img {
+  vertical-align: middle;
+  height: 4vh;
 }
 
 #main {
@@ -22,9 +26,9 @@
 }
 
 #sidebar {
-  background-color: #f5f5f5;
-  border: 1px solid #e3e3e3;
-  border-radius: 4px;
+  background-color: #e5e5e5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   padding: 10px;
   margin: 10px;
   position: relative;
@@ -39,13 +43,37 @@
   position: absolute;
   top: 0;
   left: 0;
-  font-size: x-large;
-  z-index: 100;
+  font-size: large;
+  z-index: 99;
+}
+
+:host /deep/ a.nav-link {
+  border-color: #bbb #bbb #888;
+  background-color: #eee;
+}
+
+:host /deep/ a.nav-link:hover {
+  border-color: #888;
+  background-color: #f5f5f5;
+  color: #0275d8;
+}
+
+:host /deep/ a.nav-link.active {
+  border-color: #888 #888 #fff;
+}
+
+:host /deep/ a.nav-link.active:hover {
+  background-color: #fff;
+  color: #464a4c;
+}
+
+:host /deep/ ul.nav-tabs {
+  border-bottom: 1px solid #888;
 }
 
 :host /deep/ .tab-pane {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #888;
   border-top: 0;
 }
 

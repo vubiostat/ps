@@ -71,7 +71,7 @@ export class OutputPaneComponent implements OnInit {
 
   private setDimensions(): void {
     let elt = this.plotElement.nativeElement;
-    this.plotOptions.width = Math.round(elt.offsetWidth * 0.90);
+    this.plotOptions.width = elt.offsetWidth;
     this.plotOptions.height = elt.offsetHeight;
   }
 }
