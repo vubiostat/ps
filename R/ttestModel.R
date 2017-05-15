@@ -22,7 +22,8 @@ paramTitles <- list(
 )
 
 TTest <- setRefClass("TTest",
-  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output"),
+  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "nRange",
+             "powerRange", "defaultDeltaRange", "deltaRange", "pSpace"),
   methods = list(
     initialize = function(params) {
       id     <<- params$id
@@ -32,16 +33,38 @@ TTest <- setRefClass("TTest",
       delta  <<- params$delta
       sigma  <<- params$sigma
       output <<- params$output
+      nRange            <<- NULL
+      powerRange        <<- NULL
+      deltaRange        <<- NULL
+      defaultDeltaRange <<- NULL
+      pSpace            <<- NULL
 
       update()
     },
     update = function() {
       if (output == "n") {
         n <<- calculateN(alpha, delta, sigma, power)
+        nRange <<- c(n * 0.5, n * 1.5)
+        powerRange <<- sort(calculatePower(alpha, delta, sigma, nRange))
+        deltaRange <<- sort(calculateDelta(alpha, sigma, nRange, power))
+        defaultDeltaRange <<- deltaRange
+        pSpace <<- guessDeltaRange()
+
       } else if (output == "power") {
         power <<- calculatePower(alpha, delta, sigma, n)
+        powerRange <<- c(alpha + 0.01, 0.99)
+        nRange <<- sort(calculateN(alpha, delta, sigma, powerRange))
+        deltaRange <<- guessDeltaRange()
+        defaultDeltaRange <<- deltaRange
+        pSpace <<- deltaRange
+
       } else if (output == "delta") {
         delta <<- calculateDelta(alpha, sigma, n, power)
+        deltaRange <<- c(delta * 0.5, delta * 1.5)
+        nRange <<- sort(calculateN(alpha, deltaRange, sigma, power))
+        powerRange <<- sort(calculatePower(alpha, deltaRange, sigma, n))
+        defaultDeltaRange <<- deltaRange
+        pSpace <<- guessDeltaRange()
       }
     },
     attributes = function() {
@@ -55,13 +78,32 @@ TTest <- setRefClass("TTest",
         output = unbox(output)
       )
     },
+    ranges = function() {
+      result <- list()
+      if (!is.null(nRange)) {
+        result$n <- nRange
+      }
+      if (!is.null(powerRange)) {
+        result$power <- powerRange
+      }
+      if (!is.null(deltaRange)) {
+        result$delta <- deltaRange
+      }
+      if (!is.null(defaultDeltaRange)) {
+        result$defaultDelta <- defaultDeltaRange
+      }
+      if (!is.null(pSpace)) {
+        result$pSpace <- pSpace
+      }
+      result
+    },
     guessDeltaRange = function() {
       mu.0 <- 0
       lo <- mu.0 - max(4 * sigma, delta + sigma/2)
       high <- mu.0 + max(4 * sigma, delta + sigma/2)
-      seq(lo, high, 0.01)
+      c(lo, high)
     },
-    plotModel = function(plotOptions) {
+    plotModel = function(plotOptions, ranges) {
       layout(matrix(c(1, 2, 1, 2, 1, 2, 3, 3), 4, 2, byrow = TRUE))
 
       cex <- plotOptions$fontSize
@@ -70,47 +112,103 @@ TTest <- setRefClass("TTest",
       par(family = family, cex = cex, lwd = lwd, mex = 0.8)
 
       if (output == "n") {
-        nRange <- seq(n * 0.5, n * 1.5, 0.1)
-        powerRange <- calculatePower(alpha, delta, sigma, nRange)
-        deltaRange <- calculateDelta(alpha, sigma, nRange, power)
+        if (is.null(ranges$n)) {
+          nValues <- seq(nRange[1], nRange[2], 0.1)
+        } else {
+          nValues <- seq(ranges$n[1], ranges$n[2], 0.1)
+        }
+        nLimits <- range(nValues)
 
-        plotXY("power", powerRange, power, "n", nRange, n)
-        plotXY("delta", deltaRange, delta, "n", nRange, n)
+        powerValues <- calculatePower(alpha, delta, sigma, nValues)
+        if (is.null(ranges$power)) {
+          powerLimits <- range(powerValues)
+        } else {
+          powerLimits <- ranges$power
+        }
+
+        deltaValues <- calculateDelta(alpha, sigma, nValues, power)
+        if (is.null(ranges$delta)) {
+          deltaLimits <- range(deltaValues)
+        } else {
+          deltaLimits <- ranges$delta
+        }
+
+        plotXY("power", powerValues, power, "n", nValues, n, powerLimits, nLimits)
+        plotXY("delta", deltaValues, delta, "n", nValues, n, deltaLimits, nLimits)
 
       } else if (output == "power") {
-        powerRange <- seq(alpha + 0.01, 0.99, 0.01)
-        nRange <- calculateN(alpha, delta, sigma, powerRange)
-        plotXY("n", nRange, n, "power", powerRange, power)
+        if (is.null(ranges$power)) {
+          powerValues <- seq(powerRange[1], powerRange[2], 0.01)
+        } else {
+          powerValues <- seq(ranges$power[1], ranges$power[2], 0.01)
+        }
+        powerLimits <- range(powerValues)
 
-        deltaRange <- guessDeltaRange()
-        powerRange <- calculatePower(alpha, deltaRange, sigma, n)
-        plotXY("delta", deltaRange, delta, "power", powerRange, power)
+        nValues <- calculateN(alpha, delta, sigma, powerValues)
+        if (is.null(ranges$n)) {
+          nLimits <- range(nValues)
+        } else {
+          nLimits <- ranges$n
+        }
+        plotXY("n", nValues, n, "power", powerValues, power, nLimits, powerLimits)
+
+        if (is.null(ranges$delta)) {
+          deltaValues <- seq(deltaRange[1], deltaRange[2], 0.01)
+        } else {
+          deltaValues <- seq(ranges$delta[1], ranges$delta[2], 0.01)
+        }
+        deltaLimits <- range(deltaValues)
+        powerValues <- calculatePower(alpha, deltaValues, sigma, n)
+
+        plotXY("delta", deltaValues, delta, "power", powerValues, power, deltaLimits, powerLimits)
 
       } else if (output == "delta") {
-        deltaRange <- seq(delta * 0.5, delta * 1.5, 0.1)
-        nRange <- calculateN(alpha, deltaRange, sigma, power)
-        powerRange <- calculatePower(alpha, deltaRange, sigma, n)
+        if (is.null(ranges$delta)) {
+          deltaValues <- seq(deltaRange[1], deltaRange[2], 0.1)
+        } else {
+          deltaValues <- seq(ranges$delta[1], ranges$delta[2], 0.1)
+        }
+        deltaLimits <- range(deltaValues)
 
-        plotXY("n", nRange, n, "delta", deltaRange, delta)
-        plotXY("power", powerRange, power, "delta", deltaRange, delta)
+        nValues <- calculateN(alpha, deltaValues, sigma, power)
+        if (is.null(ranges$n)) {
+          nLimits <- range(nValues)
+        } else {
+          nLimits <- ranges$n
+        }
+
+        powerValues <- calculatePower(alpha, deltaValues, sigma, n)
+        if (is.null(ranges$power)) {
+          powerLimits <- range(powerValues)
+        } else {
+          powerLimits <- ranges$power
+        }
+
+        plotXY("n", nValues, n, "delta", deltaValues, delta, nLimits, deltaLimits)
+        plotXY("power", powerValues, power, "delta", deltaValues, delta, powerLimits, deltaLimits)
       }
 
-      plotPrecisionVsEffectSize()
+      if (is.null(ranges$pSpace)) {
+        xLimits <- pSpace
+      } else {
+        xLimits <- ranges$pSpace
+      }
+      plotPrecisionVsEffectSize(xLimits)
     },
-    plotXY = function(xName, x, xTarget, yName, y, yTarget) {
+    plotXY = function(xName, x, xTarget, yName, y, yTarget, xLimits, yLimits) {
       yLabel <- paramTitles[[yName]]
       xLabel <- paramTitles[[xName]]
 
-      plot(x, y, type="n", ylab=yLabel, xlab=xLabel)
+      plot(xLimits, yLimits, type="n", ylab=yLabel, xlab=xLabel)
       title(main=paste(yLabel, "vs.", xLabel), line=1)
       lines(x, y, col="dodgerblue", lty=1)
-      segments(x0=xTarget, y0=min(y), y1=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
-      segments(x0=min(x), x1=xTarget, y0=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
+      segments(x0=xTarget, y0=min(yLimits), y1=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
+      segments(x0=min(xLimits), x1=xTarget, y0=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
       points(xTarget, yTarget, col="firebrick", pch=19)
     },
-    plotPrecisionVsEffectSize = function() {
+    plotPrecisionVsEffectSize = function(xLimits) {
       moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
-      p.space <- guessDeltaRange()
+      p.space <- seq(xLimits[1], xLimits[2], 0.01)
 
       plot(p.space, p.space, type="n", ylab=" ", xlab="Parameter Space", ylim=c(0,1), yaxt="n", bty="n")
       title(main="Precision vs. Effect size", line=1)
