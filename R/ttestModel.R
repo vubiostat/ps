@@ -99,7 +99,7 @@ TTest <- setRefClass("TTest",
     },
     plotData = function(ranges = list()) {
       alphaValues <- list(alpha, alpha * 1.25, alpha * 0.75)
-      result <- list()
+      result <- list(alpha = list(values = alphaValues))
       if (output == "n") {
         if (is.null(ranges$n)) {
           nValues <- seq(nRange[1], nRange[2], 0.1)
@@ -126,9 +126,9 @@ TTest <- setRefClass("TTest",
           deltaLimits <- ranges$delta
         }
 
-        result$n     <- list(values = nValues,     limits = nLimits,     target = n)
-        result$power <- list(values = powerValues, limits = powerLimits, target = power)
-        result$delta <- list(values = deltaValues, limits = deltaLimits, target = delta)
+        result$n     <- list(values = nValues,     limits = nLimits,     target = unbox(n))
+        result$power <- list(values = powerValues, limits = powerLimits, target = unbox(power))
+        result$delta <- list(values = deltaValues, limits = deltaLimits, target = unbox(delta))
 
       } else if (output == "power") {
         if (is.null(ranges$power)) {
@@ -157,10 +157,10 @@ TTest <- setRefClass("TTest",
           calculatePower(alpha, deltaValues, sigma, n)
         })
 
-        result$n     <- list(values = nValues,     limits = nLimits,     target = n)
-        result$power <- list(values = powerValues, limits = powerLimits, target = power)
-        result$delta <- list(values = deltaValues, limits = deltaLimits, target = delta)
-        result$powerByDelta <- list(values = powerByDeltaValues, limits = powerLimits, target = power)
+        result$n     <- list(values = nValues,     limits = nLimits,     target = unbox(n))
+        result$power <- list(values = powerValues, limits = powerLimits, target = unbox(power))
+        result$delta <- list(values = deltaValues, limits = deltaLimits, target = unbox(delta))
+        result$powerByDelta <- list(values = powerByDeltaValues, limits = powerLimits, target = unbox(power))
 
       } else if (output == "delta") {
         if (is.null(ranges$delta)) {
@@ -188,9 +188,9 @@ TTest <- setRefClass("TTest",
           powerLimits <- ranges$power
         }
 
-        result$n     <- list(values = nValues,     limits = nLimits,     target = n)
-        result$power <- list(values = powerValues, limits = powerLimits, target = power)
-        result$delta <- list(values = deltaValues, limits = deltaLimits, target = delta)
+        result$n     <- list(values = nValues,     limits = nLimits,     target = unbox(n))
+        result$power <- list(values = powerValues, limits = powerLimits, target = unbox(power))
+        result$delta <- list(values = deltaValues, limits = deltaLimits, target = unbox(delta))
       }
 
       if (is.null(ranges$pSpace)) {
@@ -200,7 +200,7 @@ TTest <- setRefClass("TTest",
       }
       moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
       pSpaceValues <- c(delta - moe, delta + moe)
-      result$pSpace <- list(values = pSpaceValues, limits = pSpaceLimits, target = delta)
+      result$pSpace <- list(values = pSpaceValues, limits = pSpaceLimits, target = unbox(delta))
 
       result
     },
