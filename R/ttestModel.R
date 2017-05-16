@@ -97,21 +97,9 @@ TTest <- setRefClass("TTest",
       }
       result
     },
-    guessDeltaRange = function() {
-      mu.0 <- 0
-      lo <- mu.0 - max(4 * sigma, delta + sigma/2)
-      high <- mu.0 + max(4 * sigma, delta + sigma/2)
-      c(lo, high)
-    },
-    plotModel = function(plotOptions, ranges) {
-      layout(matrix(c(1, 2, 1, 2, 1, 2, 3, 3), 4, 2, byrow = TRUE))
-
-      cex <- plotOptions$fontSize
-      family <- plotOptions$fontFamily
-      lwd <- plotOptions$lineWidth
-      par(family = family, cex = cex, lwd = lwd, mex = 0.8)
-
+    plotData = function(ranges = list()) {
       alphaValues <- list(alpha, alpha * 1.25, alpha * 0.75)
+      result <- list()
       if (output == "n") {
         if (is.null(ranges$n)) {
           nValues <- seq(nRange[1], nRange[2], 0.1)
@@ -138,8 +126,9 @@ TTest <- setRefClass("TTest",
           deltaLimits <- ranges$delta
         }
 
-        plotXY("power", powerValues, power, "n", nValues, n, powerLimits, nLimits)
-        plotXY("delta", deltaValues, delta, "n", nValues, n, deltaLimits, nLimits)
+        result$n     <- list(values = nValues,     limits = nLimits,     target = n)
+        result$power <- list(values = powerValues, limits = powerLimits, target = power)
+        result$delta <- list(values = deltaValues, limits = deltaLimits, target = delta)
 
       } else if (output == "power") {
         if (is.null(ranges$power)) {
@@ -157,7 +146,6 @@ TTest <- setRefClass("TTest",
         } else {
           nLimits <- ranges$n
         }
-        plotXY("n", nValues, n, "power", powerValues, power, nLimits, powerLimits)
 
         if (is.null(ranges$delta)) {
           deltaValues <- seq(deltaRange[1], deltaRange[2], 0.01)
@@ -165,11 +153,14 @@ TTest <- setRefClass("TTest",
           deltaValues <- seq(ranges$delta[1], ranges$delta[2], 0.01)
         }
         deltaLimits <- range(deltaValues)
-        powerValues <- lapply(alphaValues, function(alpha) {
+        powerByDeltaValues <- lapply(alphaValues, function(alpha) {
           calculatePower(alpha, deltaValues, sigma, n)
         })
 
-        plotXY("delta", deltaValues, delta, "power", powerValues, power, deltaLimits, powerLimits, "y")
+        result$n     <- list(values = nValues,     limits = nLimits,     target = n)
+        result$power <- list(values = powerValues, limits = powerLimits, target = power)
+        result$delta <- list(values = deltaValues, limits = deltaLimits, target = delta)
+        result$powerByDelta <- list(values = powerByDeltaValues, limits = powerLimits, target = power)
 
       } else if (output == "delta") {
         if (is.null(ranges$delta)) {
@@ -197,57 +188,88 @@ TTest <- setRefClass("TTest",
           powerLimits <- ranges$power
         }
 
-        plotXY("n", nValues, n, "delta", deltaValues, delta, nLimits, deltaLimits)
-        plotXY("power", powerValues, power, "delta", deltaValues, delta, powerLimits, deltaLimits)
+        result$n     <- list(values = nValues,     limits = nLimits,     target = n)
+        result$power <- list(values = powerValues, limits = powerLimits, target = power)
+        result$delta <- list(values = deltaValues, limits = deltaLimits, target = delta)
       }
 
       if (is.null(ranges$pSpace)) {
-        xLimits <- pSpace
+        pSpaceLimits <- pSpace
       } else {
-        xLimits <- ranges$pSpace
+        pSpaceLimits <- ranges$pSpace
       }
-      plotPrecisionVsEffectSize(xLimits)
+      moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
+      pSpaceValues <- c(delta - moe, delta + moe)
+      result$pSpace <- list(values = pSpaceValues, limits = pSpaceLimits, target = delta)
+
+      result
     },
-    plotXY = function(xName, x, xTarget, yName, y, yTarget, xLimits, yLimits, which = c("x", "y")) {
+    guessDeltaRange = function() {
+      mu.0 <- 0
+      lo <- mu.0 - max(4 * sigma, delta + sigma/2)
+      high <- mu.0 + max(4 * sigma, delta + sigma/2)
+      c(lo, high)
+    },
+    plotModel = function(plotOptions, plotData) {
+      layout(matrix(c(1, 2, 1, 2, 1, 2, 3, 3), 4, 2, byrow = TRUE))
+
+      cex <- plotOptions$fontSize
+      family <- plotOptions$fontFamily
+      lwd <- plotOptions$lineWidth
+      par(family = family, cex = cex, lwd = lwd, mex = 0.8)
+
+      if (output == "n") {
+        plotXY("power", plotData$power, "n", plotData$n)
+        plotXY("delta", plotData$delta, "n", plotData$n)
+
+      } else if (output == "power") {
+        plotXY("n", plotData$n, "power", plotData$power)
+        plotXY("delta", plotData$delta, "power", plotData$powerByDelta, "y")
+
+      } else if (output == "delta") {
+        plotXY("n", plotData$n, "delta", plotData$delta)
+        plotXY("power", plotData$power, "delta", plotData$delta)
+      }
+
+      plotPrecisionVsEffectSize(plotData$pSpace)
+    },
+    plotXY = function(xName, x, yName, y, which = c("x", "y")) {
       which <- match.arg(which)
       yLabel <- paramTitles[[yName]]
       xLabel <- paramTitles[[xName]]
 
-      plot(xLimits, yLimits, type="n", ylab=yLabel, xlab=xLabel, las=1, frame.plot=FALSE)
-      par(usr = c(xLimits, yLimits))
+      plot(x$limits, y$limits, type="n", ylab=yLabel, xlab=xLabel, las=1, frame.plot=FALSE)
+      par(usr = c(x$limits, y$limits))
       title(main=paste(yLabel, "vs.", xLabel), line=1)
       if (which == "x") {
-        lines(x[[1]], y, col="dodgerblue", lty=1)
-        lines(x[[2]], y, col="lightblue", lty=1)
-        lines(x[[3]], y, col="lightblue", lty=1)
+        lines(x$values[[1]], y$values, col="dodgerblue", lty=1)
+        lines(x$values[[2]], y$values, col="lightblue", lty=1)
+        lines(x$values[[3]], y$values, col="lightblue", lty=1)
       } else {
-        lines(x, y[[1]], col="dodgerblue", lty=1)
-        lines(x, y[[2]], col="lightblue", lty=1)
-        lines(x, y[[3]], col="lightblue", lty=1)
+        lines(x$values, y$values[[1]], col="dodgerblue", lty=1)
+        lines(x$values, y$values[[2]], col="lightblue", lty=1)
+        lines(x$values, y$values[[3]], col="lightblue", lty=1)
       }
-      segments(x0=xTarget, y0=yLimits[1], y1=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
-      segments(x0=xLimits[1], x1=xTarget, y0=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
+      segments(x0=x$target, y0=y$limits[1], y1=y$target, lty=2, lwd=par("lwd")/2, col="firebrick")
+      segments(x0=x$limits[1], x1=x$target, y0=y$target, lty=2, lwd=par("lwd")/2, col="firebrick")
       box()
-      points(xTarget, yTarget, col="firebrick", pch=19)
+      points(x$target, y$target, col="firebrick", pch=19)
     },
-    plotPrecisionVsEffectSize = function(xLimits) {
-      moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
-      p.space <- seq(xLimits[1], xLimits[2], 0.01)
-
-      plot(p.space, p.space, type="n", ylab=" ", xlab="Parameter Space", ylim=c(0,1), yaxt="n", bty="n")
+    plotPrecisionVsEffectSize = function(x) {
+      plot(x$limits, x$limits, type="n", ylab=" ", xlab="Parameter Space", ylim=c(0,1), yaxt="n", bty="n")
       title(main="Precision vs. Effect size", line=1)
       abline(h=0.5, lty=2, lwd=par("lwd")/4, col="black")
 
       points(0, 0.5, pch=18, cex=1.5, col="darkseagreen")
-      points(delta, 0.5, pch=18, cex=1.5, col="maroon")
+      points(x$target, 0.5, pch=18, cex=1.5, col="maroon")
       #points(-delta, 0.5, pch=18, cex=1.5, col="maroon")
 
-      points(delta - moe, 0.5, pch="[", cex=1.5, col="maroon")
-      points(delta + moe, 0.5, pch="]", cex=1.5, col="maroon")
+      points(x$values[1], 0.5, pch="[", cex=1.5, col="maroon")
+      points(x$values[2], 0.5, pch="]", cex=1.5, col="maroon")
       #points(-delta - moe, 0.5, pch="[", cex=2, col="maroon")
       #points(-delta + moe, 0.5, pch="]", cex=2, col="maroon")
 
-      segments(y0=0.5, x0=delta - moe, x1=delta + moe, lty=1, col="maroon")
+      segments(y0=0.5, x0=x$values[1], x1=x$values[2], lty=1, col="maroon")
       #segments(y0=0.5, x0=-delta - moe, x1=-delta + moe, lty=1, lwd=2, col="maroon")
     }
   )

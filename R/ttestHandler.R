@@ -147,7 +147,7 @@ TTestCreateAction <- setRefClass("TTestCreateAction",
       model <- TTest(params$model)
       id <- repo$create(model)
       model$id <- id
-      list(model = model$attributes(), ranges = model$ranges())
+      list(model = model$attributes(), ranges = model$ranges(), data = model$plotData())
     }
   )
 )
@@ -187,7 +187,7 @@ TTestUpdateAction <- setRefClass("TTestUpdateAction",
         model[[key]] <- params$model[[key]]
       }
       model$update()
-      list(model = model$attributes(), ranges = model$ranges())
+      list(model = model$attributes(), ranges = model$ranges(), data = model$plotData())
     }
   )
 )
@@ -352,10 +352,12 @@ TTestPlotAction <- setRefClass("TTestPlotAction",
 
       plotOptions <- params$plotOptions
       ranges <- if ("ranges" %in% names(params)) params$ranges else list()
+      plotData <- model$plotData(ranges)
+
       fn <- tempfile("ps-plot", fileext=".png")
       png(filename = fn, width = plotOptions$width, height = plotOptions$height)
       tryCatch({
-        model$plotModel(plotOptions, ranges)
+        model$plotModel(plotOptions, plotData)
       }, error = function(e) print(e), finally = dev.off())
       c(file = fn)
     }
