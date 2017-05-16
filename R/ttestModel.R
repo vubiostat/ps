@@ -213,7 +213,8 @@ TTest <- setRefClass("TTest",
       yLabel <- paramTitles[[yName]]
       xLabel <- paramTitles[[xName]]
 
-      plot(xLimits, yLimits, type="n", ylab=yLabel, xlab=xLabel, las=1)
+      plot(xLimits, yLimits, type="n", ylab=yLabel, xlab=xLabel, las=1, frame.plot=FALSE)
+      par(usr = c(xLimits, yLimits))
       title(main=paste(yLabel, "vs.", xLabel), line=1)
       if (which == "x") {
         lines(x[[1]], y, col="dodgerblue", lty=1)
@@ -224,8 +225,9 @@ TTest <- setRefClass("TTest",
         lines(x, y[[2]], col="lightblue", lty=1)
         lines(x, y[[3]], col="lightblue", lty=1)
       }
-      segments(x0=xTarget, y0=min(yLimits), y1=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
-      segments(x0=min(xLimits), x1=xTarget, y0=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
+      segments(x0=xTarget, y0=yLimits[1], y1=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
+      segments(x0=xLimits[1], x1=xTarget, y0=yTarget, lty=2, lwd=par("lwd")/2, col="firebrick")
+      box()
       points(xTarget, yTarget, col="firebrick", pch=19)
     },
     plotPrecisionVsEffectSize = function(xLimits) {
