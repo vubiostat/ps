@@ -1,7 +1,7 @@
 <div #plot class="plot" (window:resize)="onResize()">
-  <ng-template [ngIf]="plotSource">
-    <img [src]="plotSource">
-  </ng-template>
+  <svg #topLeftPlot class="top-left"></svg>
+  <svg #topRightPlot class="top-right"></svg>
+  <svg #bottomPlot class="bottom"></svg>
 </div>
 <div class="output-text" *ngIf="modelSet">
   <div *ngIf="modelSet.model.output == 'n'">

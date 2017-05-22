@@ -71,7 +71,7 @@ export class TTestComponent implements OnInit {
   private updateModelSet(): void {
     this.ttestService.update(this.modelSet.model).
       then(result => {
-        this.modelSet.update(result.model, result.ranges);
+        this.modelSet.update(result.model, result.ranges, result.data);
       });
   }
 }

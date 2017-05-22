@@ -3,6 +3,61 @@
   min-height: 500px;
   position: relative;
 }
+.plot svg.top-left {
+  position: absolute;
+  left: 0;
+  width: 50%;
+  height: 75%;
+}
+.plot svg.top-right {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: 75%;
+}
+.plot svg.bottom {
+  position: absolute;
+  bottom: 0;
+  height: 25%;
+  width: 100%;
+}
+:host /deep/ svg text.axis-label {
+}
+:host /deep/ svg text.title {
+  font-weight: bold;
+}
+:host /deep/ svg path.line {
+  stroke: steelblue;
+  stroke-width: 2;
+  fill: none;
+}
+:host /deep/ svg path.pspace-line {
+  stroke: maroon;
+  stroke-width: 2;
+  fill: none;
+}
+:host /deep/ svg path.ab-line {
+  stroke: black;
+  stroke-width: 0.5;
+  stroke-dasharray: 5, 5;
+  fill: none;
+}
+:host /deep/ svg path.drop-line {
+  stroke: red;
+  stroke-width: 1;
+  stroke-dasharray: 5, 5;
+  fill: none;
+}
+:host /deep/ svg circle.target {
+  fill: red;
+}
+:host /deep/ svg circle.pspace-center {
+  fill: darkseagreen;
+}
+:host /deep/ svg circle.pspace-target {
+  fill: maroon;
+}
+
 .output-text {
   height: 20%;
 }

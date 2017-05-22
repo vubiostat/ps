@@ -151,10 +151,25 @@ export class TTestRanges extends ChangeEmitter {
   }
 }
 
+interface TTestDataMember {
+  values: number[];
+  limits?: number[];
+  target?: number;
+}
+
+export class TTestData {
+  n: TTestDataMember;
+  power: TTestDataMember;
+  delta: TTestDataMember;
+  alpha: TTestDataMember;
+  pSpace: TTestDataMember;
+  powerByDelta?: TTestDataMember;
+}
+
 export class TTestSet {
   onChange = new EventEmitter();
 
-  constructor(public model: TTest, public ranges: TTestRanges) {
+  constructor(public model: TTest, public ranges: TTestRanges, public data: TTestData) {
     model.onChange.subscribe(value => {
       this.onChange.emit({ model: value });
     });
@@ -163,8 +178,9 @@ export class TTestSet {
     });
   }
 
-  update(model: any, ranges: any) {
+  update(model: any, ranges: any, data: TTestData) {
     this.model.update(model);
     this.ranges.updateFromArrays(ranges);
+    this.data = data;
   }
 }

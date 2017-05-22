@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/switch';
 
-import { TTest, TTestRanges, TTestSet } from './t-test';
+import { TTest, TTestRanges, TTestData, TTestSet } from './t-test';
 import { PlotOptions } from './plot-options';
 import { TTestService } from './t-test.service';
 
@@ -69,7 +69,8 @@ export class AppComponent implements OnInit {
       then(result => {
         let model = new TTest(result.model);
         let ranges = TTestRanges.fromArrays(result.ranges);
-        let modelSet = new TTestSet(model, ranges);
+        let data = result.data as TTestData;
+        let modelSet = new TTestSet(model, ranges, data);
         this.modelSets.push(modelSet);
 
         if (select) {
