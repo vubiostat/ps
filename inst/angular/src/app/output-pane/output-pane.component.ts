@@ -7,6 +7,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/merge';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
+import { Range } from '../range';
 import { PlotOptions } from '../plot-options';
 import { TTestService } from '../t-test.service';
 
@@ -57,29 +58,33 @@ export class OutputPaneComponent implements OnInit {
 
   drawPlot(): void {
     if (this.modelSet) {
+      let data = this.modelSet.data;
+      let ranges = this.modelSet.ranges;
+
       switch (this.modelSet.model.output) {
         case "n":
-          this.drawLinePlot(this.topLeftPlotElement, "power", "n");
-          this.drawLinePlot(this.topRightPlotElement, "delta", "n");
+          this.drawLinePlot(this.topLeftPlotElement, data.power, ranges.power, "Power", data.n, ranges.n, "Sample Size");
+          this.drawLinePlot(this.topRightPlotElement, data.delta, ranges.delta, "Detectable Alternative", data.n, ranges.n, "Sample Size");
           break;
         case "power":
-          this.drawLinePlot(this.topLeftPlotElement, "n", "power");
-          this.drawLinePlot(this.topRightPlotElement, "delta", "powerByDelta", "x");
+          this.drawLinePlot(this.topLeftPlotElement, data.n, ranges.n, "Sample Size", data.power, ranges.power, "Power");
+          this.drawLinePlot(this.topRightPlotElement, data.delta, ranges.delta, "Detectable Alternative", data.powerByDelta, ranges.power, "Power", "x");
           break;
         case "delta":
-          this.drawLinePlot(this.topLeftPlotElement, "n", "delta");
-          this.drawLinePlot(this.topRightPlotElement, "power", "delta");
+          this.drawLinePlot(this.topLeftPlotElement, data.n, ranges.n, "Sample Size", data.delta, ranges.delta, "Detectable Alternative");
+          this.drawLinePlot(this.topRightPlotElement, data.power, ranges.power, "Power", data.delta, ranges.delta, "Detectable Alternative");
           break;
       }
       this.drawBottomPlot();
     }
   }
 
-  private drawLinePlot(elementRef: ElementRef, xVar: string, yVar: string, which = "y"): void {
+  private drawLinePlot(elementRef: ElementRef, xData: any, xRange: Range, xTitle: string, yData: any, yRange: Range, yTitle: string, which = "y"): void {
     // clear existing graph
     let element = elementRef.nativeElement;
     element.innerHTML = "";
 
+    let ranges = this.modelSet.ranges;
     let data = this.modelSet.data;
 
     // set dimensions
@@ -106,13 +111,29 @@ export class OutputPaneComponent implements OnInit {
 
     let svg = d3.select(element);
 
+    if (this.plotOptions.fontFamily != "") {
+      svg.style("font-family", this.plotOptions.fontFamily);
+    }
+    svg.style("font-size", `${this.plotOptions.fontSize * 100}%`);
+
+    // append clip paths
+    let defs = svg.append('defs');
+    let clipPathId = svg.attr('class') + '-plot-area';
+    defs.append("clipPath").
+      attr("id", clipPathId).
+      append("rect").
+      attr("x", 0).
+      attr("y", 0).
+      attr("width", width).
+      attr("height", height);
+
     // compute scales
     let x = d3.scaleLinear().
-      domain(data[xVar].limits.slice()).
+      domain(xRange.toArray()).
       range([0, width]);
 
     let y = d3.scaleLinear().
-      domain(data[yVar].limits.slice().reverse()).
+      domain(yRange.toArray().reverse()).
       range([0, height]);
 
     // append axes
@@ -133,7 +154,7 @@ export class OutputPaneComponent implements OnInit {
       attr("dy", "1em").
       attr("class", "axis-label").
       style("text-anchor", "middle").
-      text(plotTitles[yVar]);
+      text(yTitle);
     let yLabelYOffset = height / 2 + margin;
     yLabel.
       attr("transform", `translate(0,${yLabelYOffset}) rotate(-90)`);
@@ -144,7 +165,7 @@ export class OutputPaneComponent implements OnInit {
       attr("dy", "2.5em").
       attr("class", "axis-label").
       style("text-anchor", "middle").
-      text(plotTitles[xVar]);
+      text(xTitle);
     let xLabelXOffset = width / 2 + margin;
     let xLabelYOffset = height + margin;
     xLabel.
@@ -157,7 +178,7 @@ export class OutputPaneComponent implements OnInit {
       attr("dy", "2em").
       attr("class", "title").
       style("text-anchor", "middle").
-      text(`${plotTitles[yVar]} vs. ${plotTitles[xVar]}`);
+      text(`${yTitle} vs. ${xTitle}`);
     let titleBBox = title.node().getBBox();
     let titleXOffset = width / 2 + margin;
     title.
@@ -166,41 +187,45 @@ export class OutputPaneComponent implements OnInit {
     // append main line
     let points;
     if (which == "x") {
-      points = data[xVar].values.map((xValue, i) => {
-        return { x: xValue, y: data[yVar].values[0][i] };
+      points = xData.values.map((xValue, i) => {
+        return { x: xValue, y: yData.values[0][i] };
       });
     } else if (which == "y") {
-      points = data[xVar].values[0].map((xValue, i) => {
-        return { x: xValue, y: data[yVar].values[i] };
+      points = xData.values[0].map((xValue, i) => {
+        return { x: xValue, y: yData.values[i] };
       });
     }
 
     let line = d3.line().
       x((d, i) => x(d.x)).
       y((d, i) => y(d.y));
-    svg.append("g").
-      attr("transform", `translate(${margin},${margin})`).
-      append("path").
+    let group = svg.append("g").
+      attr("transform", `translate(${margin},${margin})`);
+    group.append("path").
       attr("class", "line").
+      attr("clip-path", `url(#${clipPathId})`).
+      style("stroke-width", this.plotOptions.lineWidth).
       attr("d", line(points));
 
     // append drop lines
     points = [
-      { x: data[xVar].limits[0], y: data[yVar].target },
-      { x: data[xVar].target, y: data[yVar].target }
+      { x: xRange.min, y: yData.target },
+      { x: xData.target, y: yData.target }
     ];
     line = d3.line().
-      x((d, i) => { console.log(d.x, x(d.x)); return x(d.x) }).
-      y((d, i) => { console.log(d.y, y(d.y)); return y(d.y) });
+      x((d, i) => x(d.x)).
+      y((d, i) => y(d.y));
     svg.append("g").
       attr("transform", `translate(${margin},${margin})`).
       append("path").
+      attr("clip-path", `url(#${clipPathId})`).
       attr("class", "drop-line").
+      style("stroke-width", this.plotOptions.lineWidth / 2).
       attr("d", line(points));
 
     points = [
-      { x: data[xVar].target, y: data[yVar].limits[0] },
-      { x: data[xVar].target, y: data[yVar].target }
+      { x: xData.target, y: yRange.min },
+      { x: xData.target, y: yData.target }
     ];
     line = d3.line().
       x((d, i) => x(d.x)).
@@ -209,16 +234,19 @@ export class OutputPaneComponent implements OnInit {
       attr("transform", `translate(${margin},${margin})`).
       append("path").
       attr("class", "drop-line").
+      attr("clip-path", `url(#${clipPathId})`).
+      style("stroke-width", this.plotOptions.lineWidth / 2).
       attr("d", line(points));
 
     // append target point
     let circle = svg.append("circle").
       attr("r", 5).
-      attr("cx", x(data[xVar].target)).
-      attr("cy", y(data[yVar].target)).
+      attr("cx", x(xData.target)).
+      attr("cy", y(yData.target)).
+      attr("clip-path", `url(#${clipPathId})`).
       attr("class", "target").
       attr("transform", `translate(${margin},${margin})`);
-    circle.append("title").text(`Target: (${data[xVar].target}, ${data[yVar].target})`);
+    circle.append("title").text(`Target: (${xData.target}, ${yData.target})`);
   }
 
   private drawBottomPlot(): void {
@@ -227,6 +255,7 @@ export class OutputPaneComponent implements OnInit {
     element.innerHTML = "";
 
     let data = this.modelSet.data;
+    let ranges = this.modelSet.ranges;
 
     // set dimensions
     let margin2 = 100, margin = 50;
@@ -252,9 +281,24 @@ export class OutputPaneComponent implements OnInit {
 
     let svg = d3.select(element);
 
+    if (this.plotOptions.fontFamily != "") {
+      svg.style("font-family", this.plotOptions.fontFamily);
+    }
+    svg.style("font-size", `${this.plotOptions.fontSize * 100}%`);
+
+    // append clip paths
+    let defs = svg.append('defs');
+    defs.append("clipPath").
+      attr("id", "bottom-plot-area").
+      append("rect").
+      attr("x", 0).
+      attr("y", 0).
+      attr("width", width).
+      attr("height", height);
+
     // compute scales
     let x = d3.scaleLinear().
-      domain(data.pSpace.limits).
+      domain(ranges.pSpace.toArray()).
       range([0, width]);
 
     let y = d3.scaleLinear().range([0, height]);
@@ -293,8 +337,8 @@ export class OutputPaneComponent implements OnInit {
 
     // append ab line
     let points = [
-      { x: data.pSpace.limits[0], y: 0.5 },
-      { x: data.pSpace.limits[1], y: 0.5 }
+      { x: ranges.pSpace.min, y: 0.5 },
+      { x: ranges.pSpace.max, y: 0.5 }
     ];
     let line = d3.line().
       x((d, i) => x(d.x)).
@@ -303,7 +347,9 @@ export class OutputPaneComponent implements OnInit {
     svg.append("g").
       attr("transform", `translate(${margin},${margin})`).
       append("path").
+      attr("clip-path", "url(#bottom-plot-area)").
       attr("class", "ab-line").
+      style("stroke-width", this.plotOptions.lineWidth / 4).
       attr("d", line(points));
 
     // append main line
@@ -318,7 +364,9 @@ export class OutputPaneComponent implements OnInit {
     svg.append("g").
       attr("transform", `translate(${margin},${margin})`).
       append("path").
+      attr("clip-path", "url(#bottom-plot-area)").
       attr("class", "pspace-line").
+      style("stroke-width", this.plotOptions.lineWidth).
       attr("d", line(points));
 
     // append left bracket line
@@ -333,7 +381,9 @@ export class OutputPaneComponent implements OnInit {
     svg.append("g").
       attr("transform", `translate(${margin},${margin})`).
       append("path").
+      attr("clip-path", "url(#bottom-plot-area)").
       attr("class", "pspace-line").
+      style("stroke-width", this.plotOptions.lineWidth).
       attr("d", line(points));
 
     // append right bracket line
@@ -348,7 +398,9 @@ export class OutputPaneComponent implements OnInit {
     svg.append("g").
       attr("transform", `translate(${margin},${margin})`).
       append("path").
+      attr("clip-path", "url(#bottom-plot-area)").
       attr("class", "pspace-line").
+      style("stroke-width", this.plotOptions.lineWidth).
       attr("d", line(points));
 
     // append center point
@@ -356,6 +408,7 @@ export class OutputPaneComponent implements OnInit {
       attr("r", 3).
       attr("cx", x(0)).
       attr("cy", y(0.5)).
+      attr("clip-path", "url(#bottom-plot-area)").
       attr("class", "pspace-center").
       attr("transform", `translate(${margin},${margin})`);
 
@@ -364,6 +417,7 @@ export class OutputPaneComponent implements OnInit {
       attr("r", 5).
       attr("cx", x(data.pSpace.target)).
       attr("cy", y(0.5)).
+      attr("clip-path", "url(#bottom-plot-area)").
       attr("class", "pspace-target").
       attr("transform", `translate(${margin},${margin})`);
     circle.append("title").text(`Target: ${data.pSpace.target}`);

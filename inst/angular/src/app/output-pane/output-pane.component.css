@@ -28,23 +28,23 @@
 }
 :host /deep/ svg path.line {
   stroke: steelblue;
-  stroke-width: 2;
+  stroke-width: 1;
   fill: none;
 }
 :host /deep/ svg path.pspace-line {
   stroke: maroon;
-  stroke-width: 2;
+  stroke-width: 1;
   fill: none;
 }
 :host /deep/ svg path.ab-line {
   stroke: black;
-  stroke-width: 0.5;
+  stroke-width: 0.25;
   stroke-dasharray: 5, 5;
   fill: none;
 }
 :host /deep/ svg path.drop-line {
   stroke: red;
-  stroke-width: 1;
+  stroke-width: 0.5;
   stroke-dasharray: 5, 5;
   fill: none;
 }
