@@ -98,8 +98,8 @@ TTest <- setRefClass("TTest",
       result
     },
     plotData = function(ranges = list()) {
-      alphaValues <- list(alpha, alpha * 1.25, alpha * 0.75)
-      result <- list(alpha = list(values = alphaValues))
+      sigmaValues <- list(unbox(sigma), unbox(sigma * 1.20), unbox(sigma * 0.80))
+      result <- list(sigma = list(values = sigmaValues))
       if (output == "n") {
         if (is.null(ranges$n)) {
           nValues <- seq(nRange[1], nRange[2], 0.1)
@@ -108,7 +108,7 @@ TTest <- setRefClass("TTest",
         }
         nLimits <- range(nValues)
 
-        powerValues <- lapply(alphaValues, function(alpha) {
+        powerValues <- lapply(sigmaValues, function(sigma) {
           calculatePower(alpha, delta, sigma, nValues)
         })
         if (is.null(ranges$power)) {
@@ -117,7 +117,7 @@ TTest <- setRefClass("TTest",
           powerLimits <- ranges$power
         }
 
-        deltaValues <- lapply(alphaValues, function(alpha) {
+        deltaValues <- lapply(sigmaValues, function(sigma) {
           calculateDelta(alpha, sigma, nValues, power)
         })
         if (is.null(ranges$delta)) {
@@ -138,7 +138,7 @@ TTest <- setRefClass("TTest",
         }
         powerLimits <- range(powerValues)
 
-        nValues <- lapply(alphaValues, function(alpha) {
+        nValues <- lapply(sigmaValues, function(sigma) {
           calculateN(alpha, delta, sigma, powerValues)
         })
         if (is.null(ranges$n)) {
@@ -153,7 +153,7 @@ TTest <- setRefClass("TTest",
           deltaValues <- seq(ranges$delta[1], ranges$delta[2], 0.01)
         }
         deltaLimits <- range(deltaValues)
-        powerByDeltaValues <- lapply(alphaValues, function(alpha) {
+        powerByDeltaValues <- lapply(sigmaValues, function(sigma) {
           calculatePower(alpha, deltaValues, sigma, n)
         })
 
@@ -170,7 +170,7 @@ TTest <- setRefClass("TTest",
         }
         deltaLimits <- range(deltaValues)
 
-        nValues <- lapply(alphaValues, function(alpha) {
+        nValues <- lapply(sigmaValues, function(sigma) {
           calculateN(alpha, deltaValues, sigma, power)
         })
         if (is.null(ranges$n)) {
@@ -179,7 +179,7 @@ TTest <- setRefClass("TTest",
           nLimits <- ranges$n
         }
 
-        powerValues <- lapply(alphaValues, function(alpha) {
+        powerValues <- lapply(sigmaValues, function(sigma) {
           calculatePower(alpha, deltaValues, sigma, n)
         })
         if (is.null(ranges$power)) {
