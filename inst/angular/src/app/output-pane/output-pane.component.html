@@ -1,7 +1,7 @@
-<div #plot class="plot" (window:resize)="onResize()">
-  <svg #topLeftPlot class="top-left"></svg>
-  <svg #topRightPlot class="top-right"></svg>
-  <svg #bottomPlot class="bottom"></svg>
+<div class="plot" (window:resize)="onResize()">
+  <app-plot #topLeft  name="top-left"  [modelSet]="modelSet" [plotOptions]="plotOptions"></app-plot>
+  <app-plot #topRight name="top-right" [modelSet]="modelSet" [plotOptions]="plotOptions"></app-plot>
+  <app-bottom-plot #bottom name="bottom" [modelSet]="modelSet" [plotOptions]="plotOptions"></app-bottom-plot>
 </div>
 <div class="output-text" *ngIf="modelSet">
   <div *ngIf="modelSet.model.output == 'n'">

@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ViewChild, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 
 import { Observable } from 'rxjs/Observable';
@@ -7,17 +7,9 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/merge';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
-import { Range } from '../range';
 import { PlotOptions } from '../plot-options';
 import { TTestService } from '../t-test.service';
-import { Plotter, BottomPlotter } from '../plotter';
-
-let plotTitles = {
-  "n": "Sample Size",
-  "power": "Power",
-  "powerByDelta": "Power",
-  "delta": "Detectable Alternative"
-};
+import { PlotComponent, BottomPlotComponent } from '../plot/plot.component';
 
 @Component({
   selector: 'app-output-pane',
@@ -27,24 +19,16 @@ let plotTitles = {
 export class OutputPaneComponent implements OnInit {
   @Input() selectedModelSet: Observable<TTestSet>;
   @Input() plotOptions: PlotOptions;
+  @ViewChild('topLeft') topLeftPlot: PlotComponent;
+  @ViewChild('topRight') topRightPlot: PlotComponent;
+  @ViewChild('bottom') bottomPlot: BottomPlotComponent;
+
   modelSet: TTestSet;
   subscription: Subscription;
-
-  @ViewChild('topLeftPlot') topLeftPlotElement: ElementRef;
-  @ViewChild('topRightPlot') topRightPlotElement: ElementRef;
-  @ViewChild('bottomPlot') bottomPlotElement: ElementRef;
-
-  private topLeftPlotter: Plotter;
-  private topRightPlotter: Plotter;
-  private bottomPlotter: BottomPlotter;
 
   constructor(private ttestService: TTestService) { }
 
   ngOnInit(): void {
-    this.topLeftPlotter = new Plotter(this.topLeftPlotElement, "top-left", this.plotOptions);
-    this.topRightPlotter = new Plotter(this.topRightPlotElement, "top-right", this.plotOptions);
-    this.bottomPlotter = new BottomPlotter(this.bottomPlotElement, "bottom", this.plotOptions);
-
     this.selectedModelSet.subscribe(modelSet => {
       if (this.subscription) {
         this.subscription.unsubscribe();
@@ -57,7 +41,8 @@ export class OutputPaneComponent implements OnInit {
         subscribe(changes => {
           this.drawPlot();
         });
-      this.drawPlot();
+
+      setTimeout(() => this.drawPlot(), 1);
     });
   }
 
@@ -67,24 +52,21 @@ export class OutputPaneComponent implements OnInit {
 
   drawPlot(): void {
     if (this.modelSet) {
-      let data = this.modelSet.data;
-      let ranges = this.modelSet.ranges;
-
       switch (this.modelSet.model.output) {
         case "n":
-          this.topLeftPlotter.draw(data.power, ranges.power, "Power", data.n, ranges.n, "Sample Size");
-          this.topRightPlotter.draw(data.delta, ranges.delta, "Detectable Alternative", data.n, ranges.n, "Sample Size");
+          this.topLeftPlot.draw({ xDataKey: "power", yDataKey: "n" });
+          this.topRightPlot.draw({ xDataKey: "delta", yDataKey: "n" });
           break;
         case "power":
-          this.topLeftPlotter.draw(data.n, ranges.n, "Sample Size", data.power, ranges.power, "Power");
-          this.topRightPlotter.draw(data.delta, ranges.delta, "Detectable Alternative", data.powerByDelta, ranges.power, "Power", "x");
+          this.topLeftPlot.draw({ xDataKey: "n", yDataKey: "power" });
+          this.topRightPlot.draw({ xDataKey: "delta", yDataKey: "powerByDelta", yRangeKey: "power", multiLine: "y" });
           break;
         case "delta":
-          this.topLeftPlotter.draw(data.n, ranges.n, "Sample Size", data.delta, ranges.delta, "Detectable Alternative");
-          this.topRightPlotter.draw(data.power, ranges.power, "Power", data.delta, ranges.delta, "Detectable Alternative");
+          this.topLeftPlot.draw({ xDataKey: "n", yDataKey: "delta" });
+          this.topRightPlot.draw({ xDataKey: "power", yDataKey: "delta" });
           break;
       }
-      this.bottomPlotter.draw(data.pSpace, ranges.pSpace);
+      this.bottomPlot.draw({ xDataKey: "pSpace" });
     }
   }
 }
