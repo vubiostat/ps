@@ -25,14 +25,30 @@ export class TTest extends ChangeEmitter {
 
   update(attribs: any, emit = true): void {
     this.noEmit = true;
-    this.id = attribs.id;
-    this.output = attribs.output;
-    this.design = attribs.design;
-    this.alpha = attribs.alpha;
-    this.sigma = attribs.sigma;
-    this.delta = attribs.delta;
-    this.power = attribs.power;
-    this.n = attribs.n;
+    if (attribs.id !== undefined) {
+      this.id = attribs.id;
+    }
+    if (attribs.output !== undefined) {
+      this.output = attribs.output;
+    }
+    if (attribs.design !== undefined) {
+      this.design = attribs.design;
+    }
+    if (attribs.alpha !== undefined) {
+      this.alpha = attribs.alpha;
+    }
+    if (attribs.sigma !== undefined) {
+      this.sigma = attribs.sigma;
+    }
+    if (attribs.delta !== undefined) {
+      this.delta = attribs.delta;
+    }
+    if (attribs.power !== undefined) {
+      this.power = attribs.power;
+    }
+    if (attribs.n !== undefined) {
+      this.n = attribs.n;
+    }
     this.noEmit = false;
     if (emit) {
       this.emit();

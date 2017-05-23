@@ -48,3 +48,11 @@ svg /deep/ circle.pspace-center {
 svg /deep/ circle.pspace-target {
   fill: maroon;
 }
+
+svg /deep/ g.focus rect,
+svg /deep/ g.target-info rect {
+  stroke: black;
+  stroke-width: 1;
+  fill: white;
+  fill-opacity: 0.8;
+}
