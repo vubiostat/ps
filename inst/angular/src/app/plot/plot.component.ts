@@ -99,18 +99,30 @@ export class PlotComponent implements OnInit {
     // append main line
     let multiLine = options.multiLine || "x";
     if (multiLine == "x") {
-      xData.values.forEach((xValues, xIndex) => {
+      xData.values.every((xValues, xIndex) => {
         let points = xValues.map((xValue, i) => {
           return { x: xValue, y: yData.values[i] };
         });
         this.appendLine(points, xScale, yScale, xIndex == 0 ? "line" : "alt-line");
+
+        if (!this.modelSet.model.showAlternates) {
+          // stop after first line
+          return false;
+        }
+        return true;
       });
     } else if (multiLine == "y") {
-      yData.values.forEach((yValues, yIndex) => {
+      yData.values.every((yValues, yIndex) => {
         let points = xData.values.map((xValue, i) => {
           return { x: xValue, y: yValues[i] };
         });
         this.appendLine(points, xScale, yScale, yIndex == 0 ? "line" : "alt-line");
+
+        if (!this.modelSet.model.showAlternates) {
+          // stop after first line
+          return false;
+        }
+        return true;
       });
     }
 

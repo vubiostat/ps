@@ -14,6 +14,7 @@ export class TTest extends ChangeEmitter {
   @Changeable delta: number;
   @Changeable power: number;
   @Changeable n: number;
+  @Changeable showAlternates = false;
 
   constructor(attribs?: any) {
     super();

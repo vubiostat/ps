@@ -11,7 +11,7 @@
 </div>
 <div class="slider-group">
   <div class="label">Type I Error (&alpha;)</div>
-  <div class="row">
+  <div class="inputs row">
     <div class="col-sm-9">
       <div class="slider">
         <div class="min">{{min.alpha}}</div>
@@ -31,8 +31,20 @@
   </div>
 </div>
 <div class="slider-group">
-  <div class="label">Std. deviation (&sigma;)</div>
-  <div class="row">
+  <div class="label row">
+    <div class="col-sm">
+      Std. deviation (&sigma;)
+    </div>
+    <div class="col-sm form-check">
+      <label class="form-check-label">
+        <input name="show-alternates" type="checkbox"
+          class="form-check-input"
+          [(ngModel)]="model.showAlternates" />
+        Alternates
+      </label>
+    </div>
+  </div>
+  <div class="inputs row">
     <div class="col-sm-9">
       <div class="slider">
         <div class="min">{{min.sigma}}</div>
@@ -55,7 +67,7 @@
     Power
     <span *ngIf="model.output == 'power'">(Output)</span>
   </div>
-  <div class="row">
+  <div class="inputs row">
     <div class="col-sm-9">
       <div class="slider">
         <div class="min">{{min.power}}</div>
@@ -81,7 +93,7 @@
     Difference in population means (&delta;)
     <span *ngIf="model.output == 'delta'">(Output)</span>
   </div>
-  <div class="row">
+  <div class="inputs row">
     <div class="col-sm-9">
       <div class="slider">
         <div class="min">{{min.delta}}</div>
@@ -106,7 +118,7 @@
     Sample size
     <span *ngIf="model.output == 'n'">(Output)</span>
   </div>
-  <div class="row">
+  <div class="inputs row">
     <div class="col-sm-9">
       <div class="slider">
         <div class="min">{{min.n}}</div>

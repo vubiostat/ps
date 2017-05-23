@@ -60,6 +60,10 @@ export class TTestComponent implements OnInit {
     this.updateModelSet();
   }
 
+  toggleAlternates(): void {
+    this.model.showAlternates = !this.model.showAlternates;
+  }
+
   private getMin(n: number): number {
     return Math.round(n - (n * 0.5));
   }
