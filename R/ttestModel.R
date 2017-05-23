@@ -106,6 +106,9 @@ TTest <- setRefClass("TTest",
         } else {
           nValues <- seq(ranges$n[1], ranges$n[2], 0.1)
         }
+        if (!(n %in% nValues)) {
+          nValues <- sort(c(nValues, n))
+        }
         nLimits <- range(nValues)
 
         powerValues <- lapply(sigmaValues, function(sigma) {
@@ -136,6 +139,9 @@ TTest <- setRefClass("TTest",
         } else {
           powerValues <- seq(ranges$power[1], ranges$power[2], 0.01)
         }
+        if (!(power %in% powerValues)) {
+          powerValues <- sort(c(powerValues, power))
+        }
         powerLimits <- range(powerValues)
 
         nValues <- lapply(sigmaValues, function(sigma) {
@@ -152,6 +158,10 @@ TTest <- setRefClass("TTest",
         } else {
           deltaValues <- seq(ranges$delta[1], ranges$delta[2], 0.01)
         }
+        if (!(delta %in% deltaValues)) {
+          deltaValues <- sort(c(deltaValues, delta))
+        }
+        powerLimits <- range(powerValues)
         deltaLimits <- range(deltaValues)
         powerByDeltaValues <- lapply(sigmaValues, function(sigma) {
           calculatePower(alpha, deltaValues, sigma, n)
@@ -167,6 +177,9 @@ TTest <- setRefClass("TTest",
           deltaValues <- seq(deltaRange[1], deltaRange[2], 0.1)
         } else {
           deltaValues <- seq(ranges$delta[1], ranges$delta[2], 0.1)
+        }
+        if (!(delta %in% deltaValues)) {
+          deltaValues <- sort(c(deltaValues, delta))
         }
         deltaLimits <- range(deltaValues)
 
