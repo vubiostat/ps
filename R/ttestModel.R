@@ -68,8 +68,7 @@ TTest <- setRefClass("TTest",
       }
     },
     attributes = function() {
-      list(
-        id     = unbox(id),
+      result <- list(
         alpha  = unbox(alpha),
         power  = unbox(power),
         n      = unbox(n),
@@ -77,6 +76,10 @@ TTest <- setRefClass("TTest",
         sigma  = unbox(sigma),
         output = unbox(output)
       )
+      if (!inherits(id, "uninitializedField")) {
+        result$id <- unbox(id)
+      }
+      return(result)
     },
     ranges = function() {
       result <- list()
