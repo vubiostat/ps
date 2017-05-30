@@ -5,14 +5,18 @@ export class PlotOptions extends ChangeEmitter {
   @Changeable width: number;
   @Changeable fontFamily: string;
   @Changeable fontSize: number;
+  @Changeable axisFontSize: number;
   @Changeable lineWidth: number;
+  @Changeable axisLineWidth: number;
 
   constructor() {
     super();
     this.noEmit = true;
     this.fontFamily = "";
     this.fontSize = 1;
+    this.axisFontSize = 1;
     this.lineWidth = 2;
+    this.axisLineWidth = 1;
     this.noEmit = false;
     this.changes = {};
   }
@@ -22,8 +26,10 @@ export class PlotOptions extends ChangeEmitter {
       height: this.height,
       width: this.width,
       fontFamily: this.fontFamily,
+      axisFontSize: this.axisFontSize,
       fontSize: this.fontSize,
-      lineWidth: this.lineWidth
+      lineWidth: this.lineWidth,
+      axisLineWidth: this.axisLineWidth
     });
   }
 }

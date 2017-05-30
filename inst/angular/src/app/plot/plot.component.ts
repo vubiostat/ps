@@ -95,7 +95,6 @@ export class PlotComponent implements OnInit {
       domain(yRange.toArray().reverse()).
       range([0, height]);
 
-    this.appendAxes(height, xScale, yScale);
     this.appendLabels(width, height, xTitle, yTitle);
     this.appendTitle(width, `${yTitle} vs. ${xTitle}`);
 
@@ -286,6 +285,8 @@ export class PlotComponent implements OnInit {
       });
 
     targetCircle.call(drag);
+
+    this.appendAxes(height, xScale, yScale);
   }
 
   protected getDimension(key: string): number {
@@ -323,14 +324,18 @@ export class PlotComponent implements OnInit {
     let xAxis = d3.axisBottom(xScale).ticks(6);
     this.svg.append("g").
       attr("transform", `translate(${this.margin},${height + this.margin})`).
-      call(xAxis);
+      call(xAxis).
+      attr("font-size", `${10 * this.plotOptions.axisFontSize}`).
+      attr("stroke-width", this.plotOptions.axisLineWidth);
   }
 
   protected appendYAxis(yScale: any): void {
     let yAxis = d3.axisLeft(yScale).ticks(6);
     this.svg.append("g").
       attr("transform", `translate(${this.margin},${this.margin})`).
-      call(yAxis);
+      call(yAxis).
+      attr("font-size", `${10 * this.plotOptions.axisFontSize}`).
+      attr("stroke-width", this.plotOptions.axisLineWidth);
   }
 
   protected appendAxes(height: number, xScale: any, yScale: any): void {
