@@ -1,4 +1,6 @@
+source("R/validation.R")
 source("R/ttestModel.R")
-source("R/ttestHandler.R")
+source("R/ttestStatefulHandler.R")
+source("R/ttestStatelessHandler.R")
 source("R/runPS.R")
 runPS()

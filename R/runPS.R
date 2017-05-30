@@ -48,16 +48,19 @@ NotFoundHandler <- setRefClass("NotFoundHandler",
   )
 )
 
-buildApp <- function(allowHost, allowPort) {
+
+buildApp <- function(mainHandler, allowHost, allowPort) {
   app <- NotFoundHandler()
-  app <- TTestHandler(app)
+  app <- mainHandler(app)
   app <- OptionsHandler(app)
   app <- CorsHandler(app, allowHost, allowPort)
   app
 }
 
-runPS <- function(host = "127.0.0.1", port = 7788, sourcePort = 4200) {
+runPS <- function(kind = c("stateful", "stateless"), host = "127.0.0.1", port = 7788, sourcePort = 4200) {
+  kind <- match.arg(kind)
   allowHost <- if (host == "127.0.0.1") "localhost" else host
-  app <- buildApp(allowHost, sourcePort)
+  mainHandler <- if (kind == "stateful") TTestStatefulHandler else TTestStatelessHandler
+  app <- buildApp(mainHandler, allowHost, sourcePort)
   runServer(host, port, app)
 }
