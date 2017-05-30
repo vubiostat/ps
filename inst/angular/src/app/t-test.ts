@@ -186,6 +186,8 @@ export class TTestData {
   delta: TTestDataMember;
   alpha: TTestDataMember;
   pSpace: TTestDataMember;
+  precision: TTestDataMember;
+  sampDist: TTestDataMember;
   powerByDelta?: TTestDataMember;
 }
 

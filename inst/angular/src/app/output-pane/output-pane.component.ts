@@ -66,7 +66,7 @@ export class OutputPaneComponent implements OnInit {
           this.topRightPlot.draw({ xDataKey: "power", yDataKey: "delta" });
           break;
       }
-      this.bottomPlot.draw({ xDataKey: "pSpace" });
+      this.bottomPlot.draw();
     }
   }
 }

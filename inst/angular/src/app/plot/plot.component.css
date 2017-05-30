@@ -23,6 +23,11 @@ svg /deep/ path.pspace-line {
   fill: none;
 }
 
+svg /deep/ path.dist-area {
+  fill: #ffcdc8;
+  stroke: none;
+}
+
 svg /deep/ path.ab-line {
   stroke: black;
   stroke-width: 0.25;

@@ -15,6 +15,11 @@ calculateDelta <- function(alpha, sigma, n, power) {
   sqrt((qnorm(1 - alpha/2) - qnorm(1 - power)) ^ 2 * (sigma ^ 2) / n)
 }
 
+calculatePrecision <- function(alpha, delta, sigma, n) {
+  moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
+  c(delta - moe, delta + moe)
+}
+
 paramTitles <- list(
   power = "Power",
   n = "Sample Size",
@@ -23,7 +28,8 @@ paramTitles <- list(
 
 TTest <- setRefClass("TTest",
   fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "nRange",
-             "powerRange", "defaultDeltaRange", "deltaRange", "pSpace"),
+             "powerRange", "defaultDeltaRange", "deltaRange", "pSpaceRange",
+             "precisionRange"),
   methods = list(
     initialize = function(params) {
       id     <<- params$id
@@ -33,11 +39,13 @@ TTest <- setRefClass("TTest",
       delta  <<- params$delta
       sigma  <<- params$sigma
       output <<- params$output
+
       nRange            <<- NULL
       powerRange        <<- NULL
       deltaRange        <<- NULL
       defaultDeltaRange <<- NULL
-      pSpace            <<- NULL
+      pSpaceRange       <<- NULL
+      precisionRange    <<- NULL
 
       update()
     },
@@ -48,7 +56,7 @@ TTest <- setRefClass("TTest",
         powerRange <<- sort(calculatePower(alpha, delta, sigma, nRange))
         deltaRange <<- sort(calculateDelta(alpha, sigma, nRange, power))
         defaultDeltaRange <<- deltaRange
-        pSpace <<- guessDeltaRange()
+        pSpaceRange <<- guessDeltaRange()
 
       } else if (output == "power") {
         power <<- calculatePower(alpha, delta, sigma, n)
@@ -56,7 +64,7 @@ TTest <- setRefClass("TTest",
         nRange <<- sort(calculateN(alpha, delta, sigma, powerRange))
         deltaRange <<- guessDeltaRange()
         defaultDeltaRange <<- deltaRange
-        pSpace <<- deltaRange
+        pSpaceRange <<- deltaRange
 
       } else if (output == "delta") {
         delta <<- calculateDelta(alpha, sigma, n, power)
@@ -64,8 +72,10 @@ TTest <- setRefClass("TTest",
         nRange <<- sort(calculateN(alpha, deltaRange, sigma, power))
         powerRange <<- sort(calculatePower(alpha, deltaRange, sigma, n))
         defaultDeltaRange <<- deltaRange
-        pSpace <<- guessDeltaRange()
+        pSpaceRange <<- guessDeltaRange()
       }
+
+      precisionRange <<- calculatePrecision(alpha, delta, sigma, n)
     },
     attributes = function() {
       result <- list(
@@ -95,8 +105,8 @@ TTest <- setRefClass("TTest",
       if (!is.null(defaultDeltaRange)) {
         result$defaultDelta <- defaultDeltaRange
       }
-      if (!is.null(pSpace)) {
-        result$pSpace <- pSpace
+      if (!is.null(pSpaceRange)) {
+        result$pSpace <- pSpaceRange
       }
       result
     },
@@ -209,14 +219,20 @@ TTest <- setRefClass("TTest",
         result$delta <- list(values = deltaValues, limits = deltaLimits, target = unbox(delta))
       }
 
+      # precision vs effect size
       if (is.null(ranges$pSpace)) {
-        pSpaceLimits <- pSpace
+        pSpaceLimits <- pSpaceRange
       } else {
         pSpaceLimits <- ranges$pSpace
       }
-      moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
-      pSpaceValues <- c(delta - moe, delta + moe)
-      result$pSpace <- list(values = pSpaceValues, limits = pSpaceLimits, target = unbox(delta))
+      pSpaceValues <- seq(pSpaceLimits[1], pSpaceLimits[2], 0.01)
+      result$pSpace <- list(values = pSpaceValues, limits = pSpaceLimits)
+      result$precision <- list(values = precisionRange, limits = precisionRange, target = unbox(delta))
+
+      # calculate sample distribution
+      sampDistValues <- dnorm(pSpaceValues, mean = delta, sd = sigma/sqrt(n))
+      sampDistValues <- ifelse(sampDistValues < 0.01, 0, sampDistValues)
+      result$sampDist <- list(values = sampDistValues, limits = range(sampDistValues))
 
       result
     },

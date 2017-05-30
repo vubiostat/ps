@@ -439,7 +439,7 @@ export class PlotComponent implements OnInit {
   styleUrls: ['./plot.component.css']
 })
 export class BottomPlotComponent extends PlotComponent {
-  draw(options: DrawOptions): void {
+  draw(): void {
     if (!this.modelSet) {
       return;
     }
@@ -449,18 +449,17 @@ export class BottomPlotComponent extends PlotComponent {
     let width  = this.getDimension('width')  - this.margin2;
     let height = this.getDimension('height') - this.margin2;
 
-    let xDataKey = options.xDataKey || options.xDataKey;
-    let xData = this.modelSet.data[xDataKey];
-    let xRangeKey = options.xRangeKey || options.xDataKey;
-    let xRange = this.modelSet.ranges[xRangeKey];
-    let xTitle = "Parameter Space";
+    let pSpaceData = this.modelSet.data.pSpace;
+    let pSpaceRange = this.modelSet.ranges.pSpace;
+    let precisionData = this.modelSet.data.precision;
+    let sampDistData = this.modelSet.data.sampDist;
 
     this.enablePlotOptions();
     this.appendClipPaths(width, height);
 
     // compute scales
     let xScale = d3.scaleLinear().
-      domain(xRange.toArray()).
+      domain(pSpaceRange.toArray()).
       range([0, width]);
 
     let yScale = d3.scaleLinear().
@@ -468,26 +467,49 @@ export class BottomPlotComponent extends PlotComponent {
       range([0, height]);
 
     this.appendXAxis(height, xScale);
-    this.appendXLabel(width, height, xTitle);
+    this.appendXLabel(width, height, "Parameter Space");
     this.appendTitle(width, "Precision vs. Effect Size");
 
+    // sample distribution
+    let points = pSpaceData.values.map((xValue, i) => {
+      return { x: xValue, y: sampDistData.values[i] };
+    });
+
+    let yScaleSD = d3.scaleLinear().
+      domain([sampDistData.limits[1], sampDistData.limits[0]]).
+      range([0, yScale(0.5)]);
+
+    let area = d3.area().
+      x((d, i) => xScale(d.x)).
+      y0(yScaleSD(0)).
+      y1((d, i) => yScaleSD(d.y));
+
+    let group = this.svg.append("g").
+      attr("transform", `translate(${this.margin},${this.margin})`);
+    group.append("path").
+      attr("class", "dist-area").
+      attr("clip-path", `url(#${this.clipPathId})`).
+      attr("d", area(points));
+
     // main line
-    let points = xData.values.map((xValue, i) => {
+    points = precisionData.values.map((xValue, i) => {
       return { x: xValue, y: 0.5 };
     });
     this.appendLine(points, xScale, yScale, "pspace-line");
 
     // left line
+    let leftLimit = precisionData.values[0];
     points = [
-      { x: xData.values[0], y: 0.3 },
-      { x: xData.values[0], y: 0.7 }
+      { x: leftLimit, y: 0.35 },
+      { x: leftLimit, y: 0.65 }
     ];
     this.appendLine(points, xScale, yScale, "pspace-line");
 
     // right line
+    let rightLimit = precisionData.values[1];
     points = [
-      { x: xData.values[1], y: 0.3 },
-      { x: xData.values[1], y: 0.7 }
+      { x: rightLimit, y: 0.35 },
+      { x: rightLimit, y: 0.65 }
     ];
     this.appendLine(points, xScale, yScale, "pspace-line");
 
@@ -495,6 +517,7 @@ export class BottomPlotComponent extends PlotComponent {
     this.appendCircle(0, 0.5, xScale, yScale, "pspace-center", "Center");
 
     // target point
-    this.appendCircle(xData.target, 0.5, xScale, yScale, "pspace-target", `Target: ${xData.target}`);
+    this.appendCircle(precisionData.target, 0.5, xScale, yScale,
+      "pspace-target", `Target: ${precisionData.target}`);
   }
 }
