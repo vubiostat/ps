@@ -282,7 +282,7 @@ export class PlotComponent implements OnInit {
         this.modelSet.model.update({
           [output]: targetPoint.y,
           [xChangeKey]: targetPoint.x
-        }, false);
+        });
       });
 
     targetCircle.call(drag);

@@ -39,6 +39,7 @@ svg /deep/ path.drop-line {
 
 svg /deep/ circle.target {
   fill: red;
+  cursor: grab;
 }
 
 svg /deep/ circle.pspace-center {

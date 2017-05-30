@@ -24,6 +24,9 @@ export class TTestComponent implements OnInit {
 
   ngOnInit(): void {
     this.model = this.modelSet.model;
+    this.model.onChange.subscribe(changes => {
+      this.updateModelSet();
+    });
 
     this.min = new TTest(this.model);
     this.max = new TTest(this.model);
@@ -57,7 +60,6 @@ export class TTestComponent implements OnInit {
         event.target.value = value;
       }, 1);
     }
-    this.updateModelSet();
   }
 
   toggleAlternates(): void {
