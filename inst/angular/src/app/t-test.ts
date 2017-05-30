@@ -67,11 +67,17 @@ export class TTest extends ChangeEmitter {
   }
 
   attributes(): any {
-    return({
-      id: this.id, output: this.output, design: this.design,
-      alpha: this.alpha, sigma: this.sigma, delta: this.delta,
-      power: this.power, n: this.n
-    });
+    let result: any = {
+      output: this.output, alpha: this.alpha, sigma: this.sigma,
+      delta: this.delta, power: this.power, n: this.n
+    };
+    if (this.id) {
+      result.id = this.id;
+    }
+    if (this.design) {
+      result.design = this.design;
+    }
+    return(result);
   }
 }
 

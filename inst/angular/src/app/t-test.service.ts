@@ -15,10 +15,17 @@ import { PlotOptions } from './plot-options';
 @Injectable()
 export class TTestService {
   private apiUrl = `${environment.apiUrl}/ttests`;
+  private stateless = environment.stateless;
 
   constructor(private http: Http) { }
 
   create(model: TTest): Promise<any> {
+    let url;
+    if (this.stateless) {
+      url = `${this.apiUrl}/calc`;
+    } else {
+      url = this.apiUrl;
+    }
     let params = { model: model.attributes() };
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
@@ -26,22 +33,26 @@ export class TTestService {
     let options = new RequestOptions({ headers: headers });
 
     return this.http.
-      post(this.apiUrl, JSON.stringify(params), options).
+      post(url, JSON.stringify(params), options).
       toPromise().
       then(response => response.json()).
       catch(this.handleError);
   }
 
   update(model: TTest): Promise<any> {
+    if (this.stateless) {
+      return this.create(model);
+    }
+
     if (!model.id) {
       throw new Error("model has no id");
     }
 
+    let url = `${this.apiUrl}/${model.id}`;
     let params = { model: model.attributes() };
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    let url = `${this.apiUrl}/${model.id}`;
     let options = new RequestOptions({ headers: headers });
     return this.http.
       put(url, JSON.stringify(params), options).
@@ -51,8 +62,14 @@ export class TTestService {
   }
 
   getPlot(modelSet: TTestSet, plotOptions: PlotOptions): Promise<Blob> {
-    if (!modelSet.model.id) {
-      throw new Error("model has no id");
+    let url;
+    if (this.stateless) {
+      url = `${this.apiUrl}/plot`;
+    } else {
+      if (!modelSet.model.id) {
+        throw new Error("model has no id");
+      }
+      url = `${this.apiUrl}/${modelSet.model.id}/plot`;
     }
 
     let params = {
@@ -63,7 +80,6 @@ export class TTestService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    let url = `${this.apiUrl}/${modelSet.model.id}/plot`;
     let options = new RequestOptions({
       headers: headers,
       responseType: ResponseContentType.Blob

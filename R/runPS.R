@@ -57,7 +57,7 @@ buildApp <- function(mainHandler, allowHost, allowPort) {
   app
 }
 
-runPS <- function(kind = c("stateful", "stateless"), host = "127.0.0.1", port = 7788, sourcePort = 4200) {
+runPS <- function(kind = c("stateless", "stateful"), host = "127.0.0.1", port = 7788, sourcePort = 4200) {
   kind <- match.arg(kind)
   allowHost <- if (host == "127.0.0.1") "localhost" else host
   mainHandler <- if (kind == "stateful") TTestStatefulHandler else TTestStatelessHandler
