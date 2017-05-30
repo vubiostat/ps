@@ -24,7 +24,8 @@
           <ngb-tab *ngFor="let modelSet of modelSets; let i = index"
             title="Test {{i+1}}" id="test-{{i+1}}">
             <template ngbTabContent>
-              <app-t-test [modelSet]="modelSet"></app-t-test>
+              <app-t-test [modelSet]="modelSet" (onToggleHelp)="toggleHelp()">
+              </app-t-test>
             </template>
           </ngb-tab>
         </ngb-tabset>

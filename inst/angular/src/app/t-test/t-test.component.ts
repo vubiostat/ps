@@ -19,6 +19,7 @@ export class TTestComponent implements OnInit {
   model: TTest;
   min: TTest;
   max: TTest;
+  @Output() onToggleHelp = new EventEmitter();
 
   constructor(private ttestService: TTestService) { }
 
@@ -64,6 +65,10 @@ export class TTestComponent implements OnInit {
 
   toggleAlternates(): void {
     this.model.showAlternates = !this.model.showAlternates;
+  }
+
+  toggleHelp(): void {
+    this.onToggleHelp.emit();
   }
 
   private getMin(n: number): number {

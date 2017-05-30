@@ -1,3 +1,11 @@
+.overview {
+  text-align: right;
+}
+
+.btn-secondary {
+  padding: 0.3rem 0.3rem;
+}
+
 div.slider-group {
   padding: 5px;
   border-radius: 5px;
