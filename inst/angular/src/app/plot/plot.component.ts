@@ -146,6 +146,9 @@ export class PlotComponent implements OnInit {
     // append drop lines
     let dropLines = this.appendDropLines(targetPoint, xScale, yScale);
 
+    // append axes over lines but under floating boxes
+    this.appendAxes(height, xScale, yScale);
+
     // append focus for hovering
     let focus = this.svg.append("g").
       style("display", "none").
@@ -285,8 +288,6 @@ export class PlotComponent implements OnInit {
       });
 
     targetCircle.call(drag);
-
-    this.appendAxes(height, xScale, yScale);
   }
 
   protected getDimension(key: string): number {
