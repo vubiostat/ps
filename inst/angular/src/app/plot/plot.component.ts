@@ -304,7 +304,9 @@ export class PlotComponent implements OnInit {
   }
 
   protected enablePlotOptions(): void {
-    if (this.plotOptions.fontFamily != "") {
+    if (this.plotOptions.fontFamily == "") {
+      this.svg.style("font-family", null);
+    } else {
       this.svg.style("font-family", this.plotOptions.fontFamily);
     }
     this.svg.style("font-size", `${this.plotOptions.fontSize * 100}%`);
