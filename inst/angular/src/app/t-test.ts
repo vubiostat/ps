@@ -193,6 +193,7 @@ export class TTestData {
 
 export class TTestSet {
   onChange = new EventEmitter();
+  onCompute = new EventEmitter();
 
   constructor(public model: TTest, public ranges: TTestRanges, public data: TTestData) {
     model.onChange.subscribe(value => {
@@ -207,5 +208,7 @@ export class TTestSet {
     this.model.update(model);
     this.ranges.updateFromArrays(ranges);
     this.data = data;
+
+    this.onCompute.emit();
   }
 }

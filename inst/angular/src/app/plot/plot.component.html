@@ -1,7 +1,7 @@
 <svg #plot
   [style.fontFamily]="plotOptions.fontFamily == '' ? null : plotOptions.fontFamily"
   [style.fontSize]="(plotOptions.fontSize * 100).toString() + '%'"
-  [attr.class]="name">
+  [attr.class]="name" (window:resize)="onResize()">
 
   <ng-template [ngIf]="x && y">
     <defs>

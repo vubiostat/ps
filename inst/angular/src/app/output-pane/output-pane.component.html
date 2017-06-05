@@ -1,11 +1,7 @@
-<div class="plot" (window:resize)="onResize()">
-  <app-plot
-    name="top-left" [x]="topLeftX" [y]="topLeftY" [plotOptions]="plotOptions"
-    [modelSet]="modelSet" [changeName]="topLeftChangeName">
+<div class="plot">
+  <app-plot name="top-left" [modelSet]="modelSet" [plotOptions]="plotOptions">
   </app-plot>
-  <app-plot
-    name="top-right" [x]="topRightX" [y]="topRightY" [plotOptions]="plotOptions"
-    [modelSet]="modelSet" [changeName]="topRightChangeName">
+  <app-plot name="top-right" [modelSet]="modelSet" [plotOptions]="plotOptions">
   </app-plot>
   <app-bottom-plot name="bottom" [modelSet]="modelSet" [plotOptions]="plotOptions">
   </app-bottom-plot>

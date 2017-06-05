@@ -1,17 +1,19 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
 import { PlotOptions } from '../plot-options';
 import { Range } from '../range';
 import { TTestSet } from '../t-test';
 
-export interface PlotData {
+interface PlotData {
   data: {
     values: any[];
     limits?: number[];
     target?: number;
   }
   range: Range;
+  change?: string;
   title: string;
 }
 
@@ -27,11 +29,11 @@ interface Point {
 })
 export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() name: string;
-  @Input() x: PlotData;
-  @Input() y: PlotData;
   @Input() plotOptions: PlotOptions;
   @Input() modelSet: TTestSet;
   @Input() changeName: string;
+  x: PlotData;
+  y: PlotData;
 
   @ViewChild('plot') plotElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
@@ -60,19 +62,33 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   showHoverInfo = false;
   needDraw = false;
 
+  private subscription: Subscription;
+
   ngOnInit(): void {
     this.clipPathId = `${this.name}-plot-area`;
     this.compute();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if ('x' in changes || 'y' in changes) {
-      this.compute();
+    if (changes.modelSet) {
+      if (this.subscription) {
+        this.subscription.unsubscribe();
+      }
+      if (this.modelSet) {
+        this.subscription = this.modelSet.onCompute.subscribe(() => {
+          this.compute();
+        });
+        this.compute();
+      }
     }
   }
 
   ngAfterViewChecked(): void {
     this.draw();
+  }
+
+  onResize(): void {
+    this.compute();
   }
 
   toggleTargetInfo(value: boolean): void {
@@ -135,19 +151,74 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     this.targetDragging = false;
     this.showTargetInfo = false;
 
-    if (this.modelSet && this.changeName) {
+    if (this.modelSet && this.x.change) {
       let output = this.modelSet.model.output;
       this.modelSet.model.update({
         [output]: this.targetPoint.y,
-        [this.changeName]: this.targetPoint.x
+        [this.x.change]: this.targetPoint.x
       });
     }
   }
 
   private compute(): void {
-    if (!this.x || !this.y || !this.x.data || !this.y.data) {
+    if (!this.modelSet) {
       return;
     }
+
+    // setup
+    let model = this.modelSet.model;
+    let ranges = this.modelSet.ranges;
+    let data = this.modelSet.data;
+    switch (this.modelSet.model.output) {
+      case "n":
+        if (this.name == "top-left") {
+          this.x = {
+            data: data.power, range: ranges.power, change: "power",
+            title: "Power"
+          };
+        } else if (this.name == "top-right") {
+          this.x = {
+            data: data.delta, range: ranges.delta, change: "delta",
+            title: "Detectable Alternative"
+          };
+        }
+        this.y = { data: data.n, range: ranges.n, title: "Sample Size" };
+        break;
+      case "power":
+        if (this.name == "top-left") {
+          this.x = {
+            data: data.n, range: ranges.n, change: "n",
+            title: "Sample Size"
+          };
+          this.y = { data: data.power, range: ranges.power, title: "Power" };
+        } else if (this.name == "top-right") {
+          this.x = {
+            data: data.delta, range: ranges.delta, change: "delta",
+            title: "Detectable Alternative"
+          };
+          this.y = { data: data.powerByDelta, range: ranges.power, title: "Power" };
+        }
+        break;
+      case "delta":
+        if (this.name == "top-left") {
+          this.x = {
+            data: data.n, range: ranges.n, change: "n",
+            title: "Sample Size"
+          };
+        } else if (this.name == "top-right") {
+          this.x = {
+            data: data.power, range: ranges.power, change: "power",
+            title: "Power"
+          };
+        }
+        this.y = { data: data.delta, range: ranges.delta, title: "Detectable Alternative" };
+        break;
+    }
+    if (!this.x || !this.y || !this.x.data || !this.y.data) {
+      console.log("bad:", this.x, this.y);
+      return;
+    }
+
     this.targetPoint = { x: this.x.data.target, y: this.y.data.target };
 
     // dimensions
