@@ -27,9 +27,6 @@ let plotTitles = {
 export class OutputPaneComponent implements OnInit {
   @Input() selectedModelSet: Observable<TTestSet>;
   @Input() plotOptions: PlotOptions;
-  @ViewChild('topLeft') topLeftPlot: PlotComponent;
-  @ViewChild('topRight') topRightPlot: PlotComponent;
-  @ViewChild('bottom') bottomPlot: BottomPlotComponent;
 
   modelSet: TTestSet;
   subscription: Subscription;
@@ -147,7 +144,6 @@ export class OutputPaneComponent implements OnInit {
 
           break;
       }
-      this.bottomPlot.draw();
     }
   }
 }

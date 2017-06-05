@@ -1,1 +1,52 @@
-<svg #plot></svg>
+<svg #plot
+  [style.fontFamily]="plotOptions.fontFamily == '' ? null : plotOptions.fontFamily"
+  [style.fontSize]="(plotOptions.fontSize * 100).toString() + '%'"
+  [attr.class]="name">
+
+  <ng-template [ngIf]="modelSet">
+    <defs>
+      <clipPath [id]="clipPathId">
+        <rect x="0" y="0" [attr.width]="width" [attr.height]="height" />
+      </clipPath>
+    </defs>
+
+    <text text-anchor="middle"
+      [attr.x]="width / 2 + margin" [attr.y]="height + margin" dy="2.5em">
+      Parameter Space
+    </text>
+    <text text-anchor="middle" font-weight="bold"
+      [attr.x]="width / 2 + margin" y="0" dy="2em">
+      Precision vs. Effect Size
+    </text>
+
+    <g [attr.transform]="translate(margin, margin)">
+      <path [attr.clip-path]="clipPath()" [attr.d]="sampDistPath"
+        fill="#ffcdc8" stroke="none" />
+    </g>
+
+    <g *ngFor="let path of paths" [attr.transform]="translate(margin, margin)">
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="path"
+        stroke="maroon"
+        [attr.stroke-width]="plotOptions.lineWidth"
+        fill="none" />
+    </g>
+
+    <circle r="5"
+      [attr.cx]="xScale(0)"
+      [attr.cy]="yScale(0.5)"
+      [attr.clip-path]="clipPath()"
+      [attr.transform]="translate(margin, margin)"
+      fill="darkseagreen" />
+
+    <circle r="5"
+      [attr.cx]="xScale(precision.data.target)"
+      [attr.cy]="yScale(0.5)"
+      [attr.clip-path]="clipPath()"
+      [attr.transform]="translate(margin, margin)"
+      fill="maroon" />
+
+    <g #bottomAxis [attr.transform]="translate(margin, height + margin)"></g>
+  </ng-template>
+</svg>
