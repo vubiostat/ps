@@ -6,6 +6,8 @@ import {
   OnInit
 } from '@angular/core';
 
+import 'rxjs/add/operator/debounceTime';
+
 import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { TTestService } from '../t-test.service';
 
@@ -25,9 +27,11 @@ export class TTestComponent implements OnInit {
 
   ngOnInit(): void {
     this.model = this.modelSet.model;
-    this.model.onChange.subscribe(changes => {
-      this.updateModelSet();
-    });
+    this.model.onChange.
+      debounceTime(100).
+      subscribe(changes => {
+        this.updateModelSet();
+      });
 
     this.min = new TTest(this.model);
     this.max = new TTest(this.model);
