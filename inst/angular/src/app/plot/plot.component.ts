@@ -66,7 +66,9 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.compute();
+    if ('x' in changes || 'y' in changes) {
+      this.compute();
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -106,11 +108,18 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
-  dragTargetStart(): void {
+  hoverInfoY(): string {
+    if (this.hoverY < this.yTargetRange[0]) {
+      return "-3.5em";
+    }
+    return "1em";
+  }
+
+  private dragTargetStart(): void {
     this.targetDragging = true;
   }
 
-  dragTarget(event: any): void {
+  private dragTarget(event: any): void {
     let x = this.xScale.invert(d3.event.x - this.margin);
     let y = this.yScale.invert(d3.event.y - this.margin);
     let index = this.xBisector(this.mainPoints, x);
@@ -122,8 +131,9 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     this.computeDropPaths();
   }
 
-  dragTargetEnd(): void {
+  private dragTargetEnd(): void {
     this.targetDragging = false;
+    this.showTargetInfo = false;
 
     if (this.modelSet && this.changeName) {
       let output = this.modelSet.model.output;
@@ -135,7 +145,7 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   private compute(): void {
-    if (!this.x || !this.y) {
+    if (!this.x || !this.y || !this.x.data || !this.y.data) {
       return;
     }
     this.targetPoint = { x: this.x.data.target, y: this.y.data.target };
