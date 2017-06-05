@@ -1,1 +1,86 @@
-<svg #plot></svg>
+<svg #plot
+  [style.fontFamily]="plotOptions.fontFamily == '' ? null : plotOptions.fontFamily"
+  [style.fontSize]="(plotOptions.fontSize * 100).toString() + '%'"
+  [attr.class]="name">
+
+  <ng-template [ngIf]="x && y">
+    <defs>
+      <clipPath [id]="clipPathId">
+        <rect x="0" y="0" [attr.width]="width" [attr.height]="height" />
+      </clipPath>
+    </defs>
+
+    <text text-anchor="middle"
+      [attr.x]="width / 2 + margin" [attr.y]="height + margin" dy="2.5em">
+      {{x.title}}
+    </text>
+    <text text-anchor="middle"
+      [attr.dx]="-(height / 2 + margin)" dy="1em"
+      transform="rotate(-90)">
+      {{y.title}}
+    </text>
+    <text text-anchor="middle" font-weight="bold"
+      [attr.x]="width / 2 + margin" y="0" dy="2em">
+      {{y.title}} vs. {{x.title}}
+    </text>
+
+    <g *ngFor="let path of paths; let i = index"
+      [attr.transform]="translate(margin, margin)">
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="path"
+        [attr.stroke]="i == 0 ? 'steelblue' : 'lightblue'"
+        [attr.stroke-width]="plotOptions.lineWidth"
+        fill="none" />
+    </g>
+    <g *ngFor="let path of dropPaths"
+      [attr.transform]="translate(margin, margin)">
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="path"
+        stroke="red"
+        [attr.stroke-width]="plotOptions.lineWidth / 2"
+        stroke-dasharray="5, 5"
+        fill="none" />
+    </g>
+
+    <g #bottomAxis [attr.transform]="translate(margin, height + margin)"></g>
+    <g #leftAxis [attr.transform]="translate(margin, margin)"></g>
+
+    <g *ngIf="showHoverInfo"
+      [attr.transform]="translate(margin + hoverX, margin + hoverY)">
+      <circle r="4" fill="none" stroke="blue" />
+      <rect x="-50" y="1em" width="100" height="2.5em"
+        stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
+      <text x="-40" y="1em">
+        <tspan x="-40" dy="1em">x: {{ hoverPoint.x }}</tspan>
+        <tspan x="-40" dy="1em">y: {{ hoverPoint.y }}</tspan>
+      </text>
+    </g>
+
+    <rect [attr.transform]="translate(margin, margin)"
+      [attr.width]="width" [attr.height]="height"
+      fill="none" pointer-events="all"
+      (mouseout)="toggleHoverInfo(false)"
+      (mousemove)="hover($event)" />
+
+    <g *ngIf="showTargetInfo"
+      [attr.transform]="translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))">
+      <rect x="0" y="-3.5em" width="100" height="2.5em"
+        stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
+      <text x="10" y="-3.5em">
+        <tspan x="10" dy="1em">x: {{ targetPoint.x }}</tspan>
+        <tspan x="10" dy="1em">y: {{ targetPoint.y }}</tspan>
+      </text>
+    </g>
+
+    <circle #target r="5"
+      [attr.cx]="xScale(targetPoint.x)"
+      [attr.cy]="yScale(targetPoint.y)"
+      [attr.clip-path]="clipPath()"
+      [attr.transform]="translate(margin, margin)"
+      fill="red" cursor="grab"
+      (mouseover)="toggleTargetInfo(true)"
+      (mouseout)="toggleTargetInfo(false)" />
+  </ng-template>
+</svg>

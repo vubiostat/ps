@@ -9,7 +9,15 @@ import 'rxjs/add/observable/merge';
 import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { PlotOptions } from '../plot-options';
 import { TTestService } from '../t-test.service';
-import { PlotComponent, BottomPlotComponent } from '../plot/plot.component';
+import { PlotComponent, PlotData } from '../plot/plot.component';
+import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
+
+let plotTitles = {
+  "n": "Sample Size",
+  "power": "Power",
+  "powerByDelta": "Power",
+  "delta": "Detectable Alternative"
+};
 
 @Component({
   selector: 'app-output-pane',
@@ -25,6 +33,13 @@ export class OutputPaneComponent implements OnInit {
 
   modelSet: TTestSet;
   subscription: Subscription;
+
+  topLeftX: PlotData;
+  topLeftY: PlotData;
+  topLeftChangeName: string;
+  topRightX: PlotData;
+  topRightY: PlotData;
+  topRightChangeName: string;
 
   constructor(private ttestService: TTestService) { }
 
@@ -54,16 +69,82 @@ export class OutputPaneComponent implements OnInit {
     if (this.modelSet) {
       switch (this.modelSet.model.output) {
         case "n":
-          this.topLeftPlot.draw({ xDataKey: "power", yDataKey: "n" });
-          this.topRightPlot.draw({ xDataKey: "delta", yDataKey: "n" });
+          this.topLeftX = {
+            data: this.modelSet.data.power,
+            range: this.modelSet.ranges.power,
+            title: "Power"
+          };
+          this.topLeftY = {
+            data: this.modelSet.data.n,
+            range: this.modelSet.ranges.n,
+            title: "Sample Size"
+          };
+          this.topLeftChangeName = "power";
+
+          this.topRightX = {
+            data: this.modelSet.data.delta,
+            range: this.modelSet.ranges.delta,
+            title: "Detectable Alternative"
+          };
+          this.topRightY = {
+            data: this.modelSet.data.n,
+            range: this.modelSet.ranges.n,
+            title: "Sample Size"
+          };
+          this.topRightChangeName = "delta";
+
           break;
         case "power":
-          this.topLeftPlot.draw({ xDataKey: "n", yDataKey: "power" });
-          this.topRightPlot.draw({ xDataKey: "delta", yDataKey: "powerByDelta", yRangeKey: "power", multiLine: "y" });
+          this.topLeftX = {
+            data: this.modelSet.data.n,
+            range: this.modelSet.ranges.n,
+            title: "Sample Size"
+          };
+          this.topLeftY = {
+            data: this.modelSet.data.power,
+            range: this.modelSet.ranges.power,
+            title: "Power"
+          };
+          this.topLeftChangeName = "n";
+
+          this.topRightX = {
+            data: this.modelSet.data.delta,
+            range: this.modelSet.ranges.delta,
+            title: "Detectable Alternative"
+          };
+          this.topRightY = {
+            data: this.modelSet.data.powerByDelta,
+            range: this.modelSet.ranges.power,
+            title: "Power"
+          };
+          this.topRightChangeName = "delta";
+
           break;
         case "delta":
-          this.topLeftPlot.draw({ xDataKey: "n", yDataKey: "delta" });
-          this.topRightPlot.draw({ xDataKey: "power", yDataKey: "delta" });
+          this.topLeftX = {
+            data: this.modelSet.data.n,
+            range: this.modelSet.ranges.n,
+            title: "Sample Size"
+          };
+          this.topLeftY = {
+            data: this.modelSet.data.delta,
+            range: this.modelSet.ranges.delta,
+            title: "Detectable Alternative"
+          };
+          this.topLeftChangeName = "n";
+
+          this.topRightX = {
+            data: this.modelSet.data.power,
+            range: this.modelSet.ranges.power,
+            title: "Power"
+          };
+          this.topRightY = {
+            data: this.modelSet.data.delta,
+            range: this.modelSet.ranges.delta,
+            title: "Detectable Alternative"
+          };
+          this.topRightChangeName = "power";
+
           break;
       }
       this.bottomPlot.draw();

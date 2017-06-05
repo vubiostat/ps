@@ -1,6 +1,12 @@
 <div class="plot" (window:resize)="onResize()">
-  <app-plot #topLeft  name="top-left"  [modelSet]="modelSet" [plotOptions]="plotOptions"></app-plot>
-  <app-plot #topRight name="top-right" [modelSet]="modelSet" [plotOptions]="plotOptions"></app-plot>
+  <app-plot #topLeft
+    name="top-left" [x]="topLeftX" [y]="topLeftY" [plotOptions]="plotOptions"
+    [modelSet]="modelSet" [changeName]="topLeftChangeName">
+  </app-plot>
+  <app-plot #topRight
+    name="top-right" [x]="topRightX" [y]="topRightY" [plotOptions]="plotOptions"
+    [modelSet]="modelSet" [changeName]="topRightChangeName">
+  </app-plot>
   <app-bottom-plot #bottom name="bottom" [modelSet]="modelSet" [plotOptions]="plotOptions"></app-bottom-plot>
 </div>
 <div class="output-text" *ngIf="modelSet">

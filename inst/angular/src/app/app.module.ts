@@ -11,7 +11,8 @@ import { TTestComponent } from './t-test/t-test.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 import { HelpComponent } from './help/help.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component';
-import { PlotComponent, BottomPlotComponent } from './plot/plot.component';
+import { PlotComponent } from './plot/plot.component';
+import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
 
 @NgModule({
   declarations: [
