@@ -25,12 +25,13 @@
     </text>
 
     <g *ngFor="let path of paths; let i = index"
-      [attr.transform]="translate(margin, margin)">
+       [attr.transform]="translate(margin, margin)">
       <path
         [attr.clip-path]="clipPath()"
         [attr.d]="path"
         [attr.stroke]="i == 0 ? 'steelblue' : 'lightblue'"
         [attr.stroke-width]="plotOptions.lineWidth"
+        [style.display]="(i == 0 || modelSet.model.showAlternates) ? null : 'none'"
         fill="none" />
     </g>
     <g *ngFor="let path of dropPaths"
