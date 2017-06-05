@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
 import { TTestSet } from '../t-test';
@@ -31,6 +32,7 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
   sampDistPath: string;
   paths: string[];
   needDraw: boolean;
+  private subscription: Subscription;
 
   ngOnInit() {
     this.clipPathId = `${this.name}-plot-area`;
@@ -38,14 +40,28 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.compute();
+    if (changes.modelSet) {
+      if (this.subscription) {
+        this.subscription.unsubscribe();
+      }
+      if (this.modelSet) {
+        this.subscription = this.modelSet.onCompute.subscribe(() => {
+          this.compute();
+        });
+        this.compute();
+      }
+    }
   }
 
   ngAfterViewChecked(): void {
     this.draw();
   }
 
-  compute(): void {
+  onResize(): void {
+    this.compute();
+  }
+
+  private compute(): void {
     if (!this.modelSet) {
       return;
     }

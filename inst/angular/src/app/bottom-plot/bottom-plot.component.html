@@ -1,9 +1,9 @@
 <svg #plot
   [style.fontFamily]="plotOptions.fontFamily == '' ? null : plotOptions.fontFamily"
   [style.fontSize]="(plotOptions.fontSize * 100).toString() + '%'"
-  [attr.class]="name">
+  [attr.class]="name" (window:resize)="onResize()">
 
-  <ng-template [ngIf]="modelSet">
+  <ng-template [ngIf]="pSpace && precision && sampDist">
     <defs>
       <clipPath [id]="clipPathId">
         <rect x="0" y="0" [attr.width]="width" [attr.height]="height" />
