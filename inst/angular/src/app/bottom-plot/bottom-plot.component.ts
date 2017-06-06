@@ -23,9 +23,9 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
   clipPathId: string;
   width: number;
   height: number;
-  pSpace: { data: any, range: Range };
-  precision: { data: any };
-  sampDist: { data: any };
+  pSpace: { values: any, range: Range };
+  precision: { values: any, target: number };
+  sampDist: { values: any };
   xScale: any;
   yScale: any;
   yScaleSD: any;
@@ -45,9 +45,10 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
         this.subscription.unsubscribe();
       }
       if (this.modelSet) {
-        this.subscription = this.modelSet.onCompute.subscribe(() => {
-          this.compute();
-        });
+        let callback = () => { this.compute(); };
+        let ranges = this.modelSet.ranges;
+        this.subscription = this.modelSet.onCompute.subscribe(callback);
+        this.subscription.add(ranges.onChange.subscribe(callback));
         this.compute();
       }
     }
@@ -71,14 +72,15 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
     this.height = this.getDimension('height') - (this.margin * 2);
 
     this.pSpace = {
-      data: this.modelSet.data.pSpace,
+      values: this.modelSet.data.pSpace,
       range: this.modelSet.ranges.pSpace
     }
     this.precision = {
-      data: this.modelSet.data.precision
+      values: this.modelSet.data.precision,
+      target: this.modelSet.model.delta
     }
     this.sampDist = {
-      data: this.modelSet.data.sampDist
+      values: this.modelSet.data.sampDist
     }
 
     // compute scales
@@ -91,20 +93,20 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
       range([0, this.height]);
 
     this.yScaleSD = d3.scaleLinear().
-      domain([this.sampDist.data.limits[1], this.sampDist.data.limits[0]]).
+      domain(d3.extent(this.sampDist.values).reverse()).
       range([0, this.yScale(0.5)]);
 
     // sample distribution
-    let points = this.pSpace.data.values.map((xValue, i) => {
-      return { x: xValue, y: this.sampDist.data.values[i] };
+    let points = this.pSpace.values.map((xValue, i) => {
+      return { x: xValue, y: this.sampDist.values[i] };
     });
     this.sampDistPath = this.getArea(points);
 
     // main lines
-    let leftLimit = this.precision.data.values[0];
-    let rightLimit = this.precision.data.values[1];
+    let leftLimit = this.precision.values[0];
+    let rightLimit = this.precision.values[1];
     points = [
-      this.precision.data.values.map((xValue, i) => {
+      this.precision.values.map((xValue, i) => {
         return { x: xValue, y: 0.5 };
       }),
       [

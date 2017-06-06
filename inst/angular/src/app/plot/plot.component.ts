@@ -7,11 +7,8 @@ import { Range } from '../range';
 import { TTestSet } from '../t-test';
 
 interface PlotData {
-  data: {
-    values: any[];
-    limits?: number[];
-    target?: number;
-  }
+  values: any[];
+  target?: number;
   range: Range;
   change?: string;
   title: string;
@@ -75,9 +72,10 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
         this.subscription.unsubscribe();
       }
       if (this.modelSet) {
-        this.subscription = this.modelSet.onCompute.subscribe(() => {
-          this.compute();
-        });
+        let callback = () => { this.compute(); };
+        let ranges = this.modelSet.ranges;
+        this.subscription = this.modelSet.onCompute.subscribe(callback);
+        this.subscription.add(ranges.onChange.subscribe(callback));
         this.compute();
       }
     }
@@ -173,53 +171,65 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
       case "n":
         if (this.name == "top-left") {
           this.x = {
-            data: data.power, range: ranges.power, change: "power",
-            title: "Power"
+            values: data.power, range: ranges.power, target: model.power,
+            change: "power", title: "Power"
           };
         } else if (this.name == "top-right") {
           this.x = {
-            data: data.delta, range: ranges.delta, change: "delta",
-            title: "Detectable Alternative"
+            values: data.delta, range: ranges.delta, target: model.delta,
+            change: "delta", title: "Detectable Alternative"
           };
         }
-        this.y = { data: data.n, range: ranges.n, title: "Sample Size" };
+        this.y = {
+          values: data.n, range: ranges.n, target: model.n, 
+          title: "Sample Size"
+        };
         break;
       case "power":
         if (this.name == "top-left") {
           this.x = {
-            data: data.n, range: ranges.n, change: "n",
-            title: "Sample Size"
+            values: data.n, range: ranges.n, target: model.n,
+            change: "n", title: "Sample Size"
           };
-          this.y = { data: data.power, range: ranges.power, title: "Power" };
+          this.y = {
+            values: data.power, range: ranges.power, target: model.power,
+            title: "Power"
+          };
         } else if (this.name == "top-right") {
           this.x = {
-            data: data.delta, range: ranges.delta, change: "delta",
-            title: "Detectable Alternative"
+            values: data.delta, range: ranges.delta, target: model.delta,
+            change: "delta", title: "Detectable Alternative"
           };
-          this.y = { data: data.powerByDelta, range: ranges.power, title: "Power" };
+          this.y = {
+            values: data.powerByDelta, range: ranges.power, target: model.power,
+            title: "Power"
+          };
         }
         break;
       case "delta":
         if (this.name == "top-left") {
           this.x = {
-            data: data.n, range: ranges.n, change: "n",
-            title: "Sample Size"
+            values: data.n, range: ranges.n, target: model.n,
+            change: "n", title: "Sample Size"
           };
         } else if (this.name == "top-right") {
           this.x = {
-            data: data.power, range: ranges.power, change: "power",
-            title: "Power"
+            values: data.power, range: ranges.power, target: model.power,
+            change: "power", title: "Power"
           };
         }
-        this.y = { data: data.delta, range: ranges.delta, title: "Detectable Alternative" };
+        this.y = {
+          values: data.delta, range: ranges.delta, target: model.delta,
+          title: "Detectable Alternative"
+        };
         break;
     }
-    if (!this.x || !this.y || !this.x.data || !this.y.data) {
+    if (!this.x || !this.y || !this.x.values || !this.y.values) {
       console.log("bad:", this.x, this.y);
       return;
     }
 
-    this.targetPoint = { x: this.x.data.target, y: this.y.data.target };
+    this.targetPoint = { x: this.x.target, y: this.y.target };
 
     // dimensions
     this.width  = this.getDimension('width')  - (this.margin * 2);
@@ -236,18 +246,18 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
 
     // paths
     let points;
-    if (Array.isArray(this.x.data.values[0])) {
+    if (Array.isArray(this.x.values[0])) {
       // multiple sets of x values
-      points = this.x.data.values.map(xValues => {
+      points = this.x.values.map(xValues => {
         return xValues.map((xValue, i) => {
-          return { x: xValue, y: this.y.data.values[i] };
+          return { x: xValue, y: this.y.values[i] };
         });
       });
-    } else if (Array.isArray(this.y.data.values[0])) {
+    } else if (Array.isArray(this.y.values[0])) {
       // multiple sets of y values
-      points = this.y.data.values.map(yValues => {
+      points = this.y.values.map(yValues => {
         return yValues.map((yValue, i) => {
-          return { x: this.x.data.values[i], y: yValue };
+          return { x: this.x.values[i], y: yValue };
         });
       });
     }

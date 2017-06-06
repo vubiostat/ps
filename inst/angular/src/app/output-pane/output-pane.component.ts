@@ -5,7 +5,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { PlotOptions } from '../plot-options';
-import { TTestService } from '../t-test.service';
 
 @Component({
   selector: 'app-output-pane',

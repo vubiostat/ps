@@ -30,7 +30,10 @@ export class TTestComponent implements OnInit {
     this.model.onChange.
       debounceTime(100).
       subscribe(changes => {
-        this.updateModelSet();
+        let keys = Object.keys(changes);
+        if (keys.length > 1 || (keys[0] != "showAlternates" && keys[0] != this.model.output)) {
+          this.updateModelSet();
+        }
       });
 
     this.min = new TTest(this.model);
@@ -86,7 +89,7 @@ export class TTestComponent implements OnInit {
   private updateModelSet(): void {
     this.ttestService.update(this.modelSet.model).
       then(result => {
-        this.modelSet.update(result.model, result.ranges, result.data);
-      });
+        this.modelSet.update(result.model, result.data);
+      }, error => { });
   }
 }

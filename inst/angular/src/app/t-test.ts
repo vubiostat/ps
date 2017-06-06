@@ -1,5 +1,4 @@
 import { EventEmitter } from '@angular/core';
-
 import { Subscription } from 'rxjs/Subscription';
 
 import { ChangeEmitter, Changeable } from './changeable';
@@ -94,7 +93,6 @@ export class TTestRanges extends ChangeEmitter {
   @Changeable power: Range;
   @Changeable delta: Range;
   @Changeable pSpace: Range;
-  defaultDelta: Range;
 
   private subscription = new Subscription();
 
@@ -104,7 +102,6 @@ export class TTestRanges extends ChangeEmitter {
     result.power = Range.fromArray(attribs.power);
     result.delta = Range.fromArray(attribs.delta);
     result.pSpace = Range.fromArray(attribs.pSpace);
-    result.defaultDelta = Range.fromArray(attribs.defaultDelta);
     return new TTestRanges(result);
   }
 
@@ -123,7 +120,6 @@ export class TTestRanges extends ChangeEmitter {
     this.power = ranges.power;
     this.delta = ranges.delta;
     this.pSpace = ranges.pSpace;
-    this.defaultDelta = ranges.defaultDelta;
     this.noEmit = false;
 
     this.subscribeToChildren();
@@ -141,7 +137,6 @@ export class TTestRanges extends ChangeEmitter {
     result.power = Range.fromArray(attribs.power);
     result.delta = Range.fromArray(attribs.delta);
     result.pSpace = Range.fromArray(attribs.pSpace);
-    result.defaultDelta = Range.fromArray(attribs.defaultDelta);
     this.update(result);
   }
 
@@ -151,7 +146,6 @@ export class TTestRanges extends ChangeEmitter {
     result.power = this.power.toArray();
     result.delta = this.delta.toArray();
     result.pSpace = this.pSpace.toArray();
-    result.defaultDelta = this.defaultDelta.toArray();
     return result;
   }
 
@@ -174,41 +168,72 @@ export class TTestRanges extends ChangeEmitter {
   }
 }
 
-interface TTestDataMember {
-  values: number[];
-  limits?: number[];
-  target?: number;
-}
-
 export class TTestData {
-  n: TTestDataMember;
-  power: TTestDataMember;
-  delta: TTestDataMember;
-  alpha: TTestDataMember;
-  pSpace: TTestDataMember;
-  precision: TTestDataMember;
-  sampDist: TTestDataMember;
-  powerByDelta?: TTestDataMember;
+  n: any[];
+  power: any[];
+  delta: any[];
+  pSpace: number[];
+  precision: number[];
+  sampDist: number[];
+  powerByDelta?: any[];
 }
 
 export class TTestSet {
+  ranges: TTestRanges;
   onChange = new EventEmitter();
   onCompute = new EventEmitter();
 
-  constructor(public model: TTest, public ranges: TTestRanges, public data: TTestData) {
-    model.onChange.subscribe(value => {
+  constructor(public model: TTest, public data: TTestData) {
+    this.model.onChange.subscribe(value => {
       this.onChange.emit({ model: value });
     });
-    ranges.onChange.subscribe(value => {
+
+    this.calcRanges();
+    this.ranges.onChange.subscribe(value => {
       this.onChange.emit({ ranges: value });
     });
   }
 
-  update(model: any, ranges: any, data: TTestData) {
+  update(model: any, data: TTestData) {
     this.model.update(model);
-    this.ranges.updateFromArrays(ranges);
     this.data = data;
+    this.calcRanges();
 
     this.onCompute.emit();
+  }
+
+  private calcRanges(): void {
+    let n, power, delta, pSpace, indices;
+    let deltaMax = [2.5 * this.model.sigma, this.model.delta + (this.model.sigma / 2)].sort()[1];
+    switch (this.model.output) {
+      case "n":
+        n       = new Range(this.model.n * 0.5, this.model.n * 1.5);
+        indices = n.findIndices(this.data.n);
+        power   = Range.fromData(indices, this.data.power[0]);
+        delta   = Range.fromData(indices, this.data.delta[0]);
+        break;
+
+      case "power":
+        power   = new Range(0, 1.1);
+        indices = power.findIndices(this.data.power);
+        n       = Range.fromData(indices, this.data.n[0]);
+        delta   = new Range(-deltaMax, deltaMax);
+        break;
+
+      case "delta":
+        delta   = new Range(this.model.delta * 0.5, this.model.delta * 1.5);
+        indices = delta.findIndices(this.data.delta);
+        n       = Range.fromData(indices, this.data.n[0]);
+        power   = Range.fromData(indices, this.data.power[0]);
+        break;
+    }
+    pSpace = new Range(-deltaMax, deltaMax);
+
+    let attribs = { n: n, power: power, delta: delta, pSpace: pSpace };
+    if (!this.ranges) {
+      this.ranges = new TTestRanges(attribs);
+    } else {
+      this.ranges.update(attribs);
+    }
   }
 }

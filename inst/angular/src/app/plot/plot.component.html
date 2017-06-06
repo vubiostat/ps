@@ -24,16 +24,35 @@
       {{y.title}} vs. {{x.title}}
     </text>
 
-    <g *ngFor="let path of paths; let i = index"
-       [attr.transform]="translate(margin, margin)">
+    <g [attr.transform]="translate(margin, margin)">
       <path
         [attr.clip-path]="clipPath()"
-        [attr.d]="path"
-        [attr.stroke]="i == 0 ? 'steelblue' : 'lightblue'"
+        [attr.d]="paths[1]"
+        stroke="lightblue"
         [attr.stroke-width]="plotOptions.lineWidth"
-        [style.display]="(i == 0 || modelSet.model.showAlternates) ? null : 'none'"
+        [style.display]="modelSet.model.showAlternates ? null : 'none'"
         fill="none" />
     </g>
+
+    <g [attr.transform]="translate(margin, margin)">
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="paths[2]"
+        stroke="lightblue"
+        [attr.stroke-width]="plotOptions.lineWidth"
+        [style.display]="modelSet.model.showAlternates ? null : 'none'"
+        fill="none" />
+    </g>
+
+    <g [attr.transform]="translate(margin, margin)">
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="paths[0]"
+        stroke="steelblue"
+        [attr.stroke-width]="plotOptions.lineWidth"
+        fill="none" />
+    </g>
+
     <g *ngFor="let path of dropPaths"
       [attr.transform]="translate(margin, margin)">
       <path

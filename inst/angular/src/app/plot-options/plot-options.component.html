@@ -65,19 +65,17 @@
           <div class="input-group">
             <ng-template [ngIf]="modelSet.model.output == 'n'">
               <input class="form-control"
-                type="number" step="1" min="1" [max]="modelSet.ranges.n.max - 1"
+                type="number" step="1" [max]="modelSet.ranges.n.max - 1"
                 [(ngModel)]="modelSet.ranges.n.min" />
             </ng-template>
             <ng-template [ngIf]="modelSet.model.output == 'power'">
               <input class="form-control"
-                type="number" step="0.01" min="0.01" [max]="modelSet.ranges.power.max - 0.01"
+                type="number" step="0.01" [max]="modelSet.ranges.power.max - 0.01"
                 [(ngModel)]="modelSet.ranges.power.min" />
             </ng-template>
             <ng-template [ngIf]="modelSet.model.output == 'delta'">
               <input class="form-control"
-                type="number" step="0.1"
-                [min]="modelSet.model.delta * -5"
-                [max]="modelSet.ranges.delta.max - 1"
+                type="number" step="0.1" [max]="modelSet.ranges.delta.max - 1"
                 [(ngModel)]="modelSet.ranges.delta.min" />
             </ng-template>
           </div>
@@ -87,20 +85,17 @@
           <div class="input-group">
             <ng-template [ngIf]="modelSet.model.output == 'n'">
               <input class="form-control"
-                type="number" step="1"
-                [min]="modelSet.ranges.n.min + 1" [max]="modelSet.model.n * 5"
+                type="number" step="1" [min]="modelSet.ranges.n.min + 1"
                 [(ngModel)]="modelSet.ranges.n.max" />
             </ng-template>
             <ng-template [ngIf]="modelSet.model.output == 'power'">
               <input class="form-control"
-                type="number" step="0.01"
-                [min]="modelSet.ranges.power.min + 0.01" max="1.5"
+                type="number" step="0.01" [min]="modelSet.ranges.power.min + 0.01"
                 [(ngModel)]="modelSet.ranges.power.max" />
             </ng-template>
             <ng-template [ngIf]="modelSet.model.output == 'delta'">
               <input class="form-control"
-                type="number" step="1"
-                [min]="modelSet.ranges.delta.min + 1" max="modelSet.model.delta * 5"
+                type="number" step="1" [min]="modelSet.ranges.delta.min + 1"
                 [(ngModel)]="modelSet.ranges.delta.max" />
             </ng-template>
           </div>
@@ -115,7 +110,7 @@
             <label for="plot-top-left-x-min">X minimum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="0.01" min="0" [max]="modelSet.ranges.power.max - 0.01"
+                type="number" step="0.01" [max]="modelSet.ranges.power.max - 0.01"
                 [(ngModel)]="modelSet.ranges.power.min" />
             </div>
           </div>
@@ -123,7 +118,7 @@
             <label for="plot-top-left-x-max">X maximum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="0.01" [min]="modelSet.ranges.power.min + 0.01" max="1.5"
+                type="number" step="0.01" [min]="modelSet.ranges.power.min + 0.01"
                 [(ngModel)]="modelSet.ranges.power.max" />
             </div>
           </div>
@@ -136,7 +131,7 @@
             <label for="plot-top-left-x-min">X minimum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="1" min="1" [max]="modelSet.ranges.n.max - 1"
+                type="number" step="1" [max]="modelSet.ranges.n.max - 1"
                 [(ngModel)]="modelSet.ranges.n.min" />
             </div>
           </div>
@@ -144,7 +139,7 @@
             <label for="plot-top-left-x-max">X maximum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="1" [min]="modelSet.ranges.n.min + 1" [max]="modelSet.model.n * 5"
+                type="number" step="1" [min]="modelSet.ranges.n.min + 1"
                 [(ngModel)]="modelSet.ranges.n.max" />
             </div>
           </div>
@@ -157,7 +152,7 @@
             <label for="plot-top-left-x-min">X minimum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="1" min="1" [max]="modelSet.ranges.n.max - 1"
+                type="number" step="1" [max]="modelSet.ranges.n.max - 1"
                 [(ngModel)]="modelSet.ranges.n.min" />
             </div>
           </div>
@@ -165,7 +160,7 @@
             <label for="plot-top-left-x-max">X maximum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="1" [min]="modelSet.ranges.n.min + 1" [max]="modelSet.model.n * 5"
+                type="number" step="1" [min]="modelSet.ranges.n.min + 1"
                 [(ngModel)]="modelSet.ranges.n.max" />
             </div>
           </div>
@@ -180,9 +175,7 @@
             <label for="plot-top-right-x-min">X minimum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="0.1"
-                [min]="modelSet.model.delta * -5"
-                [max]="modelSet.ranges.delta.max - 1"
+                type="number" step="0.1" [max]="modelSet.ranges.delta.max - 1"
                 [(ngModel)]="modelSet.ranges.delta.min" />
             </div>
           </div>
@@ -190,7 +183,7 @@
             <label for="plot-top-right-x-max">X maximum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="0.1" [min]="modelSet.ranges.delta.min - 1" [max]="modelSet.model.delta * 5"
+                type="number" step="0.1" [min]="modelSet.ranges.delta.min - 1"
                 [(ngModel)]="modelSet.ranges.delta.max" />
             </div>
           </div>
@@ -203,9 +196,7 @@
             <label for="plot-top-right-x-min">X minimum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="0.1"
-                [min]="modelSet.ranges.defaultDelta.min * 2"
-                [max]="modelSet.ranges.delta.max - 1"
+                type="number" step="0.1" [max]="modelSet.ranges.delta.max - 1"
                 [(ngModel)]="modelSet.ranges.delta.min" />
             </div>
           </div>
@@ -213,9 +204,7 @@
             <label for="plot-top-right-x-max">X maximum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="0.1"
-                [min]="modelSet.ranges.delta.min - 1"
-                [max]="modelSet.ranges.defaultDelta.max * 2"
+                type="number" step="0.1" [min]="modelSet.ranges.delta.min - 1"
                 [(ngModel)]="modelSet.ranges.delta.max" />
             </div>
           </div>
@@ -228,7 +217,7 @@
             <label for="plot-top-left-x-min">X minimum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="0.01" min="0" [max]="modelSet.ranges.power.max - 0.01"
+                type="number" step="0.01" [max]="modelSet.ranges.power.max - 0.01"
                 [(ngModel)]="modelSet.ranges.power.min" />
             </div>
           </div>
@@ -236,7 +225,7 @@
             <label for="plot-top-left-x-max">X maximum</label>
             <div class="input-group">
               <input class="form-control"
-                type="number" step="0.01" [min]="modelSet.ranges.power.min + 0.01" max="1.5"
+                type="number" step="0.01" [min]="modelSet.ranges.power.min + 0.01"
                 [(ngModel)]="modelSet.ranges.power.max" />
             </div>
           </div>
@@ -250,7 +239,7 @@
           <label for="plot-bottom-x-min">X minimum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.1"
+              type="number" step="1" [max]="modelSet.ranges.pSpace.max - 1"
               [(ngModel)]="modelSet.ranges.pSpace.min" />
           </div>
         </div>
@@ -258,7 +247,7 @@
           <label for="plot-bottom-x-max">X maximum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.1"
+              type="number" step="1" [min]="modelSet.ranges.pSpace.min + 1"
               [(ngModel)]="modelSet.ranges.pSpace.max" />
           </div>
         </div>

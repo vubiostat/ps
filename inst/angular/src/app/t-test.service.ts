@@ -61,39 +61,6 @@ export class TTestService {
       catch(this.handleError);
   }
 
-  getPlot(modelSet: TTestSet, plotOptions: PlotOptions): Promise<Blob> {
-    let url;
-    if (this.stateless) {
-      url = `${this.apiUrl}/plot`;
-    } else {
-      if (!modelSet.model.id) {
-        throw new Error("model has no id");
-      }
-      url = `${this.apiUrl}/${modelSet.model.id}/plot`;
-    }
-
-    let params = {
-      plotOptions: plotOptions.attributes(),
-      ranges: modelSet.ranges.attributes()
-    };
-
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-
-    let options = new RequestOptions({
-      headers: headers,
-      responseType: ResponseContentType.Blob
-    });
-
-    return this.http.
-      post(url, JSON.stringify(params), options).
-      toPromise().
-      then(response => {
-        return response.blob();
-      }).
-      catch(this.handleError);
-  }
-
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only
     return Promise.reject(error.message || error);
