@@ -1,37 +1,59 @@
 .plot {
   height: 80%;
-  min-height: 500px;
+  /*min-height: 500px;*/
   position: relative;
 }
+.without-text {
+  height: 100%;
+}
 
-:host /deep/ svg.top-left {
+div.show-text {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+
+.plot /deep/ svg.top-left {
   position: absolute;
   left: 0;
   width: 50%;
   height: 75%;
 }
-:host /deep/ svg.top-right {
+.plot.without-text /deep/ svg.top-left {
+  height: 73%;
+}
+.plot /deep/ svg.top-right {
   position: absolute;
   right: 0;
   width: 50%;
-  height: 75%;
+  height: 73%;
 }
-:host /deep/ svg.bottom {
+.plot.without-text /deep/ svg.top-right {
+  height: 73%;
+}
+.plot /deep/ svg.bottom {
   position: absolute;
-  bottom: 0;
+  top: 75%;
   height: 25%;
   width: 100%;
 }
+.plot.without-text /deep/ svg.bottom {
+  top: 73%;
+  height: 23%;
+}
 
 .output-text {
-  height: 20%;
-}
-.output-text div {
+  position: relative;
   background-color: #e5e5e5;
   border: 1px solid #aaa;
   border-radius: 5px;
-  padding: 10px;
+  padding: 10px 20px;
   text-align: justify;
   overflow: auto;
   margin-top: 5px;
+}
+.hide-text {
+  position: absolute;
+  top: 0;
+  right: 5px;
 }

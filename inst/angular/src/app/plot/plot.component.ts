@@ -91,6 +91,10 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     this.compute();
   }
 
+  redraw(): void {
+    this.compute();
+  }
+
   toggleTargetInfo(value: boolean): void {
     if (!this.targetDragging) {
       this.showTargetInfo = value;

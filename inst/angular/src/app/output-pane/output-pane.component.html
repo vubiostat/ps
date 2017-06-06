@@ -1,13 +1,22 @@
-<div class="plot">
-  <app-plot name="top-left" [modelSet]="modelSet" [plotOptions]="plotOptions">
+<div class="plot" [class.without-text]="!showText">
+  <app-plot #topLeft name="top-left" [modelSet]="modelSet" [plotOptions]="plotOptions">
   </app-plot>
-  <app-plot name="top-right" [modelSet]="modelSet" [plotOptions]="plotOptions">
+  <app-plot #topRight name="top-right" [modelSet]="modelSet" [plotOptions]="plotOptions">
   </app-plot>
-  <app-bottom-plot name="bottom" [modelSet]="modelSet" [plotOptions]="plotOptions">
+  <app-bottom-plot #bottom name="bottom" [modelSet]="modelSet" [plotOptions]="plotOptions">
   </app-bottom-plot>
+  <div *ngIf="!showText" class="show-text">
+    <button type="button" class="btn btn-secondary" (click)="toggleText(true)">
+      <i class="fa fa-envelope-open-o" aria-hidden="true"></i>
+      Interpretation
+    </button>
+  </div>
 </div>
-<div class="output-text" *ngIf="modelSet">
-  <div *ngIf="modelSet.model.output == 'n'">
+<div class="output-text" *ngIf="modelSet && showText">
+  <div *ngIf="showText" class="hide-text">
+    <i class="fa fa-times-circle" (click)="toggleText(false)"></i>
+  </div>
+  <ng-template [ngIf]="modelSet.model.output == 'n'">
     We are planning a study of a continuous response variable from matched
     pairs of study subjects. Prior data indicate that the difference in the
     response of matched pairs is normally distributed with standard deviation
@@ -17,8 +26,8 @@
     hypothesis that this response difference is zero with probability (power)
     {{modelSet.model.power}}. The Type I error probability associated with this
     test of this null hypothesis is {{modelSet.model.alpha}}.
-  </div>
-  <div *ngIf="modelSet.model.output == 'power'">
+  </ng-template>
+  <ng-template [ngIf]="modelSet.model.output == 'power'">
     We are planning a study with {{modelSet.model.n}} pairs of subjects. Prior
     data indicate that the difference in the response of matched pairs is
     normally distributed with standard deviation {{modelSet.model.sigma}}. If
@@ -27,8 +36,8 @@
     that this response difference is zero with probability (power)
     {{modelSet.model.power}}. The Type I error probability associated with this
     test of this null hypothesis is {{modelSet.model.alpha}}.
-  </div>
-  <div *ngIf="modelSet.model.output == 'delta'">
+  </ng-template>
+  <ng-template [ngIf]="modelSet.model.output == 'delta'">
     We are planning a study with {{modelSet.model.n}} pairs of subjects. Prior
     data indicate that the difference in the response of matched pairs is
     normally distributed with standard deviation {{modelSet.model.sigma}}. We
@@ -37,5 +46,5 @@
     probability (power) {{modelSet.model.power}}. The Type I error probability
     associated with this test of the null hypothesis that this response
     difference is zero is {{modelSet.model.alpha}}.
-  </div>
+  </ng-template>
 </div>

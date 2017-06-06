@@ -64,6 +64,10 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
     this.compute();
   }
 
+  redraw(): void {
+    this.compute();
+  }
+
   private compute(): void {
     if (!this.modelSet) {
       return;

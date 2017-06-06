@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Observable';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { PlotOptions } from '../plot-options';
+import { PlotComponent } from '../plot/plot.component';
+import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 
 @Component({
   selector: 'app-output-pane',
@@ -15,10 +17,24 @@ export class OutputPaneComponent implements OnInit {
   @Input() selectedModelSet: Observable<TTestSet>;
   @Input() plotOptions: PlotOptions;
   modelSet: TTestSet;
+  showText = true;
+
+  @ViewChild('topLeft') topLeftPlot: PlotComponent;
+  @ViewChild('topRight') topRightPlot: PlotComponent;
+  @ViewChild('bottom') bottomPlot: BottomPlotComponent;
 
   ngOnInit(): void {
     this.selectedModelSet.subscribe(modelSet => {
       this.modelSet = modelSet;
     });
+  }
+
+  toggleText(value: boolean): void {
+    this.showText = value;
+    setTimeout(() => {
+      this.topLeftPlot.redraw();
+      this.topRightPlot.redraw();
+      this.bottomPlot.redraw();
+    }, 1);
   }
 }
