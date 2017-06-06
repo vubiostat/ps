@@ -17,9 +17,10 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
   @Input() plotOptions: PlotOptions;
 
   @ViewChild('plot') plotElement: ElementRef;
+  @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
 
-  margin = 50;
+  margin: number = 50;
   clipPathId: string;
   width: number;
   height: number;
@@ -36,6 +37,7 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
 
   ngOnInit() {
     this.clipPathId = `${this.name}-plot-area`;
+    this.plotOptions.onChange.subscribe(() => { this.compute(); } );
     this.compute();
   }
 
@@ -67,6 +69,12 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
       return;
     }
 
+    // margin
+    let unitBox = this.unitElement.nativeElement.getBBox();
+    if (unitBox && unitBox.width) {
+      this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
+    }
+
     // dimensions
     this.width  = this.getDimension('width')  - (this.margin * 2);
     this.height = this.getDimension('height') - (this.margin * 2);
@@ -89,7 +97,7 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
       range([0, this.width]);
 
     this.yScale = d3.scaleLinear().
-      domain([0, 0.8]).
+      domain([0, 1]).
       range([0, this.height]);
 
     this.yScaleSD = d3.scaleLinear().

@@ -33,13 +33,14 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   y: PlotData;
 
   @ViewChild('plot') plotElement: ElementRef;
+  @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
   @ViewChild('leftAxis') leftAxisElement: ElementRef;
   @ViewChild('target') targetElement: ElementRef;
 
+  margin: number = 50;
   width: number;
   height: number;
-  margin = 50;
   clipPathId: string;
   xScale: any;
   yScale: any;
@@ -63,6 +64,7 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
 
   ngOnInit(): void {
     this.clipPathId = `${this.name}-plot-area`;
+    this.plotOptions.onChange.subscribe(() => { this.compute(); } );
     this.compute();
   }
 
@@ -228,8 +230,13 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
       console.log("bad:", this.x, this.y);
       return;
     }
-
     this.targetPoint = { x: this.x.target, y: this.y.target };
+
+    // margin
+    let unitBox = this.unitElement.nativeElement.getBBox();
+    if (unitBox && unitBox.width) {
+      this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
+    }
 
     // dimensions
     this.width  = this.getDimension('width')  - (this.margin * 2);

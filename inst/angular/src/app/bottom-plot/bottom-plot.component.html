@@ -3,6 +3,7 @@
   [style.fontSize]="(plotOptions.fontSize * 100).toString() + '%'"
   [attr.class]="name" (window:resize)="onResize()">
 
+  <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
   <ng-template [ngIf]="pSpace && precision && sampDist">
     <defs>
       <clipPath [id]="clipPathId">

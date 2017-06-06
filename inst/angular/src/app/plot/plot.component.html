@@ -3,6 +3,7 @@
   [style.fontSize]="(plotOptions.fontSize * 100).toString() + '%'"
   [attr.class]="name" (window:resize)="onResize()">
 
+  <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
   <ng-template [ngIf]="x && y">
     <defs>
       <clipPath [id]="clipPathId">
@@ -70,11 +71,11 @@
     <g *ngIf="showHoverInfo"
       [attr.transform]="translate(margin + hoverX, margin + hoverY)">
       <circle r="4" fill="none" stroke="blue" />
-      <rect x="-50" [attr.y]="hoverInfoY()" width="100" height="2.5em"
+      <rect x="-3.5em" [attr.y]="hoverInfoY()" width="7em" height="2.5em"
         stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
-      <text x="-40" [attr.y]="hoverInfoY()">
-        <tspan x="-40" dy="1em">x: {{ hoverPoint.x }}</tspan>
-        <tspan x="-40" dy="1em">y: {{ hoverPoint.y }}</tspan>
+      <text x="-2.5em" [attr.y]="hoverInfoY()">
+        <tspan x="-2.5em" dy="1em">x: {{ hoverPoint.x }}</tspan>
+        <tspan x="-2.5em" dy="1em">y: {{ hoverPoint.y }}</tspan>
       </text>
     </g>
 
