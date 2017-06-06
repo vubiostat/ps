@@ -2,27 +2,28 @@
   height: 95vh;
 }
 
-#header {
-  line-height: 7vh;
-  height: 7vh;
+#header, #footer {
+  line-height: 2em;
+  height: 2em;
 }
-#header div.title span {
-  font-size: 4vh;
-}
-#header div.title img {
-  height: 4vh;
+#header img, #footer img {
   vertical-align: text-bottom;
 }
-#header div.logo {
-  text-align: right;
+#header {
+  font-size: 150%;
 }
-#header div.logo img {
-  vertical-align: middle;
-  height: 4vh;
+#header img {
+  height: 1em;
+}
+#footer {
+  text-align: center;
+}
+#footer img {
+  height: 1.25em;
 }
 
 #main {
-  height: 85vh;
+  min-height: 85vh;
 }
 
 #sidebar {
