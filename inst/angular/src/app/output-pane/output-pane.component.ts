@@ -37,4 +37,12 @@ export class OutputPaneComponent implements OnInit {
       this.bottomPlot.redraw();
     }, 1);
   }
+
+  round(n: number): number {
+    return Math.round(n * 100) / 100;
+  }
+
+  ceil(n: number): number {
+    return Math.ceil(n);
+  }
 }

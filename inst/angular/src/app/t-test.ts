@@ -22,6 +22,16 @@ export class TTest extends ChangeEmitter {
     }
   }
 
+  round(): TTest {
+    let attribs = this.attributes();
+    attribs.alpha = Math.round(attribs.alpha * 100) / 100;
+    attribs.sigma = Math.round(attribs.sigma * 100) / 100;
+    attribs.delta = Math.round(attribs.delta * 100) / 100;
+    attribs.power = Math.round(attribs.power * 100) / 100;
+    attribs.n = Math.ceil(attribs.n);
+    return new TTest(attribs);
+  }
+
   update(attribs: any, emit = true): void {
     this.noEmit = true;
     if (attribs.id !== undefined) {
@@ -54,6 +64,26 @@ export class TTest extends ChangeEmitter {
     } else {
       this.changes = {};
     }
+  }
+
+  roundUpdate(attribs: any, emit = true): void {
+    attribs = Object.assign({}, attribs);
+    if (attribs.alpha !== undefined) {
+      attribs.alpha = Math.round(attribs.alpha * 100) / 100;
+    }
+    if (attribs.sigma !== undefined) {
+      attribs.sigma = Math.round(attribs.sigma * 100) / 100;
+    }
+    if (attribs.delta !== undefined) {
+      attribs.delta = Math.round(attribs.delta * 100) / 100;
+    }
+    if (attribs.power !== undefined) {
+      attribs.power = Math.round(attribs.power * 100) / 100;
+    }
+    if (attribs.n !== undefined) {
+      attribs.n = Math.ceil(attribs.n);
+    }
+    this.update(attribs, emit);
   }
 
   isValid(): boolean {

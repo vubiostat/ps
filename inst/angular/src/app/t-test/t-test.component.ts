@@ -18,15 +18,18 @@ import { TTestService } from '../t-test.service';
 })
 export class TTestComponent implements OnInit {
   @Input() modelSet: TTestSet;
+  @Output() onToggleHelp = new EventEmitter();
+
   model: TTest;
   min: TTest;
   max: TTest;
-  @Output() onToggleHelp = new EventEmitter();
+  round: TTest;
 
   constructor(private ttestService: TTestService) { }
 
   ngOnInit(): void {
     this.model = this.modelSet.model;
+    this.round = this.model.round();
     this.model.onChange.
       debounceTime(100).
       subscribe(changes => {
@@ -34,16 +37,20 @@ export class TTestComponent implements OnInit {
         if (keys.length > 1 || (keys[0] != "showAlternates" && keys[0] != this.model.output)) {
           this.updateModelSet();
         }
+        this.round.roundUpdate(changes, false);
       });
+    this.round.onChange.subscribe(changes => {
+      this.model.update(changes);
+    });
 
     this.min = new TTest(this.model);
     this.max = new TTest(this.model);
 
-    this.min.alpha = 0;
-    this.max.alpha = 1;
+    this.min.alpha = 0.01;
+    this.max.alpha = 0.99;
 
-    this.min.power = 0;
-    this.max.power = 1;
+    this.min.power = 0.01;
+    this.max.power = 0.99;
 
     this.min.n = this.getMin(this.model.n);
     this.max.n = this.getMax(this.model.n);
@@ -76,6 +83,14 @@ export class TTestComponent implements OnInit {
 
   toggleHelp(): void {
     this.onToggleHelp.emit();
+  }
+
+  floor(n: number): number {
+    return Math.floor(n);
+  }
+
+  ceil(n: number): number {
+    return Math.ceil(n);
   }
 
   private getMin(n: number): number {
