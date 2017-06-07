@@ -1,5 +1,3 @@
-require(jsonlite)
-
 # helper functions
 calculateN <- function(alpha, delta, sigma, power) {
   (sigma * (qnorm(1 - alpha/2) + qnorm(power)) / delta) ^ 2

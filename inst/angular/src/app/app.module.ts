@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -13,6 +14,8 @@ import { HelpComponent } from './help/help.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component';
 import { PlotComponent } from './plot/plot.component';
 import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
+
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,7 @@ import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
     HttpModule,
     NgbModule.forRoot()
   ],
-  providers: [TTestService],
+  providers: [TTestService, {provide: APP_BASE_HREF, useValue: environment.baseHref }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

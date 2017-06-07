@@ -1,6 +1,3 @@
-require(jsonlite)
-require(openssl)
-
 TTestRepository <- setRefClass("TTestRepository",
   fields = c("ttests"),
   methods = list(

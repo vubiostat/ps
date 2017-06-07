@@ -1,3 +1,6 @@
 export const environment = {
-  production: true
+  production: true,
+  apiUrl: "/ps-backend",
+  stateless: true,
+  baseHref: "/ps"
 };

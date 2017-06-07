@@ -1,0 +1,12 @@
+Package: ps
+Version: 0.1
+Date: 2017-06-07
+Title: Power and Sample Size Calculation
+Author: Jeffrey Blume, William DuPont, Dale Plummer, Jeremy Stephens
+Maintainer: Jeremy Stephens <jeremy.f.stephens@vanderbilt.edu>
+Depends: R (>= 3.1.0), httpuv, jsonlite, openssl, mime
+Suggests: devtools
+Description: Calculate power, sample size, and detectable alternative
+  by using various methods.
+License: CC BY-NC-ND 3.0 US
+URL: http://biostat.mc.vanderbilt.edu

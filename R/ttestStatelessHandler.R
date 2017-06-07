@@ -1,5 +1,3 @@
-require(jsonlite)
-
 TTestStatelessCalculateAction <- setRefClass("TTestStatelessCalculateAction",
   methods = list(
     validate = function(params) {
