@@ -71,11 +71,13 @@
     <g *ngIf="showHoverInfo"
       [attr.transform]="translate(margin + hoverX, margin + hoverY)">
       <circle r="4" fill="none" stroke="blue" />
-      <rect x="-3.5em" [attr.y]="hoverInfoY()" width="7em" height="2.5em"
+      <rect x="-3.5em" [attr.y]="hoverInfoY()" width="8em" height="2.5em"
         stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
       <text x="-2.5em" [attr.y]="hoverInfoY()">
-        <tspan x="-2.5em" dy="1em">x: {{ hoverPoint.x }}</tspan>
-        <tspan x="-2.5em" dy="1em">y: {{ hoverPoint.y }}</tspan>
+        <tspan dy="1em" text-anchor="right">{{x.sym}}:</tspan>
+        <tspan x="0em" text-anchor="left">{{hoverPoint.x}}</tspan>
+        <tspan x="-2.5em" dy="1em" text-anchor="right">{{y.sym}}:</tspan>
+        <tspan x="0em" text-anchor="left">{{hoverPoint.y}}</tspan>
       </text>
     </g>
 
@@ -87,11 +89,13 @@
 
     <g *ngIf="showTargetInfo"
       [attr.transform]="translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))">
-      <rect x="0" y="-3.5em" width="100" height="2.5em"
+      <rect x="0" y="-3.5em" width="8em" height="2.5em"
         stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
-      <text x="10" y="-3.5em">
-        <tspan x="10" dy="1em">x: {{ targetPoint.x }}</tspan>
-        <tspan x="10" dy="1em">y: {{ targetPoint.y }}</tspan>
+      <text x="1em" y="-3.5em">
+        <tspan dy="1em" text-anchor="right">{{x.sym}}:</tspan>
+        <tspan x="3.5em" text-anchor="left">{{targetPoint.x}}</tspan>
+        <tspan x="1em" dy="1em" text-anchor="right">{{y.sym}}:</tspan>
+        <tspan x="3.5em" text-anchor="left">{{targetPoint.y}}</tspan>
       </text>
     </g>
 

@@ -12,6 +12,7 @@ interface PlotData {
   range: Range;
   change?: string;
   title: string;
+  sym: string;
 }
 
 interface Point {
@@ -178,37 +179,37 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
         if (this.name == "top-left") {
           this.x = {
             values: data.power, range: ranges.power, target: model.power,
-            change: "power", title: "Power"
+            change: "power", title: "Power", sym: "1-β"
           };
         } else if (this.name == "top-right") {
           this.x = {
             values: data.delta, range: ranges.delta, target: model.delta,
-            change: "delta", title: "Detectable Alternative"
+            change: "delta", title: "Detectable Alternative", sym: "δ"
           };
         }
         this.y = {
-          values: data.n, range: ranges.n, target: model.n, 
-          title: "Sample Size"
+          values: data.n, range: ranges.n, target: model.n,
+          title: "Sample Size", sym: "n"
         };
         break;
       case "power":
         if (this.name == "top-left") {
           this.x = {
             values: data.n, range: ranges.n, target: model.n,
-            change: "n", title: "Sample Size"
+            change: "n", title: "Sample Size", sym: "n"
           };
           this.y = {
             values: data.power, range: ranges.power, target: model.power,
-            title: "Power"
+            title: "Power", sym: "1-β"
           };
         } else if (this.name == "top-right") {
           this.x = {
             values: data.delta, range: ranges.delta, target: model.delta,
-            change: "delta", title: "Detectable Alternative"
+            change: "delta", title: "Detectable Alternative", sym: "δ"
           };
           this.y = {
             values: data.powerByDelta, range: ranges.power, target: model.power,
-            title: "Power"
+            title: "Power", sym: "1-β"
           };
         }
         break;
@@ -216,17 +217,17 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
         if (this.name == "top-left") {
           this.x = {
             values: data.n, range: ranges.n, target: model.n,
-            change: "n", title: "Sample Size"
+            change: "n", title: "Sample Size", sym: "n"
           };
         } else if (this.name == "top-right") {
           this.x = {
             values: data.power, range: ranges.power, target: model.power,
-            change: "power", title: "Power"
+            change: "power", title: "Power", sym: "1-β"
           };
         }
         this.y = {
           values: data.delta, range: ranges.delta, target: model.delta,
-          title: "Detectable Alternative"
+          title: "Detectable Alternative", sym: "δ"
         };
         break;
     }
