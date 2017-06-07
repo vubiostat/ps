@@ -134,7 +134,8 @@ TTestStatefulHandler <- setRefClass("TTestStatefulHandler",
     },
 
     call = function(req) {
-      if (req$CONTENT_TYPE != "application/json") {
+      contentType <- if (is.null(req$CONTENT_TYPE)) "" else req$CONTENT_TYPE
+      if (contentType != "application/json") {
         return(fail(list(errors = list(base = "invalid mime type"))))
       }
 
