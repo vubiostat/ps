@@ -1,5 +1,4 @@
 require(jsonlite)
-require(openssl)
 
 TTestStatelessCalculateAction <- setRefClass("TTestStatelessCalculateAction",
   methods = list(

@@ -1,6 +1,5 @@
 require(jsonlite)
 require(httpuv)
-require(jpeg)
 
 CorsHandler <- setRefClass("CorsHandler",
   fields = c("app", "allowHost", "allowPort"),
@@ -57,9 +56,9 @@ buildApp <- function(mainHandler, allowHost, allowPort) {
   app
 }
 
-runPS <- function(kind = c("stateless", "stateful"), host = "127.0.0.1", port = 7788, sourcePort = 4200) {
+runPS <- function(kind = c("stateless", "stateful"), host = "127.0.0.1", port = 7788, sourceHost = host, sourcePort = 4200) {
   kind <- match.arg(kind)
-  allowHost <- if (host == "127.0.0.1") "localhost" else host
+  allowHost <- if (sourceHost == "127.0.0.1") "localhost" else sourceHost
   mainHandler <- if (kind == "stateful") TTestStatefulHandler else TTestStatelessHandler
   app <- buildApp(mainHandler, allowHost, sourcePort)
   runServer(host, port, app)
