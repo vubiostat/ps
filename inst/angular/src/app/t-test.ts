@@ -58,6 +58,9 @@ export class TTest extends ChangeEmitter {
     if (attribs.n !== undefined) {
       this.n = attribs.n;
     }
+    if (attribs.showAlternates !== undefined) {
+      this.showAlternates = attribs.showAlternates;
+    }
     this.noEmit = false;
     if (emit) {
       this.emit();

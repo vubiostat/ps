@@ -36,8 +36,8 @@ export class TTestComponent implements OnInit {
         let keys = Object.keys(changes);
         if (keys.length > 1 || (keys[0] != "showAlternates" && keys[0] != this.model.output)) {
           this.updateModelSet();
+          this.round.roundUpdate(changes, false);
         }
-        this.round.roundUpdate(changes, false);
       });
     this.round.onChange.subscribe(changes => {
       this.model.update(changes);
