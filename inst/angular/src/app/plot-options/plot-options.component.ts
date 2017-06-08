@@ -29,4 +29,12 @@ export class PlotOptionsComponent implements OnInit {
   close(): void {
     this.enabled = false;
   }
+
+  roundFloor(n: number): number {
+    return Math.floor(n * 100) / 100;
+  }
+
+  roundCeil(n: number): number {
+    return Math.ceil(n * 100) / 100;
+  }
 }
