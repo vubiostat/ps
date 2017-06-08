@@ -236,11 +236,13 @@ export class TTestSet {
   }
 
   private calcRanges(): void {
-    let n, power, delta, pSpace, indices;
+    let n, power, delta, pSpace, indices, min, max;
     let deltaMax = [2.5 * this.model.sigma, this.model.delta + (this.model.sigma / 2)].sort()[1];
     switch (this.model.output) {
       case "n":
-        n       = new Range(this.model.n * 0.5, this.model.n * 1.5);
+        min     = Math.floor(this.model.n * 50) / 100;
+        max     = Math.ceil(this.model.n * 150) / 100;
+        n       = new Range(min, max);
         indices = n.findIndices(this.data.n);
         power   = Range.fromData(indices, this.data.power[0]);
         delta   = Range.fromData(indices, this.data.delta[0]);
@@ -254,7 +256,9 @@ export class TTestSet {
         break;
 
       case "delta":
-        delta   = new Range(this.model.delta * 0.5, this.model.delta * 1.5);
+        min     = Math.floor(this.model.delta * 50) / 100;
+        max     = Math.ceil(this.model.delta * 150) / 100;
+        delta   = new Range(min, max);
         indices = delta.findIndices(this.data.delta);
         n       = Range.fromData(indices, this.data.n[0]);
         power   = Range.fromData(indices, this.data.power[0]);
