@@ -33,11 +33,7 @@ export class TTestComponent implements OnInit {
     this.model.onChange.
       debounceTime(100).
       subscribe(changes => {
-        let keys = Object.keys(changes);
-        if (keys.length > 1 || (keys[0] != "showAlternates" && keys[0] != this.model.output)) {
-          this.updateModelSet();
-          this.round.roundUpdate(changes, false);
-        }
+        this.modelChanged(changes);
       });
     this.round.onChange.subscribe(changes => {
       this.model.update(changes);
@@ -101,10 +97,37 @@ export class TTestComponent implements OnInit {
     return Math.round(n + (n * 0.5));
   }
 
+  private modelChanged(changes: any): void {
+    let keys = Object.keys(changes);
+    if (keys.length > 1 || (keys[0] != "showAlternates" && keys[0] != this.model.output)) {
+      this.updateModelSet();
+    }
+  }
+
   private updateModelSet(): void {
     this.ttestService.update(this.modelSet.model).
       then(result => {
         this.modelSet.update(result.model, result.data);
+        this.round.roundUpdate(result.model, false);
+
+        // adjust min/max
+        if (this.model.sigma < this.min.sigma) {
+          this.min.sigma = Math.floor(this.model.sigma);
+        } else if (this.model.sigma > this.max.sigma) {
+          this.max.sigma = Math.ceil(this.model.sigma);
+        }
+
+        if (this.model.delta < this.min.delta) {
+          this.min.delta = Math.floor(this.model.delta);
+        } else if (this.model.delta > this.max.delta) {
+          this.max.delta = Math.ceil(this.model.delta);
+        }
+
+        if (this.model.n < this.min.n) {
+          this.min.n = Math.floor(this.model.n);
+        } else if (this.model.n > this.max.n) {
+          this.max.n = Math.ceil(this.model.n);
+        }
       }, error => { });
   }
 }
