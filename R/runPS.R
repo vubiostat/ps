@@ -99,7 +99,7 @@ StandaloneHandler <- setRefClass("StandaloneHandler",
   )
 )
 
-runPS <- function(mode = c("standalone", "backend"), host = "127.0.0.1", port = 7788, corsHost = host, corsPort = 4200, kind = c("stateless", "stateful")) {
+runPS <- function(mode = c("standalone", "backend"), host = "127.0.0.1", port = 7788, corsHost = host, corsPort = 4200, kind = c("stateless", "stateful"), launch.browser = mode == "standalone" && interactive()) {
   kind <- match.arg(kind)
   mode <- match.arg(mode)
 
@@ -121,5 +121,13 @@ runPS <- function(mode = c("standalone", "backend"), host = "127.0.0.1", port = 
     app <- CorsHandler(app, corsHost, corsPort)
   }
 
+  if (launch.browser) {
+    appUrl <- if (mode == "backend")
+      paste("http://", corsHost, ":", corsPort, sep="")
+    else
+      paste("http://", host, ":", port, "/ps/", sep="")
+
+    utils::browseURL(appUrl)
+  }
   httpuv::runServer(host, port, app)
 }
