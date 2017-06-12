@@ -56,8 +56,6 @@ validateModelParams <- function(params) {
   if ("delta" %in% keys) {
     if (!is.numeric(modelParams$delta)) {
       errors$model.delta <- "must be numeric"
-    } else if (modelParams$delta <= 0) {
-      errors$model.delta <- "must be greater than 0"
     }
   }
 

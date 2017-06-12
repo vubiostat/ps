@@ -237,7 +237,7 @@ export class TTestSet {
 
   private calcRanges(): void {
     let n, power, delta, pSpace, indices, min, max;
-    let deltaMax = [2.5 * this.model.sigma, this.model.delta + (this.model.sigma / 2)].sort()[1];
+    let deltaMax = [2.5 * this.model.sigma, Math.abs(this.model.delta) + (this.model.sigma / 2)].sort()[1];
     switch (this.model.output) {
       case "n":
         min     = Math.floor(this.model.n * 50) / 100;

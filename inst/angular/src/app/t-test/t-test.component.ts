@@ -58,21 +58,6 @@ export class TTestComponent implements OnInit {
     this.max.sigma = this.getMax(this.model.sigma);
   }
 
-  inputChanged(event: any): void {
-    let key = event.target.name;
-    if (key != 'alpha' && key != 'power' && key != 'output') {
-      let value = event.target.value;
-      if (value < this.min[key]) {
-        this.min[key] = value;
-      } else if (value > this.max[key]) {
-        this.max[key] = value;
-      }
-      setTimeout(() => {
-        event.target.value = value;
-      }, 1);
-    }
-  }
-
   toggleAlternates(): void {
     this.model.showAlternates = !this.model.showAlternates;
   }
