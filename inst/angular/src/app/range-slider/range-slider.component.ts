@@ -28,7 +28,7 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   @Input() hardMax: number;
   @Input() isOutput = false;
   value: number;
-  private propagateChange: any;
+  private changeCallback: any;
 
   @ContentChild(RangeSliderLabel) labelTpl: RangeSliderLabel;
 
@@ -50,7 +50,7 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   }
 
   registerOnChange(fn: any): void {
-    this.propagateChange = fn;
+    this.changeCallback = fn;
   }
 
   registerOnTouched(fn: any): void {
@@ -60,24 +60,26 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   }
 
   rangeChanged(newValue: string): void {
-    console.log("range:", newValue);
     this.value = parseFloat(newValue);
-    this.propagateChange(this.value);
+    this.propagateChange();
   }
 
   rangeInput(newValue: string): void {
-    console.log("range input:", newValue);
     this.value = parseFloat(newValue);
   }
 
   numberChanged(newValue: string): void {
-    console.log("number:", newValue);
     this.value = parseFloat(newValue);
-    this.propagateChange(this.value);
+    this.propagateChange();
   }
 
   numberInput(newValue: string): void {
-    console.log("number input:", newValue);
     this.value = parseFloat(newValue);
+  }
+
+  private propagateChange(): void {
+    if (this.changeCallback) {
+      this.changeCallback(this.value);
+    }
   }
 }

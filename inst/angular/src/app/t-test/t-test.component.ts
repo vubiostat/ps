@@ -48,14 +48,9 @@ export class TTestComponent implements OnInit {
     this.min.power = 0.01;
     this.max.power = 0.99;
 
-    this.min.n = this.getMin(this.model.n);
-    this.max.n = this.getMax(this.model.n);
-
-    this.min.delta = this.getMin(this.model.delta);
-    this.max.delta = this.getMax(this.model.delta);
-
-    this.min.sigma = this.getMin(this.model.sigma);
-    this.max.sigma = this.getMax(this.model.sigma);
+    this.calculateSliderRange('n');
+    this.calculateSliderRange('delta');
+    this.calculateSliderRange('sigma');
   }
 
   toggleAlternates(): void {
@@ -66,20 +61,11 @@ export class TTestComponent implements OnInit {
     this.onToggleHelp.emit();
   }
 
-  floor(n: number): number {
-    return Math.floor(n);
-  }
-
-  ceil(n: number): number {
-    return Math.ceil(n);
-  }
-
-  private getMin(n: number): number {
-    return Math.round(n - (n * 0.5));
-  }
-
-  private getMax(n: number): number {
-    return Math.round(n + (n * 0.5));
+  private calculateSliderRange(name: string): void {
+    let value = this.model[name];
+    let range = [value * 0.5, value * 1.5].sort((a, b) => a - b);
+    this.min[name] = range[0];
+    this.max[name] = range[1];
   }
 
   private modelChanged(changes: any): void {

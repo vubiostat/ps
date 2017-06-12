@@ -22,7 +22,7 @@ export class Range extends ChangeEmitter {
     if (indices[1] < maxIndex) {
       maxIndex = indices[1];
     }
-    let values = [data[minIndex], data[maxIndex]].sort();
+    let values = [data[minIndex], data[maxIndex]].sort((a, b) => a - b);
     values[0] = Math.floor(values[0] * 100) / 100;
     values[1] = Math.ceil(values[1] * 100) / 100;
     return new Range(values[0], values[1]);

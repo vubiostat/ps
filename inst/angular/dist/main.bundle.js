@@ -1040,29 +1040,30 @@ var RangeSliderComponent = RangeSliderComponent_1 = (function () {
         this.value = value;
     };
     RangeSliderComponent.prototype.registerOnChange = function (fn) {
-        this.propagateChange = fn;
+        this.changeCallback = fn;
     };
     RangeSliderComponent.prototype.registerOnTouched = function (fn) {
     };
     RangeSliderComponent.prototype.setDisabledState = function (isDisabled) {
     };
     RangeSliderComponent.prototype.rangeChanged = function (newValue) {
-        console.log("range:", newValue);
         this.value = parseFloat(newValue);
-        this.propagateChange(this.value);
+        this.propagateChange();
     };
     RangeSliderComponent.prototype.rangeInput = function (newValue) {
-        console.log("range input:", newValue);
         this.value = parseFloat(newValue);
     };
     RangeSliderComponent.prototype.numberChanged = function (newValue) {
-        console.log("number:", newValue);
         this.value = parseFloat(newValue);
-        this.propagateChange(this.value);
+        this.propagateChange();
     };
     RangeSliderComponent.prototype.numberInput = function (newValue) {
-        console.log("number input:", newValue);
         this.value = parseFloat(newValue);
+    };
+    RangeSliderComponent.prototype.propagateChange = function () {
+        if (this.changeCallback) {
+            this.changeCallback(this.value);
+        }
     };
     return RangeSliderComponent;
 }());
@@ -1177,7 +1178,7 @@ var Range = (function (_super) {
         if (indices[1] < maxIndex) {
             maxIndex = indices[1];
         }
-        var values = [data[minIndex], data[maxIndex]].sort();
+        var values = [data[minIndex], data[maxIndex]].sort(function (a, b) { return a - b; });
         values[0] = Math.floor(values[0] * 100) / 100;
         values[1] = Math.ceil(values[1] * 100) / 100;
         return new Range(values[0], values[1]);
@@ -1319,12 +1320,9 @@ var TTestComponent = (function () {
         this.max.alpha = 0.99;
         this.min.power = 0.01;
         this.max.power = 0.99;
-        this.min.n = this.getMin(this.model.n);
-        this.max.n = this.getMax(this.model.n);
-        this.min.delta = this.getMin(this.model.delta);
-        this.max.delta = this.getMax(this.model.delta);
-        this.min.sigma = this.getMin(this.model.sigma);
-        this.max.sigma = this.getMax(this.model.sigma);
+        this.calculateSliderRange('n');
+        this.calculateSliderRange('delta');
+        this.calculateSliderRange('sigma');
     };
     TTestComponent.prototype.toggleAlternates = function () {
         this.model.showAlternates = !this.model.showAlternates;
@@ -1332,17 +1330,11 @@ var TTestComponent = (function () {
     TTestComponent.prototype.toggleHelp = function () {
         this.onToggleHelp.emit();
     };
-    TTestComponent.prototype.floor = function (n) {
-        return Math.floor(n);
-    };
-    TTestComponent.prototype.ceil = function (n) {
-        return Math.ceil(n);
-    };
-    TTestComponent.prototype.getMin = function (n) {
-        return Math.round(n - (n * 0.5));
-    };
-    TTestComponent.prototype.getMax = function (n) {
-        return Math.round(n + (n * 0.5));
+    TTestComponent.prototype.calculateSliderRange = function (name) {
+        var value = this.model[name];
+        var range = [value * 0.5, value * 1.5].sort(function (a, b) { return a - b; });
+        this.min[name] = range[0];
+        this.max[name] = range[1];
     };
     TTestComponent.prototype.modelChanged = function (changes) {
         var keys = Object.keys(changes);
@@ -2001,12 +1993,13 @@ var TTestSet = (function () {
         this.onCompute.emit();
     };
     TTestSet.prototype.calcRanges = function () {
-        var n, power, delta, pSpace, indices, min, max;
-        var deltaMax = [2.5 * this.model.sigma, Math.abs(this.model.delta) + (this.model.sigma / 2)].sort()[1];
+        var n, power, delta, pSpace, indices, values, min, max;
+        var deltaMax = 2.5 * this.model.sigma;
         switch (this.model.output) {
             case "n":
-                min = Math.floor(this.model.n * 50) / 100;
-                max = Math.ceil(this.model.n * 150) / 100;
+                values = [this.model.n * 0.5, this.model.n * 1.5].sort(function (a, b) { return a - b; });
+                min = Math.floor(values[0] * 100) / 100;
+                max = Math.ceil(values[1] * 100) / 100;
                 n = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](min, max);
                 indices = n.findIndices(this.data.n);
                 power = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.power[0]);
@@ -2019,8 +2012,9 @@ var TTestSet = (function () {
                 delta = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](-deltaMax, deltaMax);
                 break;
             case "delta":
-                min = Math.floor(this.model.delta * 50) / 100;
-                max = Math.ceil(this.model.delta * 150) / 100;
+                values = [this.model.delta * 0.5, this.model.delta * 1.5].sort(function (a, b) { return a - b; });
+                min = Math.floor(values[0] * 100) / 100;
+                max = Math.ceil(values[1] * 100) / 100;
                 delta = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](min, max);
                 indices = delta.findIndices(this.data.delta);
                 n = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.n[0]);
