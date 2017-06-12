@@ -14,132 +14,48 @@
     </select>
   </label>
 </div>
-<div class="slider-group">
-  <div class="label">Type I Error (&alpha;)</div>
-  <div class="inputs row">
-    <div class="col-sm-9">
-      <div class="slider">
-        <div class="min">{{floor(min.alpha)}}</div>
-        <input name="alpha" type="range" step="0.01"
-               min="{{min.alpha}}" max="{{max.alpha}}"
-               [(ngModel)]="round.alpha" />
-        <div class="max">{{ceil(max.alpha)}}</div>
+
+<app-range-slider label="Type I Error (&alpha;)"
+  [min]="min.alpha" [max]="max.alpha"
+  [hardMin]="min.alpha" [hardMax]="max.alpha"
+  [(ngModel)]="round.alpha">
+</app-range-slider>
+
+<app-range-slider
+  [min]="min.sigma" [max]="max.sigma" step="0.1"
+  [hardMin]="1"
+  [(ngModel)]="round.sigma">
+  <ng-template rsLabel>
+    <div class="label row">
+      <div class="col-sm">
+        Std. deviation (&sigma;)
+      </div>
+      <div class="col-sm form-check">
+        <label class="form-check-label">
+          <input name="show-alternates" type="checkbox"
+            class="form-check-input"
+            [(ngModel)]="round.showAlternates" />
+          Alternates
+        </label>
       </div>
     </div>
-    <div class="col-sm-3">
-      <div class="number">
-        <input name="alpha" type="number" step="0.01"
-               min="{{min.alpha}}" max="{{max.alpha}}"
-               [(ngModel)]="round.alpha" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="slider-group">
-  <div class="label row">
-    <div class="col-sm">
-      Std. deviation (&sigma;)
-    </div>
-    <div class="col-sm form-check">
-      <label class="form-check-label">
-        <input name="show-alternates" type="checkbox"
-          class="form-check-input"
-          [(ngModel)]="round.showAlternates" />
-        Alternates
-      </label>
-    </div>
-  </div>
-  <div class="inputs row">
-    <div class="col-sm-9">
-      <div class="slider">
-        <div class="min">{{min.sigma}}</div>
-        <input name="sigma" type="range" step="0.1"
-               min="{{min.sigma}}" max="{{max.sigma}}"
-               [(ngModel)]="round.sigma" />
-        <div class="max">{{max.sigma}}</div>
-      </div>
-    </div>
-    <div class="col-sm-3">
-      <div class="number">
-        <input name="sigma" type="number" step="0.1" min="1"
-               [(ngModel)]="round.sigma" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="slider-group" [class.output]="round.output == 'power'">
-  <div class="label">
-    Power
-    <span *ngIf="round.output == 'power'">(Output)</span>
-  </div>
-  <div class="inputs row">
-    <div class="col-sm-9">
-      <div class="slider">
-        <div class="min">{{floor(min.power)}}</div>
-        <input name="power" type="range" step="0.01"
-               min="{{min.power}}" max="{{max.power}}"
-               [disabled]="round.output == 'power'"
-               [(ngModel)]="round.power" />
-        <div class="max">{{ceil(max.power)}}</div>
-      </div>
-    </div>
-    <div class="col-sm-3">
-      <div class="number">
-        <input name="power" type="number" step="0.01"
-               min="{{min.power}}" max="{{max.power}}"
-               [disabled]="round.output == 'power'"
-               [(ngModel)]="round.power" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="slider-group" [class.output]="round.output == 'delta'">
-  <div class="label">
-    Difference in population means (&delta;)
-    <span *ngIf="round.output == 'delta'">(Output)</span>
-  </div>
-  <div class="inputs row">
-    <div class="col-sm-9">
-      <div class="slider">
-        <div class="min">{{min.delta}}</div>
-        <input name="delta" type="range" step="0.1"
-               min="{{min.delta}}" max="{{max.delta}}"
-               [disabled]="round.output == 'delta'"
-               [(ngModel)]="round.delta" />
-        <div class="max">{{max.delta}}</div>
-      </div>
-    </div>
-    <div class="col-sm-3">
-      <div class="number">
-        <input name="delta" type="number" step="0.1"
-               [disabled]="round.output == 'delta'"
-               [(ngModel)]="round.delta" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="slider-group" [class.output]="round.output == 'n'">
-  <div class="label">
-    Sample size
-    <span *ngIf="round.output == 'n'">(Output)</span>
-  </div>
-  <div class="inputs row">
-    <div class="col-sm-9">
-      <div class="slider">
-        <div class="min">{{min.n}}</div>
-        <input name="n" type="range" step="1"
-               min="{{min.n}}" max="{{max.n}}"
-               [disabled]="round.output == 'n'"
-               [(ngModel)]="round.n" />
-        <div class="max">{{max.n}}</div>
-      </div>
-    </div>
-    <div class="col-sm-3">
-      <div class="number">
-        <input name="n" type="number" step="1" min="1"
-               [disabled]="round.output == 'n'"
-               [(ngModel)]="round.n" />
-      </div>
-    </div>
-  </div>
-</div>
+  </ng-template>
+</app-range-slider>
+
+<app-range-slider label="Power"
+  [min]="min.power" [max]="max.power"
+  [hardMin]="min.power" [hardMax]="max.power"
+  [isOutput]="round.output == 'power'"
+  [(ngModel)]="round.power">
+</app-range-slider>
+
+<app-range-slider label="Difference in population means (&delta;)"
+  [min]="min.delta" [max]="max.delta" step="0.1"
+  [isOutput]="round.output == 'delta'" [(ngModel)]="round.delta">
+</app-range-slider>
+
+<app-range-slider label="Sample size"
+  [min]="min.n" [max]="max.n" step="1"
+  [hardMin]="1"
+  [isOutput]="round.output == 'n'" [(ngModel)]="round.n">
+</app-range-slider>

@@ -1,0 +1,30 @@
+<div class="slider-group" [class.output]="isOutput">
+  <div class="label" *ngIf="label">
+    {{label}}
+    <span *ngIf="isOutput">(Output)</span>
+  </div>
+  <ng-template [ngTemplateOutlet]="labelTpl?.templateRef"></ng-template>
+  <div class="inputs row">
+    <div class="col-sm-9">
+      <div class="slider">
+        <div class="min">{{floor(min)}}</div>
+        <input #range name="{{name}}" type="range" step="{{step}}"
+               min="{{min}}" max="{{max}}"
+               [value]="value"
+               [disabled]="isOutput"
+               (change)="rangeChanged(range.value)"
+               (input)="rangeInput(range.value)" />
+        <div class="max">{{ceil(max)}}</div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="number">
+        <input #number name="{{name}}" type="number" step="{{step}}"
+               [min]="hardMin" [max]="hardMax" [value]="value"
+               [disabled]="isOutput"
+               (change)="numberChanged(number.value)"
+               (input)="numberInput(number.value)" />
+      </div>
+    </div>
+  </div>
+</div>
