@@ -101,7 +101,7 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
       range([0, this.width]);
 
     this.yScale = d3.scaleLinear().
-      domain([0, 1]).
+      domain([0, 0.8]).
       range([0, this.height]);
 
     this.yScaleSD = d3.scaleLinear().

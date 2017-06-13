@@ -86,7 +86,7 @@ var BottomPlotComponent = (function () {
             domain(this.pSpace.range.toArray()).
             range([0, this.width]);
         this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
-            domain([0, 1]).
+            domain([0, 0.8]).
             range([0, this.height]);
         this.yScaleSD = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
             domain(__WEBPACK_IMPORTED_MODULE_1_d3__["extent"](this.sampDist.values).reverse()).
@@ -520,13 +520,7 @@ var PlotComponent = (function () {
         if (points) {
             this.paths = this.getPaths(points);
             this.mainPoints = points[0];
-            this.mainPoints.sort(function (a, b) {
-                if (a.x < b.x)
-                    return -1;
-                if (b.x < a.x)
-                    return 1;
-                return 0;
-            });
+            this.mainPoints.sort(function (a, b) { return a.x - b.x; });
         }
         // drop paths
         this.computeDropPaths();
@@ -1474,7 +1468,7 @@ exports = module.exports = __webpack_require__(8)();
 
 
 // module
-exports.push([module.i, ".plot {\n  height: 80%;\n  /*min-height: 500px;*/\n  position: relative;\n}\n.without-text {\n  height: 100%;\n}\n\ndiv.show-text {\n  position: absolute;\n  right: 5px;\n  bottom: 5px;\n}\n\n.plot /deep/ svg.top-left {\n  position: absolute;\n  left: 0;\n  width: 50%;\n  height: 75%;\n}\n.plot.without-text /deep/ svg.top-left {\n  height: 73%;\n}\n.plot /deep/ svg.top-right {\n  position: absolute;\n  right: 0;\n  width: 50%;\n  height: 73%;\n}\n.plot.without-text /deep/ svg.top-right {\n  height: 73%;\n}\n.plot /deep/ svg.bottom {\n  position: absolute;\n  top: 75%;\n  height: 25%;\n  width: 100%;\n}\n.plot.without-text /deep/ svg.bottom {\n  top: 73%;\n  height: 23%;\n}\n\n.output-text {\n  position: relative;\n  background-color: #e5e5e5;\n  border: 1px solid #aaa;\n  border-radius: 5px;\n  padding: 10px 20px;\n  text-align: justify;\n  overflow: auto;\n  margin-top: 5px;\n}\n.hide-text {\n  position: absolute;\n  top: 0;\n  right: 5px;\n}\n", ""]);
+exports.push([module.i, ".plot {\n  height: 80%;\n  /*min-height: 500px;*/\n  position: relative;\n}\n.without-text {\n  height: 100%;\n}\n\ndiv.show-text {\n  position: absolute;\n  right: 5px;\n  bottom: 5px;\n}\n\n.plot /deep/ svg.top-left {\n  position: absolute;\n  left: 0;\n  width: 50%;\n  height: 70%;\n}\n.plot.without-text /deep/ svg.top-left {\n  height: 68%;\n}\n.plot /deep/ svg.top-right {\n  position: absolute;\n  right: 0;\n  width: 50%;\n  height: 70%;\n}\n.plot.without-text /deep/ svg.top-right {\n  height: 68%;\n}\n.plot /deep/ svg.bottom {\n  position: absolute;\n  top: 70%;\n  height: 30%;\n  width: 100%;\n}\n.plot.without-text /deep/ svg.bottom {\n  top: 68%;\n  height: 28%;\n}\n\n.output-text {\n  position: relative;\n  background-color: #e5e5e5;\n  border: 1px solid #aaa;\n  border-radius: 5px;\n  padding: 10px 20px;\n  text-align: justify;\n  overflow: auto;\n  margin-top: 5px;\n}\n.hide-text {\n  position: absolute;\n  top: 0;\n  right: 5px;\n}\n", ""]);
 
 // exports
 

@@ -283,11 +283,7 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     if (points) {
       this.paths = this.getPaths(points);
       this.mainPoints = points[0];
-      this.mainPoints.sort((a, b) => {
-        if (a.x < b.x) return -1;
-        if (b.x < a.x) return 1;
-        return 0;
-      });
+      this.mainPoints.sort((a, b) => a.x - b.x);
     }
 
     // drop paths
