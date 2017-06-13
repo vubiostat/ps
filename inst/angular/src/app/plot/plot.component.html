@@ -6,10 +6,15 @@
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
   <ng-template [ngIf]="x && y">
     <defs>
-      <clipPath [id]="clipPathId">
+      <clipPath [id]="mainClipPathId">
         <rect x="0" [attr.y]="-plotOptions.lineWidth * 3"
           [attr.width]="width"
           [attr.height]="height + plotOptions.lineWidth * 3" />
+      </clipPath>
+      <clipPath [id]="targetClipPathId">
+        <rect x="-5" [attr.y]="-5"
+          [attr.width]="width + 10"
+          [attr.height]="height + 10" />
       </clipPath>
     </defs>
 
@@ -29,7 +34,7 @@
 
     <g [attr.transform]="translate(margin, margin)">
       <path
-        [attr.clip-path]="clipPath()"
+        [attr.clip-path]="mainClipPath()"
         [attr.d]="paths[1]"
         stroke="lightblue"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
@@ -39,7 +44,7 @@
 
     <g [attr.transform]="translate(margin, margin)">
       <path
-        [attr.clip-path]="clipPath()"
+        [attr.clip-path]="mainClipPath()"
         [attr.d]="paths[2]"
         stroke="lightblue"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
@@ -49,7 +54,7 @@
 
     <g [attr.transform]="translate(margin, margin)">
       <path
-        [attr.clip-path]="clipPath()"
+        [attr.clip-path]="mainClipPath()"
         [attr.d]="paths[0]"
         stroke="steelblue"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
@@ -59,7 +64,7 @@
     <g *ngFor="let path of dropPaths"
       [attr.transform]="translate(margin, margin)">
       <path
-        [attr.clip-path]="clipPath()"
+        [attr.clip-path]="mainClipPath()"
         [attr.d]="path"
         stroke="red"
         [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
@@ -105,6 +110,7 @@
       [attr.cx]="xScale(targetPoint.x)"
       [attr.cy]="yScale(targetPoint.y)"
       [attr.transform]="translate(margin, margin)"
+      [attr.clip-path]="targetClipPath()"
       fill="red" cursor="grab"
       (mouseover)="toggleTargetInfo(true)"
       (mouseout)="toggleTargetInfo(false)" />

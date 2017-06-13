@@ -42,7 +42,8 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   margin: number = 50;
   width: number;
   height: number;
-  clipPathId: string;
+  mainClipPathId: string;
+  targetClipPathId: string;
   xScale: any;
   yScale: any;
   paths: string[];
@@ -64,7 +65,8 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   private subscription: Subscription;
 
   ngOnInit(): void {
-    this.clipPathId = `${this.name}-plot-area`;
+    this.mainClipPathId = `${this.name}-plot-area`;
+    this.targetClipPathId = `${this.name}-target-area`;
     this.plotOptions.onChange.subscribe(() => { this.compute(); } );
     this.compute();
   }
@@ -364,8 +366,12 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     return `translate(${x}, ${y})`;
   }
 
-  private clipPath(): string {
-    return `url(#${this.clipPathId})`;
+  private mainClipPath(): string {
+    return `url(#${this.mainClipPathId})`;
+  }
+
+  private targetClipPath(): string {
+    return `url(#${this.targetClipPathId})`;
   }
 
   private getPaths(points: any[]): string[] {
