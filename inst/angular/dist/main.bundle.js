@@ -236,9 +236,16 @@ var PlotOptionsComponent = (function () {
     PlotOptionsComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.selectedModelSet.subscribe(function (modelSet) {
+            if (_this.subscription) {
+                _this.subscription.unsubscribe();
+                _this.subscription = undefined;
+            }
             _this.modelSet = modelSet;
             if (modelSet) {
-                _this.defaultRanges = __WEBPACK_IMPORTED_MODULE_2__t_test__["b" /* TTestRanges */].fromArrays(modelSet.ranges.attributes());
+                _this.subscription = modelSet.onCompute.subscribe(function () {
+                    _this.setDefaultRanges();
+                });
+                _this.setDefaultRanges();
             }
         });
         this.defaultPlotOptions = new __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */]();
@@ -260,6 +267,9 @@ var PlotOptionsComponent = (function () {
     };
     PlotOptionsComponent.prototype.roundCeil = function (n) {
         return Math.ceil(n * 100) / 100;
+    };
+    PlotOptionsComponent.prototype.setDefaultRanges = function () {
+        this.defaultRanges = __WEBPACK_IMPORTED_MODULE_2__t_test__["b" /* TTestRanges */].fromArrays(this.modelSet.ranges.attributes());
     };
     return PlotOptionsComponent;
 }());

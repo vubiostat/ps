@@ -1,6 +1,7 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { PlotOptions } from '../plot-options';
@@ -17,12 +18,21 @@ export class PlotOptionsComponent implements OnInit {
   modelSet: TTestSet;
   defaultRanges: TTestRanges;
   enabled = false;
+  private subscription: Subscription;
 
   ngOnInit() {
     this.selectedModelSet.subscribe(modelSet => {
+      if (this.subscription) {
+        this.subscription.unsubscribe();
+        this.subscription = undefined;
+      }
       this.modelSet = modelSet;
+
       if (modelSet) {
-        this.defaultRanges = TTestRanges.fromArrays(modelSet.ranges.attributes());
+        this.subscription = modelSet.onCompute.subscribe(() => {
+          this.setDefaultRanges();
+        });
+        this.setDefaultRanges();
       }
     });
     this.defaultPlotOptions = new PlotOptions();
@@ -49,5 +59,9 @@ export class PlotOptionsComponent implements OnInit {
 
   roundCeil(n: number): number {
     return Math.ceil(n * 100) / 100;
+  }
+
+  private setDefaultRanges(): void {
+    this.defaultRanges = TTestRanges.fromArrays(this.modelSet.ranges.attributes());
   }
 }
