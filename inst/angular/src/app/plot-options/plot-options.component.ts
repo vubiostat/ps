@@ -21,7 +21,9 @@ export class PlotOptionsComponent implements OnInit {
   ngOnInit() {
     this.selectedModelSet.subscribe(modelSet => {
       this.modelSet = modelSet;
-      this.defaultRanges = TTestRanges.fromArrays(modelSet.ranges.attributes());
+      if (modelSet) {
+        this.defaultRanges = TTestRanges.fromArrays(modelSet.ranges.attributes());
+      }
     });
     this.defaultPlotOptions = new PlotOptions();
   }

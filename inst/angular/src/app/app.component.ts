@@ -61,6 +61,9 @@ export class AppComponent implements OnInit {
       let index = md[0] - 1;
       this.selectedModelSet.next(this.modelSets[index]);
       this.plotOptionsAvailable = true;
+    } else {
+      this.selectedModelSet.next(undefined);
+      this.plotOptionsAvailable = false;
     }
   }
 

@@ -4,7 +4,7 @@
   [attr.class]="name" (window:resize)="onResize()">
 
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
-  <ng-template [ngIf]="x && y">
+  <ng-template [ngIf]="x && y && modelSet">
     <defs>
       <clipPath [id]="mainClipPathId">
         <rect x="0" [attr.y]="-plotOptions.lineWidth * 3"

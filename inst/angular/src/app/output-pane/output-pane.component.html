@@ -5,7 +5,7 @@
   </app-plot>
   <app-bottom-plot #bottom name="bottom" [modelSet]="modelSet" [plotOptions]="plotOptions">
   </app-bottom-plot>
-  <div *ngIf="!showText" class="show-text">
+  <div class="show-text" *ngIf="modelSet && !showText">
     <button type="button" class="btn btn-secondary" (click)="toggleText(true)">
       <i class="fa fa-envelope-open-o" aria-hidden="true"></i>
       Interpretation
