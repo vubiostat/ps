@@ -142,7 +142,11 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
 
   private dragTarget(event: any): void {
     let x = this.xScale.invert(d3.event.x - this.margin);
-    let y = this.yScale.invert(d3.event.y - this.margin);
+    if (x < this.x.range.min) {
+      x = this.x.range.min;
+    } else if (x > this.x.range.max) {
+      x = this.x.range.max;
+    }
     let index = this.xBisector(this.mainPoints, x);
     let point = this.mainPoints[index];
     if (!point) return;

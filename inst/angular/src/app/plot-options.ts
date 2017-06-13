@@ -32,4 +32,30 @@ export class PlotOptions extends ChangeEmitter {
       axisLineWidth: this.axisLineWidth
     });
   }
+
+  update(attribs: any, emit = true): void {
+    this.noEmit = true;
+    // don't update height and width
+    if ('fontFamily' in attribs) {
+      this.fontFamily = attribs.fontFamily;
+    }
+    if ('fontSize' in attribs) {
+      this.fontSize = attribs.fontSize;
+    }
+    if ('axisFontSize' in attribs) {
+      this.axisFontSize = attribs.axisFontSize;
+    }
+    if ('lineWidth' in attribs) {
+      this.lineWidth = attribs.lineWidth;
+    }
+    if ('axisLineWidth' in attribs) {
+      this.axisLineWidth = attribs.axisLineWidth;
+    }
+    this.noEmit = false;
+    if (emit) {
+      this.emit();
+    } else {
+      this.changes = {};
+    }
+  }
 }

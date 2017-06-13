@@ -7,8 +7,8 @@ webpackJsonp([1,4],{
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__(141);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__t_test__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plot_options__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__t_test__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plot_options__ = __webpack_require__(25);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BottomPlotComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -213,7 +213,8 @@ var _a, _b, _c, _d, _e;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__plot_options__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__t_test__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plot_options__ = __webpack_require__(25);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PlotOptionsComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -227,6 +228,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var PlotOptionsComponent = (function () {
     function PlotOptionsComponent() {
         this.enabled = false;
@@ -235,13 +237,21 @@ var PlotOptionsComponent = (function () {
         var _this = this;
         this.selectedModelSet.subscribe(function (modelSet) {
             _this.modelSet = modelSet;
+            _this.defaultRanges = __WEBPACK_IMPORTED_MODULE_2__t_test__["b" /* TTestRanges */].fromArrays(modelSet.ranges.attributes());
         });
+        this.defaultPlotOptions = new __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */]();
     };
     PlotOptionsComponent.prototype.toggle = function () {
         this.enabled = !this.enabled;
     };
     PlotOptionsComponent.prototype.close = function () {
         this.enabled = false;
+    };
+    PlotOptionsComponent.prototype.reset = function () {
+        this.plotOptions.update(this.defaultPlotOptions.attributes());
+        if (this.modelSet) {
+            this.modelSet.ranges.updateFromArrays(this.defaultRanges.attributes());
+        }
     };
     PlotOptionsComponent.prototype.roundFloor = function (n) {
         return Math.floor(n * 100) / 100;
@@ -257,7 +267,7 @@ __decorate([
 ], PlotOptionsComponent.prototype, "selectedModelSet", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__plot_options__["a" /* PlotOptions */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__plot_options__["a" /* PlotOptions */]) === "function" && _b || Object)
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */]) === "function" && _b || Object)
 ], PlotOptionsComponent.prototype, "plotOptions", void 0);
 PlotOptionsComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Y" /* Component */])({
@@ -279,8 +289,8 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__(141);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__plot_options__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__plot_options__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test__ = __webpack_require__(23);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PlotComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -373,7 +383,12 @@ var PlotComponent = (function () {
     };
     PlotComponent.prototype.dragTarget = function (event) {
         var x = this.xScale.invert(__WEBPACK_IMPORTED_MODULE_1_d3__["event"].x - this.margin);
-        var y = this.yScale.invert(__WEBPACK_IMPORTED_MODULE_1_d3__["event"].y - this.margin);
+        if (x < this.x.range.min) {
+            x = this.x.range.min;
+        }
+        else if (x > this.x.range.max) {
+            x = this.x.range.max;
+        }
         var index = this.xBisector(this.mainPoints, x);
         var point = this.mainPoints[index];
         if (!point)
@@ -687,8 +702,8 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dyna
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_switch__ = __webpack_require__(242);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_switch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_switch__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__t_test__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__plot_options__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__t_test__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__plot_options__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__t_test_service__ = __webpack_require__(57);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__plot_options_plot_options_component__ = __webpack_require__(128);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
@@ -713,7 +728,7 @@ var AppComponent = (function () {
     function AppComponent(ttestService) {
         this.ttestService = ttestService;
         this.title = 'PS: Power and Sample Size Calculation';
-        this.newModel = new __WEBPACK_IMPORTED_MODULE_4__t_test__["b" /* TTest */]();
+        this.newModel = new __WEBPACK_IMPORTED_MODULE_4__t_test__["c" /* TTest */]();
         this.modelSets = [];
         this.plotOptions = new __WEBPACK_IMPORTED_MODULE_5__plot_options__["a" /* PlotOptions */]();
         this.helpOpen = false;
@@ -721,7 +736,7 @@ var AppComponent = (function () {
         this.selectedModelSet = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["Subject"]();
     }
     AppComponent.prototype.ngOnInit = function () {
-        var model = new __WEBPACK_IMPORTED_MODULE_4__t_test__["b" /* TTest */]({
+        var model = new __WEBPACK_IMPORTED_MODULE_4__t_test__["c" /* TTest */]({
             output: 'n', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32
         });
         this.addModel(model, false);
@@ -751,7 +766,7 @@ var AppComponent = (function () {
         if (select === void 0) { select = true; }
         this.ttestService.create(model).
             then(function (result) {
-            var model = new __WEBPACK_IMPORTED_MODULE_4__t_test__["b" /* TTest */](result.model);
+            var model = new __WEBPACK_IMPORTED_MODULE_4__t_test__["c" /* TTest */](result.model);
             var data = result.data;
             var modelSet = new __WEBPACK_IMPORTED_MODULE_4__t_test__["a" /* TTestSet */](model, data);
             _this.modelSets.push(modelSet);
@@ -915,7 +930,7 @@ HelpComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__plot_options__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__plot_options__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__ = __webpack_require__(129);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__bottom_plot_bottom_plot_component__ = __webpack_require__(127);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return OutputPaneComponent; });
@@ -1222,7 +1237,7 @@ __decorate([
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__t_test__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__t_test__ = __webpack_require__(23);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StartComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1250,7 +1265,7 @@ var StartComponent = (function () {
 }());
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__t_test__["b" /* TTest */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__t_test__["b" /* TTest */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__t_test__["c" /* TTest */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__t_test__["c" /* TTest */]) === "function" && _a || Object)
 ], StartComponent.prototype, "model", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Z" /* Output */])(),
@@ -1281,7 +1296,7 @@ var _a;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_debounceTime__ = __webpack_require__(241);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_debounceTime___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_debounceTime__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__t_test__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__t_test__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test_service__ = __webpack_require__(57);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TTestComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1314,8 +1329,8 @@ var TTestComponent = (function () {
         this.round.onChange.subscribe(function (changes) {
             _this.model.update(changes);
         });
-        this.min = new __WEBPACK_IMPORTED_MODULE_2__t_test__["b" /* TTest */](this.model);
-        this.max = new __WEBPACK_IMPORTED_MODULE_2__t_test__["b" /* TTest */](this.model);
+        this.min = new __WEBPACK_IMPORTED_MODULE_2__t_test__["c" /* TTest */](this.model);
+        this.max = new __WEBPACK_IMPORTED_MODULE_2__t_test__["c" /* TTest */](this.model);
         this.min.alpha = 0.01;
         this.max.alpha = 0.99;
         this.min.power = 0.01;
@@ -1562,149 +1577,7 @@ module.exports = "<div id=\"app\" class=\"container-fluid\">\n  <div id=\"header
 
 /***/ }),
 
-/***/ 230:
-/***/ (function(module, exports) {
-
-module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" (window:resize)=\"onResize()\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"pSpace && precision && sampDist\">\n    <defs>\n      <clipPath [id]=\"clipPathId\">\n        <rect x=\"0\" y=\"0\" [attr.width]=\"width\" [attr.height]=\"height\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"width / 2 + margin\" [attr.y]=\"height + margin\" dy=\"2.5em\">\n      Parameter Space\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"width / 2 + margin\" y=\"0\" dy=\"2em\">\n      Precision vs. Effect Size\n    </text>\n\n    <g [attr.transform]=\"translate(margin, margin)\">\n      <path [attr.clip-path]=\"clipPath()\" [attr.d]=\"sampDistPath\"\n        fill=\"#ffcdc8\" stroke=\"none\" />\n    </g>\n\n    <g *ngFor=\"let path of paths\" [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"path\"\n        stroke=\"maroon\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n    </g>\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(0)\"\n      [attr.cy]=\"yScale(0.5)\"\n      [attr.clip-path]=\"clipPath()\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"darkseagreen\" />\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(precision.target)\"\n      [attr.cy]=\"yScale(0.5)\"\n      [attr.clip-path]=\"clipPath()\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"maroon\" />\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, height + margin)\"></g>\n  </ng-template>\n</svg>\n"
-
-/***/ }),
-
-/***/ 231:
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"header\">\n  t-test Overview\n  <button type=\"button\" class=\"close fa fa-times-circle\" (click)=\"close()\"></button>\n</div>\n<div class=\"content\">\n  <p>\n    Continuous Response Measures in Two Groups -- Paired and independent t-tests:\n    The approach of <a href=\"#ref3\">Dupont and Plummer (1990)</a> is used for\n    paired and independent samples.  The ratio of number of patients in the\n    samples being compared may be specified by the user.  This method produces\n    results that are in close agreement with those of\n    <a href=\"#ref6\">Pearson and Hartley (1970)</a>.\n  </p>\n\n  <p>\n    Each null hypothesis is tested with respect to a two-sided alternative\n    hypothesis.\n  </p>\n\n  <h4>Output</h4>\n\n  <h5>Sample size</h5>\n  <p>\n    For independent t-tests this is the number of experimental patients\n    that must be studied to detect a true difference in population means\n    &delta; with Type I error probability &alpha; given a standard\n    deviation &sigma; and <i>m</i> controls per experimental patient.  For\n    paired t-tests it is the number of pairs of patients needed to detect a\n    true difference in population means &delta; with Type I error\n    probability &alpha; given a standard deviation &sigma;.\n  </p>\n\n  <h5>Power</h5>\n  <p>\n    For independent studies it is the probability of rejecting the null\n    hypothesis with Type I error probability &alpha; given the specified\n    sample size, a standard deviation &sigma; and a control/experimental\n    patient ratio <i>m</i> when the true difference in population means is\n    &delta;.  For paired studies it is the probability of rejecting the\n    null hypothesis with Type I error probability &alpha; given the\n    specified sample size, a standard deviation &sigma; when the true\n    difference in population means is &delta;.\n  </p>\n\n  <h5>Detectable alternative</h5>\n  <p>\n    A difference in population means that can be detected with the\n    specified power and Type I error probability &alpha; given a standard\n    deviation &sigma;, and the specified sample size.\n  </p>\n\n  <h4>Input</h4>\n\n  <h5>Type I error (&alpha;)</h5>\n  <p>\n    The Type I error probability for a two sided test.  This is the probability\n    that we will falsely reject the null hypothesis.\n  </p>\n\n  <h5>Sample size (<em>n</em>)</h5>\n  <p>\n    For independent t-tests <em>n</em> is the number of experimental subjects.  For\n    pair test <em>n</em> is the number of pairs.\n  </p>\n\n  <h5>Power</h5>\n  <p>\n    For independent tests <i>power</i> is probability of correctly rejecting the\n    null hypothesis of equal population means given <i>n</i> experimental\n    patients, <i>m</i> control patients per experimental patient,  a Type I error\n    probability &alpha; and a true difference in population means of &delta;.\n    For paired tests it is the probability of correctly rejecting the null\n    hypothesis of equal population means given <i>n</i> pairs of patients, a Type\n    I error probability &alpha; and a true difference in population means of\n    &delta;.\n  </p>\n\n  <h5>Difference in population means (&delta;)</h5>\n\n  <h5>Standard deviation (&sigma;)</h5>\n  <p>\n    For independent tests &sigma; is the within group standard deviation.  For\n    paired designs it is the standard deviation of difference in the response of\n    matched pairs.\n  </p>\n\n  <h5>Ratio (<i>m</i>)</h5>\n  <p>\n    For independent tests <i>m</i> is the ratio of control to experimental\n    patients.  <i>m</i> is not defined for paired studies.\n  </p>\n\n  <h4>References</h4>\n  <ol>\n    <li><a name=\"ref1\"></a>Casagrande JT, Pike MC, Smith PG:  \"An Improved Approximate Formula for Calculating Sample Sizes for Comparing Two Binomial Distributions\", Biometrics, 1978; 34:483-486.</li>\n    <li><a name=\"ref2\"></a>Dupont, WD: \"Power Calculations for Matched Case-Control Studies\", Biometrics, 1988; 44:1157-1168.</li>\n    <li><a name=\"ref3\"></a>Dupont WD, Plummer WD: \"Power and Sample Size Calculations: A Review and Computer Program\", Controlled Clinical Trials 1990; 11:116-28.</li>\n    <li><a name=\"ref4\"></a>Dupont WD, Plummer WD:  \"Power and Sample Size Calculations for Studies Involving Linear Regression\", Controlled Clinical Trials 1998; 19:589-601.</li>\n    <li><a name=\"ref5\"></a>Fleiss JL:  \"Statistical Methods for Rates and Proportions\" 2nd Ed. NewYork: John Wiley, 1981:38-46.</li>\n    <li><a name=\"ref6\"></a>Pearson ES and Hartley HO: \"Biometrika Tables for Statisticians Vol I\", 3rd Ed., Cambridge:  Cambridge U. Press, 1970.</li>\n    <li><a name=\"ref7\"></a>Schlesselman:  Case-control Studies: Design, Conduct, Analysis. New York: Oxford U. Press; 1982:144-152.</li>\n    <li><a name=\"ref8\"></a>Schoenfeld DA, Richter JR: \"Nomograms for Calculating the Number of Patients Needed for a Clinical Trial With Survival as an Endpoint\" Biometrics 1982; 38:163-170.</li>\n    <li><a name=\"ref9\"></a>Wittes J, Wallenstein S:  \"The Power of the Mantel-Haenszel Test\" J Am Stat Assoc, 1987; 82:1104-1109.</li>\n    <li><a name=\"ref10\"></a>Visual Components Sybase Inc.  First Impression Active X User's Guide: High Performance Software for Charting Data for Microsoft Visual Basic, Visual C++, and Other Languages. Version 5.0.  Overland Park, KS: Visual Components Sybase Inc.</li>\n    <li><a name=\"ref11\"></a>Mantel, N., &amp; Haenszel, W. (1959) Statistical aspects of the analysis of data from retrospective studies of disease. Journal of the National Cancer Institute, 22, 719-748.</li>\n    <li><a name=\"ref12\"></a>Dupont, WD (2008). Statistical Modeling for Biomedical Researchers, 2nd Edition. Cambridge, U.K.: Cambridge University Press.</li>\n    <li><a name=\"ref13\"></a>Dupont WD and Plummer WD: PS power and sample size program available for free on the Internet.  Controlled Clin Trials,1997;18:274</li>\n  </ol>\n</div>\n"
-
-/***/ }),
-
-/***/ 232:
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"plot\" [class.without-text]=\"!showText\">\n  <app-plot #topLeft name=\"top-left\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-plot>\n  <app-plot #topRight name=\"top-right\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-plot>\n  <app-bottom-plot #bottom name=\"bottom\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-bottom-plot>\n  <div *ngIf=\"!showText\" class=\"show-text\">\n    <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleText(true)\">\n      <i class=\"fa fa-envelope-open-o\" aria-hidden=\"true\"></i>\n      Interpretation\n    </button>\n  </div>\n</div>\n<div class=\"output-text\" *ngIf=\"modelSet && showText\">\n  <div *ngIf=\"showText\" class=\"hide-text\">\n    <i class=\"fa fa-times-circle\" (click)=\"toggleText(false)\"></i>\n  </div>\n  <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n    We are planning a study of a continuous response variable from matched\n    pairs of study subjects. Prior data indicate that the difference in the\n    response of matched pairs is normally distributed with standard deviation\n    {{round(modelSet.model.sigma)}}. If the true difference in the mean response of\n    matched pairs is {{round(modelSet.model.delta)}}, we will need to study\n    {{ceil(modelSet.model.n)}} pairs of subjects to be able to reject the null\n    hypothesis that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. If\n    the true difference in the mean response of matched pairs is\n    {{round(modelSet.model.delta)}}, we will be able to reject the null hypothesis\n    that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. We\n    will be able to detect a true difference in the mean response of matched\n    pairs of -{{round(modelSet.model.delta)}} or {{round(modelSet.model.delta)}} with\n    probability (power) {{round(modelSet.model.power)}}. The Type I error probability\n    associated with this test of the null hypothesis that this response\n    difference is zero is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n</div>\n"
-
-/***/ }),
-
-/***/ 233:
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"plot-options\" *ngIf=\"enabled\">\n  <div class=\"header\">\n    Plot options\n    <button type=\"button\" class=\"close fa fa-times-circle\" (click)=\"close()\"></button>\n  </div>\n  <div *ngIf=\"plotOptions && modelSet\" class=\"content\">\n    <fieldset>\n      <legend>Global</legend>\n      <div class=\"form-group\">\n        <label for=\"plot-font-family\">Font family</label>\n        <select id=\"plot-font-family\" class=\"form-control\"\n          [(ngModel)]=\"plotOptions.fontFamily\">\n          <option value=\"\">Default</option>\n          <option value=\"serif\">Serif</option>\n          <option value=\"sans\">Sans-serif</option>\n          <option value=\"monospace\">Monospace</option>\n          <option>Bungee Shade</option>\n          <option>Sancreek</option>\n        </select>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-sm-6\">\n          <label for=\"plot-font-size\">Font size: {{plotOptions.fontSize}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-font-size\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.fontSize\" />\n          </div>\n        </div>\n        <div class=\"col-sm-6\">\n          <label for=\"plot-axis-font-size\">Axis font size: {{plotOptions.axisFontSize}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-axis-font-size\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.axisFontSize\" />\n          </div>\n        </div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-sm-6\">\n          <label for=\"plot-line-width\">Line width: {{plotOptions.lineWidth}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-line-width\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.lineWidth\" />\n          </div>\n        </div>\n        <div class=\"col-sm-6\">\n          <label for=\"plot-axis-line-width\">Axis line width: {{plotOptions.axisLineWidth}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-axis-line-width\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.axisLineWidth\" />\n          </div>\n        </div>\n      </div>\n    </fieldset>\n    <fieldset>\n      <legend *ngIf=\"modelSet.model.output == 'n'\">Sample Size</legend>\n      <legend *ngIf=\"modelSet.model.output == 'power'\">Power</legend>\n      <legend *ngIf=\"modelSet.model.output == 'delta'\">Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-y-min\">Minimum</label>\n          <div class=\"input-group\">\n            <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </ng-template>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-y-max\">Maximum</label>\n          <div class=\"input-group\">\n            <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </ng-template>\n          </div>\n        </div>\n      </div>\n    </fieldset>\n    <fieldset>\n      <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n        <legend>Sample Size vs. Power</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n        <legend>Power vs. Sample Size</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n        <legend>Detectable Alternative vs. Sample Size</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n    </fieldset>\n    <fieldset>\n      <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n        <legend>Sample Size vs. Detectable Alternative</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n        <legend>Power vs. Detectable Alternative</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n        <legend>Detectable Alternative vs. Power</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n    </fieldset>\n    <fieldset>\n      <legend>Precision vs. Parameter Space</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-bottom-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.pSpace.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.pSpace.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-bottom-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.pSpace.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.pSpace.max\" />\n          </div>\n        </div>\n      </div>\n    </fieldset>\n  </div>\n</div>\n"
-
-/***/ }),
-
-/***/ 234:
-/***/ (function(module, exports) {
-
-module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" (window:resize)=\"onResize()\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"x && y\">\n    <defs>\n      <clipPath [id]=\"clipPathId\">\n        <rect x=\"0\" y=\"0\" [attr.width]=\"width\" [attr.height]=\"height\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"width / 2 + margin\" [attr.y]=\"height + margin\" dy=\"2.5em\">\n      {{x.title}}\n    </text>\n    <text text-anchor=\"middle\"\n      [attr.dx]=\"-(height / 2 + margin)\" dy=\"1em\"\n      transform=\"rotate(-90)\">\n      {{y.title}}\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"width / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{y.title}} vs. {{x.title}}\n    </text>\n\n    <g [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"paths[1]\"\n        stroke=\"lightblue\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [style.display]=\"modelSet.model.showAlternates ? null : 'none'\"\n        fill=\"none\" />\n    </g>\n\n    <g [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"paths[2]\"\n        stroke=\"lightblue\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [style.display]=\"modelSet.model.showAlternates ? null : 'none'\"\n        fill=\"none\" />\n    </g>\n\n    <g [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"paths[0]\"\n        stroke=\"steelblue\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n    </g>\n\n    <g *ngFor=\"let path of dropPaths\"\n      [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"path\"\n        stroke=\"red\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3 / 2\"\n        stroke-dasharray=\"5, 5\"\n        fill=\"none\" />\n    </g>\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, height + margin)\"></g>\n    <g #leftAxis [attr.transform]=\"translate(margin, margin)\"></g>\n\n    <g *ngIf=\"showHoverInfo\"\n      [attr.transform]=\"translate(margin + hoverX, margin + hoverY)\">\n      <circle r=\"4\" fill=\"none\" stroke=\"blue\" />\n      <rect x=\"-3.5em\" [attr.y]=\"hoverInfoY()\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"-2.5em\" [attr.y]=\"hoverInfoY()\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.x}}</tspan>\n        <tspan x=\"-2.5em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <rect [attr.transform]=\"translate(margin, margin)\"\n      [attr.width]=\"width\" [attr.height]=\"height\"\n      fill=\"none\" pointer-events=\"all\"\n      (mouseout)=\"toggleHoverInfo(false)\"\n      (mousemove)=\"hover($event)\" />\n\n    <g *ngIf=\"showTargetInfo\"\n      [attr.transform]=\"translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))\">\n      <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"1em\" y=\"-3.5em\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.x}}</tspan>\n        <tspan x=\"1em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <circle #target r=\"5\"\n      [attr.cx]=\"xScale(targetPoint.x)\"\n      [attr.cy]=\"yScale(targetPoint.y)\"\n      [attr.clip-path]=\"clipPath()\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"red\" cursor=\"grab\"\n      (mouseover)=\"toggleTargetInfo(true)\"\n      (mouseout)=\"toggleTargetInfo(false)\" />\n  </ng-template>\n</svg>\n"
-
-/***/ }),
-
-/***/ 235:
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"slider-group\" [class.output]=\"isOutput\">\n  <div class=\"label\" *ngIf=\"label\">\n    {{label}}\n    <span *ngIf=\"isOutput\">(Output)</span>\n  </div>\n  <ng-template [ngTemplateOutlet]=\"labelTpl?.templateRef\"></ng-template>\n  <div class=\"inputs row\">\n    <div class=\"col-sm-9\">\n      <div class=\"slider\">\n        <div class=\"min\">{{floor(min)}}</div>\n        <input #range name=\"{{name}}\" type=\"range\" step=\"{{step}}\"\n               min=\"{{min}}\" max=\"{{max}}\"\n               [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"rangeChanged(range.value)\"\n               (input)=\"rangeInput(range.value)\" />\n        <div class=\"max\">{{ceil(max)}}</div>\n      </div>\n    </div>\n    <div class=\"col-sm-3\">\n      <div class=\"number\">\n        <input #number name=\"{{name}}\" type=\"number\" step=\"{{step}}\"\n               [min]=\"hardMin\" [max]=\"hardMax\" [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"numberChanged(number.value)\"\n               (input)=\"numberInput(number.value)\" />\n      </div>\n    </div>\n  </div>\n</div>\n"
-
-/***/ }),
-
-/***/ 236:
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"overview\">\n  <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleHelp()\">\n    Overview <i class=\"fa fa-question-circle\"></i>\n  </button>\n</div>\n<form (ngSubmit)=\"onSubmit()\" #startForm=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"output\">\n      What do you want to know?\n      <button type=\"button\" class=\"btn btn-secondary fa fa-question-circle\"\n        (click)=\"toggleHelp()\"></button>\n    </label>\n    <select class=\"form-control\" id=\"output\"\n            required\n            [(ngModel)]=\"model.output\" name=\"output\">\n      <option></option>\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </div>\n  <!--\n  <div class=\"form-group\" *ngIf=\"model.output\">\n    <label for=\"design\">Paired or independent?</label>\n    <select class=\"form-control\" id=\"design\"\n            required\n            [(ngModel)]=\"model.design\" name=\"design\">\n      <option></option>\n      <option>Paired</option>\n      <option>Independent</option>\n    </select>\n  </div>\n  -->\n  <div *ngIf=\"model.output\">\n    <div class=\"form-group\">\n      <label for=\"alpha\">\n        Type I Error (&alpha;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"alphaHelp\" popoverTitle=\"Type I Error (&alpha;)\"\n          placement=\"right\" triggers=\"hover\"></i>\n      </label>\n      <ng-template #alphaHelp>\n        The Type I error probability for a two sided test. This is the\n        probability that we will falsely reject the null hypothesis.\n      </ng-template>\n      <input class=\"form-control\" id=\"alpha\"\n             type=\"number\" step=\"0.01\"\n             required\n             [(ngModel)]=\"model.alpha\" name=\"alpha\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"sigma\">\n        Standard deviation (&sigma;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"sigmaHelp\" popoverTitle=\"Standard deviation (&sigma;)\"\n          placement=\"right\" triggers=\"hover\"></i>\n      </label>\n      <ng-template #sigmaHelp>\n        For independent tests σ is the within group standard deviation. For\n        paired designs it is the standard deviation of difference in the\n        response of matched pairs.\n      </ng-template>\n      <input class=\"form-control\" id=\"sigma\"\n             type=\"number\" step=\"0.1\"\n             required\n             [(ngModel)]=\"model.sigma\" name=\"sigma\">\n    </div>\n    <div *ngIf=\"model.output != 'power'\" class=\"form-group\">\n      <label for=\"power\">\n        Power\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"powerHelp\" popoverTitle=\"Power\"\n          placement=\"right\" triggers=\"hover\"></i>\n      </label>\n      <ng-template #powerHelp>\n        For independent tests power is probability of correctly rejecting the\n        null hypothesis of equal population means given n experimental\n        patients, m control patients per experimental patient, a Type I error\n        probability α and a true difference in population means of δ. For\n        paired tests it is the probability of correctly rejecting the null\n        hypothesis of equal population means given n pairs of patients, a Type\n        I error probability α and a true difference in population means of δ.\n      </ng-template>\n      <input class=\"form-control\" id=\"power\"\n             type=\"number\" step=\"0.01\"\n             required\n             [(ngModel)]=\"model.power\" name=\"power\">\n    </div>\n    <div *ngIf=\"model.output != 'delta'\" class=\"form-group\">\n      <label for=\"delta\">Difference in population means (&delta;)</label>\n      <input class=\"form-control\" id=\"delta\"\n             type=\"number\" step=\"0.1\"\n             required\n             [(ngModel)]=\"model.delta\" name=\"delta\">\n    </div>\n    <div *ngIf=\"model.output != 'n'\" class=\"form-group\">\n      <label for=\"n\">\n        Sample size\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"nHelp\" popoverTitle=\"Sample size\"\n          placement=\"right\" triggers=\"hover\"></i>\n      </label>\n      <ng-template #nHelp>\n        For independent t-tests n is the number of experimental subjects. For\n        pair test n is the number of pairs.\n      </ng-template>\n      <input class=\"form-control\" id=\"n\"\n             type=\"number\"\n             required\n             [(ngModel)]=\"model.n\" name=\"n\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-success\"\n            [disabled]=\"!startForm.form.valid\">\n      Calculate\n    </button>\n  </div>\n</form>\n"
-
-/***/ }),
-
-/***/ 237:
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"overview\">\n  <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleHelp()\">\n    Overview <i class=\"fa fa-question-circle\"></i>\n  </button>\n</div>\n<div class=\"form-group\">\n  <label>\n    Output\n    <select class=\"form-control\" name=\"output\"\n            [(ngModel)]=\"round.output\">\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </label>\n</div>\n\n<app-range-slider label=\"Type I Error (&alpha;)\"\n  [min]=\"min.alpha\" [max]=\"max.alpha\"\n  [hardMin]=\"min.alpha\" [hardMax]=\"max.alpha\"\n  [(ngModel)]=\"round.alpha\">\n</app-range-slider>\n\n<app-range-slider\n  [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n  [hardMin]=\"1\"\n  [(ngModel)]=\"round.sigma\">\n  <ng-template rsLabel>\n    <div class=\"label row\">\n      <div class=\"col-sm\">\n        Std. deviation (&sigma;)\n      </div>\n      <div class=\"col-sm form-check\">\n        <label class=\"form-check-label\">\n          <input name=\"show-alternates\" type=\"checkbox\"\n            class=\"form-check-input\"\n            [(ngModel)]=\"round.showAlternates\" />\n          Alternates\n        </label>\n      </div>\n    </div>\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider label=\"Power\"\n  [min]=\"min.power\" [max]=\"max.power\"\n  [hardMin]=\"min.power\" [hardMax]=\"max.power\"\n  [isOutput]=\"round.output == 'power'\"\n  [(ngModel)]=\"round.power\">\n</app-range-slider>\n\n<app-range-slider label=\"Difference in population means (&delta;)\"\n  [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n  [isOutput]=\"round.output == 'delta'\" [(ngModel)]=\"round.delta\">\n</app-range-slider>\n\n<app-range-slider label=\"Sample size\"\n  [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n  [hardMin]=\"1\"\n  [isOutput]=\"round.output == 'n'\" [(ngModel)]=\"round.n\">\n</app-range-slider>\n"
-
-/***/ }),
-
-/***/ 24:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__changeable__ = __webpack_require__(56);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PlotOptions; });
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-var PlotOptions = (function (_super) {
-    __extends(PlotOptions, _super);
-    function PlotOptions() {
-        var _this = _super.call(this) || this;
-        _this.noEmit = true;
-        _this.fontFamily = "";
-        _this.fontSize = 1;
-        _this.axisFontSize = 1;
-        _this.lineWidth = 1;
-        _this.axisLineWidth = 1;
-        _this.noEmit = false;
-        _this.changes = {};
-        return _this;
-    }
-    PlotOptions.prototype.attributes = function () {
-        return ({
-            height: this.height,
-            width: this.width,
-            fontFamily: this.fontFamily,
-            axisFontSize: this.axisFontSize,
-            fontSize: this.fontSize,
-            lineWidth: this.lineWidth,
-            axisLineWidth: this.axisLineWidth
-        });
-    };
-    return PlotOptions;
-}(__WEBPACK_IMPORTED_MODULE_0__changeable__["a" /* ChangeEmitter */]));
-
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], PlotOptions.prototype, "height", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], PlotOptions.prototype, "width", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
-    __metadata("design:type", String)
-], PlotOptions.prototype, "fontFamily", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], PlotOptions.prototype, "fontSize", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], PlotOptions.prototype, "axisFontSize", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], PlotOptions.prototype, "lineWidth", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], PlotOptions.prototype, "axisLineWidth", void 0);
-//# sourceMappingURL=plot-options.js.map
-
-/***/ }),
-
-/***/ 25:
+/***/ 23:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1713,8 +1586,8 @@ __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Subscription___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Subscription__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__changeable__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__range__ = __webpack_require__(163);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return TTest; });
-/* unused harmony export TTestRanges */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TTest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return TTestRanges; });
 /* unused harmony export TTestData */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TTestSet; });
 var __extends = (this && this.__extends) || (function () {
@@ -2006,7 +1879,7 @@ var TTestSet = (function () {
                 delta = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.delta[0]);
                 break;
             case "power":
-                power = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](0, 1.1);
+                power = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](0, 1.0);
                 indices = power.findIndices(this.data.power);
                 n = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.n[0]);
                 delta = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](-deltaMax, deltaMax);
@@ -2035,6 +1908,175 @@ var TTestSet = (function () {
 
 var _a, _b, _c, _d;
 //# sourceMappingURL=t-test.js.map
+
+/***/ }),
+
+/***/ 230:
+/***/ (function(module, exports) {
+
+module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" (window:resize)=\"onResize()\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"pSpace && precision && sampDist\">\n    <defs>\n      <clipPath [id]=\"clipPathId\">\n        <rect x=\"0\" y=\"0\" [attr.width]=\"width\" [attr.height]=\"height\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"width / 2 + margin\" [attr.y]=\"height + margin\" dy=\"2.5em\">\n      Parameter Space\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"width / 2 + margin\" y=\"0\" dy=\"2em\">\n      Precision vs. Effect Size\n    </text>\n\n    <g [attr.transform]=\"translate(margin, margin)\">\n      <path [attr.clip-path]=\"clipPath()\" [attr.d]=\"sampDistPath\"\n        fill=\"#ffcdc8\" stroke=\"none\" />\n    </g>\n\n    <g *ngFor=\"let path of paths\" [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"path\"\n        stroke=\"maroon\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n    </g>\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(0)\"\n      [attr.cy]=\"yScale(0.5)\"\n      [attr.clip-path]=\"clipPath()\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"darkseagreen\" />\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(precision.target)\"\n      [attr.cy]=\"yScale(0.5)\"\n      [attr.clip-path]=\"clipPath()\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"maroon\" />\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, height + margin)\"></g>\n  </ng-template>\n</svg>\n"
+
+/***/ }),
+
+/***/ 231:
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"header\">\n  t-test Overview\n  <button type=\"button\" class=\"close fa fa-times-circle\" (click)=\"close()\"></button>\n</div>\n<div class=\"content\">\n  <p>\n    Continuous Response Measures in Two Groups -- Paired and independent t-tests:\n    The approach of <a href=\"#ref3\">Dupont and Plummer (1990)</a> is used for\n    paired and independent samples.  The ratio of number of patients in the\n    samples being compared may be specified by the user.  This method produces\n    results that are in close agreement with those of\n    <a href=\"#ref6\">Pearson and Hartley (1970)</a>.\n  </p>\n\n  <p>\n    Each null hypothesis is tested with respect to a two-sided alternative\n    hypothesis.\n  </p>\n\n  <h4>Output</h4>\n\n  <h5>Sample size</h5>\n  <p>\n    For independent t-tests this is the number of experimental patients\n    that must be studied to detect a true difference in population means\n    &delta; with Type I error probability &alpha; given a standard\n    deviation &sigma; and <i>m</i> controls per experimental patient.  For\n    paired t-tests it is the number of pairs of patients needed to detect a\n    true difference in population means &delta; with Type I error\n    probability &alpha; given a standard deviation &sigma;.\n  </p>\n\n  <h5>Power</h5>\n  <p>\n    For independent studies it is the probability of rejecting the null\n    hypothesis with Type I error probability &alpha; given the specified\n    sample size, a standard deviation &sigma; and a control/experimental\n    patient ratio <i>m</i> when the true difference in population means is\n    &delta;.  For paired studies it is the probability of rejecting the\n    null hypothesis with Type I error probability &alpha; given the\n    specified sample size, a standard deviation &sigma; when the true\n    difference in population means is &delta;.\n  </p>\n\n  <h5>Detectable alternative</h5>\n  <p>\n    A difference in population means that can be detected with the\n    specified power and Type I error probability &alpha; given a standard\n    deviation &sigma;, and the specified sample size.\n  </p>\n\n  <h4>Input</h4>\n\n  <h5>Type I error (&alpha;)</h5>\n  <p>\n    The Type I error probability for a two sided test.  This is the probability\n    that we will falsely reject the null hypothesis.\n  </p>\n\n  <h5>Sample size (<em>n</em>)</h5>\n  <p>\n    For independent t-tests <em>n</em> is the number of experimental subjects.  For\n    pair test <em>n</em> is the number of pairs.\n  </p>\n\n  <h5>Power</h5>\n  <p>\n    For independent tests <i>power</i> is probability of correctly rejecting the\n    null hypothesis of equal population means given <i>n</i> experimental\n    patients, <i>m</i> control patients per experimental patient,  a Type I error\n    probability &alpha; and a true difference in population means of &delta;.\n    For paired tests it is the probability of correctly rejecting the null\n    hypothesis of equal population means given <i>n</i> pairs of patients, a Type\n    I error probability &alpha; and a true difference in population means of\n    &delta;.\n  </p>\n\n  <h5>Difference in population means (&delta;)</h5>\n\n  <h5>Standard deviation (&sigma;)</h5>\n  <p>\n    For independent tests &sigma; is the within group standard deviation.  For\n    paired designs it is the standard deviation of difference in the response of\n    matched pairs.\n  </p>\n\n  <h5>Ratio (<i>m</i>)</h5>\n  <p>\n    For independent tests <i>m</i> is the ratio of control to experimental\n    patients.  <i>m</i> is not defined for paired studies.\n  </p>\n\n  <h4>References</h4>\n  <ol>\n    <li><a name=\"ref1\"></a>Casagrande JT, Pike MC, Smith PG:  \"An Improved Approximate Formula for Calculating Sample Sizes for Comparing Two Binomial Distributions\", Biometrics, 1978; 34:483-486.</li>\n    <li><a name=\"ref2\"></a>Dupont, WD: \"Power Calculations for Matched Case-Control Studies\", Biometrics, 1988; 44:1157-1168.</li>\n    <li><a name=\"ref3\"></a>Dupont WD, Plummer WD: \"Power and Sample Size Calculations: A Review and Computer Program\", Controlled Clinical Trials 1990; 11:116-28.</li>\n    <li><a name=\"ref4\"></a>Dupont WD, Plummer WD:  \"Power and Sample Size Calculations for Studies Involving Linear Regression\", Controlled Clinical Trials 1998; 19:589-601.</li>\n    <li><a name=\"ref5\"></a>Fleiss JL:  \"Statistical Methods for Rates and Proportions\" 2nd Ed. NewYork: John Wiley, 1981:38-46.</li>\n    <li><a name=\"ref6\"></a>Pearson ES and Hartley HO: \"Biometrika Tables for Statisticians Vol I\", 3rd Ed., Cambridge:  Cambridge U. Press, 1970.</li>\n    <li><a name=\"ref7\"></a>Schlesselman:  Case-control Studies: Design, Conduct, Analysis. New York: Oxford U. Press; 1982:144-152.</li>\n    <li><a name=\"ref8\"></a>Schoenfeld DA, Richter JR: \"Nomograms for Calculating the Number of Patients Needed for a Clinical Trial With Survival as an Endpoint\" Biometrics 1982; 38:163-170.</li>\n    <li><a name=\"ref9\"></a>Wittes J, Wallenstein S:  \"The Power of the Mantel-Haenszel Test\" J Am Stat Assoc, 1987; 82:1104-1109.</li>\n    <li><a name=\"ref10\"></a>Visual Components Sybase Inc.  First Impression Active X User's Guide: High Performance Software for Charting Data for Microsoft Visual Basic, Visual C++, and Other Languages. Version 5.0.  Overland Park, KS: Visual Components Sybase Inc.</li>\n    <li><a name=\"ref11\"></a>Mantel, N., &amp; Haenszel, W. (1959) Statistical aspects of the analysis of data from retrospective studies of disease. Journal of the National Cancer Institute, 22, 719-748.</li>\n    <li><a name=\"ref12\"></a>Dupont, WD (2008). Statistical Modeling for Biomedical Researchers, 2nd Edition. Cambridge, U.K.: Cambridge University Press.</li>\n    <li><a name=\"ref13\"></a>Dupont WD and Plummer WD: PS power and sample size program available for free on the Internet.  Controlled Clin Trials,1997;18:274</li>\n  </ol>\n</div>\n"
+
+/***/ }),
+
+/***/ 232:
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"plot\" [class.without-text]=\"!showText\">\n  <app-plot #topLeft name=\"top-left\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-plot>\n  <app-plot #topRight name=\"top-right\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-plot>\n  <app-bottom-plot #bottom name=\"bottom\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-bottom-plot>\n  <div *ngIf=\"!showText\" class=\"show-text\">\n    <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleText(true)\">\n      <i class=\"fa fa-envelope-open-o\" aria-hidden=\"true\"></i>\n      Interpretation\n    </button>\n  </div>\n</div>\n<div class=\"output-text\" *ngIf=\"modelSet && showText\">\n  <div *ngIf=\"showText\" class=\"hide-text\">\n    <i class=\"fa fa-times-circle\" (click)=\"toggleText(false)\"></i>\n  </div>\n  <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n    We are planning a study of a continuous response variable from matched\n    pairs of study subjects. Prior data indicate that the difference in the\n    response of matched pairs is normally distributed with standard deviation\n    {{round(modelSet.model.sigma)}}. If the true difference in the mean response of\n    matched pairs is {{round(modelSet.model.delta)}}, we will need to study\n    {{ceil(modelSet.model.n)}} pairs of subjects to be able to reject the null\n    hypothesis that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. If\n    the true difference in the mean response of matched pairs is\n    {{round(modelSet.model.delta)}}, we will be able to reject the null hypothesis\n    that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. We\n    will be able to detect a true difference in the mean response of matched\n    pairs of -{{round(modelSet.model.delta)}} or {{round(modelSet.model.delta)}} with\n    probability (power) {{round(modelSet.model.power)}}. The Type I error probability\n    associated with this test of the null hypothesis that this response\n    difference is zero is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n</div>\n"
+
+/***/ }),
+
+/***/ 233:
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"plot-options\" *ngIf=\"enabled\">\n  <div class=\"header\">\n    Plot options\n    <button type=\"button\" class=\"close fa fa-times-circle\" (click)=\"close()\"></button>\n  </div>\n  <div *ngIf=\"plotOptions && modelSet\" class=\"content\">\n    <fieldset>\n      <legend>Global</legend>\n      <div class=\"form-group\">\n        <label for=\"plot-font-family\">Font family</label>\n        <select id=\"plot-font-family\" class=\"form-control\"\n          [(ngModel)]=\"plotOptions.fontFamily\">\n          <option value=\"\">Default</option>\n          <option value=\"serif\">Serif</option>\n          <option value=\"sans\">Sans-serif</option>\n          <option value=\"monospace\">Monospace</option>\n          <option>Bungee Shade</option>\n          <option>Sancreek</option>\n        </select>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-sm-6\">\n          <label for=\"plot-font-size\">Font size: {{plotOptions.fontSize}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-font-size\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.fontSize\" />\n          </div>\n        </div>\n        <div class=\"col-sm-6\">\n          <label for=\"plot-axis-font-size\">Axis font size: {{plotOptions.axisFontSize}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-axis-font-size\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.axisFontSize\" />\n          </div>\n        </div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-sm-6\">\n          <label for=\"plot-line-width\">Line width: {{plotOptions.lineWidth}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-line-width\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.lineWidth\" />\n          </div>\n        </div>\n        <div class=\"col-sm-6\">\n          <label for=\"plot-axis-line-width\">Axis line width: {{plotOptions.axisLineWidth}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-axis-line-width\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.axisLineWidth\" />\n          </div>\n        </div>\n      </div>\n    </fieldset>\n    <fieldset>\n      <legend *ngIf=\"modelSet.model.output == 'n'\">Sample Size</legend>\n      <legend *ngIf=\"modelSet.model.output == 'power'\">Power</legend>\n      <legend *ngIf=\"modelSet.model.output == 'delta'\">Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-y-min\">Minimum</label>\n          <div class=\"input-group\">\n            <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </ng-template>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-y-max\">Maximum</label>\n          <div class=\"input-group\">\n            <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </ng-template>\n          </div>\n        </div>\n      </div>\n    </fieldset>\n    <fieldset>\n      <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n        <legend>Sample Size vs. Power</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n        <legend>Power vs. Sample Size</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n        <legend>Detectable Alternative vs. Sample Size</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n    </fieldset>\n    <fieldset>\n      <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n        <legend>Sample Size vs. Detectable Alternative</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n        <legend>Power vs. Detectable Alternative</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n        <legend>Detectable Alternative vs. Power</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n    </fieldset>\n    <fieldset>\n      <legend>Precision vs. Parameter Space</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-bottom-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.pSpace.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.pSpace.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-bottom-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.pSpace.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.pSpace.max\" />\n          </div>\n        </div>\n      </div>\n    </fieldset>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"reset()\">\n      Reset all settings\n    </button>\n  </div>\n</div>\n"
+
+/***/ }),
+
+/***/ 234:
+/***/ (function(module, exports) {
+
+module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" (window:resize)=\"onResize()\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"x && y\">\n    <defs>\n      <clipPath [id]=\"clipPathId\">\n        <rect x=\"0\" [attr.y]=\"-plotOptions.lineWidth * 3\"\n          [attr.width]=\"width\"\n          [attr.height]=\"height + plotOptions.lineWidth * 3\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"width / 2 + margin\" [attr.y]=\"height + margin\" dy=\"2.5em\">\n      {{x.title}}\n    </text>\n    <text text-anchor=\"middle\"\n      [attr.dx]=\"-(height / 2 + margin)\" dy=\"1em\"\n      transform=\"rotate(-90)\">\n      {{y.title}}\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"width / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{y.title}} vs. {{x.title}}\n    </text>\n\n    <g [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"paths[1]\"\n        stroke=\"lightblue\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [style.display]=\"modelSet.model.showAlternates ? null : 'none'\"\n        fill=\"none\" />\n    </g>\n\n    <g [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"paths[2]\"\n        stroke=\"lightblue\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [style.display]=\"modelSet.model.showAlternates ? null : 'none'\"\n        fill=\"none\" />\n    </g>\n\n    <g [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"paths[0]\"\n        stroke=\"steelblue\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n    </g>\n\n    <g *ngFor=\"let path of dropPaths\"\n      [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"path\"\n        stroke=\"red\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3 / 2\"\n        stroke-dasharray=\"5, 5\"\n        fill=\"none\" />\n    </g>\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, height + margin)\"></g>\n    <g #leftAxis [attr.transform]=\"translate(margin, margin)\"></g>\n\n    <g *ngIf=\"showHoverInfo\"\n      [attr.transform]=\"translate(margin + hoverX, margin + hoverY)\">\n      <circle r=\"4\" fill=\"none\" stroke=\"blue\" />\n      <rect x=\"-3.5em\" [attr.y]=\"hoverInfoY()\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"-2.5em\" [attr.y]=\"hoverInfoY()\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.x}}</tspan>\n        <tspan x=\"-2.5em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <rect [attr.transform]=\"translate(margin, margin)\"\n      [attr.width]=\"width\" [attr.height]=\"height\"\n      fill=\"none\" pointer-events=\"all\"\n      (mouseout)=\"toggleHoverInfo(false)\"\n      (mousemove)=\"hover($event)\" />\n\n    <g *ngIf=\"showTargetInfo\"\n      [attr.transform]=\"translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))\">\n      <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"1em\" y=\"-3.5em\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.x}}</tspan>\n        <tspan x=\"1em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <circle #target r=\"5\"\n      [attr.cx]=\"xScale(targetPoint.x)\"\n      [attr.cy]=\"yScale(targetPoint.y)\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"red\" cursor=\"grab\"\n      (mouseover)=\"toggleTargetInfo(true)\"\n      (mouseout)=\"toggleTargetInfo(false)\" />\n  </ng-template>\n</svg>\n"
+
+/***/ }),
+
+/***/ 235:
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"slider-group\" [class.output]=\"isOutput\">\n  <div class=\"label\" *ngIf=\"label\">\n    {{label}}\n    <span *ngIf=\"isOutput\">(Output)</span>\n  </div>\n  <ng-template [ngTemplateOutlet]=\"labelTpl?.templateRef\"></ng-template>\n  <div class=\"inputs row\">\n    <div class=\"col-sm-9\">\n      <div class=\"slider\">\n        <div class=\"min\">{{floor(min)}}</div>\n        <input #range name=\"{{name}}\" type=\"range\" step=\"{{step}}\"\n               min=\"{{min}}\" max=\"{{max}}\"\n               [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"rangeChanged(range.value)\"\n               (input)=\"rangeInput(range.value)\" />\n        <div class=\"max\">{{ceil(max)}}</div>\n      </div>\n    </div>\n    <div class=\"col-sm-3\">\n      <div class=\"number\">\n        <input #number name=\"{{name}}\" type=\"number\" step=\"{{step}}\"\n               [min]=\"hardMin\" [max]=\"hardMax\" [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"numberChanged(number.value)\"\n               (input)=\"numberInput(number.value)\" />\n      </div>\n    </div>\n  </div>\n</div>\n"
+
+/***/ }),
+
+/***/ 236:
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"overview\">\n  <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleHelp()\">\n    Overview <i class=\"fa fa-question-circle\"></i>\n  </button>\n</div>\n<form (ngSubmit)=\"onSubmit()\" #startForm=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"output\">\n      What do you want to know?\n      <button type=\"button\" class=\"btn btn-secondary fa fa-question-circle\"\n        (click)=\"toggleHelp()\"></button>\n    </label>\n    <select class=\"form-control\" id=\"output\"\n            required\n            [(ngModel)]=\"model.output\" name=\"output\">\n      <option></option>\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </div>\n  <!--\n  <div class=\"form-group\" *ngIf=\"model.output\">\n    <label for=\"design\">Paired or independent?</label>\n    <select class=\"form-control\" id=\"design\"\n            required\n            [(ngModel)]=\"model.design\" name=\"design\">\n      <option></option>\n      <option>Paired</option>\n      <option>Independent</option>\n    </select>\n  </div>\n  -->\n  <div *ngIf=\"model.output\">\n    <div class=\"form-group\">\n      <label for=\"alpha\">\n        Type I Error (&alpha;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"alphaHelp\" popoverTitle=\"Type I Error (&alpha;)\"\n          placement=\"right\" triggers=\"hover\"></i>\n      </label>\n      <ng-template #alphaHelp>\n        The Type I error probability for a two sided test. This is the\n        probability that we will falsely reject the null hypothesis.\n      </ng-template>\n      <input class=\"form-control\" id=\"alpha\"\n             type=\"number\" step=\"0.01\"\n             required\n             [(ngModel)]=\"model.alpha\" name=\"alpha\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"sigma\">\n        Standard deviation (&sigma;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"sigmaHelp\" popoverTitle=\"Standard deviation (&sigma;)\"\n          placement=\"right\" triggers=\"hover\"></i>\n      </label>\n      <ng-template #sigmaHelp>\n        For independent tests σ is the within group standard deviation. For\n        paired designs it is the standard deviation of difference in the\n        response of matched pairs.\n      </ng-template>\n      <input class=\"form-control\" id=\"sigma\"\n             type=\"number\" step=\"0.1\"\n             required\n             [(ngModel)]=\"model.sigma\" name=\"sigma\">\n    </div>\n    <div *ngIf=\"model.output != 'power'\" class=\"form-group\">\n      <label for=\"power\">\n        Power\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"powerHelp\" popoverTitle=\"Power\"\n          placement=\"right\" triggers=\"hover\"></i>\n      </label>\n      <ng-template #powerHelp>\n        For independent tests power is probability of correctly rejecting the\n        null hypothesis of equal population means given n experimental\n        patients, m control patients per experimental patient, a Type I error\n        probability α and a true difference in population means of δ. For\n        paired tests it is the probability of correctly rejecting the null\n        hypothesis of equal population means given n pairs of patients, a Type\n        I error probability α and a true difference in population means of δ.\n      </ng-template>\n      <input class=\"form-control\" id=\"power\"\n             type=\"number\" step=\"0.01\"\n             required\n             [(ngModel)]=\"model.power\" name=\"power\">\n    </div>\n    <div *ngIf=\"model.output != 'delta'\" class=\"form-group\">\n      <label for=\"delta\">Difference in population means (&delta;)</label>\n      <input class=\"form-control\" id=\"delta\"\n             type=\"number\" step=\"0.1\"\n             required\n             [(ngModel)]=\"model.delta\" name=\"delta\">\n    </div>\n    <div *ngIf=\"model.output != 'n'\" class=\"form-group\">\n      <label for=\"n\">\n        Sample size\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"nHelp\" popoverTitle=\"Sample size\"\n          placement=\"right\" triggers=\"hover\"></i>\n      </label>\n      <ng-template #nHelp>\n        For independent t-tests n is the number of experimental subjects. For\n        pair test n is the number of pairs.\n      </ng-template>\n      <input class=\"form-control\" id=\"n\"\n             type=\"number\"\n             required\n             [(ngModel)]=\"model.n\" name=\"n\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-success\"\n            [disabled]=\"!startForm.form.valid\">\n      Calculate\n    </button>\n  </div>\n</form>\n"
+
+/***/ }),
+
+/***/ 237:
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"overview\">\n  <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleHelp()\">\n    Overview <i class=\"fa fa-question-circle\"></i>\n  </button>\n</div>\n<div class=\"form-group\">\n  <label>\n    Output\n    <select class=\"form-control\" name=\"output\"\n            [(ngModel)]=\"round.output\">\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </label>\n</div>\n\n<app-range-slider label=\"Type I Error (&alpha;)\"\n  [min]=\"min.alpha\" [max]=\"max.alpha\"\n  [hardMin]=\"min.alpha\" [hardMax]=\"max.alpha\"\n  [(ngModel)]=\"round.alpha\">\n</app-range-slider>\n\n<app-range-slider\n  [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n  [hardMin]=\"1\"\n  [(ngModel)]=\"round.sigma\">\n  <ng-template rsLabel>\n    <div class=\"label row\">\n      <div class=\"col-sm\">\n        Std. deviation (&sigma;)\n      </div>\n      <div class=\"col-sm form-check\">\n        <label class=\"form-check-label\">\n          <input name=\"show-alternates\" type=\"checkbox\"\n            class=\"form-check-input\"\n            [(ngModel)]=\"round.showAlternates\" />\n          Alternates\n        </label>\n      </div>\n    </div>\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider label=\"Power\"\n  [min]=\"min.power\" [max]=\"max.power\"\n  [hardMin]=\"min.power\" [hardMax]=\"max.power\"\n  [isOutput]=\"round.output == 'power'\"\n  [(ngModel)]=\"round.power\">\n</app-range-slider>\n\n<app-range-slider label=\"Difference in population means (&delta;)\"\n  [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n  [isOutput]=\"round.output == 'delta'\" [(ngModel)]=\"round.delta\">\n</app-range-slider>\n\n<app-range-slider label=\"Sample size\"\n  [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n  [hardMin]=\"1\"\n  [isOutput]=\"round.output == 'n'\" [(ngModel)]=\"round.n\">\n</app-range-slider>\n"
+
+/***/ }),
+
+/***/ 25:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__changeable__ = __webpack_require__(56);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PlotOptions; });
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var PlotOptions = (function (_super) {
+    __extends(PlotOptions, _super);
+    function PlotOptions() {
+        var _this = _super.call(this) || this;
+        _this.noEmit = true;
+        _this.fontFamily = "";
+        _this.fontSize = 1;
+        _this.axisFontSize = 1;
+        _this.lineWidth = 1;
+        _this.axisLineWidth = 1;
+        _this.noEmit = false;
+        _this.changes = {};
+        return _this;
+    }
+    PlotOptions.prototype.attributes = function () {
+        return ({
+            height: this.height,
+            width: this.width,
+            fontFamily: this.fontFamily,
+            axisFontSize: this.axisFontSize,
+            fontSize: this.fontSize,
+            lineWidth: this.lineWidth,
+            axisLineWidth: this.axisLineWidth
+        });
+    };
+    PlotOptions.prototype.update = function (attribs, emit) {
+        if (emit === void 0) { emit = true; }
+        this.noEmit = true;
+        // don't update height and width
+        if ('fontFamily' in attribs) {
+            this.fontFamily = attribs.fontFamily;
+        }
+        if ('fontSize' in attribs) {
+            this.fontSize = attribs.fontSize;
+        }
+        if ('axisFontSize' in attribs) {
+            this.axisFontSize = attribs.axisFontSize;
+        }
+        if ('lineWidth' in attribs) {
+            this.lineWidth = attribs.lineWidth;
+        }
+        if ('axisLineWidth' in attribs) {
+            this.axisLineWidth = attribs.axisLineWidth;
+        }
+        this.noEmit = false;
+        if (emit) {
+            this.emit();
+        }
+        else {
+            this.changes = {};
+        }
+    };
+    return PlotOptions;
+}(__WEBPACK_IMPORTED_MODULE_0__changeable__["a" /* ChangeEmitter */]));
+
+__decorate([
+    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
+    __metadata("design:type", Number)
+], PlotOptions.prototype, "height", void 0);
+__decorate([
+    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
+    __metadata("design:type", Number)
+], PlotOptions.prototype, "width", void 0);
+__decorate([
+    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
+    __metadata("design:type", String)
+], PlotOptions.prototype, "fontFamily", void 0);
+__decorate([
+    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
+    __metadata("design:type", Number)
+], PlotOptions.prototype, "fontSize", void 0);
+__decorate([
+    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
+    __metadata("design:type", Number)
+], PlotOptions.prototype, "axisFontSize", void 0);
+__decorate([
+    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
+    __metadata("design:type", Number)
+], PlotOptions.prototype, "lineWidth", void 0);
+__decorate([
+    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
+    __metadata("design:type", Number)
+], PlotOptions.prototype, "axisLineWidth", void 0);
+//# sourceMappingURL=plot-options.js.map
 
 /***/ }),
 

@@ -250,7 +250,7 @@ export class TTestSet {
         break;
 
       case "power":
-        power   = new Range(0, 1.1);
+        power   = new Range(0, 1.0);
         indices = power.findIndices(this.data.power);
         n       = Range.fromData(indices, this.data.n[0]);
         delta   = new Range(-deltaMax, deltaMax);

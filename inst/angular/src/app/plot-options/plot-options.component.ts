@@ -13,13 +13,17 @@ import { PlotOptions } from '../plot-options';
 export class PlotOptionsComponent implements OnInit {
   @Input() selectedModelSet: Observable<TTestSet>;
   @Input() plotOptions: PlotOptions;
+  defaultPlotOptions: PlotOptions;
   modelSet: TTestSet;
+  defaultRanges: TTestRanges;
   enabled = false;
 
   ngOnInit() {
     this.selectedModelSet.subscribe(modelSet => {
       this.modelSet = modelSet;
+      this.defaultRanges = TTestRanges.fromArrays(modelSet.ranges.attributes());
     });
+    this.defaultPlotOptions = new PlotOptions();
   }
 
   toggle(): void {
@@ -28,6 +32,13 @@ export class PlotOptionsComponent implements OnInit {
 
   close(): void {
     this.enabled = false;
+  }
+
+  reset(): void {
+    this.plotOptions.update(this.defaultPlotOptions.attributes());
+    if (this.modelSet) {
+      this.modelSet.ranges.updateFromArrays(this.defaultRanges.attributes());
+    }
   }
 
   roundFloor(n: number): number {

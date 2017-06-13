@@ -7,7 +7,9 @@
   <ng-template [ngIf]="x && y">
     <defs>
       <clipPath [id]="clipPathId">
-        <rect x="0" y="0" [attr.width]="width" [attr.height]="height" />
+        <rect x="0" [attr.y]="-plotOptions.lineWidth * 3"
+          [attr.width]="width"
+          [attr.height]="height + plotOptions.lineWidth * 3" />
       </clipPath>
     </defs>
 
@@ -102,7 +104,6 @@
     <circle #target r="5"
       [attr.cx]="xScale(targetPoint.x)"
       [attr.cy]="yScale(targetPoint.y)"
-      [attr.clip-path]="clipPath()"
       [attr.transform]="translate(margin, margin)"
       fill="red" cursor="grab"
       (mouseover)="toggleTargetInfo(true)"
