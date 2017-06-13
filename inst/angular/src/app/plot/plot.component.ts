@@ -320,14 +320,14 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     let xAxis = d3.axisBottom(this.xScale).ticks(6);
     d3.select(this.bottomAxisElement.nativeElement).
       call(xAxis).
-      attr("font-size", 10 * this.plotOptions.axisFontSize).
-      attr("stroke-width", this.plotOptions.axisLineWidth);
+      attr("font-size", 15 * this.plotOptions.axisFontSize).
+      attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
 
     let yAxis = d3.axisLeft(this.yScale).ticks(6);
     d3.select(this.leftAxisElement.nativeElement).
       call(yAxis).
-      attr("font-size", 10 * this.plotOptions.axisFontSize).
-      attr("stroke-width", this.plotOptions.axisLineWidth);
+      attr("font-size", 15 * this.plotOptions.axisFontSize).
+      attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
 
     // make target point draggable
     let target = d3.select(this.targetElement.nativeElement);

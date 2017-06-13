@@ -15,7 +15,7 @@ export class PlotOptions extends ChangeEmitter {
     this.fontFamily = "";
     this.fontSize = 1;
     this.axisFontSize = 1;
-    this.lineWidth = 2;
+    this.lineWidth = 1;
     this.axisLineWidth = 1;
     this.noEmit = false;
     this.changes = {};

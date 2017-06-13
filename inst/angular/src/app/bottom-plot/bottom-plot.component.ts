@@ -144,8 +144,8 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
     let xAxis = d3.axisBottom(this.xScale).ticks(6);
     d3.select(this.bottomAxisElement.nativeElement).
       call(xAxis).
-      attr("font-size", 10 * this.plotOptions.axisFontSize).
-      attr("stroke-width", this.plotOptions.axisLineWidth);
+      attr("font-size", 15 * this.plotOptions.axisFontSize).
+      attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
 
     this.needDraw = false;
   }

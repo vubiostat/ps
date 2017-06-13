@@ -1,6 +1,6 @@
 <svg #plot
   [style.fontFamily]="plotOptions.fontFamily == '' ? null : plotOptions.fontFamily"
-  [style.fontSize]="(plotOptions.fontSize * 100).toString() + '%'"
+  [style.fontSize]="(plotOptions.fontSize * 110).toString() + '%'"
   [attr.class]="name" (window:resize)="onResize()">
 
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
@@ -30,7 +30,7 @@
         [attr.clip-path]="clipPath()"
         [attr.d]="path"
         stroke="maroon"
-        [attr.stroke-width]="plotOptions.lineWidth"
+        [attr.stroke-width]="plotOptions.lineWidth * 3"
         fill="none" />
     </g>
 
