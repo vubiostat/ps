@@ -266,7 +266,17 @@ export class TTestSet {
         power   = Range.fromData(indices, this.data.power[0]);
         break;
     }
-    pSpace = new Range(-deltaMax, deltaMax);
+
+    // parameter space
+    min = -deltaMax;
+    max = deltaMax;
+    if (this.data.precision[0] < min) {
+      min = this.data.precision[0] - Math.abs(this.data.precision[0] * 0.5);
+    }
+    if (this.data.precision[1] > max) {
+      max = this.data.precision[1] + Math.abs(this.data.precision[1] * 0.5);
+    }
+    pSpace = new Range(min, max);
 
     let attribs = { n: n, power: power, delta: delta, pSpace: pSpace };
     if (!this.ranges) {

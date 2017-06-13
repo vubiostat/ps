@@ -84,8 +84,15 @@ TTest <- setRefClass("TTest",
         powerByDeltaValues <<- NULL
       }
 
-      pSpaceValues <<- getDeltaValues()
+      pSpaceRange <- getDeltaRange()
       precisionValues <<- calculatePrecision(alpha, delta, sigma, n)
+      if (precisionValues[1] < pSpaceRange[1]) {
+        pSpaceRange[1] <- precisionValues[1] - (precisionValues[1] * 0.5)
+      }
+      if (precisionValues[2] > pSpaceRange[2]) {
+        pSpaceRange[2] <- precisionValues[2] + (precisionValues[2] * 0.5)
+      }
+      pSpaceValues <<- seq(pSpaceRange[1], pSpaceRange[2], 0.01)
       sampDistValues <<- dnorm(pSpaceValues, mean = delta, sd = sigma/sqrt(n))
       sampDistValues <<- ifelse(sampDistValues < 0.01, 0, sampDistValues)
     },
@@ -119,11 +126,15 @@ TTest <- setRefClass("TTest",
       }
       return(list(model = model, data = data))
     },
-    getDeltaValues = function() {
+    getDeltaRange = function() {
       mu.0 <- 0
       lo <- mu.0 - max(3 * sigma, delta + sigma/2)
       high <- mu.0 + max(3 * sigma, delta + sigma/2)
-      seq(lo, high, 0.01)
+      c(lo, high)
+    },
+    getDeltaValues = function() {
+      r <- getDeltaRange()
+      seq(r[1], r[2], 0.01)
     }
   )
 )
