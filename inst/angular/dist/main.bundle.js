@@ -1677,12 +1677,14 @@ var TTest = (function (_super) {
             this.showAlternates = attribs.showAlternates;
         }
         this.noEmit = false;
+        var changes = this.changes;
         if (emit) {
             this.emit();
         }
         else {
             this.changes = {};
         }
+        return changes;
     };
     TTest.prototype.roundUpdate = function (attribs, emit) {
         if (emit === void 0) { emit = true; }
@@ -1786,10 +1788,18 @@ var TTestRanges = (function (_super) {
         if (emit === void 0) { emit = true; }
         this.subscription.unsubscribe();
         this.noEmit = true;
-        this.n = ranges.n;
-        this.power = ranges.power;
-        this.delta = ranges.delta;
-        this.pSpace = ranges.pSpace;
+        if ('n' in ranges) {
+            this.n = ranges.n;
+        }
+        if ('power' in ranges) {
+            this.power = ranges.power;
+        }
+        if ('delta' in ranges) {
+            this.delta = ranges.delta;
+        }
+        if ('pSpace' in ranges) {
+            this.pSpace = ranges.pSpace;
+        }
         this.noEmit = false;
         this.subscribeToChildren();
         if (emit) {
@@ -1874,12 +1884,19 @@ var TTestSet = (function () {
         });
     }
     TTestSet.prototype.update = function (model, data) {
+        var _this = this;
+        var prevChanges = this.model.prevChanges;
         this.model.update(model);
         this.data = data;
-        this.calcRanges();
+        var skip;
+        var changeKeys = Object.keys(prevChanges);
+        if (changeKeys.length == 2 && this.model.output in prevChanges) {
+            skip = changeKeys.find(function (k) { return k != _this.model.output; });
+        }
+        this.calcRanges(skip);
         this.onCompute.emit();
     };
-    TTestSet.prototype.calcRanges = function () {
+    TTestSet.prototype.calcRanges = function (skip) {
         var n, power, delta, pSpace, indices, values, min, max;
         var deltaMax = 2.5 * this.model.sigma;
         switch (this.model.output) {
@@ -1889,14 +1906,22 @@ var TTestSet = (function () {
                 max = Math.ceil(values[1] * 100) / 100;
                 n = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](min, max);
                 indices = n.findIndices(this.data.n);
-                power = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.power[0]);
-                delta = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.delta[0]);
+                if (skip != 'power') {
+                    power = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.power[0]);
+                }
+                if (skip != 'delta') {
+                    delta = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.delta[0]);
+                }
                 break;
             case "power":
                 power = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](0, 1.0);
                 indices = power.findIndices(this.data.power);
-                n = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.n[0]);
-                delta = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](-deltaMax, deltaMax);
+                if (skip != 'n') {
+                    n = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.n[0]);
+                }
+                if (skip != 'delta') {
+                    delta = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](-deltaMax, deltaMax);
+                }
                 break;
             case "delta":
                 values = [this.model.delta * 0.5, this.model.delta * 1.5].sort(function (a, b) { return a - b; });
@@ -1904,8 +1929,12 @@ var TTestSet = (function () {
                 max = Math.ceil(values[1] * 100) / 100;
                 delta = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](min, max);
                 indices = delta.findIndices(this.data.delta);
-                n = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.n[0]);
-                power = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.power[0]);
+                if (skip != 'n') {
+                    n = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.n[0]);
+                }
+                if (skip != 'power') {
+                    power = __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */].fromData(indices, this.data.power[0]);
+                }
                 break;
         }
         // parameter space
@@ -1918,7 +1947,13 @@ var TTestSet = (function () {
             max = this.data.precision[1] + Math.abs(this.data.precision[1] * 0.5);
         }
         pSpace = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](min, max);
-        var attribs = { n: n, power: power, delta: delta, pSpace: pSpace };
+        var attribs = { pSpace: pSpace };
+        if (n)
+            attribs.n = n;
+        if (power)
+            attribs.power = power;
+        if (delta)
+            attribs.delta = delta;
         if (!this.ranges) {
             this.ranges = new TTestRanges(attribs);
         }
@@ -2122,12 +2157,14 @@ module.exports = __webpack_require__(150);
 var ChangeEmitter = (function () {
     function ChangeEmitter() {
         this.changes = {};
+        this.prevChanges = {};
         this.noEmit = false;
         this.onChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["d" /* EventEmitter */]();
     }
     ChangeEmitter.prototype.emit = function () {
         if (!this.noEmit && this.changes && Object.keys(this.changes).length > 0) {
             var changes = Object.assign({}, this.changes);
+            this.prevChanges = Object.assign({}, this.changes);
             this.changes = {};
             this.onChange.emit(changes);
         }

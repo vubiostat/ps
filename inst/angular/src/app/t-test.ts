@@ -32,7 +32,7 @@ export class TTest extends ChangeEmitter {
     return new TTest(attribs);
   }
 
-  update(attribs: any, emit = true): void {
+  update(attribs: any, emit = true): any {
     this.noEmit = true;
     if (attribs.id !== undefined) {
       this.id = attribs.id;
@@ -62,11 +62,14 @@ export class TTest extends ChangeEmitter {
       this.showAlternates = attribs.showAlternates;
     }
     this.noEmit = false;
+
+    let changes = this.changes;
     if (emit) {
       this.emit();
     } else {
       this.changes = {};
     }
+    return changes;
   }
 
   roundUpdate(attribs: any, emit = true): void {
@@ -149,10 +152,18 @@ export class TTestRanges extends ChangeEmitter {
     this.subscription.unsubscribe();
 
     this.noEmit = true;
-    this.n = ranges.n;
-    this.power = ranges.power;
-    this.delta = ranges.delta;
-    this.pSpace = ranges.pSpace;
+    if ('n' in ranges) {
+      this.n = ranges.n;
+    }
+    if ('power' in ranges) {
+      this.power = ranges.power;
+    }
+    if ('delta' in ranges) {
+      this.delta = ranges.delta;
+    }
+    if ('pSpace' in ranges) {
+      this.pSpace = ranges.pSpace;
+    }
     this.noEmit = false;
 
     this.subscribeToChildren();
@@ -228,14 +239,21 @@ export class TTestSet {
   }
 
   update(model: any, data: TTestData) {
+    let prevChanges = this.model.prevChanges;
     this.model.update(model);
     this.data = data;
-    this.calcRanges();
+
+    let skip;
+    let changeKeys = Object.keys(prevChanges);
+    if (changeKeys.length == 2 && this.model.output in prevChanges) {
+      skip = changeKeys.find(k => k != this.model.output);
+    }
+    this.calcRanges(skip);
 
     this.onCompute.emit();
   }
 
-  private calcRanges(): void {
+  private calcRanges(skip?: string): void {
     let n, power, delta, pSpace, indices, values, min, max;
     let deltaMax = 2.5 * this.model.sigma;
     switch (this.model.output) {
@@ -245,15 +263,23 @@ export class TTestSet {
         max     = Math.ceil(values[1] * 100) / 100;
         n       = new Range(min, max);
         indices = n.findIndices(this.data.n);
-        power   = Range.fromData(indices, this.data.power[0]);
-        delta   = Range.fromData(indices, this.data.delta[0]);
+        if (skip != 'power') {
+          power = Range.fromData(indices, this.data.power[0]);
+        }
+        if (skip != 'delta') {
+          delta = Range.fromData(indices, this.data.delta[0]);
+        }
         break;
 
       case "power":
         power   = new Range(0, 1.0);
         indices = power.findIndices(this.data.power);
-        n       = Range.fromData(indices, this.data.n[0]);
-        delta   = new Range(-deltaMax, deltaMax);
+        if (skip != 'n') {
+          n = Range.fromData(indices, this.data.n[0]);
+        }
+        if (skip != 'delta') {
+          delta = new Range(-deltaMax, deltaMax);
+        }
         break;
 
       case "delta":
@@ -262,8 +288,12 @@ export class TTestSet {
         max     = Math.ceil(values[1] * 100) / 100;
         delta   = new Range(min, max);
         indices = delta.findIndices(this.data.delta);
-        n       = Range.fromData(indices, this.data.n[0]);
-        power   = Range.fromData(indices, this.data.power[0]);
+        if (skip != 'n') {
+          n = Range.fromData(indices, this.data.n[0]);
+        }
+        if (skip != 'power') {
+          power = Range.fromData(indices, this.data.power[0]);
+        }
         break;
     }
 
@@ -278,7 +308,11 @@ export class TTestSet {
     }
     pSpace = new Range(min, max);
 
-    let attribs = { n: n, power: power, delta: delta, pSpace: pSpace };
+    let attribs: any = { pSpace: pSpace };
+    if (n) attribs.n = n;
+    if (power) attribs.power = power;
+    if (delta) attribs.delta = delta;
+
     if (!this.ranges) {
       this.ranges = new TTestRanges(attribs);
     } else {
