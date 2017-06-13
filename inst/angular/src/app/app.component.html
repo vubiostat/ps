@@ -29,6 +29,11 @@
         [selectedModelSet]="selectedModelSet"
         [plotOptions]="plotOptions">
       </app-plot-options>
+
+      <div id="footer">
+        <img src="assets/vumc.jpg">
+        <div class="text">Department of Biostatistics</div>
+      </div>
     </div>
     <div id="right-panel" class="col-sm-8">
       <app-help *ngIf="helpOpen" (onClose)="closeHelp()"></app-help>
@@ -41,10 +46,5 @@
         [plotOptions]="plotOptions">
       </app-output-pane>
     </div>
-  </div>
-
-  <div id="footer">
-    <img src="assets/vu02a.jpg">
-    Department of Biostatistics
   </div>
 </div>

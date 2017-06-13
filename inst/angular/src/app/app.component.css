@@ -2,11 +2,11 @@
   height: 95vh;
 }
 
-#header, #footer {
+#header {
   line-height: 2em;
   height: 2em;
 }
-#header img, #footer img {
+#header img {
   vertical-align: text-bottom;
 }
 #header {
@@ -14,12 +14,6 @@
 }
 #header img {
   height: 1em;
-}
-#footer {
-  text-align: center;
-}
-#footer img {
-  height: 1.25em;
 }
 
 #main {
@@ -80,4 +74,17 @@
 
 :host /deep/ .tab-pane.active {
   background: white;
+}
+
+#footer {
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+}
+#footer img {
+  margin: auto;
+  display: block;
+}
+#footer div.text {
+  margin-top: 10px;
 }
