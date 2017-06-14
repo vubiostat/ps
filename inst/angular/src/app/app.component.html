@@ -7,20 +7,24 @@
   <div id="main" class="row">
     <div class="col-sm-4">
       <div id="sidebar">
+        <div class="overview">
+          <button type="button" class="btn btn-secondary" (click)="toggleHelp('overview')">
+            Overview <i class="fa fa-question-circle"></i>
+          </button>
+        </div>
         <ngb-tabset #tabsetChild (tabChange)="onTabChange($event)">
           <ngb-tab title="Start" id="start">
             <template ngbTabContent>
               <app-start [model]="newModel"
                 (onCalculate)="calculate()"
-                (onToggleHelp)="toggleHelp()">
+                (onToggleHelp)="toggleHelp('start')">
               </app-start>
             </template>
           </ngb-tab>
           <ngb-tab *ngFor="let modelSet of modelSets; let i = index"
             title="Test {{i+1}}" id="test-{{i+1}}">
             <template ngbTabContent>
-              <app-t-test [modelSet]="modelSet" (onToggleHelp)="toggleHelp()">
-              </app-t-test>
+              <app-t-test [modelSet]="modelSet"></app-t-test>
             </template>
           </ngb-tab>
         </ngb-tabset>
@@ -36,7 +40,7 @@
       </div>
     </div>
     <div id="right-panel" class="col-sm-8">
-      <app-help *ngIf="helpOpen" (onClose)="closeHelp()"></app-help>
+      <app-help *ngIf="helpOpen" [topic]="helpTopic" (onClose)="closeHelp()"></app-help>
       <button id="plot-options-button" class="btn btn-secondary"
         (click)="togglePlotOptions()" *ngIf="plotOptionsAvailable">
         <i class="fa fa-cog"></i>

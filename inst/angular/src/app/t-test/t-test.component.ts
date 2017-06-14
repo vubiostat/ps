@@ -18,7 +18,6 @@ import { TTestService } from '../t-test.service';
 })
 export class TTestComponent implements OnInit {
   @Input() modelSet: TTestSet;
-  @Output() onToggleHelp = new EventEmitter();
 
   model: TTest;
   min: TTest;
@@ -55,10 +54,6 @@ export class TTestComponent implements OnInit {
 
   toggleAlternates(): void {
     this.model.showAlternates = !this.model.showAlternates;
-  }
-
-  toggleHelp(): void {
-    this.onToggleHelp.emit();
   }
 
   private calculateSliderRange(name: string): void {

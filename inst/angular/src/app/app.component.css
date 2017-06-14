@@ -29,6 +29,12 @@
   position: relative;
 }
 
+#sidebar .overview {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
 #plot {
   min-height: 100%;
 }

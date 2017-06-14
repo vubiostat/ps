@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
   modelSets: TTestSet[] = [];
   plotOptions = new PlotOptions();
 
+  helpTopic = 'overview';
   helpOpen = false;
   plotOptionsAvailable = false;
 
@@ -39,8 +40,13 @@ export class AppComponent implements OnInit {
     this.addModel(model, false);
   }
 
-  toggleHelp(): void {
-    this.helpOpen = !this.helpOpen;
+  toggleHelp(topic: string): void {
+    if (this.helpOpen && this.helpTopic == topic) {
+      this.closeHelp();
+    } else {
+      this.helpTopic = topic;
+      this.helpOpen = true;
+    }
   }
 
   closeHelp(): void {

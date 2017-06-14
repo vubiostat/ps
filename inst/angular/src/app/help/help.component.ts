@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-help',
@@ -6,6 +6,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./help.component.css']
 })
 export class HelpComponent {
+  @Input() topic: string;
   @Output() onClose = new EventEmitter();
 
   constructor() { }
