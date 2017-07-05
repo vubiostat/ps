@@ -880,6 +880,7 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_8__start_start_component__["a" /* StartComponent */],
             __WEBPACK_IMPORTED_MODULE_9__range_slider_range_slider_component__["a" /* RangeSliderComponent */],
             __WEBPACK_IMPORTED_MODULE_9__range_slider_range_slider_component__["b" /* RangeSliderLabel */],
+            __WEBPACK_IMPORTED_MODULE_9__range_slider_range_slider_component__["c" /* RangeSliderHelp */],
             __WEBPACK_IMPORTED_MODULE_10__t_test_t_test_component__["a" /* TTestComponent */],
             __WEBPACK_IMPORTED_MODULE_11__output_pane_output_pane_component__["a" /* OutputPaneComponent */],
             __WEBPACK_IMPORTED_MODULE_12__help_help_component__["a" /* HelpComponent */],
@@ -1040,6 +1041,7 @@ var _a, _b, _c, _d, _e;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__(10);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return RangeSliderLabel; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return RangeSliderHelp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RangeSliderComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1062,6 +1064,17 @@ RangeSliderLabel = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["k" /* Directive */])({ selector: 'ng-template[rsLabel]' }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* TemplateRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* TemplateRef */]) === "function" && _a || Object])
 ], RangeSliderLabel);
+
+var RangeSliderHelp = (function () {
+    function RangeSliderHelp(templateRef) {
+        this.templateRef = templateRef;
+    }
+    return RangeSliderHelp;
+}());
+RangeSliderHelp = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["k" /* Directive */])({ selector: 'ng-template[rsHelp]' }),
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* TemplateRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* TemplateRef */]) === "function" && _b || Object])
+], RangeSliderHelp);
 
 var RangeSliderComponent = RangeSliderComponent_1 = (function () {
     function RangeSliderComponent() {
@@ -1128,21 +1141,25 @@ __decorate([
     __metadata("design:type", Object)
 ], RangeSliderComponent.prototype, "step", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('hard-min'),
     __metadata("design:type", Number)
 ], RangeSliderComponent.prototype, "hardMin", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('hard-max'),
     __metadata("design:type", Number)
 ], RangeSliderComponent.prototype, "hardMax", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('is-output'),
     __metadata("design:type", Object)
 ], RangeSliderComponent.prototype, "isOutput", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* ContentChild */])(RangeSliderLabel),
     __metadata("design:type", RangeSliderLabel)
 ], RangeSliderComponent.prototype, "labelTpl", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* ContentChild */])(RangeSliderHelp),
+    __metadata("design:type", RangeSliderHelp)
+], RangeSliderComponent.prototype, "helpTpl", void 0);
 RangeSliderComponent = RangeSliderComponent_1 = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Y" /* Component */])({
         selector: 'app-range-slider',
@@ -1159,7 +1176,7 @@ RangeSliderComponent = RangeSliderComponent_1 = __decorate([
     __metadata("design:paramtypes", [])
 ], RangeSliderComponent);
 
-var _a, RangeSliderComponent_1;
+var _a, _b, RangeSliderComponent_1;
 //# sourceMappingURL=range-slider.component.js.map
 
 /***/ }),
@@ -2010,7 +2027,7 @@ module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '
 /***/ 235:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"slider-group\" [class.output]=\"isOutput\">\n  <div class=\"label\" *ngIf=\"label\">\n    {{label}}\n    <span *ngIf=\"isOutput\">(Output)</span>\n  </div>\n  <ng-template [ngTemplateOutlet]=\"labelTpl?.templateRef\"></ng-template>\n  <div class=\"inputs row\">\n    <div class=\"col-sm-9\">\n      <div class=\"slider\">\n        <div class=\"min\">{{floor(min)}}</div>\n        <input #range name=\"{{name}}\" type=\"range\" step=\"{{step}}\"\n               min=\"{{min}}\" max=\"{{max}}\"\n               [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"rangeChanged(range.value)\"\n               (input)=\"rangeInput(range.value)\" />\n        <div class=\"max\">{{ceil(max)}}</div>\n      </div>\n    </div>\n    <div class=\"col-sm-3\">\n      <div class=\"number\">\n        <input #number name=\"{{name}}\" type=\"number\" step=\"{{step}}\"\n               [min]=\"hardMin\" [max]=\"hardMax\" [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"numberChanged(number.value)\"\n               (input)=\"numberInput(number.value)\" />\n      </div>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<div class=\"slider-group\" [class.output]=\"isOutput\">\n  <ng-template [ngIf]=\"labelTpl\" [ngIfElse]=\"standardLabel\">\n    <ng-template [ngTemplateOutlet]=\"labelTpl?.templateRef\"></ng-template>\n  </ng-template>\n  <ng-template #standardLabel>\n    <div class=\"label\" *ngIf=\"label\">\n      {{label}}\n      <span *ngIf=\"isOutput\">(Output)</span>\n      <ng-template [ngIf]=\"helpTpl\">\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"rsHelp\" popoverTitle=\"{{label}}\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        <ng-template #rsHelp>\n          <ng-template [ngTemplateOutlet]=\"helpTpl?.templateRef\"></ng-template>\n        </ng-template>\n      </ng-template>\n    </div>\n  </ng-template>\n  <div class=\"inputs row\">\n    <div class=\"col-sm-9\">\n      <div class=\"slider\">\n        <div class=\"min\">{{floor(min)}}</div>\n        <input #range name=\"{{name}}\" type=\"range\" step=\"{{step}}\"\n               min=\"{{min}}\" max=\"{{max}}\"\n               [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"rangeChanged(range.value)\"\n               (input)=\"rangeInput(range.value)\" />\n        <div class=\"max\">{{ceil(max)}}</div>\n      </div>\n    </div>\n    <div class=\"col-sm-3\">\n      <div class=\"number\">\n        <input #number name=\"{{name}}\" type=\"number\" step=\"{{step}}\"\n               [min]=\"hardMin\" [max]=\"hardMax\" [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"numberChanged(number.value)\"\n               (input)=\"numberInput(number.value)\" />\n      </div>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -2024,7 +2041,7 @@ module.exports = "<form (ngSubmit)=\"onSubmit()\" #startForm=\"ngForm\">\n  <div
 /***/ 237:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\">\n  <label>\n    Output\n    <select class=\"form-control\" name=\"output\"\n            [(ngModel)]=\"round.output\">\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </label>\n</div>\n\n<app-range-slider\n  [min]=\"min.alpha\" [max]=\"max.alpha\"\n  [hardMin]=\"min.alpha\" [hardMax]=\"max.alpha\"\n  [(ngModel)]=\"round.alpha\">\n  <ng-template rsLabel>\n    <div class=\"label\">\n      Type I Error (&alpha;)\n      <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n        [ngbPopover]=\"alphaHelp\" popoverTitle=\"Type I Error (&alpha;)\"\n        placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n    </div>\n    <ng-template #alphaHelp>\n      The Type I error probability for a two sided test. This is the\n      probability that we will falsely reject the null hypothesis.\n    </ng-template>\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider\n  [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n  [hardMin]=\"1\"\n  [(ngModel)]=\"round.sigma\">\n  <ng-template rsLabel>\n    <div class=\"label row\">\n      <div class=\"col-sm\">\n        Std. deviation (&sigma;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"sigmaHelp\" popoverTitle=\"Standard deviation (&sigma;)\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n      </div>\n      <div class=\"col-sm form-check\">\n        <label class=\"form-check-label\">\n          <input name=\"show-alternates\" type=\"checkbox\"\n            class=\"form-check-input\"\n            [(ngModel)]=\"round.showAlternates\" />\n          Alternates\n          <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n            [ngbPopover]=\"alternatesHelp\" popoverTitle=\"Alternates\"\n            placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        </label>\n      </div>\n    </div>\n    <ng-template #sigmaHelp>\n      For independent tests σ is the within group standard deviation. For\n      paired designs it is the standard deviation of difference in the\n      response of matched pairs.\n    </ng-template>\n    <ng-template #alternatesHelp>\n      Light blue lines are calculated with standard deviations that are 15%\n      higher and lower than that used to calculate the dark blue line.\n    </ng-template>\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider\n  [min]=\"min.power\" [max]=\"max.power\"\n  [hardMin]=\"min.power\" [hardMax]=\"max.power\"\n  [isOutput]=\"round.output == 'power'\"\n  [(ngModel)]=\"round.power\">\n  <ng-template rsLabel>\n    <div class=\"label\">\n      Power\n      <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n        [ngbPopover]=\"powerHelp\" popoverTitle=\"Power\"\n        placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n    </div>\n    <ng-template #powerHelp>\n      For independent tests power is probability of correctly rejecting the\n      null hypothesis of equal population means given n experimental\n      patients, m control patients per experimental patient, a Type I error\n      probability α and a true difference in population means of δ. For\n      paired tests it is the probability of correctly rejecting the null\n      hypothesis of equal population means given n pairs of patients, a Type\n      I error probability α and a true difference in population means of δ.\n    </ng-template>\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider label=\"Difference in population means (&delta;)\"\n  [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n  [isOutput]=\"round.output == 'delta'\" [(ngModel)]=\"round.delta\">\n</app-range-slider>\n\n<app-range-slider\n  [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n  [hardMin]=\"1\"\n  [isOutput]=\"round.output == 'n'\" [(ngModel)]=\"round.n\">\n  <ng-template rsLabel>\n    <div class=\"label\">\n      Sample size\n      <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n        [ngbPopover]=\"nHelp\" popoverTitle=\"Sample size\"\n        placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n    </div>\n    <ng-template #nHelp>\n      For independent t-tests n is the number of experimental subjects. For\n      pair test n is the number of pairs.\n    </ng-template>\n  </ng-template>\n</app-range-slider>\n"
+module.exports = "<div class=\"form-group\">\n  <label>\n    Output\n    <select class=\"form-control\" name=\"output\"\n            [(ngModel)]=\"round.output\">\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </label>\n</div>\n\n<app-range-slider label=\"Type I Error (&alpha;)\"\n  [min]=\"min.alpha\" [max]=\"max.alpha\"\n  [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n  [(ngModel)]=\"round.alpha\">\n  <ng-template rsHelp>\n    The Type I error probability for a two sided test. This is the\n    probability that we will falsely reject the null hypothesis.\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider\n  [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n  [hard-min]=\"1\"\n  [(ngModel)]=\"round.sigma\">\n  <ng-template rsLabel>\n    <div class=\"label row\">\n      <div class=\"col-sm\">\n        Std. deviation (&sigma;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"sigmaHelp\" popoverTitle=\"Standard deviation (&sigma;)\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n      </div>\n      <div class=\"col-sm form-check\">\n        <label class=\"form-check-label\">\n          <input name=\"show-alternates\" type=\"checkbox\"\n            class=\"form-check-input\"\n            [(ngModel)]=\"round.showAlternates\" />\n          Alternates\n          <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n            [ngbPopover]=\"alternatesHelp\" popoverTitle=\"Alternates\"\n            placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        </label>\n      </div>\n    </div>\n    <ng-template #sigmaHelp>\n      For independent tests σ is the within group standard deviation. For\n      paired designs it is the standard deviation of difference in the\n      response of matched pairs.\n    </ng-template>\n    <ng-template #alternatesHelp>\n      Light blue lines are calculated with standard deviations that are 15%\n      higher and lower than that used to calculate the dark blue line.\n    </ng-template>\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider label=\"Power\"\n  [min]=\"min.power\" [max]=\"max.power\"\n  [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n  [is-output]=\"round.output == 'power'\"\n  [(ngModel)]=\"round.power\">\n  <ng-template rsHelp>\n    For independent tests power is probability of correctly rejecting the\n    null hypothesis of equal population means given n experimental\n    patients, m control patients per experimental patient, a Type I error\n    probability α and a true difference in population means of δ. For\n    paired tests it is the probability of correctly rejecting the null\n    hypothesis of equal population means given n pairs of patients, a Type\n    I error probability α and a true difference in population means of δ.\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider label=\"Difference in population means (&delta;)\"\n  [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n  [is-output]=\"round.output == 'delta'\" [(ngModel)]=\"round.delta\">\n</app-range-slider>\n\n<app-range-slider label=\"Sample size\"\n  [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n  [hard-min]=\"1\"\n  [is-output]=\"round.output == 'n'\" [(ngModel)]=\"round.n\">\n  <ng-template rsHelp>\n    For independent t-tests n is the number of experimental subjects. For\n    pair test n is the number of pairs.\n  </ng-template>\n</app-range-slider>\n"
 
 /***/ }),
 

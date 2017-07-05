@@ -1,9 +1,21 @@
 <div class="slider-group" [class.output]="isOutput">
-  <div class="label" *ngIf="label">
-    {{label}}
-    <span *ngIf="isOutput">(Output)</span>
-  </div>
-  <ng-template [ngTemplateOutlet]="labelTpl?.templateRef"></ng-template>
+  <ng-template [ngIf]="labelTpl" [ngIfElse]="standardLabel">
+    <ng-template [ngTemplateOutlet]="labelTpl?.templateRef"></ng-template>
+  </ng-template>
+  <ng-template #standardLabel>
+    <div class="label" *ngIf="label">
+      {{label}}
+      <span *ngIf="isOutput">(Output)</span>
+      <ng-template [ngIf]="helpTpl">
+        <i class="fa fa-info-circle" aria-hidden="true"
+          [ngbPopover]="rsHelp" popoverTitle="{{label}}"
+          placement="right" triggers="hover" container="body"></i>
+        <ng-template #rsHelp>
+          <ng-template [ngTemplateOutlet]="helpTpl?.templateRef"></ng-template>
+        </ng-template>
+      </ng-template>
+    </div>
+  </ng-template>
   <div class="inputs row">
     <div class="col-sm-9">
       <div class="slider">

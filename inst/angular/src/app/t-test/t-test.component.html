@@ -10,27 +10,19 @@
   </label>
 </div>
 
-<app-range-slider
+<app-range-slider label="Type I Error (&alpha;)"
   [min]="min.alpha" [max]="max.alpha"
-  [hardMin]="min.alpha" [hardMax]="max.alpha"
+  [hard-min]="min.alpha" [hard-max]="max.alpha"
   [(ngModel)]="round.alpha">
-  <ng-template rsLabel>
-    <div class="label">
-      Type I Error (&alpha;)
-      <i class="fa fa-info-circle" aria-hidden="true"
-        [ngbPopover]="alphaHelp" popoverTitle="Type I Error (&alpha;)"
-        placement="right" triggers="hover" container="body"></i>
-    </div>
-    <ng-template #alphaHelp>
-      The Type I error probability for a two sided test. This is the
-      probability that we will falsely reject the null hypothesis.
-    </ng-template>
+  <ng-template rsHelp>
+    The Type I error probability for a two sided test. This is the
+    probability that we will falsely reject the null hypothesis.
   </ng-template>
 </app-range-slider>
 
 <app-range-slider
   [min]="min.sigma" [max]="max.sigma" step="0.1"
-  [hardMin]="1"
+  [hard-min]="1"
   [(ngModel)]="round.sigma">
   <ng-template rsLabel>
     <div class="label row">
@@ -64,49 +56,33 @@
   </ng-template>
 </app-range-slider>
 
-<app-range-slider
+<app-range-slider label="Power"
   [min]="min.power" [max]="max.power"
-  [hardMin]="min.power" [hardMax]="max.power"
-  [isOutput]="round.output == 'power'"
+  [hard-min]="min.power" [hard-max]="max.power"
+  [is-output]="round.output == 'power'"
   [(ngModel)]="round.power">
-  <ng-template rsLabel>
-    <div class="label">
-      Power
-      <i class="fa fa-info-circle" aria-hidden="true"
-        [ngbPopover]="powerHelp" popoverTitle="Power"
-        placement="right" triggers="hover" container="body"></i>
-    </div>
-    <ng-template #powerHelp>
-      For independent tests power is probability of correctly rejecting the
-      null hypothesis of equal population means given n experimental
-      patients, m control patients per experimental patient, a Type I error
-      probability α and a true difference in population means of δ. For
-      paired tests it is the probability of correctly rejecting the null
-      hypothesis of equal population means given n pairs of patients, a Type
-      I error probability α and a true difference in population means of δ.
-    </ng-template>
+  <ng-template rsHelp>
+    For independent tests power is probability of correctly rejecting the
+    null hypothesis of equal population means given n experimental
+    patients, m control patients per experimental patient, a Type I error
+    probability α and a true difference in population means of δ. For
+    paired tests it is the probability of correctly rejecting the null
+    hypothesis of equal population means given n pairs of patients, a Type
+    I error probability α and a true difference in population means of δ.
   </ng-template>
 </app-range-slider>
 
 <app-range-slider label="Difference in population means (&delta;)"
   [min]="min.delta" [max]="max.delta" step="0.1"
-  [isOutput]="round.output == 'delta'" [(ngModel)]="round.delta">
+  [is-output]="round.output == 'delta'" [(ngModel)]="round.delta">
 </app-range-slider>
 
-<app-range-slider
+<app-range-slider label="Sample size"
   [min]="min.n" [max]="max.n" step="1"
-  [hardMin]="1"
-  [isOutput]="round.output == 'n'" [(ngModel)]="round.n">
-  <ng-template rsLabel>
-    <div class="label">
-      Sample size
-      <i class="fa fa-info-circle" aria-hidden="true"
-        [ngbPopover]="nHelp" popoverTitle="Sample size"
-        placement="right" triggers="hover" container="body"></i>
-    </div>
-    <ng-template #nHelp>
-      For independent t-tests n is the number of experimental subjects. For
-      pair test n is the number of pairs.
-    </ng-template>
+  [hard-min]="1"
+  [is-output]="round.output == 'n'" [(ngModel)]="round.n">
+  <ng-template rsHelp>
+    For independent t-tests n is the number of experimental subjects. For
+    pair test n is the number of pairs.
   </ng-template>
 </app-range-slider>

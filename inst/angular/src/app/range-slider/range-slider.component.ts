@@ -6,6 +6,11 @@ export class RangeSliderLabel {
   constructor(public templateRef: TemplateRef<any>) {}
 }
 
+@Directive({selector: 'ng-template[rsHelp]'})
+export class RangeSliderHelp {
+  constructor(public templateRef: TemplateRef<any>) {}
+}
+
 @Component({
   selector: 'app-range-slider',
   templateUrl: './range-slider.component.html',
@@ -24,13 +29,14 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   @Input() min: number;
   @Input() max: number;
   @Input() step = 0.01;
-  @Input() hardMin: number;
-  @Input() hardMax: number;
-  @Input() isOutput = false;
+  @Input('hard-min') hardMin: number;
+  @Input('hard-max') hardMax: number;
+  @Input('is-output') isOutput = false;
   value: number;
   private changeCallback: any;
 
   @ContentChild(RangeSliderLabel) labelTpl: RangeSliderLabel;
+  @ContentChild(RangeSliderHelp) helpTpl: RangeSliderHelp;
 
   constructor() { }
 
