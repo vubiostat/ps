@@ -33,18 +33,18 @@
         </div>
         <ngb-tabset #tabsetChild (tabChange)="onTabChange($event)">
           <ngb-tab title="Start" id="start">
-            <template ngbTabContent>
+            <ng-template ngbTabContent>
               <app-start [model]="newModel"
                 (onCalculate)="calculate()"
                 (onToggleHelp)="toggleHelp('start')">
               </app-start>
-            </template>
+            </ng-template>
           </ngb-tab>
           <ngb-tab *ngFor="let modelSet of modelSets; let i = index"
             title="Test {{i+1}}" id="test-{{i+1}}">
-            <template ngbTabContent>
+            <ng-template ngbTabContent>
               <app-t-test [modelSet]="modelSet"></app-t-test>
-            </template>
+            </ng-template>
           </ngb-tab>
         </ngb-tabset>
       </div>
