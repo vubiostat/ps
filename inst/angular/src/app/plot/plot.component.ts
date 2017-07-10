@@ -278,11 +278,17 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
           return { x: this.x.values[i], y: yValue };
         });
       });
+    } else {
+      points = [this.x.values.map((xValue, i) => {
+        return { x: xValue, y: this.y.values[i] };
+      })];
     }
 
     if (points) {
+      // reverse points so main line is drawn on top
+      points.reverse();
       this.paths = this.getPaths(points);
-      this.mainPoints = points[0];
+      this.mainPoints = points[points.length - 1];
       this.mainPoints.sort((a, b) => a.x - b.x);
     }
 

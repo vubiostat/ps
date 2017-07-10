@@ -1,4 +1,4 @@
-import { Component, Directive, Input, ContentChild, TemplateRef, OnInit, forwardRef } from '@angular/core';
+import { Component, Directive, Input, Output, ContentChild, TemplateRef, EventEmitter, OnInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Directive({selector: 'ng-template[rsLabel]'})
@@ -32,6 +32,10 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   @Input('hard-min') hardMin: number;
   @Input('hard-max') hardMax: number;
   @Input('is-output') isOutput = false;
+  @Input('can-add') canAdd = true;
+  @Input('can-remove') canRemove = false;
+  @Output('add') onAdd = new EventEmitter<string>();
+  @Output('remove') onRemove = new EventEmitter<string>();
   value: number;
   private changeCallback: any;
 
@@ -81,6 +85,14 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
 
   numberInput(newValue: string): void {
     this.value = parseFloat(newValue);
+  }
+
+  add(): void {
+    this.onAdd.emit(this.name);
+  }
+
+  remove(): void {
+    this.onRemove.emit(this.name);
   }
 
   private propagateChange(): void {

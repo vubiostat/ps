@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 
 export abstract class ChangeEmitter {
-  protected changes = {};
+  protected changes: any = {};
   prevChanges = {};
   protected noEmit = false;
   onChange = new EventEmitter();

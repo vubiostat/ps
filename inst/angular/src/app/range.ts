@@ -14,7 +14,10 @@ export class Range extends ChangeEmitter {
     return new Range(arr[0], arr[1]);
   }
 
-  static fromData(indices: number[], data: number[]) {
+  static fromData(indices: number[], data: any[]) {
+    if (Array.isArray(data[0])) {
+      data = data[0];
+    }
     let minIndex = 0, maxIndex = data.length - 1;
     if (indices[0] > minIndex) {
       minIndex = indices[0];

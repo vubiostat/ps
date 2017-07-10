@@ -4,6 +4,137 @@ import { Subscription } from 'rxjs/Subscription';
 import { ChangeEmitter, Changeable } from './changeable';
 import { Range } from './range';
 
+export class TTestExtra extends ChangeEmitter {
+  @Changeable alpha?: number[];
+  @Changeable sigma?: number[];
+  @Changeable delta?: number[];
+  @Changeable power?: number[];
+  @Changeable n?: number[];
+
+  constructor(attribs: any) {
+    super();
+
+    if (Object.keys(attribs).length > 1) {
+      throw new Error("elements must be mutually exclusive");
+    }
+
+    this.noEmit = true;
+    if ('alpha' in attribs) {
+      this.alpha = this.proxy('alpha', attribs.alpha.slice());
+    } else if ('sigma' in attribs) {
+      this.sigma = this.proxy('sigma', attribs.sigma.slice());
+    } else if ('delta' in attribs) {
+      this.delta = this.proxy('delta', attribs.delta.slice());
+    } else if ('power' in attribs) {
+      this.power = this.proxy('power', attribs.power.slice());
+    } else if ('n' in attribs) {
+      this.n = this.proxy('n', attribs.n.slice());
+    }
+    this.noEmit = false;
+    this.changes = {};
+  }
+
+  update(attribs: any, emit = true): void {
+    let keys = Object.keys(attribs);
+    if (keys.length > 1) {
+      throw new Error("elements must be mutually exclusive");
+    }
+    let key = keys[0];
+    let current = this[key];
+    if (current === undefined) {
+      throw new Error(`invalid key: ${key}`);
+    }
+    let obj = attribs[key];
+    if (Array.isArray(obj)) {
+      // normally I'd want to catch all the change events here and combine
+      // then into one event, but only one value should be changing here at a time
+      obj.forEach((value, i) => {
+        current[i] = value;
+      });
+    } else if ('replace' in obj) {
+      obj = obj.replace;
+      current[obj.index] = obj.value;
+    } else if ('remove' in obj) {
+      obj = obj.remove;
+      current.splice(obj.index, 1);
+    } else if ('append' in obj) {
+      obj = obj.append;
+      current.push(obj.value);
+    }
+  }
+
+  attributes(): any {
+    let result: any = {};
+    if (this.alpha) {
+      result.alpha = this.alpha.slice();
+    } else if (this.sigma) {
+      result.sigma = this.sigma.slice();
+    } else if (this.delta) {
+      result.delta = this.delta.slice();
+    } else if (this.power) {
+      result.power = this.power.slice();
+    } else if (this.n) {
+      result.n = this.n.slice();
+    }
+    return result;
+  }
+
+  push(name: string, value: number): void {
+    if (this[name] === undefined) {
+      throw new Error("elements must be mutually exclusive");
+    }
+    this.noEmit = true;
+    this[name].push(value);
+    this.noEmit = false;
+
+    this.changes = { [name]: { append: { value: value } } };
+    this.emit();
+  }
+
+  remove(name: string, index: number): void {
+    if (this[name] === undefined) {
+      throw new Error(`invalid name: ${name}`);
+    }
+    this.noEmit = true;
+    this[name].splice(index, 1);
+    this.noEmit = false;
+
+    this.changes = { [name]: { remove: { index: index } } };
+    this.emit();
+  }
+
+  isEmpty(name: string): boolean {
+    if (this[name] === undefined) {
+      throw new Error(`invalid name: ${name}`);
+    }
+    return this[name].length == 0;
+  }
+
+  round(): TTestExtra {
+    let attribs = this.attributes();
+    for (let key in attribs) {
+      attribs[key] = attribs[key].forEach(value => {
+        return Math.round(value * 100) / 100;
+      });
+    }
+    return new TTestExtra(attribs);
+  }
+
+  private proxy(name: string, arr: number[]): any {
+    let result = new Proxy(arr, {
+      set: (target, property, value, receiver) => {
+        if (target[property] !== value) {
+          target[property] = value;
+          this.changes = { [name]: { replace: { index: property, value: value } } };
+          this.emit();
+        }
+        return true;
+      }
+    });
+    return result;
+  }
+}
+
 export class TTest extends ChangeEmitter {
   @Changeable id?: string;
   @Changeable output: string;
@@ -13,23 +144,15 @@ export class TTest extends ChangeEmitter {
   @Changeable delta: number;
   @Changeable power: number;
   @Changeable n: number;
-  @Changeable showAlternates = false;
+  @Changeable extra?: TTestExtra;
+
+  private subscription = new Subscription();
 
   constructor(attribs?: any) {
     super();
     if (attribs) {
       this.update(attribs, false);
     }
-  }
-
-  round(): TTest {
-    let attribs = this.attributes();
-    attribs.alpha = Math.round(attribs.alpha * 100) / 100;
-    attribs.sigma = Math.round(attribs.sigma * 100) / 100;
-    attribs.delta = Math.round(attribs.delta * 100) / 100;
-    attribs.power = Math.round(attribs.power * 100) / 100;
-    attribs.n = Math.ceil(attribs.n);
-    return new TTest(attribs);
   }
 
   update(attribs: any, emit = true): any {
@@ -58,8 +181,23 @@ export class TTest extends ChangeEmitter {
     if (attribs.n !== undefined) {
       this.n = attribs.n;
     }
-    if (attribs.showAlternates !== undefined) {
-      this.showAlternates = attribs.showAlternates;
+    if ('extra' in attribs) {
+      let extra = attribs.extra;
+      if (extra) {
+        if (!this.extra) {
+          extra = extra.attributes();
+          this.extra = new TTestExtra(extra);
+          this.subscription = this.extra.onChange.subscribe((value) => {
+            this.changes.extra = value;
+            this.emit();
+          });
+        } else {
+          this.extra.update(extra);
+        }
+      } else {
+        this.subscription.unsubscribe();
+        this.extra = undefined;
+      }
     }
     this.noEmit = false;
 
@@ -112,7 +250,23 @@ export class TTest extends ChangeEmitter {
     if (this.design) {
       result.design = this.design;
     }
+    if (this.extra) {
+      result.extra = this.extra.attributes();
+    }
     return(result);
+  }
+
+  round(): TTest {
+    let attribs = this.attributes();
+    attribs.alpha = Math.round(attribs.alpha * 100) / 100;
+    attribs.sigma = Math.round(attribs.sigma * 100) / 100;
+    attribs.delta = Math.round(attribs.delta * 100) / 100;
+    attribs.power = Math.round(attribs.power * 100) / 100;
+    attribs.n = Math.ceil(attribs.n);
+    if (this.extra) {
+      attribs.extra = this.extra.round();
+    }
+    return new TTest(attribs);
   }
 }
 
@@ -264,10 +418,10 @@ export class TTestSet {
         n       = new Range(min, max);
         indices = n.findIndices(this.data.n);
         if (skip != 'power') {
-          power = Range.fromData(indices, this.data.power[0]);
+          power = Range.fromData(indices, this.data.power);
         }
         if (skip != 'delta') {
-          delta = Range.fromData(indices, this.data.delta[0]);
+          delta = Range.fromData(indices, this.data.delta);
         }
         break;
 
@@ -275,7 +429,7 @@ export class TTestSet {
         power   = new Range(0, 1.0);
         indices = power.findIndices(this.data.power);
         if (skip != 'n') {
-          n = Range.fromData(indices, this.data.n[0]);
+          n = Range.fromData(indices, this.data.n);
         }
         if (skip != 'delta') {
           delta = new Range(-deltaMax, deltaMax);
@@ -289,10 +443,10 @@ export class TTestSet {
         delta   = new Range(min, max);
         indices = delta.findIndices(this.data.delta);
         if (skip != 'n') {
-          n = Range.fromData(indices, this.data.n[0]);
+          n = Range.fromData(indices, this.data.n);
         }
         if (skip != 'power') {
-          power = Range.fromData(indices, this.data.power[0]);
+          power = Range.fromData(indices, this.data.power);
         }
         break;
     }

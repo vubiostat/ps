@@ -25,9 +25,10 @@ paramTitles <- list(
 )
 
 TTest <- setRefClass("TTest",
-  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "nValues",
-             "powerValues", "powerByDeltaValues", "deltaValues", "pSpaceValues",
-             "precisionValues", "sampDistValues", "sigmaValues"),
+  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "extra",
+             "nValues", "powerValues", "powerByDeltaValues", "deltaValues",
+             "pSpaceValues", "precisionValues", "sampDistValues",
+             "sigmaValues"),
 
   methods = list(
     initialize = function(params) {
@@ -38,6 +39,7 @@ TTest <- setRefClass("TTest",
       delta  <<- params$delta
       sigma  <<- params$sigma
       output <<- params$output
+      extra  <<- params$extra
 
       nValues            <<- NULL
       powerValues        <<- NULL
@@ -59,8 +61,8 @@ TTest <- setRefClass("TTest",
         if (!(n %in% nValues)) {
           nValues <<- sort(c(nValues, n))
         }
-        powerValues <<- calculateValues(calculatePower, alpha = alpha, delta = delta, n = nValues)
-        deltaValues <<- calculateValues(calculateDelta, alpha = alpha, power = power, n = nValues)
+        powerValues <<- calculateValues(calculatePower, n = nValues)
+        deltaValues <<- calculateValues(calculateDelta, n = nValues)
         powerByDeltaValues <<- NULL
 
       } else if (output == "power") {
@@ -69,9 +71,9 @@ TTest <- setRefClass("TTest",
         if (!(power %in% powerValues)) {
           powerValues <<- sort(c(powerValues, power))
         }
-        nValues <<- calculateValues(calculateN, alpha = alpha, delta = delta, power = powerValues)
+        nValues <<- calculateValues(calculateN, power = powerValues)
         deltaValues <<- getDeltaValues()
-        powerByDeltaValues <<- calculateValues(calculatePower, alpha = alpha, n = n, delta = deltaValues)
+        powerByDeltaValues <<- calculateValues(calculatePower, delta = deltaValues)
 
       } else if (output == "delta") {
         delta <<- calculateDelta(alpha, sigma, n, power)
@@ -79,8 +81,8 @@ TTest <- setRefClass("TTest",
         if (!(delta %in% deltaValues)) {
           deltaValues <<- sort(c(deltaValues, delta))
         }
-        nValues <<- calculateValues(calculateN, alpha = alpha, power = power, delta = deltaValues)
-        powerValues <<- calculateValues(calculatePower, alpha = alpha, n = n, delta = deltaValues)
+        nValues <<- calculateValues(calculateN, delta = deltaValues)
+        powerValues <<- calculateValues(calculatePower, delta = deltaValues)
         powerByDeltaValues <<- NULL
       }
 
@@ -97,9 +99,35 @@ TTest <- setRefClass("TTest",
       sampDistValues <<- ifelse(sampDistValues < 0.01, 0, sampDistValues)
     },
     calculateValues = function(fun, ...) {
-      lapply(sigmaValues, function(sigma) {
-        fun(..., sigma = sigma)
-      })
+      supplied <- list(...)
+      args <- sapply(formalArgs(fun), function(name) {
+        s <- supplied[[name]]
+        if (!is.null(s)) {
+          s
+        } else {
+          get(name)
+        }
+      }, simplify = FALSE)
+
+      if (is.null(extra)) {
+        # calculate one line
+        do.call(fun, args)
+      } else {
+        # calculate multiple lines
+        name <- names(extra)[1]
+        values <- args[[name]]
+        if (is.null(values)) {
+          # this happens if extra contains 'power', but power is being
+          # calculated, for example
+          do.call(fun, args)
+        } else {
+          values <- c(values, extra[[name]])
+          lapply(values, function(value) {
+            args[[name]] <- value
+            do.call(fun, args)
+          })
+        }
+      }
     },
     attributes = function() {
       model <- list(
@@ -112,6 +140,9 @@ TTest <- setRefClass("TTest",
       )
       if (!inherits(id, "uninitializedField")) {
         model$id <- unbox(id)
+      }
+      if (!is.null(extra)) {
+        model$extra <- extra
       }
       data <- list(
         power     = powerValues,

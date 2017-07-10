@@ -17,7 +17,7 @@
     </div>
   </ng-template>
   <div class="inputs row">
-    <div class="col-sm-9">
+    <div class="col-sm-8">
       <div class="slider">
         <div class="min">{{floor(min)}}</div>
         <input #range name="{{name}}" type="range" step="{{step}}"
@@ -36,6 +36,14 @@
                [disabled]="isOutput"
                (change)="numberChanged(number.value)"
                (input)="numberInput(number.value)" />
+      </div>
+    </div>
+    <div class="col-sm-1">
+      <div class="add-remove" *ngIf="!isOutput && canAdd">
+        <i class="fa fa-plus-circle" (click)="add()"></i>
+      </div>
+      <div class="add-remove" *ngIf="canRemove">
+        <i class="fa fa-minus-circle" (click)="remove()"></i>
       </div>
     </div>
   </div>

@@ -8,7 +8,7 @@ import {
 
 import 'rxjs/add/operator/debounceTime';
 
-import { TTest, TTestRanges, TTestSet } from '../t-test';
+import { TTest, TTestExtra, TTestRanges, TTestSet } from '../t-test';
 import { TTestService } from '../t-test.service';
 
 @Component({
@@ -52,8 +52,31 @@ export class TTestComponent implements OnInit {
     this.calculateSliderRange('sigma');
   }
 
-  toggleAlternates(): void {
-    this.model.showAlternates = !this.model.showAlternates;
+  addInput(name: any): void {
+    let extra = this.round.extra;
+    if (extra) {
+      extra.push(name, this.round[name]);
+    } else {
+      extra = new TTestExtra({ [name]: [this.round[name]] });
+      this.round.update({ extra: extra });
+    }
+  }
+
+  removeInput(name: string, index: number): void {
+    let extra = this.round.extra;
+    if (!extra) {
+      return;
+    }
+    name = name.split("-")[0];
+    extra.remove(name, index);
+
+    if (extra.isEmpty(name)) {
+      this.round.update({ extra: undefined });
+    }
+  }
+
+  trackByExtra(index: number, item: number): number {
+    return index;
   }
 
   private calculateSliderRange(name: string): void {
@@ -65,7 +88,7 @@ export class TTestComponent implements OnInit {
 
   private modelChanged(changes: any): void {
     let keys = Object.keys(changes);
-    if (keys.length > 1 || (keys[0] != "showAlternates" && keys[0] != this.model.output)) {
+    if (keys.length > 1 || keys[0] != this.model.output) {
       this.updateModelSet();
     }
   }

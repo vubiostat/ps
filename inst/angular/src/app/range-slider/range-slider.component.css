@@ -15,6 +15,9 @@ div.slider-group .slider,
 div.slider-group .number {
   padding-top: 2ex;
 }
+div.slider-group .add-remove {
+  padding-top: 2.3ex;
+}
 
 div.slider-group div.inputs input {
   width: 100%;
@@ -51,4 +54,11 @@ div.slider-group div.slider div.min {
 
 div.slider-group div.slider div.max {
   right: 0;
+}
+
+.fa {
+  opacity: 0.7;
+}
+.fa:hover {
+  opacity: 1;
 }
