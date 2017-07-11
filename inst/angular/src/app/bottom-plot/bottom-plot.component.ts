@@ -1,4 +1,7 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewChecked,
+  ViewChild, ElementRef, ViewEncapsulation
+} from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
@@ -9,7 +12,8 @@ import { Range } from '../range';
 @Component({
   selector: 'app-bottom-plot',
   templateUrl: './bottom-plot.component.html',
-  styleUrls: ['./bottom-plot.component.css']
+  styleUrls: ['./bottom-plot.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() name: string;
@@ -19,7 +23,9 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
   @ViewChild('plot') plotElement: ElementRef;
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
+  @ViewChild('canvas') canvasElement: ElementRef;
 
+  title = "Precision vs. Effect Size";
   margin: number = 50;
   clipPathId: string;
   width: number;
@@ -66,6 +72,37 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
 
   redraw(): void {
     this.compute();
+  }
+
+  serializeAsXML(): string {
+    let serializer = new XMLSerializer();
+    return serializer.serializeToString(this.plotElement.nativeElement);
+  }
+
+  serialize(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let data = this.serializeAsXML();
+
+      let width = this.getDimension('width');
+      let height = this.getDimension('height');
+      let canvas = this.canvasElement.nativeElement;
+      canvas.width = width;
+      canvas.height = height;
+
+      let context = canvas.getContext("2d");
+      let image = new Image(width, height);
+      image.addEventListener('load', () => {
+        context.clearRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+
+        canvas.toBlob(function(blob) {
+          resolve(blob);
+        });
+      });
+
+      let src = 'data:image/svg+xml;base64,' + btoa(data);
+      image.src = src;
+    });
   }
 
   private compute(): void {

@@ -29,7 +29,7 @@
     </text>
     <text text-anchor="middle" font-weight="bold"
       [attr.x]="width / 2 + margin" y="0" dy="2em">
-      {{y.title}} vs. {{x.title}}
+      {{title}}
     </text>
 
     <g *ngFor="let path of paths; let i = index"
@@ -87,13 +87,14 @@
       </text>
     </g>
 
-    <circle #target r="5"
+    <circle #target class="target" r="5"
       [attr.cx]="xScale(targetPoint.x)"
       [attr.cy]="yScale(targetPoint.y)"
       [attr.transform]="translate(margin, margin)"
       [attr.clip-path]="targetClipPath()"
-      fill="red" cursor="grab"
+      fill="red"
       (mouseover)="toggleTargetInfo(true)"
       (mouseout)="toggleTargetInfo(false)" />
   </ng-template>
 </svg>
+<canvas #canvas style="display: none"></canvas>

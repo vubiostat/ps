@@ -10,6 +10,7 @@ import { PlotOptions } from './plot-options';
 import { TTestService } from './t-test.service';
 
 import { PlotOptionsComponent } from './plot-options/plot-options.component'
+import { OutputPaneComponent } from './output-pane/output-pane.component'
 
 @Component({
   selector: 'app-root',
@@ -28,6 +29,7 @@ export class AppComponent implements OnInit {
 
   @ViewChild('plotOptionsChild') plotOptionsChild: PlotOptionsComponent;
   @ViewChild('tabsetChild') tabsetChild: NgbTabset;
+  @ViewChild('outputPaneChild') outputChild: OutputPaneComponent;
 
   selectedModelSet = new Subject<TTestSet>();
 
@@ -55,6 +57,10 @@ export class AppComponent implements OnInit {
 
   togglePlotOptions(): void {
     this.plotOptionsChild.toggle();
+  }
+
+  save(): void {
+    this.outputChild.openSaveDialog();
   }
 
   calculate(): void {

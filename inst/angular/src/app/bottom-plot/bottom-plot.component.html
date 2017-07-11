@@ -17,7 +17,7 @@
     </text>
     <text text-anchor="middle" font-weight="bold"
       [attr.x]="width / 2 + margin" y="0" dy="2em">
-      Precision vs. Effect Size
+      {{title}}
     </text>
 
     <g [attr.transform]="translate(margin, margin)">
@@ -51,3 +51,4 @@
     <g #bottomAxis [attr.transform]="translate(margin, height + margin)"></g>
   </ng-template>
 </svg>
+<canvas #canvas style="display: none"></canvas>

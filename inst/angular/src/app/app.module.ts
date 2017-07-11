@@ -17,6 +17,7 @@ import { PlotComponent } from './plot/plot.component';
 import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
 
 import { environment } from '../environments/environment';
+import { ExportPlotsComponent } from './export-plots/export-plots.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { environment } from '../environments/environment';
     PlotOptionsComponent,
     PlotComponent,
     BottomPlotComponent,
+    ExportPlotsComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +41,7 @@ import { environment } from '../environments/environment';
     NgbModule.forRoot()
   ],
   providers: [TTestService, {provide: APP_BASE_HREF, useValue: environment.baseHref }],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ExportPlotsComponent]
 })
 export class AppModule { }

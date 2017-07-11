@@ -1,4 +1,5 @@
-import { Component, ViewChild, Input, OnInit } from '@angular/core';
+import { Component, ViewChild, TemplateRef, Input, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as d3 from 'd3';
 
 import { Observable } from 'rxjs/Observable';
@@ -7,6 +8,7 @@ import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { PlotOptions } from '../plot-options';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
+import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 
 @Component({
   selector: 'app-output-pane',
@@ -22,6 +24,9 @@ export class OutputPaneComponent implements OnInit {
   @ViewChild('topLeft') topLeftPlot: PlotComponent;
   @ViewChild('topRight') topRightPlot: PlotComponent;
   @ViewChild('bottom') bottomPlot: BottomPlotComponent;
+  @ViewChild('saveDialog') saveDialog: TemplateRef<any>;
+
+  constructor(private modalService: NgbModal) {}
 
   ngOnInit(): void {
     this.selectedModelSet.subscribe(modelSet => {
@@ -36,6 +41,13 @@ export class OutputPaneComponent implements OnInit {
       this.topRightPlot.redraw();
       this.bottomPlot.redraw();
     }, 1);
+  }
+
+  openSaveDialog(): void {
+    const modalRef = this.modalService.open(ExportPlotsComponent);
+    modalRef.componentInstance.topLeft = this.topLeftPlot;
+    modalRef.componentInstance.topRight = this.topRightPlot;
+    modalRef.componentInstance.bottom = this.bottomPlot;
   }
 
   round(n: number): number {

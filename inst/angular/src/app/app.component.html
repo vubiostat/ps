@@ -60,11 +60,15 @@
     </div>
     <div id="right-panel" class="col-sm-8">
       <app-help *ngIf="helpOpen" [topic]="helpTopic" (onClose)="closeHelp()"></app-help>
-      <button id="plot-options-button" class="btn btn-secondary"
-        (click)="togglePlotOptions()" *ngIf="plotOptionsAvailable">
-        <i class="fa fa-cog"></i>
-      </button>
-      <app-output-pane
+      <div class="plot-buttons" *ngIf="plotOptionsAvailable">
+        <button class="btn btn-secondary" (click)="togglePlotOptions()">
+          <i class="fa fa-cog"></i>
+        </button>
+        <button class="btn btn-secondary" (click)="save()">
+          <i class="fa fa-floppy-o"></i>
+        </button>
+      </div>
+      <app-output-pane #outputPaneChild
         [selectedModelSet]="selectedModelSet"
         [plotOptions]="plotOptions">
       </app-output-pane>
