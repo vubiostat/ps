@@ -40,10 +40,14 @@
     </div>
     <div class="col-sm-1">
       <div class="add-remove" *ngIf="!isOutput && canAdd">
-        <i class="fa fa-plus-circle" (click)="add()"></i>
+        <i class="fa fa-plus-circle" (click)="add()"
+          ngbPopover="Click to add line to plot for alternate value of &quot;{{label}}&quot;"
+          triggers="hover" container="body"></i>
       </div>
       <div class="add-remove" *ngIf="canRemove">
-        <i class="fa fa-minus-circle" (click)="remove()"></i>
+        <i class="fa fa-minus-circle" (click)="remove()"
+          ngbPopover="Remove line from plot for &quot;{{label}}&quot;"
+          triggers="hover" container="body"></i>
       </div>
     </div>
   </div>
