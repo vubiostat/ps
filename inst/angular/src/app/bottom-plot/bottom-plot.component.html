@@ -24,12 +24,13 @@
       [attr.transform]="translate(margin, margin)">
 
       <path [attr.clip-path]="clipPath()" [attr.d]="group.distPath"
-        fill="lightblue" stroke="none" />
+        [attr.fill]="palette.getColor(groups.length - 1 - i)"
+        stroke="none" opacity="0.5" />
 
       <path *ngFor="let path of group.mainPaths"
         [attr.clip-path]="clipPath()"
         [attr.d]="path"
-        stroke="steelblue"
+        [attr.stroke]="palette.getColor(groups.length - 1 - i)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         fill="none" />
 
@@ -37,7 +38,7 @@
         [attr.cx]="xScale(group.target)"
         [attr.cy]="yScale(0.5)"
         [attr.clip-path]="clipPath()"
-        fill="steelblue" />
+        [attr.fill]="palette.getColor(groups.length - 1 - i)" />
     </g>
 
     <circle r="5"

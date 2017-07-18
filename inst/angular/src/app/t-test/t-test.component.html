@@ -14,6 +14,7 @@
   [min]="min.alpha" [max]="max.alpha"
   [hard-min]="min.alpha" [hard-max]="max.alpha"
   [can-add]="!round.extra || round.extra.alpha" (add)="addInput($event)"
+  [palette-color]="round.extra?.alpha ? 0 : -1"
   [(ngModel)]="round.alpha">
   <ng-template rsHelp>
     The Type I error probability for a two sided test. This is the
@@ -25,6 +26,7 @@
     [min]="min.alpha" [max]="max.alpha"
     [hard-min]="min.alpha" [hard-max]="max.alpha"
     [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+    [palette-color]="i+1"
     [(ngModel)]="round.extra.alpha[i]">
   </app-range-slider>
 </div>
@@ -33,6 +35,7 @@
   [min]="min.sigma" [max]="max.sigma" step="0.1"
   [hard-min]="1"
   [can-add]="!round.extra || round.extra.sigma" (add)="addInput($event)"
+  [palette-color]="round.extra?.sigma ? 0 : -1"
   [(ngModel)]="round.sigma">
   <ng-template rsHelp>
     For independent tests σ is the within group standard deviation. For
@@ -45,6 +48,7 @@
     [min]="min.sigma" [max]="max.sigma" step="0.1"
     [hard-min]="1"
     [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+    [palette-color]="i+1"
     [(ngModel)]="round.extra.sigma[i]">
   </app-range-slider>
 </div>
@@ -54,6 +58,7 @@
   [hard-min]="min.power" [hard-max]="max.power"
   [can-add]="!round.extra || round.extra.power" (add)="addInput($event)"
   [is-output]="round.output == 'power'"
+  [palette-color]="round.extra?.power ? 0 : -1"
   [(ngModel)]="round.power">
   <ng-template rsHelp>
     For independent tests power is probability of correctly rejecting the
@@ -70,20 +75,24 @@
     [min]="min.power" [max]="max.power"
     [hard-min]="min.power" [hard-max]="max.power"
     [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+    [palette-color]="i+1"
     [(ngModel)]="round.extra.power[i]">
   </app-range-slider>
 </div>
 
 <app-range-slider name="delta" label="Difference in population means (&delta;)"
   [min]="min.delta" [max]="max.delta" step="0.1"
-    [can-add]="!round.extra || round.extra.delta" (add)="addInput($event)"
-  [is-output]="round.output == 'delta'" [(ngModel)]="round.delta">
+  [can-add]="!round.extra || round.extra.delta" (add)="addInput($event)"
+  [is-output]="round.output == 'delta'"
+  [palette-color]="round.extra?.delta ? 0 : -1"
+  [(ngModel)]="round.delta">
 </app-range-slider>
 <div class="extra" *ngFor="let delta of round.extra?.delta; let i = index; trackBy: trackByExtra">
   <app-range-slider name="delta-{{i+2}}" label="Difference in population means (&delta;) #{{i+2}}"
     [min]="min.delta" [max]="max.delta" step="0.1"
     [hard-min]="min.delta" [hard-max]="max.delta"
     [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+    [palette-color]="i+1"
     [(ngModel)]="round.extra.delta[i]">
   </app-range-slider>
 </div>
@@ -92,7 +101,9 @@
   [min]="min.n" [max]="max.n" step="1"
   [hard-min]="1"
   [can-add]="!round.extra || round.extra.n" (add)="addInput($event)"
-  [is-output]="round.output == 'n'" [(ngModel)]="round.n">
+  [is-output]="round.output == 'n'"
+  [palette-color]="round.extra?.n ? 0 : -1"
+  [(ngModel)]="round.n">
   <ng-template rsHelp>
     For independent t-tests n is the number of experimental subjects. For
     pair test n is the number of pairs.
@@ -103,6 +114,7 @@
     [min]="min.n" [max]="max.n" step="1"
     [hard-min]="1"
     [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+    [palette-color]="i+1"
     [(ngModel)]="round.extra.n[i]">
   </app-range-slider>
 </div>

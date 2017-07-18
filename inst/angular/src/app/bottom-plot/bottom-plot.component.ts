@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 import { TTestSet } from '../t-test';
 import { PlotOptions } from '../plot-options';
 import { Range } from '../range';
+import { PaletteService } from '../palette.service';
 
 interface Group { mainPaths: string[], distPath: string, target: number };
 
@@ -38,6 +39,8 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
   groups: Group[];
   needDraw: boolean;
   private subscription: Subscription;
+
+  constructor(public palette: PaletteService) { }
 
   ngOnInit() {
     this.clipPathId = `${this.name}-plot-area`;

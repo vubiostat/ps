@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { TTestService } from './t-test.service';
+import { PaletteService } from './palette.service';
 import { StartComponent } from './start/start.component';
 import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range-slider/range-slider.component';
 import { TTestComponent } from './t-test/t-test.component';
@@ -40,7 +41,11 @@ import { ExportPlotsComponent } from './export-plots/export-plots.component';
     HttpModule,
     NgbModule.forRoot()
   ],
-  providers: [TTestService, {provide: APP_BASE_HREF, useValue: environment.baseHref }],
+  providers: [
+    TTestService,
+    PaletteService,
+    {provide: APP_BASE_HREF, useValue: environment.baseHref }
+  ],
   bootstrap: [AppComponent],
   entryComponents: [ExportPlotsComponent]
 })

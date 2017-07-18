@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 import { PlotOptions } from '../plot-options';
 import { Range } from '../range';
 import { TTestSet } from '../t-test';
+import { PaletteService } from '../palette.service';
 
 interface PlotData {
   name: string;
@@ -67,6 +68,8 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   needDraw = false;
 
   private subscription: Subscription;
+
+  constructor(public palette: PaletteService) {}
 
   ngOnInit(): void {
     this.mainClipPathId = `${this.name}-plot-area`;

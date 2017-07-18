@@ -1,6 +1,8 @@
 import { Component, Directive, Input, Output, ContentChild, TemplateRef, EventEmitter, OnInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+import { PaletteService } from '../palette.service';
+
 @Directive({selector: 'ng-template[rsLabel]'})
 export class RangeSliderLabel {
   constructor(public templateRef: TemplateRef<any>) {}
@@ -34,6 +36,7 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   @Input('is-output') isOutput = false;
   @Input('can-add') canAdd = true;
   @Input('can-remove') canRemove = false;
+  @Input('palette-color') paletteColor = -1;
   @Output('add') onAdd = new EventEmitter<string>();
   @Output('remove') onRemove = new EventEmitter<string>();
   value: number;
@@ -42,7 +45,7 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   @ContentChild(RangeSliderLabel) labelTpl: RangeSliderLabel;
   @ContentChild(RangeSliderHelp) helpTpl: RangeSliderHelp;
 
-  constructor() { }
+  constructor(public palette: PaletteService) { }
 
   ngOnInit() {
   }

@@ -62,3 +62,7 @@ div.slider-group div.slider div.max {
 .fa:hover {
   opacity: 1;
 }
+
+.palette-color .fa {
+  opacity: 1;
+}

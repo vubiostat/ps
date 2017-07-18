@@ -37,8 +37,9 @@
       <path
         [attr.clip-path]="mainClipPath()"
         [attr.d]="path"
-        [attr.stroke]="i == (paths.length - 1) ? 'steelblue' : 'lightblue'"
+        [attr.stroke]="palette.getColor(paths.length - 1 - i)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
+        [attr.opacity]="i == (paths.length - 1) ? 1 : 0.7"
         fill="none" />
     </g>
 
