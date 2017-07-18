@@ -1,21 +1,44 @@
 # helper functions
-calculateN <- function(alpha, delta, sigma, power) {
+calculateN <- function(alpha, delta, sigma, power, ...) {
   (sigma * (qnorm(1 - alpha/2) + qnorm(power)) / delta) ^ 2
 }
 
-calculatePower <- function(alpha, delta, sigma, n) {
+calculatePower <- function(alpha, delta, sigma, n, ...) {
   z <- delta / sigma * sqrt(n)
   pnorm(z - qnorm(1 - alpha/2)) + pnorm(-z - qnorm(1 - alpha/2))
 }
 
-calculateDelta <- function(alpha, sigma, n, power) {
+calculateDelta <- function(alpha, sigma, n, power, ...) {
   # Note: ignores the smaller tail (typical)
   sqrt((qnorm(1 - alpha/2) - qnorm(1 - power)) ^ 2 * (sigma ^ 2) / n)
 }
 
-calculatePrecision <- function(alpha, delta, sigma, n) {
+calculateDeltaRange <- function(sigma, delta, ...) {
+  mu.0 <- 0
+  lo <- mu.0 - max(3 * sigma, delta + sigma/2)
+  high <- mu.0 + max(3 * sigma, delta + sigma/2)
+  c(lo, high)
+}
+
+calculatePrecision <- function(alpha, delta, sigma, n, ...) {
   moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
   c(delta - moe, delta + moe)
+}
+
+calculatePSpace <- function(precision, sigma, delta, ...) {
+  pSpaceRange <- calculateDeltaRange(sigma, delta)
+  if (precision[1] < pSpaceRange[1]) {
+    pSpaceRange[1] <- precision[1] - (precision[1] * 0.5)
+  }
+  if (precision[2] > pSpaceRange[2]) {
+    pSpaceRange[2] <- precision[2] + (precision[2] * 0.5)
+  }
+  seq(pSpaceRange[1], pSpaceRange[2], 0.01)
+}
+
+calculateSampDist <- function(pSpace, delta, sigma, n, ...) {
+  sampDist <- dnorm(pSpace, mean = delta, sd = sigma/sqrt(n))
+  ifelse(sampDist < 0.01, NA, sampDist)
 }
 
 paramTitles <- list(
@@ -25,10 +48,7 @@ paramTitles <- list(
 )
 
 TTest <- setRefClass("TTest",
-  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "extra",
-             "nValues", "powerValues", "powerByDeltaValues", "deltaValues",
-             "pSpaceValues", "precisionValues", "sampDistValues",
-             "sigmaValues"),
+  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "extra", "data"),
 
   methods = list(
     initialize = function(params) {
@@ -40,94 +60,86 @@ TTest <- setRefClass("TTest",
       sigma  <<- params$sigma
       output <<- params$output
       extra  <<- params$extra
-
-      nValues            <<- NULL
-      powerValues        <<- NULL
-      powerByDeltaValues <<- NULL
-      deltaValues        <<- NULL
-      pSpaceValues       <<- NULL
-      precisionValues    <<- NULL
-      sampDistValues     <<- NULL
-      sigmaValues        <<- NULL
+      data   <<- NULL
 
       update()
     },
     update = function() {
-      sigmaValues <<- list(unbox(sigma), unbox(sigma * 1.15), unbox(sigma * 0.85))
-
       if (output == "n") {
         n <<- calculateN(alpha, delta, sigma, power)
-        nValues <<- seq(n * 0.25, n * 1.75, 0.1)
-        if (!(n %in% nValues)) {
-          nValues <<- sort(c(nValues, n))
-        }
-        powerValues <<- calculateValues(calculatePower, n = nValues)
-        deltaValues <<- calculateValues(calculateDelta, n = nValues)
-        powerByDeltaValues <<- NULL
-
       } else if (output == "power") {
         power <<- calculatePower(alpha, delta, sigma, n)
-        powerValues <<- seq(alpha + 0.01, 0.99, 0.01)
-        if (!(power %in% powerValues)) {
-          powerValues <<- sort(c(powerValues, power))
-        }
-        nValues <<- calculateValues(calculateN, power = powerValues)
-        deltaValues <<- getDeltaValues()
-        powerByDeltaValues <<- calculateValues(calculatePower, delta = deltaValues)
-
       } else if (output == "delta") {
         delta <<- calculateDelta(alpha, sigma, n, power)
-        deltaValues <<- seq(delta * 0.25, delta * 1.75, 0.01)
-        if (!(delta %in% deltaValues)) {
-          deltaValues <<- sort(c(deltaValues, delta))
-        }
-        nValues <<- calculateValues(calculateN, delta = deltaValues)
-        powerValues <<- calculateValues(calculatePower, delta = deltaValues)
-        powerByDeltaValues <<- NULL
       }
 
-      pSpaceRange <- getDeltaRange()
-      precisionValues <<- calculatePrecision(alpha, delta, sigma, n)
-      if (precisionValues[1] < pSpaceRange[1]) {
-        pSpaceRange[1] <- precisionValues[1] - (precisionValues[1] * 0.5)
-      }
-      if (precisionValues[2] > pSpaceRange[2]) {
-        pSpaceRange[2] <- precisionValues[2] + (precisionValues[2] * 0.5)
-      }
-      pSpaceValues <<- seq(pSpaceRange[1], pSpaceRange[2], 0.01)
-      sampDistValues <<- dnorm(pSpaceValues, mean = delta, sd = sigma/sqrt(n))
-      sampDistValues <<- ifelse(sampDistValues < 0.01, 0, sampDistValues)
-    },
-    calculateValues = function(fun, ...) {
-      supplied <- list(...)
-      args <- sapply(formalArgs(fun), function(name) {
-        s <- supplied[[name]]
-        if (!is.null(s)) {
-          s
-        } else {
-          get(name)
-        }
-      }, simplify = FALSE)
+      extraParams <- if (is.null(extra)) list() else extra
+      params <- data.frame(
+        alpha = c(alpha, extra$alpha),
+        power = c(power, extra$power),
+        n     = c(n,     extra$n),
+        delta = c(delta, extra$delta),
+        sigma = c(sigma, extra$sigma)
+      )
 
-      if (is.null(extra)) {
-        # calculate one line
-        do.call(fun, args)
-      } else {
-        # calculate multiple lines
-        name <- names(extra)[1]
-        values <- args[[name]]
-        if (is.null(values)) {
-          # this happens if extra contains 'power', but power is being
-          # calculated, for example
-          do.call(fun, args)
-        } else {
-          values <- c(values, extra[[name]])
-          lapply(values, function(value) {
-            args[[name]] <- value
-            do.call(fun, args)
-          })
+      data <<- apply(params, 1, function(params) {
+        result <- list()
+        if (output == "n") {
+          n2 <- seq(n * 0.25, n * 1.75, 0.1)
+          if (!(n %in% n2)) {
+            n2 <- sort(c(n2, n))
+          }
+          args <- as.list(params)
+          args$n <- n2
+
+          power2 <- do.call(calculatePower, args)
+          delta2 <- do.call(calculateDelta, args)
+          result$primary <- list(data = data.frame(n = n2, power = power2, delta = delta2))
+
+        } else if (output == "power") {
+          power2 <- seq(alpha + 0.01, 0.99, 0.01)
+          if (!(power %in% power2)) {
+            power2 <- sort(c(power2, power))
+          }
+          args <- as.list(params)
+          args$power <- power2
+
+          n2 <- do.call(calculateN, args)
+          result$primary <- list(data = data.frame(power = power2, n = n2))
+
+          delta2 <- getDeltaValues()
+          args$delta <- delta2
+          power3 <- do.call(calculatePower, args)
+          result$secondary <- list(data = data.frame(power = power3, delta = delta2))
+
+        } else if (output == "delta") {
+          delta2 <- seq(delta * 0.25, delta * 1.75, 0.01)
+          if (!(delta %in% delta2)) {
+            delta2 <- sort(c(delta2, delta))
+          }
+          args <- as.list(params)
+          args$delta <- delta2
+
+          n2 <- do.call(calculateN, args)
+          power2 <- do.call(calculatePower, args)
+          result$primary <- list(data = data.frame(delta = delta2, n = n2, power = power2))
         }
-      }
+
+        # calculate values for bottom/tertiary graph
+        args <- as.list(params)
+        precision <- do.call(calculatePrecision, args)
+        args$precision <- precision
+
+        pSpace <- do.call(calculatePSpace, args)
+        args$pSpace <- pSpace
+        sampDist <- do.call(calculateSampDist, args)
+        tertiary <- data.frame(pSpace = pSpace, sampDist = sampDist)
+        result$tertiary <- list(
+          data = tertiary[!is.na(tertiary$sampDist), ],
+          range = precision, target = unbox(args$delta)
+        )
+        result
+      })
     },
     attributes = function() {
       model <- list(
@@ -144,27 +156,10 @@ TTest <- setRefClass("TTest",
       if (!is.null(extra)) {
         model$extra <- extra
       }
-      data <- list(
-        power     = powerValues,
-        n         = nValues,
-        delta     = deltaValues,
-        pSpace    = pSpaceValues,
-        precision = precisionValues,
-        sampDist  = sampDistValues
-      )
-      if (!is.null(powerByDeltaValues)) {
-        data$powerByDelta <- powerByDeltaValues
-      }
       return(list(model = model, data = data))
     },
-    getDeltaRange = function() {
-      mu.0 <- 0
-      lo <- mu.0 - max(3 * sigma, delta + sigma/2)
-      high <- mu.0 + max(3 * sigma, delta + sigma/2)
-      c(lo, high)
-    },
     getDeltaValues = function() {
-      r <- getDeltaRange()
+      r <- calculateDeltaRange(sigma, delta)
       seq(r[1], r[2], 0.01)
     }
   )
