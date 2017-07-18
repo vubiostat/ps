@@ -4,7 +4,7 @@
   [attr.class]="name" (window:resize)="onResize()">
 
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
-  <ng-template [ngIf]="pSpace && precision && sampDist && modelSet">
+  <ng-template [ngIf]="groups">
     <defs>
       <clipPath [id]="clipPathId">
         <rect x="0" y="0" [attr.width]="width" [attr.height]="height" />
@@ -20,18 +20,24 @@
       {{title}}
     </text>
 
-    <g [attr.transform]="translate(margin, margin)">
-      <path [attr.clip-path]="clipPath()" [attr.d]="sampDistPath"
-        fill="#ffcdc8" stroke="none" />
-    </g>
+    <g *ngFor="let group of groups; let i = index"
+      [attr.transform]="translate(margin, margin)">
 
-    <g *ngFor="let path of paths" [attr.transform]="translate(margin, margin)">
-      <path
+      <path [attr.clip-path]="clipPath()" [attr.d]="group.distPath"
+        fill="lightblue" stroke="none" />
+
+      <path *ngFor="let path of group.mainPaths"
         [attr.clip-path]="clipPath()"
         [attr.d]="path"
-        stroke="maroon"
+        stroke="steelblue"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         fill="none" />
+
+      <circle r="5"
+        [attr.cx]="xScale(group.target)"
+        [attr.cy]="yScale(0.5)"
+        [attr.clip-path]="clipPath()"
+        fill="steelblue" />
     </g>
 
     <circle r="5"
@@ -40,13 +46,6 @@
       [attr.clip-path]="clipPath()"
       [attr.transform]="translate(margin, margin)"
       fill="darkseagreen" />
-
-    <circle r="5"
-      [attr.cx]="xScale(precision.target)"
-      [attr.cy]="yScale(0.5)"
-      [attr.clip-path]="clipPath()"
-      [attr.transform]="translate(margin, margin)"
-      fill="maroon" />
 
     <g #bottomAxis [attr.transform]="translate(margin, height + margin)"></g>
   </ng-template>

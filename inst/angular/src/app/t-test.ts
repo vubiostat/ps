@@ -367,13 +367,12 @@ export class TTestRanges extends ChangeEmitter {
 }
 
 export class TTestData {
-  n: any[];
-  power: any[];
-  delta: any[];
-  pSpace: number[];
-  precision: number[];
-  sampDist: number[];
-  powerByDelta?: any[];
+  primary:    { data: { n?: number, power?: number, delta?: number }[] };
+  secondary?: { data: { n?: number, power?: number, delta?: number }[] };
+  tertiary?:  {
+    data: { pSpace: number, sampDist: number }[],
+    range: number[], target: number
+  };
 }
 
 export class TTestSet {
@@ -381,7 +380,7 @@ export class TTestSet {
   onChange = new EventEmitter();
   onCompute = new EventEmitter();
 
-  constructor(public model: TTest, public data: TTestData) {
+  constructor(public model: TTest, public data: TTestData[]) {
     this.model.onChange.subscribe(value => {
       this.onChange.emit({ model: value });
     });
@@ -392,7 +391,7 @@ export class TTestSet {
     });
   }
 
-  update(model: any, data: TTestData) {
+  update(model: any, data: TTestData[]) {
     let prevChanges = this.model.prevChanges;
     this.model.update(model);
     this.data = data;
@@ -410,26 +409,28 @@ export class TTestSet {
   private calcRanges(skip?: string): void {
     let n, power, delta, pSpace, indices, values, min, max;
     let deltaMax = 2.5 * this.model.sigma;
+    let primary = this.data[0].primary;
+    let tertiary = this.data[0].tertiary;
     switch (this.model.output) {
       case "n":
         values  = [this.model.n * 0.5, this.model.n * 1.5].sort((a, b) => a - b);
         min     = Math.floor(values[0] * 100) / 100;
         max     = Math.ceil(values[1] * 100) / 100;
         n       = new Range(min, max);
-        indices = n.findIndices(this.data.n);
+        indices = n.findIndices(primary.data, 'n');
         if (skip != 'power') {
-          power = Range.fromData(indices, this.data.power);
+          power = Range.fromData(indices, primary.data, 'power');
         }
         if (skip != 'delta') {
-          delta = Range.fromData(indices, this.data.delta);
+          delta = Range.fromData(indices, primary.data, 'delta');
         }
         break;
 
       case "power":
         power   = new Range(0, 1.0);
-        indices = power.findIndices(this.data.power);
+        indices = power.findIndices(primary.data, 'power');
         if (skip != 'n') {
-          n = Range.fromData(indices, this.data.n);
+          n = Range.fromData(indices, primary.data, 'n');
         }
         if (skip != 'delta') {
           delta = new Range(-deltaMax, deltaMax);
@@ -441,12 +442,12 @@ export class TTestSet {
         min     = Math.floor(values[0] * 100) / 100;
         max     = Math.ceil(values[1] * 100) / 100;
         delta   = new Range(min, max);
-        indices = delta.findIndices(this.data.delta);
+        indices = delta.findIndices(primary.data, 'delta');
         if (skip != 'n') {
-          n = Range.fromData(indices, this.data.n);
+          n = Range.fromData(indices, primary.data, 'n');
         }
         if (skip != 'power') {
-          power = Range.fromData(indices, this.data.power);
+          power = Range.fromData(indices, primary.data, 'power');
         }
         break;
     }
@@ -454,11 +455,11 @@ export class TTestSet {
     // parameter space
     min = -deltaMax;
     max = deltaMax;
-    if (this.data.precision[0] < min) {
-      min = this.data.precision[0] - Math.abs(this.data.precision[0] * 0.5);
+    if (tertiary.range[0] < min) {
+      min = tertiary.range[0] - Math.abs(tertiary.range[0] * 0.5);
     }
-    if (this.data.precision[1] > max) {
-      max = this.data.precision[1] + Math.abs(this.data.precision[1] * 0.5);
+    if (tertiary.range[1] > max) {
+      max = tertiary.range[1] + Math.abs(tertiary.range[1] * 0.5);
     }
     pSpace = new Range(min, max);
 

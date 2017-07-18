@@ -14,10 +14,7 @@ export class Range extends ChangeEmitter {
     return new Range(arr[0], arr[1]);
   }
 
-  static fromData(indices: number[], data: any[]) {
-    if (Array.isArray(data[0])) {
-      data = data[0];
-    }
+  static fromData(indices: number[], data: any[], propertyName: string) {
     let minIndex = 0, maxIndex = data.length - 1;
     if (indices[0] > minIndex) {
       minIndex = indices[0];
@@ -25,7 +22,10 @@ export class Range extends ChangeEmitter {
     if (indices[1] < maxIndex) {
       maxIndex = indices[1];
     }
-    let values = [data[minIndex], data[maxIndex]].sort((a, b) => a - b);
+    let values = [
+      data[minIndex][propertyName],
+      data[maxIndex][propertyName]
+    ].sort((a, b) => a - b);
     values[0] = Math.floor(values[0] * 100) / 100;
     values[1] = Math.ceil(values[1] * 100) / 100;
     return new Range(values[0], values[1]);
@@ -44,16 +44,16 @@ export class Range extends ChangeEmitter {
     return([ this.min, this.max ]);
   }
 
-  findIndices(data: number[]): number[] {
+  findIndices(data: number[], propertyName: string): number[] {
     let minIndex = -1, maxIndex = -1;
     for (let i = 0; i < data.length; i++) {
-      if (data[i] >= this.min) {
+      if (data[i][propertyName] >= this.min) {
         minIndex = i;
         break
       }
     }
     for (let i = data.length - 1; i >= 0; i--) {
-      if (data[i] <= this.max) {
+      if (data[i][propertyName] <= this.max) {
         maxIndex = i;
         break;
       }

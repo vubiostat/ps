@@ -9,6 +9,8 @@ import { TTestSet } from '../t-test';
 import { PlotOptions } from '../plot-options';
 import { Range } from '../range';
 
+interface Group { mainPaths: string[], distPath: string, target: number };
+
 @Component({
   selector: 'app-bottom-plot',
   templateUrl: './bottom-plot.component.html',
@@ -30,14 +32,10 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
   clipPathId: string;
   width: number;
   height: number;
-  pSpace: { values: any, range: Range };
-  precision: { values: any, target: number };
-  sampDist: { values: any };
   xScale: any;
   yScale: any;
   yScaleSD: any;
-  sampDistPath: string;
-  paths: string[];
+  groups: Group[];
   needDraw: boolean;
   private subscription: Subscription;
 
@@ -120,54 +118,55 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
     this.width  = this.getDimension('width')  - (this.margin * 2);
     this.height = this.getDimension('height') - (this.margin * 2);
 
-    this.pSpace = {
-      values: this.modelSet.data.pSpace,
-      range: this.modelSet.ranges.pSpace
-    }
-    this.precision = {
-      values: this.modelSet.data.precision,
-      target: this.modelSet.model.delta
-    }
-    this.sampDist = {
-      values: this.modelSet.data.sampDist
-    }
+    let ranges = this.modelSet.ranges;
+    let data = this.modelSet.data.map(d => d.tertiary);
 
     // compute scales
     this.xScale = d3.scaleLinear().
-      domain(this.pSpace.range.toArray()).
+      domain(ranges.pSpace.toArray()).
       range([0, this.width]);
 
     this.yScale = d3.scaleLinear().
       domain([0, 0.8]).
       range([0, this.height]);
 
+    let sampDistExtent = data.reduce((arr, subData) => {
+      let extent = d3.extent(subData.data, d => d.sampDist);
+      return d3.extent(arr.concat(extent));
+    }, []);
     this.yScaleSD = d3.scaleLinear().
-      domain(d3.extent(this.sampDist.values).reverse()).
+      domain(sampDistExtent.reverse()).
       range([0, this.yScale(0.5)]);
 
-    // sample distribution
-    let points = this.pSpace.values.map((xValue, i) => {
-      return { x: xValue, y: this.sampDist.values[i] };
-    });
-    this.sampDistPath = this.getArea(points);
+    this.groups = data.reverse().map(subData => {
+      // sample distribution
+      let distPath = this.getArea(subData.data, 'pSpace', 'sampDist');
 
-    // main lines
-    let leftLimit = this.precision.values[0];
-    let rightLimit = this.precision.values[1];
-    points = [
-      this.precision.values.map((xValue, i) => {
-        return { x: xValue, y: 0.5 };
-      }),
-      [
-        { x: leftLimit, y: 0.35 },
-        { x: leftLimit, y: 0.65 }
-      ],
-      [
-        { x: rightLimit, y: 0.35 },
-        { x: rightLimit, y: 0.65 }
-      ]
-    ];
-    this.paths = this.getPaths(points);
+      // main lines
+      let leftLimit = subData.range[0];
+      let rightLimit = subData.range[1];
+      let points = [
+        subData.range.map((xValue, i) => {
+          return { x: xValue, y: 0.5 };
+        }),
+        [
+          { x: leftLimit, y: 0.35 },
+          { x: leftLimit, y: 0.65 }
+        ],
+        [
+          { x: rightLimit, y: 0.35 },
+          { x: rightLimit, y: 0.65 }
+        ]
+      ];
+      let mainPaths = this.getPaths(points);
+
+      let result = {
+        mainPaths: mainPaths,
+        distPath: distPath,
+        target: subData.target
+      }
+      return result;
+    });
 
     this.needDraw = true;
   }
@@ -211,11 +210,11 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
     return `url(#${this.clipPathId})`;
   }
 
-  private getArea(points: any[]): string {
+  private getArea(points: any[], xName: string, yName: string): string {
     let area = d3.area().
-      x((d, i) => this.xScale(d.x)).
+      x((d, i) => this.xScale(d[xName])).
       y0(this.yScaleSD(0)).
-      y1((d, i) => this.yScaleSD(d.y));
+      y1((d, i) => this.yScaleSD(d[yName]));
 
     return area(points);
   }

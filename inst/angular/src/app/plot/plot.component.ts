@@ -10,10 +10,9 @@ import { Range } from '../range';
 import { TTestSet } from '../t-test';
 
 interface PlotData {
-  values: any[];
+  name: string;
   target?: number;
   range: Range;
-  change?: string;
   title: string;
   sym: string;
 }
@@ -33,7 +32,6 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() name: string;
   @Input() plotOptions: PlotOptions;
   @Input() modelSet: TTestSet;
-  @Input() changeName: string;
   x: PlotData;
   y: PlotData;
 
@@ -54,7 +52,7 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   yScale: any;
   paths: string[];
   dropPaths: string[];
-  mainPoints: Point[];
+  mainData: any[];
   targetPoint: Point;
   hoverX: number;
   hoverY: number;
@@ -126,9 +124,13 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
       return;
     }
 
-    let index = this.xBisector(this.mainPoints, this.xScale.invert(x));
-    this.hoverPoint = this.mainPoints[index];
-    if (this.hoverPoint) {
+    let index = this.xBisector(this.mainData, this.xScale.invert(x));
+    let data = this.mainData[index];
+    if (data) {
+      this.hoverPoint = {
+        x: data[this.x.name],
+        y: data[this.y.name]
+      }
       this.hoverX = this.xScale(this.hoverPoint.x);
       this.hoverY = this.yScale(this.hoverPoint.y);
       this.showHoverInfo = true;
@@ -186,12 +188,12 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     } else if (x > this.x.range.max) {
       x = this.x.range.max;
     }
-    let index = this.xBisector(this.mainPoints, x);
-    let point = this.mainPoints[index];
-    if (!point) return;
+    let index = this.xBisector(this.mainData, x);
+    let data = this.mainData[index];
+    if (!data) return;
 
-    this.targetPoint.x = point.x;
-    this.targetPoint.y = point.y;
+    this.targetPoint.x = data[this.x.name];
+    this.targetPoint.y = data[this.y.name];
     this.computeDropPaths();
   }
 
@@ -199,11 +201,11 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     this.targetDragging = false;
     this.showTargetInfo = false;
 
-    if (this.modelSet && this.x.change) {
+    if (this.modelSet && this.x.name) {
       let output = this.modelSet.model.output;
       this.modelSet.model.update({
         [output]: this.targetPoint.y,
-        [this.x.change]: this.targetPoint.x
+        [this.x.name]: this.targetPoint.x
       });
     }
   }
@@ -216,65 +218,69 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     // setup
     let model = this.modelSet.model;
     let ranges = this.modelSet.ranges;
-    let data = this.modelSet.data;
+    let data;
     switch (this.modelSet.model.output) {
       case "n":
         if (this.name == "top-left") {
           this.x = {
-            values: data.power, range: ranges.power, target: model.power,
-            change: "power", title: "Power", sym: "1-β"
+            name: "power", range: ranges.power, target: model.power,
+            title: "Power", sym: "1-β"
           };
         } else if (this.name == "top-right") {
           this.x = {
-            values: data.delta, range: ranges.delta, target: model.delta,
-            change: "delta", title: "Detectable Alternative", sym: "δ"
+            name: "delta", range: ranges.delta, target: model.delta,
+            title: "Detectable Alternative", sym: "δ"
           };
         }
         this.y = {
-          values: data.n, range: ranges.n, target: model.n,
+          name: "n", range: ranges.n, target: model.n,
           title: "Sample Size", sym: "n"
         };
+        data = this.modelSet.data.map(d => d.primary.data);
         break;
       case "power":
         if (this.name == "top-left") {
           this.x = {
-            values: data.n, range: ranges.n, target: model.n,
-            change: "n", title: "Sample Size", sym: "n"
+            name: "n", range: ranges.n, target: model.n,
+            title: "Sample Size", sym: "n"
           };
           this.y = {
-            values: data.power, range: ranges.power, target: model.power,
+            name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
+          data = this.modelSet.data.map(d => d.primary.data);
         } else if (this.name == "top-right") {
           this.x = {
-            values: data.delta, range: ranges.delta, target: model.delta,
-            change: "delta", title: "Detectable Alternative", sym: "δ"
+            name: "delta", range: ranges.delta, target: model.delta,
+            title: "Detectable Alternative", sym: "δ"
           };
           this.y = {
-            values: data.powerByDelta, range: ranges.power, target: model.power,
+            name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
+          data = this.modelSet.data.map(d => d.secondary.data);
         }
         break;
       case "delta":
         if (this.name == "top-left") {
           this.x = {
-            values: data.n, range: ranges.n, target: model.n,
-            change: "n", title: "Sample Size", sym: "n"
+            name: "n", range: ranges.n, target: model.n,
+            title: "Sample Size", sym: "n"
           };
         } else if (this.name == "top-right") {
           this.x = {
-            values: data.power, range: ranges.power, target: model.power,
-            change: "power", title: "Power", sym: "1-β"
+            name: "power", range: ranges.power, target: model.power,
+            title: "Power", sym: "1-β"
           };
         }
         this.y = {
-          values: data.delta, range: ranges.delta, target: model.delta,
+          name: "delta", range: ranges.delta, target: model.delta,
           title: "Detectable Alternative", sym: "δ"
         };
+        data = this.modelSet.data.map(d => d.primary.data);
         break;
     }
-    if (!this.x || !this.y || !this.x.values || !this.y.values) {
+    if (!this.x || !this.y) {
       console.log("bad:", this.x, this.y);
       return;
     }
@@ -301,34 +307,10 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
       range([0, this.height]);
 
     // paths
-    let points;
-    if (Array.isArray(this.x.values[0])) {
-      // multiple sets of x values
-      points = this.x.values.map(xValues => {
-        return xValues.map((xValue, i) => {
-          return { x: xValue, y: this.y.values[i] };
-        });
-      });
-    } else if (Array.isArray(this.y.values[0])) {
-      // multiple sets of y values
-      points = this.y.values.map(yValues => {
-        return yValues.map((yValue, i) => {
-          return { x: this.x.values[i], y: yValue };
-        });
-      });
-    } else {
-      points = [this.x.values.map((xValue, i) => {
-        return { x: xValue, y: this.y.values[i] };
-      })];
-    }
-
-    if (points) {
-      // reverse points so main line is drawn on top
-      points.reverse();
-      this.paths = this.getPaths(points);
-      this.mainPoints = points[points.length - 1];
-      this.mainPoints.sort((a, b) => a.x - b.x);
-    }
+    data.reverse(); // reverse data so main line is drawn on top
+    this.paths = data.map(subData => this.getPath(subData, this.x.name, this.y.name));
+    this.mainData = data[data.length - 1];
+    this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
 
     // drop paths
     this.computeDropPaths();
@@ -338,13 +320,13 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     this.xTargetRange = [xTargetPos - 5, xTargetPos + 5];
     let yTargetPos = this.yScale(this.targetPoint.y);
     this.yTargetRange = [yTargetPos - 5, yTargetPos + 5];
-    this.xBisector = d3.bisector(point => point.x).left;
+    this.xBisector = d3.bisector(point => point[this.x.name]).left;
 
     this.needDraw = true;
   }
 
   private computeDropPaths(): void {
-    let points = [
+    let data = [
       [
         { x: this.xScale.domain()[0], y: this.targetPoint.y },
         { x: this.targetPoint.x, y: this.targetPoint.y }
@@ -354,7 +336,7 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
         { x: this.targetPoint.x, y: this.targetPoint.y }
       ],
     ];
-    this.dropPaths = this.getPaths(points);
+    this.dropPaths = data.map(subData => this.getPath(subData, 'x', 'y'));
   }
 
   private draw(): void {
@@ -414,13 +396,11 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     return `url(#${this.targetClipPathId})`;
   }
 
-  private getPaths(points: any[]): string[] {
-    return points.map(data => {
-      let line = d3.line().
-        x((d, i) => this.xScale(d.x)).
-        y((d, i) => this.yScale(d.y));
+  private getPath(data: any[], xName: string, yName: string): string {
+    let line = d3.line().
+      x((d, i) => this.xScale(d[xName])).
+      y((d, i) => this.yScale(d[yName]));
 
-      return line(data);
-    });
+    return line(data);
   }
 }
