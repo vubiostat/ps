@@ -4,7 +4,7 @@
   [attr.class]="name" (window:resize)="onResize()">
 
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
-  <ng-template [ngIf]="groups">
+  <ng-template [ngIf]="groups && modelSet">
     <defs>
       <clipPath [id]="clipPathId">
         <rect x="0" y="0" [attr.width]="width" [attr.height]="height" />
