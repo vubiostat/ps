@@ -309,7 +309,7 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     // paths
     data.reverse(); // reverse data so main line is drawn on top
     this.paths = data.map(subData => this.getPath(subData, this.x.name, this.y.name));
-    this.mainData = data[data.length - 1];
+    this.mainData = data[data.length - 1].slice();
     this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
 
     // drop paths
