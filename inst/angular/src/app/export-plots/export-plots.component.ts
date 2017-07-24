@@ -2,8 +2,8 @@ import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as JSZip from 'jszip';
 
-import { PlotComponent } from '../plot/plot.component';
-import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
+import { AbstractPlotComponent } from '../abstract-plot.component';
+import { SerializePlotComponent } from '../serialize-plot.component';
 
 @Component({
   selector: 'app-export-plots',
@@ -11,15 +11,18 @@ import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
   styleUrls: ['./export-plots.component.css']
 })
 export class ExportPlotsComponent implements OnInit {
-  @Input() topLeft: PlotComponent;
-  @Input() topRight: PlotComponent;
-  @Input() bottom: BottomPlotComponent;
+  @Input() topLeft: AbstractPlotComponent;
+  @Input() topRight: AbstractPlotComponent;
+  @Input() bottom: AbstractPlotComponent;
   includeTopLeft = true;
   includeTopRight = true;
   includeBottom = true;
   imageFormat = "svg";
 
   @ViewChild('downloadLink') downloadLink: ElementRef;
+  @ViewChild('topLeftSerializer') topLeftSerializer: SerializePlotComponent;
+  @ViewChild('topRightSerializer') topRightSerializer: SerializePlotComponent;
+  @ViewChild('bottomSerializer') bottomSerializer: SerializePlotComponent;
 
   constructor(private activeModal: NgbActiveModal) {}
 
@@ -27,13 +30,13 @@ export class ExportPlotsComponent implements OnInit {
   }
 
   save(): void {
-    let plots = [];
-    if (this.includeTopLeft)  plots.push(this.topLeft);
-    if (this.includeTopRight) plots.push(this.topRight);
-    if (this.includeBottom)   plots.push(this.bottom);
+    let serializers = [];
+    if (this.includeTopLeft)  serializers.push(this.topLeftSerializer);
+    if (this.includeTopRight) serializers.push(this.topRightSerializer);
+    if (this.includeBottom)   serializers.push(this.bottomSerializer);
 
     let date = new Date();
-    let month = date.getMonth();
+    let month = date.getMonth() + 1;
     let monthStr = month < 10 ? `0${month}` : month.toString();
     let day = date.getDate();
     let dayStr = day < 10 ? `0${day}` : day.toString();
@@ -42,18 +45,18 @@ export class ExportPlotsComponent implements OnInit {
     let zip = new JSZip();
     let dir = zip.folder(`ps-plots-${dateStr}`);
     let promise = Promise.resolve();
-    plots.forEach(plot => {
+    serializers.forEach(serializer => {
       promise = promise.then(() => {
         let result;
         if (this.imageFormat == 'svg') {
-          let xml = plot.serializeAsXML();
+          let xml = serializer.serializeAsXML();
           var blob = new Blob([xml], { type: "image/svg+xml" });
           result = Promise.resolve(blob);
         } else {
-          result = plot.serialize();
+          result = serializer.serialize();
         }
         return result.then(blob => {
-          dir.file(`${plot.title}.${this.imageFormat}`, blob);
+          dir.file(`${serializer.plotTitle()}.${this.imageFormat}`, blob);
         });
       });
     });

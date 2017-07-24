@@ -5,10 +5,11 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
-import { PlotOptions } from '../plot-options';
+import { AbstractPlotComponent } from '../abstract-plot.component';
 import { Range } from '../range';
 import { TTestSet } from '../t-test';
 import { PaletteService } from '../palette.service';
+import { SerializePlotComponent } from '../serialize-plot.component';
 
 interface PlotData {
   name: string;
@@ -29,21 +30,18 @@ interface Point {
   styleUrls: ['./plot.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
-  @Input() name: string;
-  @Input() plotOptions: PlotOptions;
+export class PlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() modelSet: TTestSet;
-  x: PlotData;
-  y: PlotData;
 
-  @ViewChild('plot') plotElement: ElementRef;
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
   @ViewChild('leftAxis') leftAxisElement: ElementRef;
   @ViewChild('target') targetElement: ElementRef;
-  @ViewChild('canvas') canvasElement: ElementRef;
 
-  title: string;
+  constructor(public palette: PaletteService) { super(); }
+
+  x: PlotData;
+  y: PlotData;
   margin: number = 50;
   width: number;
   height: number;
@@ -68,8 +66,6 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
   needDraw = false;
 
   private subscription: Subscription;
-
-  constructor(public palette: PaletteService) {}
 
   ngOnInit(): void {
     this.mainClipPathId = `${this.name}-plot-area`;
@@ -147,37 +143,6 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
       return "-3.5em";
     }
     return "1em";
-  }
-
-  serializeAsXML(): string {
-    let serializer = new XMLSerializer();
-    return serializer.serializeToString(this.plotElement.nativeElement);
-  }
-
-  serialize(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      let data = this.serializeAsXML();
-
-      let width = this.getDimension('width');
-      let height = this.getDimension('height');
-      let canvas = this.canvasElement.nativeElement;
-      canvas.width = width;
-      canvas.height = height;
-
-      let context = canvas.getContext("2d");
-      let image = new Image(width, height);
-      image.addEventListener('load', () => {
-        context.clearRect(0, 0, width, height);
-        context.drawImage(image, 0, 0, width, height);
-
-        canvas.toBlob(function(blob) {
-          resolve(blob);
-        });
-      });
-
-      let src = 'data:image/svg+xml;base64,' + btoa(data);
-      image.src = src;
-    });
   }
 
   private dragTargetStart(): void {
@@ -371,39 +336,11 @@ export class PlotComponent implements OnInit, OnChanges, AfterViewChecked {
     this.needDraw = false;
   }
 
-  private getDimension(key: string): number {
-    let dim = this.plotElement.nativeElement[key];
-    let result = 0;
-    if ('value' in dim) {
-      result = dim.value;
-    } else if ('baseVal' in dim) {
-      result = dim.baseVal.value;
-    } else {
-      throw new Error(`can't get ${key}`);
-    }
-    return result;
-  }
-
-  private translate(x: number, y: number): string {
-    if (isNaN(x) || isNaN(y)) {
-      return null;
-    }
-    return `translate(${x}, ${y})`;
-  }
-
   private mainClipPath(): string {
     return `url(#${this.mainClipPathId})`;
   }
 
   private targetClipPath(): string {
     return `url(#${this.targetClipPathId})`;
-  }
-
-  private getPath(data: any[], xName: string, yName: string): string {
-    let line = d3.line().
-      x((d, i) => this.xScale(d[xName])).
-      y((d, i) => this.yScale(d[yName]));
-
-    return line(data);
   }
 }

@@ -5,8 +5,8 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
+import { AbstractPlotComponent } from '../abstract-plot.component';
 import { TTestSet } from '../t-test';
-import { PlotOptions } from '../plot-options';
 import { Range } from '../range';
 import { PaletteService } from '../palette.service';
 
@@ -18,17 +18,12 @@ interface Group { mainPaths: string[], distPath: string, target: number };
   styleUrls: ['./bottom-plot.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked {
-  @Input() name: string;
+export class BottomPlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() modelSet: TTestSet;
-  @Input() plotOptions: PlotOptions;
 
-  @ViewChild('plot') plotElement: ElementRef;
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
-  @ViewChild('canvas') canvasElement: ElementRef;
 
-  title = "Precision vs. Effect Size";
   margin: number = 50;
   clipPathId: string;
   width: number;
@@ -40,7 +35,10 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
   needDraw: boolean;
   private subscription: Subscription;
 
-  constructor(public palette: PaletteService) { }
+  constructor(public palette: PaletteService) {
+    super();
+    this.title = "Precision vs. Effect Size";
+  }
 
   ngOnInit() {
     this.clipPathId = `${this.name}-plot-area`;
@@ -73,37 +71,6 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
 
   redraw(): void {
     this.compute();
-  }
-
-  serializeAsXML(): string {
-    let serializer = new XMLSerializer();
-    return serializer.serializeToString(this.plotElement.nativeElement);
-  }
-
-  serialize(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      let data = this.serializeAsXML();
-
-      let width = this.getDimension('width');
-      let height = this.getDimension('height');
-      let canvas = this.canvasElement.nativeElement;
-      canvas.width = width;
-      canvas.height = height;
-
-      let context = canvas.getContext("2d");
-      let image = new Image(width, height);
-      image.addEventListener('load', () => {
-        context.clearRect(0, 0, width, height);
-        context.drawImage(image, 0, 0, width, height);
-
-        canvas.toBlob(function(blob) {
-          resolve(blob);
-        });
-      });
-
-      let src = 'data:image/svg+xml;base64,' + btoa(data);
-      image.src = src;
-    });
   }
 
   private compute(): void {
@@ -161,7 +128,7 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
           { x: rightLimit, y: 0.65 }
         ]
       ];
-      let mainPaths = this.getPaths(points);
+      let mainPaths = points.map(data => this.getPath(data));
 
       let result = {
         mainPaths: mainPaths,
@@ -189,26 +156,6 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
     this.needDraw = false;
   }
 
-  private getDimension(key: string): number {
-    let dim = this.plotElement.nativeElement[key];
-    let result = 0;
-    if ('value' in dim) {
-      result = dim.value;
-    } else if ('baseVal' in dim) {
-      result = dim.baseVal.value;
-    } else {
-      throw new Error(`can't get ${key}`);
-    }
-    return result;
-  }
-
-  private translate(x: number, y: number): string {
-    if (isNaN(x) || isNaN(y)) {
-      return null;
-    }
-    return `translate(${x}, ${y})`;
-  }
-
   private clipPath(): string {
     return `url(#${this.clipPathId})`;
   }
@@ -220,15 +167,5 @@ export class BottomPlotComponent implements OnInit, OnChanges, AfterViewChecked 
       y1((d, i) => this.yScaleSD(d[yName]));
 
     return area(points);
-  }
-
-  private getPaths(points: any[]): string[] {
-    return points.map(data => {
-      let line = d3.line().
-        x((d, i) => this.xScale(d.x)).
-        y((d, i) => this.yScale(d.y));
-
-      return line(data);
-    });
   }
 }

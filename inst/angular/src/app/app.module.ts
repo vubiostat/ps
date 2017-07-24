@@ -16,9 +16,10 @@ import { HelpComponent } from './help/help.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component';
 import { PlotComponent } from './plot/plot.component';
 import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
+import { SerializePlotComponent } from './serialize-plot.component';
+import { ExportPlotsComponent } from './export-plots/export-plots.component';
 
 import { environment } from '../environments/environment';
-import { ExportPlotsComponent } from './export-plots/export-plots.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ExportPlotsComponent } from './export-plots/export-plots.component';
     PlotOptionsComponent,
     PlotComponent,
     BottomPlotComponent,
+    SerializePlotComponent,
     ExportPlotsComponent,
   ],
   imports: [
