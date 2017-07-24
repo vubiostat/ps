@@ -98,13 +98,19 @@ TTest <- setRefClass("TTest",
 
         } else if (output == "power") {
           power2 <- seq(alpha + 0.01, 0.99, 0.01)
-          if (!(power %in% power2)) {
+          if (power < 1 && !(power %in% power2)) {
             power2 <- sort(c(power2, power))
           }
           args <- as.list(params)
           args$power <- power2
 
           n2 <- do.call(calculateN, args)
+          if (max(n2) < n) {
+            n3 <- seq(ceiling(max(n2)), n)
+            power3 <- rep(1, length(n3))
+            power2 <- c(power2, power3)
+            n2 <- c(n2, n3)
+          }
           result$primary <- list(data = data.frame(power = power2, n = n2))
 
           delta2 <- getDeltaValues()
@@ -140,6 +146,7 @@ TTest <- setRefClass("TTest",
         )
         result
       })
+      print(data)
     },
     attributes = function() {
       model <- list(
