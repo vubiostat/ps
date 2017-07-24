@@ -113,7 +113,7 @@ export class TTestExtra extends ChangeEmitter {
   round(): TTestExtra {
     let attribs = this.attributes();
     for (let key in attribs) {
-      attribs[key] = attribs[key].forEach(value => {
+      attribs[key] = attribs[key].map(value => {
         return Math.round(value * 100) / 100;
       });
     }
