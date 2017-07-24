@@ -8,6 +8,7 @@ export class PlotOptions extends ChangeEmitter {
   @Changeable axisFontSize: number;
   @Changeable lineWidth: number;
   @Changeable axisLineWidth: number;
+  @Changeable paletteTheme: string;
 
   constructor() {
     super();
@@ -17,6 +18,7 @@ export class PlotOptions extends ChangeEmitter {
     this.axisFontSize = 1;
     this.lineWidth = 1;
     this.axisLineWidth = 1;
+    this.paletteTheme = "plasma";
     this.noEmit = false;
     this.changes = {};
   }

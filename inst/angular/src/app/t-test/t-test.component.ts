@@ -10,6 +10,7 @@ import 'rxjs/add/operator/debounceTime';
 
 import { TTest, TTestExtra, TTestRanges, TTestSet } from '../t-test';
 import { TTestService } from '../t-test.service';
+import { PlotOptions } from '../plot-options';
 
 @Component({
   selector: 'app-t-test',
@@ -18,6 +19,7 @@ import { TTestService } from '../t-test.service';
 })
 export class TTestComponent implements OnInit {
   @Input() modelSet: TTestSet;
+  @Input() plotOptions: PlotOptions;
 
   model: TTest;
   min: TTest;

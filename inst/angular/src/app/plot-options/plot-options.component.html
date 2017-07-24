@@ -18,6 +18,15 @@
           <option>Sancreek</option>
         </select>
       </div>
+      <div class="form-group">
+        <label for="plot-palette-theme">Palette</label>
+        <select id="plot-palette-theme" class="form-control"
+          [(ngModel)]="plotOptions.paletteTheme">
+          <option value="plasma">Plasma</option>
+          <option value="viridis">Viridis</option>
+          <option value="magma">Magma</option>
+        </select>
+      </div>
       <div class="row">
         <div class="col-sm-6">
           <label for="plot-font-size">Font size: {{plotOptions.fontSize}}</label>

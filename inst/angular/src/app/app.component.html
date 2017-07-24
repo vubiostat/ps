@@ -43,7 +43,7 @@
           <ngb-tab *ngFor="let modelSet of modelSets; let i = index"
             title="Test {{i+1}}" id="test-{{i+1}}">
             <ng-template ngbTabContent>
-              <app-t-test [modelSet]="modelSet"></app-t-test>
+              <app-t-test [modelSet]="modelSet" [plotOptions]="plotOptions"></app-t-test>
             </ng-template>
           </ngb-tab>
         </ngb-tabset>

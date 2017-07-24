@@ -40,7 +40,7 @@
     </div>
     <div class="col-sm-1"
       [class.palette-color]="paletteColor >= 0"
-      [style.color]="palette.getColor(paletteColor)">
+      [style.color]="palette.getColor(paletteColor, paletteTheme)">
 
       <div class="add-remove" *ngIf="!isOutput && canAdd">
         <i class="fa fa-plus-circle" (click)="add()"

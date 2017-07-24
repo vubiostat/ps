@@ -2,7 +2,6 @@ import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 
 import { PlotOptions } from './plot-options';
-import { PaletteService } from './palette.service';
 
 export abstract class AbstractPlotComponent {
   @Input() name: string;

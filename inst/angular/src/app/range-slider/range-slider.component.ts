@@ -37,6 +37,7 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   @Input('can-add') canAdd = true;
   @Input('can-remove') canRemove = false;
   @Input('palette-color') paletteColor = -1;
+  @Input('palette-theme') paletteTheme = "plasma";
   @Output('add') onAdd = new EventEmitter<string>();
   @Output('remove') onRemove = new EventEmitter<string>();
   value: number;
