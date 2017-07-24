@@ -66,3 +66,7 @@ div.slider-group div.slider div.max {
 .palette-color .fa {
   opacity: 1;
 }
+
+.error {
+  color: darkred;
+}

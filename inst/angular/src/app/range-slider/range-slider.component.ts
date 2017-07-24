@@ -1,5 +1,6 @@
-import { Component, Directive, Input, Output, ContentChild, TemplateRef, EventEmitter, OnInit, forwardRef } from '@angular/core';
+import { Component, Directive, Input, Output, ContentChild, ViewChild, TemplateRef, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 
 import { PaletteService } from '../palette.service';
 
@@ -25,7 +26,7 @@ export class RangeSliderHelp {
     }
   ]
 })
-export class RangeSliderComponent implements OnInit, ControlValueAccessor {
+export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAccessor {
   @Input() label: string;
   @Input() name: string;
   @Input() min: number;
@@ -45,10 +46,26 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
 
   @ContentChild(RangeSliderLabel) labelTpl: RangeSliderLabel;
   @ContentChild(RangeSliderHelp) helpTpl: RangeSliderHelp;
+  @ViewChild("errorPopover") errorPopover: NgbPopover;
 
   constructor(public palette: PaletteService) { }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('isOutput' in changes) {
+      let change = changes.isOutput;
+      if (change.previousValue === true && change.currentValue === false) {
+        // if isOutput changes from true to false, turn on the error message if
+        // the value is out of bounds
+        if (this.value < this.hardMin || this.value > this.hardMax) {
+          this.errorPopover.open();
+        }
+      } else if (change.previousValue === false && change.currentValue === true) {
+        this.errorPopover.close();
+      }
+    }
   }
 
   floor(n: number): number {
@@ -74,8 +91,7 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   }
 
   rangeChanged(newValue: string): void {
-    this.value = parseFloat(newValue);
-    this.propagateChange();
+    this.trySetValue(newValue);
   }
 
   rangeInput(newValue: string): void {
@@ -83,8 +99,7 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
   }
 
   numberChanged(newValue: string): void {
-    this.value = parseFloat(newValue);
-    this.propagateChange();
+    this.trySetValue(newValue);
   }
 
   numberInput(newValue: string): void {
@@ -97,6 +112,17 @@ export class RangeSliderComponent implements OnInit, ControlValueAccessor {
 
   remove(): void {
     this.onRemove.emit(this.name);
+  }
+
+  private trySetValue(newValue: string): void {
+    let value = parseFloat(newValue);
+    if (value < this.hardMin || value > this.hardMax) {
+      this.errorPopover.open();
+    } else {
+      this.errorPopover.close();
+      this.value = value;
+      this.propagateChange();
+    }
   }
 
   private propagateChange(): void {
