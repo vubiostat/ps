@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
   helpTopic = 'overview';
   helpOpen = false;
   plotOptionsAvailable = false;
+  blockSelection = false;
 
   @ViewChild('plotOptionsChild') plotOptionsChild: PlotOptionsComponent;
   @ViewChild('tabsetChild') tabsetChild: NgbTabset;
@@ -94,5 +95,17 @@ export class AppComponent implements OnInit {
         }
       }).
       catch(err => console.error(err));
+  }
+
+  mouseup(): void {
+    this.plotOptionsChild.stopDragging();
+  }
+
+  childDragStarted(): void {
+    this.blockSelection = true;
+  }
+
+  childDragEnded(): void {
+    this.blockSelection = false;
   }
 }

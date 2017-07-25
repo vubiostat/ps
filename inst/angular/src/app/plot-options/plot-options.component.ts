@@ -14,10 +14,17 @@ import { PlotOptions } from '../plot-options';
 export class PlotOptionsComponent implements OnInit {
   @Input() selectedModelSet: Observable<TTestSet>;
   @Input() plotOptions: PlotOptions;
+  @Output('drag-start') onDragStart = new EventEmitter();
+  @Output('drag-end') onDragEnd = new EventEmitter();
   defaultPlotOptions: PlotOptions;
   modelSet: TTestSet;
   defaultRanges: TTestRanges;
   enabled = false;
+  dragging = false;
+  xOffset = 20;
+  yOffset = 20;
+  lastX: number;
+  lastY: number;
   private subscription: Subscription;
 
   ngOnInit() {
@@ -59,6 +66,39 @@ export class PlotOptionsComponent implements OnInit {
 
   roundCeil(n: number): number {
     return Math.ceil(n * 100) / 100;
+  }
+
+  mousedown(event: any): void {
+    this.startDragging();
+    this.lastX = event.screenX;
+    this.lastY = event.screenY;
+  }
+
+  mouseup(event: any): void {
+    this.stopDragging();
+  }
+
+  mousemove(event: any): void {
+    if (this.dragging) {
+      if ((event.buttons & 1) == 0) {
+        this.stopDragging();
+        return;
+      }
+      this.xOffset += event.screenX - this.lastX;
+      this.yOffset += event.screenY - this.lastY;
+      this.lastX = event.screenX;
+      this.lastY = event.screenY;
+    }
+  }
+
+  startDragging(): void {
+    this.dragging = true;
+    this.onDragStart.emit();
+  }
+
+  stopDragging(): void {
+    this.dragging = false;
+    this.onDragEnd.emit();
   }
 
   private setDefaultRanges(): void {

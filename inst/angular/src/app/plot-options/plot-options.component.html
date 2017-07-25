@@ -1,5 +1,8 @@
-<div class="plot-options" *ngIf="enabled">
-  <div class="header">
+<div *ngIf="enabled" class="plot-options"
+  style.top="{{yOffset}}px" style.left="{{xOffset}}px">
+  <div class="header"
+    (mousedown)="mousedown($event)" (mouseup)="mouseup($event)"
+    (mousemove)="mousemove($event)">
     Plot options
     <button type="button" class="close fa fa-times-circle" (click)="close()"></button>
   </div>
