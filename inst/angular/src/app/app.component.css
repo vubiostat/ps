@@ -1,23 +1,8 @@
 #app {
-  height: 95vh;
-}
-
-#header {
-  line-height: 2em;
-  height: 2em;
-}
-#header img {
-  vertical-align: text-bottom;
-}
-#header {
-  font-size: 150%;
-}
-#header img {
-  height: 1em;
 }
 
 #main {
-  min-height: 85vh;
+  /*min-height: 85vh;*/
 }
 
 #sidebar {
@@ -25,7 +10,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
-  margin: 10px;
+  /*margin: 10px;*/
   position: relative;
 }
 
@@ -63,23 +48,43 @@
   color: #464a4c;
 }
 
-:host /deep/ ul.nav-tabs {
+#sidebar /deep/ ngb-tabset {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  /*width: 100%;*/
+}
+
+#sidebar /deep/ ul.nav-tabs {
+  /*display: flex;*/
+  flex: 0 0 auto;
   border-bottom: 1px solid #888;
 }
 
-:host /deep/ .tab-pane {
+#sidebar /deep/ .tab-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+#sidebar /deep/ .tab-pane {
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  flex: 1 0 auto;
   padding: 10px;
   border: 1px solid #888;
   border-top: 0;
+  overflow: auto;
+  max-height: 73vh;
 }
 
-:host /deep/ .tab-pane.active {
+#sidebar /deep/ .tab-pane.active {
   background: white;
 }
 
 #footer {
-  margin: 10px;
-  padding: 10px;
+  margin: 20px 0;
+  padding: 20px;
   text-align: center;
 }
 #footer img {

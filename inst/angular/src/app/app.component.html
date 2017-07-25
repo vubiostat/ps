@@ -1,5 +1,5 @@
-<div id="app" class="container-fluid">
-  <nav class="navbar flex-nowrap flex-row justify-content-between">
+<div id="app" class="container-fluid d-flex flex-column h-100">
+  <nav class="navbar d-flex flex-nowrap flex-row justify-content-between" style="flex: 0 0 auto">
     <div class="navbar-brand">
       <img src="assets/ps.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
       Power and Sample Size
@@ -23,9 +23,9 @@
     </ul>
   </nav>
 
-  <div id="main" class="row">
-    <div class="col-sm-4">
-      <div id="sidebar">
+  <div id="main" class="row d-flex" style="flex: 1 0 auto">
+    <div class="col-4 d-flex flex-column justify-content-between">
+      <div id="sidebar" class="d-flex flex-row" style="flex: auto">
         <div class="overview">
           <button type="button" class="btn btn-secondary" (click)="toggleHelp('overview')">
             Overview <i class="fa fa-question-circle"></i>
@@ -53,12 +53,12 @@
         [plotOptions]="plotOptions">
       </app-plot-options>
 
-      <div id="footer">
+      <div id="footer" class="d-flex">
         <img src="assets/vumc.jpg">
         <div class="text">Department of Biostatistics</div>
       </div>
     </div>
-    <div id="right-panel" class="col-sm-8">
+    <div id="right-panel" class="col-8">
       <app-help *ngIf="helpOpen" [topic]="helpTopic" (onClose)="closeHelp()"></app-help>
       <div class="plot-buttons" *ngIf="plotOptionsAvailable">
         <button class="btn btn-secondary" (click)="togglePlotOptions()">
