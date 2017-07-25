@@ -18,6 +18,7 @@ import { PlotComponent } from './plot/plot.component';
 import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
 import { SerializePlotComponent } from './serialize-plot.component';
 import { ExportPlotsComponent } from './export-plots/export-plots.component';
+import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
 
 import { environment } from '../environments/environment';
 
@@ -36,6 +37,7 @@ import { environment } from '../environments/environment';
     BottomPlotComponent,
     SerializePlotComponent,
     ExportPlotsComponent,
+    DraggableDialogComponent,
   ],
   imports: [
     BrowserModule,

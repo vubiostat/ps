@@ -1,272 +1,263 @@
-<div *ngIf="enabled" class="plot-options"
-  style.top="{{yOffset}}px" style.left="{{xOffset}}px">
-  <div class="header"
-    (mousedown)="mousedown($event)" (mouseup)="mouseup($event)"
-    (mousemove)="mousemove($event)">
-    Plot options
-    <button type="button" class="close fa fa-times-circle" (click)="close()"></button>
-  </div>
-  <div *ngIf="plotOptions && modelSet" class="content">
-    <fieldset>
-      <legend>Global</legend>
-      <div class="form-group">
-        <label for="plot-font-family">Font family</label>
-        <select id="plot-font-family" class="form-control"
-          [(ngModel)]="plotOptions.fontFamily">
-          <option value="">Default</option>
-          <option value="serif">Serif</option>
-          <option value="sans">Sans-serif</option>
-          <option value="monospace">Monospace</option>
-          <option>Bungee Shade</option>
-          <option>Sancreek</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="plot-palette-theme">Palette</label>
-        <select id="plot-palette-theme" class="form-control"
-          [(ngModel)]="plotOptions.paletteTheme">
-          <option value="plasma">Plasma</option>
-          <option value="viridis">Viridis</option>
-          <option value="magma">Magma</option>
-        </select>
-      </div>
-      <div class="row">
-        <div class="col-sm-6">
-          <label for="plot-font-size">Font size: {{plotOptions.fontSize}}</label>
-          <div class="input-group">
-            <input id="plot-font-size" class="form-control"
-              type="range" min="0.1" max="2" step="0.1"
-              [(ngModel)]="plotOptions.fontSize" />
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <label for="plot-axis-font-size">Axis font size: {{plotOptions.axisFontSize}}</label>
-          <div class="input-group">
-            <input id="plot-axis-font-size" class="form-control"
-              type="range" min="0.1" max="2" step="0.1"
-              [(ngModel)]="plotOptions.axisFontSize" />
-          </div>
+<div *ngIf="plotOptions && modelSet" class="content">
+  <fieldset>
+    <legend>Global</legend>
+    <div class="form-group">
+      <label for="plot-font-family">Font family</label>
+      <select id="plot-font-family" class="form-control"
+        [(ngModel)]="plotOptions.fontFamily">
+        <option value="">Default</option>
+        <option value="serif">Serif</option>
+        <option value="sans">Sans-serif</option>
+        <option value="monospace">Monospace</option>
+        <option>Bungee Shade</option>
+        <option>Sancreek</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="plot-palette-theme">Palette</label>
+      <select id="plot-palette-theme" class="form-control"
+        [(ngModel)]="plotOptions.paletteTheme">
+        <option value="plasma">Plasma</option>
+        <option value="viridis">Viridis</option>
+        <option value="magma">Magma</option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <label for="plot-font-size">Font size: {{plotOptions.fontSize}}</label>
+        <div class="input-group">
+          <input id="plot-font-size" class="form-control"
+            type="range" min="0.1" max="2" step="0.1"
+            [(ngModel)]="plotOptions.fontSize" />
         </div>
       </div>
-      <div class="row">
-        <div class="col-sm-6">
-          <label for="plot-line-width">Line width: {{plotOptions.lineWidth}}</label>
-          <div class="input-group">
-            <input id="plot-line-width" class="form-control"
-              type="range" min="0.1" max="2" step="0.1"
-              [(ngModel)]="plotOptions.lineWidth" />
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <label for="plot-axis-line-width">Axis line width: {{plotOptions.axisLineWidth}}</label>
-          <div class="input-group">
-            <input id="plot-axis-line-width" class="form-control"
-              type="range" min="0.1" max="2" step="0.1"
-              [(ngModel)]="plotOptions.axisLineWidth" />
-          </div>
+      <div class="col-sm-6">
+        <label for="plot-axis-font-size">Axis font size: {{plotOptions.axisFontSize}}</label>
+        <div class="input-group">
+          <input id="plot-axis-font-size" class="form-control"
+            type="range" min="0.1" max="2" step="0.1"
+            [(ngModel)]="plotOptions.axisFontSize" />
         </div>
       </div>
-    </fieldset>
-    <fieldset>
-      <legend *ngIf="modelSet.model.output == 'n'">Sample Size</legend>
-      <legend *ngIf="modelSet.model.output == 'power'">Power</legend>
-      <legend *ngIf="modelSet.model.output == 'delta'">Detectable Alternative</legend>
-      <div class="row">
-        <div class="col-sm">
-          <label for="plot-top-y-min">Minimum</label>
-          <div class="input-group">
-            <ng-template [ngIf]="modelSet.model.output == 'n'">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
-                [(ngModel)]="modelSet.ranges.n.min" />
-            </ng-template>
-            <ng-template [ngIf]="modelSet.model.output == 'power'">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
-                [(ngModel)]="modelSet.ranges.power.min" />
-            </ng-template>
-            <ng-template [ngIf]="modelSet.model.output == 'delta'">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
-                [(ngModel)]="modelSet.ranges.delta.min" />
-            </ng-template>
-          </div>
-        </div>
-        <div class="col-sm">
-          <label for="plot-top-y-max">Maximum</label>
-          <div class="input-group">
-            <ng-template [ngIf]="modelSet.model.output == 'n'">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
-                [(ngModel)]="modelSet.ranges.n.max" />
-            </ng-template>
-            <ng-template [ngIf]="modelSet.model.output == 'power'">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
-                [(ngModel)]="modelSet.ranges.power.max" />
-            </ng-template>
-            <ng-template [ngIf]="modelSet.model.output == 'delta'">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min + 1)"
-                [(ngModel)]="modelSet.ranges.delta.max" />
-            </ng-template>
-          </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <label for="plot-line-width">Line width: {{plotOptions.lineWidth}}</label>
+        <div class="input-group">
+          <input id="plot-line-width" class="form-control"
+            type="range" min="0.1" max="2" step="0.1"
+            [(ngModel)]="plotOptions.lineWidth" />
         </div>
       </div>
-    </fieldset>
-    <fieldset>
-      <ng-template [ngIf]="modelSet.model.output == 'n'">
-        <legend>Sample Size vs. Power</legend>
-        <div class="row">
-          <div class="col-sm">
-            <label for="plot-top-left-x-min">X minimum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
-                [(ngModel)]="modelSet.ranges.power.min" />
-            </div>
-          </div>
-          <div class="col-sm">
-            <label for="plot-top-left-x-max">X maximum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
-                [(ngModel)]="modelSet.ranges.power.max" />
-            </div>
-          </div>
+      <div class="col-sm-6">
+        <label for="plot-axis-line-width">Axis line width: {{plotOptions.axisLineWidth}}</label>
+        <div class="input-group">
+          <input id="plot-axis-line-width" class="form-control"
+            type="range" min="0.1" max="2" step="0.1"
+            [(ngModel)]="plotOptions.axisLineWidth" />
         </div>
-      </ng-template>
-      <ng-template [ngIf]="modelSet.model.output == 'power'">
-        <legend>Power vs. Sample Size</legend>
-        <div class="row">
-          <div class="col-sm">
-            <label for="plot-top-left-x-min">X minimum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
-                [(ngModel)]="modelSet.ranges.n.min" />
-            </div>
-          </div>
-          <div class="col-sm">
-            <label for="plot-top-left-x-max">X maximum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
-                [(ngModel)]="modelSet.ranges.n.max" />
-            </div>
-          </div>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend *ngIf="modelSet.model.output == 'n'">Sample Size</legend>
+    <legend *ngIf="modelSet.model.output == 'power'">Power</legend>
+    <legend *ngIf="modelSet.model.output == 'delta'">Detectable Alternative</legend>
+    <div class="row">
+      <div class="col-sm">
+        <label for="plot-top-y-min">Minimum</label>
+        <div class="input-group">
+          <ng-template [ngIf]="modelSet.model.output == 'n'">
+            <input class="form-control"
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
+              [(ngModel)]="modelSet.ranges.n.min" />
+          </ng-template>
+          <ng-template [ngIf]="modelSet.model.output == 'power'">
+            <input class="form-control"
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
+              [(ngModel)]="modelSet.ranges.power.min" />
+          </ng-template>
+          <ng-template [ngIf]="modelSet.model.output == 'delta'">
+            <input class="form-control"
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
+              [(ngModel)]="modelSet.ranges.delta.min" />
+          </ng-template>
         </div>
-      </ng-template>
-      <ng-template [ngIf]="modelSet.model.output == 'delta'">
-        <legend>Detectable Alternative vs. Sample Size</legend>
-        <div class="row">
-          <div class="col-sm">
-            <label for="plot-top-left-x-min">X minimum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
-                [(ngModel)]="modelSet.ranges.n.min" />
-            </div>
-          </div>
-          <div class="col-sm">
-            <label for="plot-top-left-x-max">X maximum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
-                [(ngModel)]="modelSet.ranges.n.max" />
-            </div>
-          </div>
+      </div>
+      <div class="col-sm">
+        <label for="plot-top-y-max">Maximum</label>
+        <div class="input-group">
+          <ng-template [ngIf]="modelSet.model.output == 'n'">
+            <input class="form-control"
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
+              [(ngModel)]="modelSet.ranges.n.max" />
+          </ng-template>
+          <ng-template [ngIf]="modelSet.model.output == 'power'">
+            <input class="form-control"
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
+              [(ngModel)]="modelSet.ranges.power.max" />
+          </ng-template>
+          <ng-template [ngIf]="modelSet.model.output == 'delta'">
+            <input class="form-control"
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min + 1)"
+              [(ngModel)]="modelSet.ranges.delta.max" />
+          </ng-template>
         </div>
-      </ng-template>
-    </fieldset>
-    <fieldset>
-      <ng-template [ngIf]="modelSet.model.output == 'n'">
-        <legend>Sample Size vs. Detectable Alternative</legend>
-        <div class="row">
-          <div class="col-sm">
-            <label for="plot-top-right-x-min">X minimum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
-                [(ngModel)]="modelSet.ranges.delta.min" />
-            </div>
-          </div>
-          <div class="col-sm">
-            <label for="plot-top-right-x-max">X maximum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min - 1)"
-                [(ngModel)]="modelSet.ranges.delta.max" />
-            </div>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template [ngIf]="modelSet.model.output == 'power'">
-        <legend>Power vs. Detectable Alternative</legend>
-        <div class="row">
-          <div class="col-sm">
-            <label for="plot-top-right-x-min">X minimum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
-                [(ngModel)]="modelSet.ranges.delta.min" />
-            </div>
-          </div>
-          <div class="col-sm">
-            <label for="plot-top-right-x-max">X maximum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min - 1)"
-                [(ngModel)]="modelSet.ranges.delta.max" />
-            </div>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template [ngIf]="modelSet.model.output == 'delta'">
-        <legend>Detectable Alternative vs. Power</legend>
-        <div class="row">
-          <div class="col-sm">
-            <label for="plot-top-left-x-min">X minimum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
-                [(ngModel)]="modelSet.ranges.power.min" />
-            </div>
-          </div>
-          <div class="col-sm">
-            <label for="plot-top-left-x-max">X maximum</label>
-            <div class="input-group">
-              <input class="form-control"
-                type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
-                [(ngModel)]="modelSet.ranges.power.max" />
-            </div>
-          </div>
-        </div>
-      </ng-template>
-    </fieldset>
-    <fieldset>
-      <legend>Precision vs. Parameter Space</legend>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <ng-template [ngIf]="modelSet.model.output == 'n'">
+      <legend>Sample Size vs. Power</legend>
       <div class="row">
         <div class="col-sm">
-          <label for="plot-bottom-x-min">X minimum</label>
+          <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.pSpace.max - 1)"
-              [(ngModel)]="modelSet.ranges.pSpace.min" />
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
+              [(ngModel)]="modelSet.ranges.power.min" />
           </div>
         </div>
         <div class="col-sm">
-          <label for="plot-bottom-x-max">X maximum</label>
+          <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.pSpace.min + 1)"
-              [(ngModel)]="modelSet.ranges.pSpace.max" />
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
+              [(ngModel)]="modelSet.ranges.power.max" />
           </div>
         </div>
       </div>
-    </fieldset>
-    <button type="button" class="btn btn-primary" (click)="reset()">
-      Reset all settings
-    </button>
-  </div>
+    </ng-template>
+    <ng-template [ngIf]="modelSet.model.output == 'power'">
+      <legend>Power vs. Sample Size</legend>
+      <div class="row">
+        <div class="col-sm">
+          <label for="plot-top-left-x-min">X minimum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
+              [(ngModel)]="modelSet.ranges.n.min" />
+          </div>
+        </div>
+        <div class="col-sm">
+          <label for="plot-top-left-x-max">X maximum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
+              [(ngModel)]="modelSet.ranges.n.max" />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template [ngIf]="modelSet.model.output == 'delta'">
+      <legend>Detectable Alternative vs. Sample Size</legend>
+      <div class="row">
+        <div class="col-sm">
+          <label for="plot-top-left-x-min">X minimum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
+              [(ngModel)]="modelSet.ranges.n.min" />
+          </div>
+        </div>
+        <div class="col-sm">
+          <label for="plot-top-left-x-max">X maximum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
+              [(ngModel)]="modelSet.ranges.n.max" />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </fieldset>
+  <fieldset>
+    <ng-template [ngIf]="modelSet.model.output == 'n'">
+      <legend>Sample Size vs. Detectable Alternative</legend>
+      <div class="row">
+        <div class="col-sm">
+          <label for="plot-top-right-x-min">X minimum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
+              [(ngModel)]="modelSet.ranges.delta.min" />
+          </div>
+        </div>
+        <div class="col-sm">
+          <label for="plot-top-right-x-max">X maximum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min - 1)"
+              [(ngModel)]="modelSet.ranges.delta.max" />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template [ngIf]="modelSet.model.output == 'power'">
+      <legend>Power vs. Detectable Alternative</legend>
+      <div class="row">
+        <div class="col-sm">
+          <label for="plot-top-right-x-min">X minimum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
+              [(ngModel)]="modelSet.ranges.delta.min" />
+          </div>
+        </div>
+        <div class="col-sm">
+          <label for="plot-top-right-x-max">X maximum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min - 1)"
+              [(ngModel)]="modelSet.ranges.delta.max" />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template [ngIf]="modelSet.model.output == 'delta'">
+      <legend>Detectable Alternative vs. Power</legend>
+      <div class="row">
+        <div class="col-sm">
+          <label for="plot-top-left-x-min">X minimum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
+              [(ngModel)]="modelSet.ranges.power.min" />
+          </div>
+        </div>
+        <div class="col-sm">
+          <label for="plot-top-left-x-max">X maximum</label>
+          <div class="input-group">
+            <input class="form-control"
+              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
+              [(ngModel)]="modelSet.ranges.power.max" />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </fieldset>
+  <fieldset>
+    <legend>Precision vs. Parameter Space</legend>
+    <div class="row">
+      <div class="col-sm">
+        <label for="plot-bottom-x-min">X minimum</label>
+        <div class="input-group">
+          <input class="form-control"
+            type="number" step="0.01" [max]="roundFloor(modelSet.ranges.pSpace.max - 1)"
+            [(ngModel)]="modelSet.ranges.pSpace.min" />
+        </div>
+      </div>
+      <div class="col-sm">
+        <label for="plot-bottom-x-max">X maximum</label>
+        <div class="input-group">
+          <input class="form-control"
+            type="number" step="0.01" [min]="roundCeil(modelSet.ranges.pSpace.min + 1)"
+            [(ngModel)]="modelSet.ranges.pSpace.max" />
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  <button type="button" class="btn btn-primary" (click)="reset()">
+    Reset all settings
+  </button>
 </div>

@@ -56,11 +56,6 @@
       </div>
     </div>
     <div id="right-panel" class="col-8">
-      <app-help #helpChild
-        [topic]="helpTopic"
-        (drag-start)="childDragStarted()"
-        (drag-end)="childDragEnded()">
-      </app-help>
       <div class="plot-buttons" *ngIf="plotOptionsAvailable">
         <button class="btn btn-secondary" (click)="togglePlotOptions()">
           <i class="fa fa-cog"></i>
@@ -75,10 +70,21 @@
       </app-output-pane>
     </div>
   </div>
-  <app-plot-options #plotOptionsChild
-    [selectedModelSet]="selectedModelSet"
-    [plotOptions]="plotOptions"
+  <app-draggable-dialog #helpDialog
+    [title]="helpTitles[helpTopic]"
+    start-x-offset="33%" start-y-offset="55px"
     (drag-start)="childDragStarted()"
     (drag-end)="childDragEnded()">
-  </app-plot-options>
+    <app-help [topic]="helpTopic"></app-help>
+  </app-draggable-dialog>
+  <app-draggable-dialog #plotOptionsDialog
+    title="Plot options"
+    start-x-offset="5%" start-y-offset="55px"
+    (drag-start)="childDragStarted()"
+    (drag-end)="childDragEnded()">
+    <app-plot-options
+      [selectedModelSet]="selectedModelSet"
+      [plotOptions]="plotOptions">
+    </app-plot-options>
+  </app-draggable-dialog>
 </div>

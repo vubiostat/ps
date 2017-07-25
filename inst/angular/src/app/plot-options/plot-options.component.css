@@ -1,53 +1,17 @@
-.plot-options {
-  display: block;
-  position: absolute;
-  z-index: 100;
-  background-color: white;
-  border: 1px solid #888;
-  border-radius: 10px;
-  box-shadow: 5px 5px 25px #888;
-  top: 20px;
-  left: 20px;
-  width: 25vw;
-  min-width: 300px;
-}
-
-.plot-options .header {
-  font-size: larger;
-  font-weight: bold;
-  background-color: #e5e5e5;
-  border-bottom: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 10px 10px 0 0;
-  cursor: move;
-}
-
-.plot-options .close {
-  float: right;
-  margin: 5px;
-}
-
-.plot-options .content {
-  overflow: auto;
-  height: 50vh;
-  padding: 5px;
-  margin: 0 5px;
-}
-
-.plot-options fieldset {
+fieldset {
   border: 1px solid #bbb;
   border-radius: 5px;
   padding: 10px;
   margin: 10px;
 }
 
-.plot-options fieldset legend {
+fieldset legend {
   font-size: inherit;
   font-weight: bold;
   display: table;
   width: auto;
 }
 
-.plot-options .form-group {
+.form-group {
   padding: 0 5px;
 }

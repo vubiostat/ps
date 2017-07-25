@@ -9,8 +9,7 @@ import { TTest, TTestRanges, TTestData, TTestSet } from './t-test';
 import { PlotOptions } from './plot-options';
 import { TTestService } from './t-test.service';
 
-import { HelpComponent } from './help/help.component';
-import { PlotOptionsComponent } from './plot-options/plot-options.component'
+import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component'
 import { OutputPaneComponent } from './output-pane/output-pane.component'
 
 @Component({
@@ -24,12 +23,16 @@ export class AppComponent implements OnInit {
   modelSets: TTestSet[] = [];
   plotOptions = new PlotOptions();
 
+  helpTitles = {
+    'overview': 'PS Overview',
+    'start': 'PS Start Tab'
+  };
   helpTopic = 'overview';
   plotOptionsAvailable = false;
   blockSelection = false;
 
-  @ViewChild('helpChild') helpChild: HelpComponent;
-  @ViewChild('plotOptionsChild') plotOptionsChild: PlotOptionsComponent;
+  @ViewChild('plotOptionsDialog') plotOptionsDialog: DraggableDialogComponent;
+  @ViewChild('helpDialog') helpDialog: DraggableDialogComponent;
   @ViewChild('tabsetChild') tabsetChild: NgbTabset;
   @ViewChild('outputPaneChild') outputChild: OutputPaneComponent;
 
@@ -45,11 +48,16 @@ export class AppComponent implements OnInit {
   }
 
   toggleHelp(topic: string): void {
-    this.helpChild.toggle(topic);
+    if (this.helpDialog.isOpen() && this.helpTopic == topic) {
+      this.helpDialog.close();
+    } else {
+      this.helpTopic = topic;
+      this.helpDialog.open();
+    }
   }
 
   togglePlotOptions(): void {
-    this.plotOptionsChild.toggle();
+    this.plotOptionsDialog.toggle();
   }
 
   save(): void {
@@ -90,7 +98,7 @@ export class AppComponent implements OnInit {
   }
 
   mouseup(): void {
-    this.plotOptionsChild.stopDragging();
+    this.plotOptionsDialog.stopDragging();
   }
 
   childDragStarted(): void {
