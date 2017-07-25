@@ -56,7 +56,11 @@
       </div>
     </div>
     <div id="right-panel" class="col-8">
-      <app-help *ngIf="helpOpen" [topic]="helpTopic" (onClose)="closeHelp()"></app-help>
+      <app-help #helpChild
+        [topic]="helpTopic"
+        (drag-start)="childDragStarted()"
+        (drag-end)="childDragEnded()">
+      </app-help>
       <div class="plot-buttons" *ngIf="plotOptionsAvailable">
         <button class="btn btn-secondary" (click)="togglePlotOptions()">
           <i class="fa fa-cog"></i>

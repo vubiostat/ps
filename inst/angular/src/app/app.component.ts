@@ -9,6 +9,7 @@ import { TTest, TTestRanges, TTestData, TTestSet } from './t-test';
 import { PlotOptions } from './plot-options';
 import { TTestService } from './t-test.service';
 
+import { HelpComponent } from './help/help.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component'
 import { OutputPaneComponent } from './output-pane/output-pane.component'
 
@@ -24,10 +25,10 @@ export class AppComponent implements OnInit {
   plotOptions = new PlotOptions();
 
   helpTopic = 'overview';
-  helpOpen = false;
   plotOptionsAvailable = false;
   blockSelection = false;
 
+  @ViewChild('helpChild') helpChild: HelpComponent;
   @ViewChild('plotOptionsChild') plotOptionsChild: PlotOptionsComponent;
   @ViewChild('tabsetChild') tabsetChild: NgbTabset;
   @ViewChild('outputPaneChild') outputChild: OutputPaneComponent;
@@ -44,16 +45,7 @@ export class AppComponent implements OnInit {
   }
 
   toggleHelp(topic: string): void {
-    if (this.helpOpen && this.helpTopic == topic) {
-      this.closeHelp();
-    } else {
-      this.helpTopic = topic;
-      this.helpOpen = true;
-    }
-  }
-
-  closeHelp(): void {
-    this.helpOpen = false;
+    this.helpChild.toggle(topic);
   }
 
   togglePlotOptions(): void {

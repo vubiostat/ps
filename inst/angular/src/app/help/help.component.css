@@ -1,4 +1,4 @@
-:host {
+.help {
   position: absolute;
   left: 0;
   top: 0;
@@ -17,6 +17,7 @@
   border-bottom: 1px solid #ccc;
   padding: 5px;
   border-radius: 5px 5px 0 0;
+  cursor: move;
 }
 .close {
   float: right;
