@@ -63,10 +63,14 @@
         <button class="btn btn-secondary" (click)="save()">
           <i class="fa fa-floppy-o"></i>
         </button>
+        <button class="btn btn-secondary" (click)="toggleHoverBox()">
+          <i class="fa" [class.fa-cubes]="hoverBoxEnabled" [class.fa-cube]="!hoverBoxEnabled"></i>
+        </button>
       </div>
       <app-output-pane #outputPaneChild
         [selectedModelSet]="selectedModelSet"
-        [plotOptions]="plotOptions">
+        [plotOptions]="plotOptions"
+        [hover-disabled]="!hoverBoxEnabled">
       </app-output-pane>
     </div>
   </div>

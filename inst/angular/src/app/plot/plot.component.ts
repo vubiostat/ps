@@ -32,6 +32,7 @@ interface Point {
 })
 export class PlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() modelSet: TTestSet;
+  @Input('hover-disabled') hoverDisabled = false;
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
@@ -112,6 +113,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   }
 
   hover(event: any): void {
+    if (this.hoverDisabled) {
+      return;
+    }
+
     var dim = event.target.getBoundingClientRect();
     var x = event.clientX - dim.left;
     var y = event.clientY - dim.top;

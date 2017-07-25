@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   helpTopic = 'overview';
   plotOptionsAvailable = false;
   blockSelection = false;
+  hoverBoxEnabled = true;
 
   @ViewChild('plotOptionsDialog') plotOptionsDialog: DraggableDialogComponent;
   @ViewChild('helpDialog') helpDialog: DraggableDialogComponent;
@@ -58,6 +59,10 @@ export class AppComponent implements OnInit {
 
   togglePlotOptions(): void {
     this.plotOptionsDialog.toggle();
+  }
+
+  toggleHoverBox(): void {
+    this.hoverBoxEnabled = !this.hoverBoxEnabled;
   }
 
   save(): void {

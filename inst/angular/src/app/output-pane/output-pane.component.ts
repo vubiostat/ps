@@ -18,6 +18,7 @@ import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 export class OutputPaneComponent implements OnInit {
   @Input() selectedModelSet: Observable<TTestSet>;
   @Input() plotOptions: PlotOptions;
+  @Input('hover-disabled') hoverDisabled = false;
   modelSet: TTestSet;
   showText = true;
 
