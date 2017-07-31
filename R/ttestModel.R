@@ -146,7 +146,6 @@ TTest <- setRefClass("TTest",
         )
         result
       })
-      print(data)
     },
     attributes = function() {
       model <- list(
