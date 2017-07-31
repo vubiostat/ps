@@ -13,6 +13,79 @@ webpackEmptyContext.id = "../../../../../src async recursive";
 
 /***/ }),
 
+/***/ "../../../../../src/app/abstract-plot.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/build/d3.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__plot_options__ = __webpack_require__("../../../../../src/app/plot-options.ts");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractPlotComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var AbstractPlotComponent = (function () {
+    function AbstractPlotComponent() {
+    }
+    AbstractPlotComponent.prototype.getDimension = function (key) {
+        var dim = this.plotElement.nativeElement[key];
+        var result = 0;
+        if ('value' in dim) {
+            result = dim.value;
+        }
+        else if ('baseVal' in dim) {
+            result = dim.baseVal.value;
+        }
+        else {
+            throw new Error("can't get " + key);
+        }
+        return result;
+    };
+    AbstractPlotComponent.prototype.translate = function (x, y) {
+        if (isNaN(x) || isNaN(y)) {
+            return null;
+        }
+        return "translate(" + x + ", " + y + ")";
+    };
+    AbstractPlotComponent.prototype.getPath = function (data, xName, yName) {
+        var _this = this;
+        if (xName === void 0) { xName = "x"; }
+        if (yName === void 0) { yName = "y"; }
+        var line = __WEBPACK_IMPORTED_MODULE_1_d3__["line"]().
+            x(function (d, i) { return _this.xScale(d[xName]); }).
+            y(function (d, i) { return _this.yScale(d[yName]); });
+        return line(data);
+    };
+    return AbstractPlotComponent;
+}());
+
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
+    __metadata("design:type", String)
+], AbstractPlotComponent.prototype, "name", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__plot_options__["a" /* PlotOptions */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__plot_options__["a" /* PlotOptions */]) === "function" && _a || Object)
+], AbstractPlotComponent.prototype, "plotOptions", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('plot'),
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _b || Object)
+], AbstractPlotComponent.prototype, "plotElement", void 0);
+var _a, _b;
+//# sourceMappingURL=abstract-plot.component.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/app/app.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21,7 +94,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "#app {\n  height: 95vh;\n}\n\n#header {\n  line-height: 2em;\n  height: 2em;\n}\n#header img {\n  vertical-align: text-bottom;\n}\n#header {\n  font-size: 150%;\n}\n#header img {\n  height: 1em;\n}\n\n#main {\n  min-height: 85vh;\n}\n\n#sidebar {\n  background-color: #e5e5e5;\n  border: 1px solid #ccc;\n  border-radius: 5px;\n  padding: 10px;\n  margin: 10px;\n  position: relative;\n}\n\n#sidebar .overview {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n}\n\n.plot-buttons {\n  position: absolute;\n  top: 0;\n  left: 0;\n  font-size: large;\n  z-index: 99;\n}\n\n:host /deep/ a.nav-link {\n  border-color: #bbb #bbb #888;\n  background-color: #eee;\n}\n\n:host /deep/ a.nav-link:hover {\n  border-color: #888;\n  background-color: #f5f5f5;\n  color: #0275d8;\n}\n\n:host /deep/ a.nav-link.active {\n  border-color: #888 #888 #fff;\n}\n\n:host /deep/ a.nav-link.active:hover {\n  background-color: #fff;\n  color: #464a4c;\n}\n\n:host /deep/ ul.nav-tabs {\n  border-bottom: 1px solid #888;\n}\n\n:host /deep/ .tab-pane {\n  padding: 10px;\n  border: 1px solid #888;\n  border-top: 0;\n}\n\n:host /deep/ .tab-pane.active {\n  background: white;\n}\n\n#footer {\n  margin: 10px;\n  padding: 10px;\n  text-align: center;\n}\n#footer img {\n  margin: auto;\n  display: block;\n}\n#footer div.text {\n  margin-top: 10px;\n}\n", ""]);
+exports.push([module.i, "#app {\n}\n\n#main {\n  /*min-height: 85vh;*/\n}\n\n#sidebar {\n  background-color: #e5e5e5;\n  border: 1px solid #ccc;\n  border-radius: 5px;\n  padding: 10px;\n  /*margin: 10px;*/\n  position: relative;\n}\n\n#sidebar .overview {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n}\n\n.plot-buttons {\n  position: absolute;\n  top: 0;\n  left: 0;\n  font-size: large;\n  z-index: 99;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 auto;\n          flex: 0 0 auto;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n}\n.plot-buttons button {\n  padding: 0.4rem 0;\n  margin: 0.2rem 0;\n  width: 2.4rem;\n}\n\n:host /deep/ a.nav-link {\n  border-color: #bbb #bbb #888;\n  background-color: #eee;\n}\n\n:host /deep/ a.nav-link:hover {\n  border-color: #888;\n  background-color: #f5f5f5;\n  color: #0275d8;\n}\n\n:host /deep/ a.nav-link.active {\n  border-color: #888 #888 #fff;\n}\n\n:host /deep/ a.nav-link.active:hover {\n  background-color: #fff;\n  color: #464a4c;\n}\n\n#sidebar /deep/ ngb-tabset {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n  /*width: 100%;*/\n}\n\n#sidebar /deep/ ul.nav-tabs {\n  /*display: flex;*/\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 auto;\n          flex: 0 0 auto;\n  border-bottom: 1px solid #888;\n}\n\n#sidebar /deep/ .tab-content {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1 0 auto;\n          flex: 1 0 auto;\n}\n\n#sidebar /deep/ .tab-pane {\n  /*display: flex;*/\n  /*flex-direction: column;*/\n  -webkit-box-flex: 1;\n      -ms-flex: 1 0 auto;\n          flex: 1 0 auto;\n  padding: 10px;\n  border: 1px solid #888;\n  border-top: 0;\n  overflow: auto;\n  max-height: 73vh;\n}\n\n#sidebar /deep/ .tab-pane.active {\n  background: white;\n}\n\n#footer {\n  margin: 20px 0;\n  padding: 20px;\n  text-align: center;\n}\n#footer img {\n  margin: auto;\n  display: block;\n}\n#footer div.text {\n  margin-top: 10px;\n}\n\n.block-selection * {\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n", ""]);
 
 // exports
 
@@ -34,7 +107,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"app\" class=\"container-fluid\">\n  <nav class=\"navbar flex-nowrap flex-row justify-content-between\">\n    <div class=\"navbar-brand\">\n      <img src=\"assets/ps.jpg\" width=\"30\" height=\"30\" class=\"d-inline-block align-top\" alt=\"\">\n      Power and Sample Size\n    </div>\n    <ul class=\"nav nav-pills\">\n      <li class=\"nav-item\">\n        <a class=\"nav-link active\" href=\"#\">t-test</a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link disabled\" href=\"#\">Survival</a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link disabled\" href=\"#\">Dichotomous</a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link disabled\" href=\"#\">Regression</a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link disabled\" href=\"#\">Mantel-Haenszel</a>\n      </li>\n    </ul>\n  </nav>\n\n  <div id=\"main\" class=\"row\">\n    <div class=\"col-sm-4\">\n      <div id=\"sidebar\">\n        <div class=\"overview\">\n          <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleHelp('overview')\">\n            Overview <i class=\"fa fa-question-circle\"></i>\n          </button>\n        </div>\n        <ngb-tabset #tabsetChild (tabChange)=\"onTabChange($event)\">\n          <ngb-tab title=\"Start\" id=\"start\">\n            <ng-template ngbTabContent>\n              <app-start [model]=\"newModel\"\n                (onCalculate)=\"calculate()\"\n                (onToggleHelp)=\"toggleHelp('start')\">\n              </app-start>\n            </ng-template>\n          </ngb-tab>\n          <ngb-tab *ngFor=\"let modelSet of modelSets; let i = index\"\n            title=\"Test {{i+1}}\" id=\"test-{{i+1}}\">\n            <ng-template ngbTabContent>\n              <app-t-test [modelSet]=\"modelSet\"></app-t-test>\n            </ng-template>\n          </ngb-tab>\n        </ngb-tabset>\n      </div>\n      <app-plot-options #plotOptionsChild\n        [selectedModelSet]=\"selectedModelSet\"\n        [plotOptions]=\"plotOptions\">\n      </app-plot-options>\n\n      <div id=\"footer\">\n        <img src=\"assets/vumc.jpg\">\n        <div class=\"text\">Department of Biostatistics</div>\n      </div>\n    </div>\n    <div id=\"right-panel\" class=\"col-sm-8\">\n      <app-help *ngIf=\"helpOpen\" [topic]=\"helpTopic\" (onClose)=\"closeHelp()\"></app-help>\n      <div class=\"plot-buttons\" *ngIf=\"plotOptionsAvailable\">\n        <button class=\"btn btn-secondary\" (click)=\"togglePlotOptions()\">\n          <i class=\"fa fa-cog\"></i>\n        </button>\n        <button class=\"btn btn-secondary\" (click)=\"save()\">\n          <i class=\"fa fa-floppy-o\"></i>\n        </button>\n      </div>\n      <app-output-pane #outputPaneChild\n        [selectedModelSet]=\"selectedModelSet\"\n        [plotOptions]=\"plotOptions\">\n      </app-output-pane>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<div id=\"app\" class=\"container-fluid d-flex flex-column h-100\"\n  [class.block-selection]=\"blockSelection\" (mouseup)=\"mouseup()\">\n  <nav class=\"navbar d-flex flex-nowrap flex-row justify-content-between\" style=\"flex: 0 0 auto\">\n    <div class=\"navbar-brand\">\n      <img src=\"assets/ps.jpg\" width=\"30\" height=\"30\" class=\"d-inline-block align-top\" alt=\"\">\n      Power and Sample Size\n    </div>\n    <ul class=\"nav nav-pills\">\n      <li class=\"nav-item\">\n        <a class=\"nav-link active\" href=\"#\">t-test</a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link disabled\" href=\"#\">Survival</a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link disabled\" href=\"#\">Dichotomous</a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link disabled\" href=\"#\">Regression</a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link disabled\" href=\"#\">Mantel-Haenszel</a>\n      </li>\n    </ul>\n  </nav>\n\n  <div id=\"main\" class=\"row d-flex\" style=\"flex: 1 0 auto\">\n    <div class=\"col-4 d-flex flex-column justify-content-between\">\n      <div id=\"sidebar\" class=\"d-flex flex-row\" style=\"flex: auto\">\n        <div class=\"overview\">\n          <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleHelp('overview')\">\n            Overview <i class=\"fa fa-question-circle\"></i>\n          </button>\n        </div>\n        <ngb-tabset #tabsetChild (tabChange)=\"onTabChange($event)\">\n          <ngb-tab title=\"Start\" id=\"start\">\n            <ng-template ngbTabContent>\n              <app-start [model]=\"newModel\"\n                (onCalculate)=\"calculate()\"\n                (onToggleHelp)=\"toggleHelp('start')\">\n              </app-start>\n            </ng-template>\n          </ngb-tab>\n          <ngb-tab *ngFor=\"let modelSet of modelSets; let i = index\"\n            title=\"Test {{i+1}}\" id=\"test-{{i+1}}\">\n            <ng-template ngbTabContent>\n              <app-t-test [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\"></app-t-test>\n            </ng-template>\n          </ngb-tab>\n        </ngb-tabset>\n      </div>\n\n      <div id=\"footer\" class=\"d-flex\">\n        <img src=\"assets/vumc.jpg\">\n        <div class=\"text\">Department of Biostatistics</div>\n      </div>\n    </div>\n    <div id=\"right-panel\" class=\"col-8\">\n      <div class=\"plot-buttons\" *ngIf=\"plotOptionsAvailable\">\n        <button class=\"btn btn-secondary\" (click)=\"togglePlotOptions()\">\n          <i class=\"fa fa-cog\"></i>\n        </button>\n        <button class=\"btn btn-secondary\" (click)=\"save()\">\n          <i class=\"fa fa-floppy-o\"></i>\n        </button>\n        <button class=\"btn btn-secondary\" (click)=\"toggleHoverBox()\">\n          <i class=\"fa\" [class.fa-cubes]=\"hoverBoxEnabled\" [class.fa-cube]=\"!hoverBoxEnabled\"></i>\n        </button>\n      </div>\n      <app-output-pane #outputPaneChild\n        [selectedModelSet]=\"selectedModelSet\"\n        [plotOptions]=\"plotOptions\"\n        [hover-disabled]=\"!hoverBoxEnabled\">\n      </app-output-pane>\n    </div>\n  </div>\n  <app-draggable-dialog #helpDialog\n    [title]=\"helpTitles[helpTopic]\"\n    start-x-offset=\"33%\" start-y-offset=\"55px\"\n    (drag-start)=\"childDragStarted()\"\n    (drag-end)=\"childDragEnded()\">\n    <app-help [topic]=\"helpTopic\"></app-help>\n  </app-draggable-dialog>\n  <app-draggable-dialog #plotOptionsDialog\n    title=\"Plot options\"\n    start-x-offset=\"5%\" start-y-offset=\"55px\"\n    (drag-start)=\"childDragStarted()\"\n    (drag-end)=\"childDragEnded()\">\n    <app-plot-options\n      [selectedModelSet]=\"selectedModelSet\"\n      [plotOptions]=\"plotOptions\">\n    </app-plot-options>\n  </app-draggable-dialog>\n</div>\n"
 
 /***/ }),
 
@@ -51,7 +124,7 @@ module.exports = "<div id=\"app\" class=\"container-fluid\">\n  <nav class=\"nav
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__plot_options__ = __webpack_require__("../../../../../src/app/plot-options.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__t_test_service__ = __webpack_require__("../../../../../src/app/t-test.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__plot_options_plot_options_component__ = __webpack_require__("../../../../../src/app/plot-options/plot-options.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__draggable_dialog_draggable_dialog_component__ = __webpack_require__("../../../../../src/app/draggable-dialog/draggable-dialog.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__output_pane_output_pane_component__ = __webpack_require__("../../../../../src/app/output-pane/output-pane.component.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -79,9 +152,14 @@ var AppComponent = (function () {
         this.newModel = new __WEBPACK_IMPORTED_MODULE_4__t_test__["c" /* TTest */]();
         this.modelSets = [];
         this.plotOptions = new __WEBPACK_IMPORTED_MODULE_5__plot_options__["a" /* PlotOptions */]();
+        this.helpTitles = {
+            'overview': 'PS Overview',
+            'start': 'PS Start Tab'
+        };
         this.helpTopic = 'overview';
-        this.helpOpen = false;
         this.plotOptionsAvailable = false;
+        this.blockSelection = false;
+        this.hoverBoxEnabled = true;
         this.selectedModelSet = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["Subject"]();
     }
     AppComponent.prototype.ngOnInit = function () {
@@ -91,19 +169,19 @@ var AppComponent = (function () {
         this.addModel(model, false);
     };
     AppComponent.prototype.toggleHelp = function (topic) {
-        if (this.helpOpen && this.helpTopic == topic) {
-            this.closeHelp();
+        if (this.helpDialog.isOpen() && this.helpTopic == topic) {
+            this.helpDialog.close();
         }
         else {
             this.helpTopic = topic;
-            this.helpOpen = true;
+            this.helpDialog.open();
         }
     };
-    AppComponent.prototype.closeHelp = function () {
-        this.helpOpen = false;
-    };
     AppComponent.prototype.togglePlotOptions = function () {
-        this.plotOptionsChild.toggle();
+        this.plotOptionsDialog.toggle();
+    };
+    AppComponent.prototype.toggleHoverBox = function () {
+        this.hoverBoxEnabled = !this.hoverBoxEnabled;
     };
     AppComponent.prototype.save = function () {
         this.outputChild.openSaveDialog();
@@ -140,19 +218,32 @@ var AppComponent = (function () {
         }).
             catch(function (err) { return console.error(err); });
     };
+    AppComponent.prototype.mouseup = function () {
+        this.plotOptionsDialog.stopDragging();
+    };
+    AppComponent.prototype.childDragStarted = function () {
+        this.blockSelection = true;
+    };
+    AppComponent.prototype.childDragEnded = function () {
+        this.blockSelection = false;
+    };
     return AppComponent;
 }());
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('plotOptionsChild'),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_7__plot_options_plot_options_component__["a" /* PlotOptionsComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__plot_options_plot_options_component__["a" /* PlotOptionsComponent */]) === "function" && _a || Object)
-], AppComponent.prototype, "plotOptionsChild", void 0);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('plotOptionsDialog'),
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_7__draggable_dialog_draggable_dialog_component__["a" /* DraggableDialogComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__draggable_dialog_draggable_dialog_component__["a" /* DraggableDialogComponent */]) === "function" && _a || Object)
+], AppComponent.prototype, "plotOptionsDialog", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('helpDialog'),
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_7__draggable_dialog_draggable_dialog_component__["a" /* DraggableDialogComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__draggable_dialog_draggable_dialog_component__["a" /* DraggableDialogComponent */]) === "function" && _b || Object)
+], AppComponent.prototype, "helpDialog", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('tabsetChild'),
-    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["d" /* NgbTabset */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["d" /* NgbTabset */]) === "function" && _b || Object)
+    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["e" /* NgbTabset */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["e" /* NgbTabset */]) === "function" && _c || Object)
 ], AppComponent.prototype, "tabsetChild", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('outputPaneChild'),
-    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_8__output_pane_output_pane_component__["a" /* OutputPaneComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__output_pane_output_pane_component__["a" /* OutputPaneComponent */]) === "function" && _c || Object)
+    __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_8__output_pane_output_pane_component__["a" /* OutputPaneComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__output_pane_output_pane_component__["a" /* OutputPaneComponent */]) === "function" && _d || Object)
 ], AppComponent.prototype, "outputChild", void 0);
 AppComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
@@ -160,10 +251,10 @@ AppComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/app.component.html"),
         styles: [__webpack_require__("../../../../../src/app/app.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_6__t_test_service__["a" /* TTestService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__t_test_service__["a" /* TTestService */]) === "function" && _d || Object])
+    __metadata("design:paramtypes", [typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_6__t_test_service__["a" /* TTestService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__t_test_service__["a" /* TTestService */]) === "function" && _e || Object])
 ], AppComponent);
 
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 //# sourceMappingURL=app.component.js.map
 
 /***/ }),
@@ -180,16 +271,19 @@ var _a, _b, _c, _d;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ng_bootstrap_ng_bootstrap__ = __webpack_require__("../../../../@ng-bootstrap/ng-bootstrap/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__t_test_service__ = __webpack_require__("../../../../../src/app/t-test.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__start_start_component__ = __webpack_require__("../../../../../src/app/start/start.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__range_slider_range_slider_component__ = __webpack_require__("../../../../../src/app/range-slider/range-slider.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__t_test_t_test_component__ = __webpack_require__("../../../../../src/app/t-test/t-test.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__output_pane_output_pane_component__ = __webpack_require__("../../../../../src/app/output-pane/output-pane.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__help_help_component__ = __webpack_require__("../../../../../src/app/help/help.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__plot_options_plot_options_component__ = __webpack_require__("../../../../../src/app/plot-options/plot-options.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__plot_plot_component__ = __webpack_require__("../../../../../src/app/plot/plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__bottom_plot_bottom_plot_component__ = __webpack_require__("../../../../../src/app/bottom-plot/bottom-plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__export_plots_export_plots_component__ = __webpack_require__("../../../../../src/app/export-plots/export-plots.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__palette_service__ = __webpack_require__("../../../../../src/app/palette.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__start_start_component__ = __webpack_require__("../../../../../src/app/start/start.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__range_slider_range_slider_component__ = __webpack_require__("../../../../../src/app/range-slider/range-slider.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__t_test_t_test_component__ = __webpack_require__("../../../../../src/app/t-test/t-test.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__output_pane_output_pane_component__ = __webpack_require__("../../../../../src/app/output-pane/output-pane.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__help_help_component__ = __webpack_require__("../../../../../src/app/help/help.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__plot_options_plot_options_component__ = __webpack_require__("../../../../../src/app/plot-options/plot-options.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__plot_plot_component__ = __webpack_require__("../../../../../src/app/plot/plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__bottom_plot_bottom_plot_component__ = __webpack_require__("../../../../../src/app/bottom-plot/bottom-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__serialize_plot_component__ = __webpack_require__("../../../../../src/app/serialize-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__export_plots_export_plots_component__ = __webpack_require__("../../../../../src/app/export-plots/export-plots.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__draggable_dialog_draggable_dialog_component__ = __webpack_require__("../../../../../src/app/draggable-dialog/draggable-dialog.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -197,6 +291,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
+
 
 
 
@@ -224,17 +321,19 @@ AppModule = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__angular_core__["b" /* NgModule */])({
         declarations: [
             __WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* AppComponent */],
-            __WEBPACK_IMPORTED_MODULE_8__start_start_component__["a" /* StartComponent */],
-            __WEBPACK_IMPORTED_MODULE_9__range_slider_range_slider_component__["a" /* RangeSliderComponent */],
-            __WEBPACK_IMPORTED_MODULE_9__range_slider_range_slider_component__["b" /* RangeSliderLabel */],
-            __WEBPACK_IMPORTED_MODULE_9__range_slider_range_slider_component__["c" /* RangeSliderHelp */],
-            __WEBPACK_IMPORTED_MODULE_10__t_test_t_test_component__["a" /* TTestComponent */],
-            __WEBPACK_IMPORTED_MODULE_11__output_pane_output_pane_component__["a" /* OutputPaneComponent */],
-            __WEBPACK_IMPORTED_MODULE_12__help_help_component__["a" /* HelpComponent */],
-            __WEBPACK_IMPORTED_MODULE_13__plot_options_plot_options_component__["a" /* PlotOptionsComponent */],
-            __WEBPACK_IMPORTED_MODULE_14__plot_plot_component__["a" /* PlotComponent */],
-            __WEBPACK_IMPORTED_MODULE_15__bottom_plot_bottom_plot_component__["a" /* BottomPlotComponent */],
-            __WEBPACK_IMPORTED_MODULE_17__export_plots_export_plots_component__["a" /* ExportPlotsComponent */],
+            __WEBPACK_IMPORTED_MODULE_9__start_start_component__["a" /* StartComponent */],
+            __WEBPACK_IMPORTED_MODULE_10__range_slider_range_slider_component__["a" /* RangeSliderComponent */],
+            __WEBPACK_IMPORTED_MODULE_10__range_slider_range_slider_component__["b" /* RangeSliderLabel */],
+            __WEBPACK_IMPORTED_MODULE_10__range_slider_range_slider_component__["c" /* RangeSliderHelp */],
+            __WEBPACK_IMPORTED_MODULE_11__t_test_t_test_component__["a" /* TTestComponent */],
+            __WEBPACK_IMPORTED_MODULE_12__output_pane_output_pane_component__["a" /* OutputPaneComponent */],
+            __WEBPACK_IMPORTED_MODULE_13__help_help_component__["a" /* HelpComponent */],
+            __WEBPACK_IMPORTED_MODULE_14__plot_options_plot_options_component__["a" /* PlotOptionsComponent */],
+            __WEBPACK_IMPORTED_MODULE_15__plot_plot_component__["a" /* PlotComponent */],
+            __WEBPACK_IMPORTED_MODULE_16__bottom_plot_bottom_plot_component__["a" /* BottomPlotComponent */],
+            __WEBPACK_IMPORTED_MODULE_17__serialize_plot_component__["a" /* SerializePlotComponent */],
+            __WEBPACK_IMPORTED_MODULE_18__export_plots_export_plots_component__["a" /* ExportPlotsComponent */],
+            __WEBPACK_IMPORTED_MODULE_19__draggable_dialog_draggable_dialog_component__["a" /* DraggableDialogComponent */],
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -242,9 +341,13 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_4__angular_http__["a" /* HttpModule */],
             __WEBPACK_IMPORTED_MODULE_5__ng_bootstrap_ng_bootstrap__["a" /* NgbModule */].forRoot()
         ],
-        providers: [__WEBPACK_IMPORTED_MODULE_7__t_test_service__["a" /* TTestService */], { provide: __WEBPACK_IMPORTED_MODULE_1__angular_common__["a" /* APP_BASE_HREF */], useValue: __WEBPACK_IMPORTED_MODULE_16__environments_environment__["a" /* environment */].baseHref }],
+        providers: [
+            __WEBPACK_IMPORTED_MODULE_7__t_test_service__["a" /* TTestService */],
+            __WEBPACK_IMPORTED_MODULE_8__palette_service__["a" /* PaletteService */],
+            { provide: __WEBPACK_IMPORTED_MODULE_1__angular_common__["a" /* APP_BASE_HREF */], useValue: __WEBPACK_IMPORTED_MODULE_20__environments_environment__["a" /* environment */].baseHref }
+        ],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* AppComponent */]],
-        entryComponents: [__WEBPACK_IMPORTED_MODULE_17__export_plots_export_plots_component__["a" /* ExportPlotsComponent */]]
+        entryComponents: [__WEBPACK_IMPORTED_MODULE_18__export_plots_export_plots_component__["a" /* ExportPlotsComponent */]]
     })
 ], AppModule);
 
@@ -273,7 +376,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/bottom-plot/bottom-plot.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" (window:resize)=\"onResize()\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"groups\">\n    <defs>\n      <clipPath [id]=\"clipPathId\">\n        <rect x=\"0\" y=\"0\" [attr.width]=\"width\" [attr.height]=\"height\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"width / 2 + margin\" [attr.y]=\"height + margin\" dy=\"2.5em\">\n      Parameter Space\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"width / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{title}}\n    </text>\n\n    <g *ngFor=\"let group of groups; let i = index\"\n      [attr.transform]=\"translate(margin, margin)\">\n\n      <path [attr.clip-path]=\"clipPath()\" [attr.d]=\"group.distPath\"\n        fill=\"lightblue\" stroke=\"none\" />\n\n      <path *ngFor=\"let path of group.mainPaths\"\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"path\"\n        stroke=\"steelblue\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <circle r=\"5\"\n        [attr.cx]=\"xScale(group.target)\"\n        [attr.cy]=\"yScale(0.5)\"\n        [attr.clip-path]=\"clipPath()\"\n        fill=\"steelblue\" />\n    </g>\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(0)\"\n      [attr.cy]=\"yScale(0.5)\"\n      [attr.clip-path]=\"clipPath()\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"darkseagreen\" />\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, height + margin)\"></g>\n  </ng-template>\n</svg>\n<canvas #canvas style=\"display: none\"></canvas>\n"
+module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" (window:resize)=\"onResize()\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"groups && modelSet\">\n    <defs>\n      <clipPath [id]=\"clipPathId\">\n        <rect x=\"0\" y=\"0\" [attr.width]=\"width\" [attr.height]=\"height\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"width / 2 + margin\" [attr.y]=\"height + margin\" dy=\"2.5em\">\n      Parameter Space\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"width / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{title}}\n    </text>\n\n    <g *ngFor=\"let group of groups; let i = index\"\n      [attr.transform]=\"translate(margin, margin)\">\n\n      <path [attr.clip-path]=\"clipPath()\" [attr.d]=\"group.distPath\"\n        [attr.fill]=\"palette.getColor(groups.length - 1 - i, plotOptions.paletteTheme)\"\n        stroke=\"none\" opacity=\"0.5\" />\n\n      <path *ngFor=\"let path of group.mainPaths\"\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"path\"\n        [attr.stroke]=\"palette.getColor(groups.length - 1 - i, plotOptions.paletteTheme)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <circle r=\"5\"\n        [attr.cx]=\"xScale(group.target)\"\n        [attr.cy]=\"yScale(0.5)\"\n        [attr.clip-path]=\"clipPath()\"\n        [attr.fill]=\"palette.getColor(groups.length - 1 - i, plotOptions.paletteTheme)\" />\n    </g>\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(0)\"\n      [attr.cy]=\"yScale(0.5)\"\n      [attr.clip-path]=\"clipPath()\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"darkseagreen\" />\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, height + margin)\"></g>\n  </ng-template>\n</svg>\n"
 
 /***/ }),
 
@@ -284,9 +387,20 @@ module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/build/d3.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plot_options__ = __webpack_require__("../../../../../src/app/plot-options.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__ = __webpack_require__("../../../../../src/app/abstract-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__palette_service__ = __webpack_require__("../../../../../src/app/palette.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BottomPlotComponent; });
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -300,11 +414,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 ;
-var BottomPlotComponent = (function () {
-    function BottomPlotComponent() {
-        this.title = "Precision vs. Effect Size";
-        this.margin = 50;
+var BottomPlotComponent = (function (_super) {
+    __extends(BottomPlotComponent, _super);
+    function BottomPlotComponent(palette) {
+        var _this = _super.call(this) || this;
+        _this.palette = palette;
+        _this.margin = 50;
+        _this.title = "Precision vs. Effect Size";
+        return _this;
     }
     BottomPlotComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -335,32 +454,6 @@ var BottomPlotComponent = (function () {
     };
     BottomPlotComponent.prototype.redraw = function () {
         this.compute();
-    };
-    BottomPlotComponent.prototype.serializeAsXML = function () {
-        var serializer = new XMLSerializer();
-        return serializer.serializeToString(this.plotElement.nativeElement);
-    };
-    BottomPlotComponent.prototype.serialize = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var data = _this.serializeAsXML();
-            var width = _this.getDimension('width');
-            var height = _this.getDimension('height');
-            var canvas = _this.canvasElement.nativeElement;
-            canvas.width = width;
-            canvas.height = height;
-            var context = canvas.getContext("2d");
-            var image = new Image(width, height);
-            image.addEventListener('load', function () {
-                context.clearRect(0, 0, width, height);
-                context.drawImage(image, 0, 0, width, height);
-                canvas.toBlob(function (blob) {
-                    resolve(blob);
-                });
-            });
-            var src = 'data:image/svg+xml;base64,' + btoa(data);
-            image.src = src;
-        });
     };
     BottomPlotComponent.prototype.compute = function () {
         var _this = this;
@@ -410,7 +503,7 @@ var BottomPlotComponent = (function () {
                     { x: rightLimit, y: 0.65 }
                 ]
             ];
-            var mainPaths = _this.getPaths(points);
+            var mainPaths = points.map(function (data) { return _this.getPath(data); });
             var result = {
                 mainPaths: mainPaths,
                 distPath: distPath,
@@ -432,26 +525,6 @@ var BottomPlotComponent = (function () {
             attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
         this.needDraw = false;
     };
-    BottomPlotComponent.prototype.getDimension = function (key) {
-        var dim = this.plotElement.nativeElement[key];
-        var result = 0;
-        if ('value' in dim) {
-            result = dim.value;
-        }
-        else if ('baseVal' in dim) {
-            result = dim.baseVal.value;
-        }
-        else {
-            throw new Error("can't get " + key);
-        }
-        return result;
-    };
-    BottomPlotComponent.prototype.translate = function (x, y) {
-        if (isNaN(x) || isNaN(y)) {
-            return null;
-        }
-        return "translate(" + x + ", " + y + ")";
-    };
     BottomPlotComponent.prototype.clipPath = function () {
         return "url(#" + this.clipPathId + ")";
     };
@@ -463,55 +536,31 @@ var BottomPlotComponent = (function () {
             y1(function (d, i) { return _this.yScaleSD(d[yName]); });
         return area(points);
     };
-    BottomPlotComponent.prototype.getPaths = function (points) {
-        var _this = this;
-        return points.map(function (data) {
-            var line = __WEBPACK_IMPORTED_MODULE_1_d3__["line"]().
-                x(function (d, i) { return _this.xScale(d.x); }).
-                y(function (d, i) { return _this.yScale(d.y); });
-            return line(data);
-        });
-    };
     return BottomPlotComponent;
-}());
+}(__WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["a" /* AbstractPlotComponent */]));
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", String)
-], BottomPlotComponent.prototype, "name", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__t_test__["a" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__t_test__["a" /* TTestSet */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTestSet */]) === "function" && _a || Object)
 ], BottomPlotComponent.prototype, "modelSet", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */]) === "function" && _b || Object)
-], BottomPlotComponent.prototype, "plotOptions", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('plot'),
-    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _c || Object)
-], BottomPlotComponent.prototype, "plotElement", void 0);
-__decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('unit'),
-    __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _d || Object)
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _b || Object)
 ], BottomPlotComponent.prototype, "unitElement", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('bottomAxis'),
-    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _e || Object)
+    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _c || Object)
 ], BottomPlotComponent.prototype, "bottomAxisElement", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('canvas'),
-    __metadata("design:type", typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _f || Object)
-], BottomPlotComponent.prototype, "canvasElement", void 0);
 BottomPlotComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-bottom-plot',
         template: __webpack_require__("../../../../../src/app/bottom-plot/bottom-plot.component.html"),
         styles: [__webpack_require__("../../../../../src/app/bottom-plot/bottom-plot.component.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["M" /* ViewEncapsulation */].None
-    })
+    }),
+    __metadata("design:paramtypes", [typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__palette_service__["a" /* PaletteService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__palette_service__["a" /* PaletteService */]) === "function" && _d || Object])
 ], BottomPlotComponent);
 
-var _a, _b, _c, _d, _e, _f;
+var _a, _b, _c, _d;
 //# sourceMappingURL=bottom-plot.component.js.map
 
 /***/ }),
@@ -561,6 +610,150 @@ function Changeable(target, name) {
 
 /***/ }),
 
+/***/ "../../../../../src/app/draggable-dialog/draggable-dialog.component.css":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".dialog {\n  display: block;\n  position: absolute;\n  z-index: 100;\n  background-color: white;\n  border: 1px solid #888;\n  border-radius: 10px;\n  box-shadow: 5px 5px 25px #888;\n  top: 20px;\n  left: 20px;\n  width: 25vw;\n  min-width: 300px;\n}\n\n.dialog .header {\n  font-size: larger;\n  font-weight: bold;\n  background-color: #e5e5e5;\n  border-bottom: 1px solid #ccc;\n  padding: 10px;\n  border-radius: 10px 10px 0 0;\n  cursor: move;\n}\n\n.dialog .close {\n  float: right;\n  margin: 5px;\n}\n\n.dialog .content {\n  overflow: auto;\n  height: 50vh;\n  padding: 5px;\n  margin: 0 5px;\n}\n", ""]);
+
+// exports
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = module.exports.toString();
+
+/***/ }),
+
+/***/ "../../../../../src/app/draggable-dialog/draggable-dialog.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div #main *ngIf=\"enabled\" class=\"dialog\"\n  [style.top]=\"yOffset ? yOffset + 'px' : startYOffset\"\n  [style.left]=\"xOffset ? xOffset + 'px' : startXOffset\">\n  <div class=\"header\"\n    (mousedown)=\"mousedown($event)\" (mouseup)=\"mouseup($event)\"\n    (mousemove)=\"mousemove($event)\">\n    {{title}}\n    <button type=\"button\" class=\"close fa fa-times-circle\" (click)=\"close()\"></button>\n  </div>\n  <div class=\"content\">\n    <ng-content></ng-content>\n  </div>\n</div>\n"
+
+/***/ }),
+
+/***/ "../../../../../src/app/draggable-dialog/draggable-dialog.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DraggableDialogComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var DraggableDialogComponent = (function () {
+    function DraggableDialogComponent() {
+        this.startEnabled = false;
+        this.startXOffset = "20px";
+        this.startYOffset = "20px";
+        this.onDragStart = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["d" /* EventEmitter */]();
+        this.onDragEnd = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["d" /* EventEmitter */]();
+        this.enabled = false;
+        this.dragging = false;
+    }
+    DraggableDialogComponent.prototype.ngOnInit = function () {
+        this.enabled = this.startEnabled;
+    };
+    DraggableDialogComponent.prototype.open = function () {
+        this.enabled = true;
+    };
+    DraggableDialogComponent.prototype.toggle = function () {
+        this.enabled = !this.enabled;
+    };
+    DraggableDialogComponent.prototype.close = function () {
+        this.enabled = false;
+    };
+    DraggableDialogComponent.prototype.isOpen = function () {
+        return this.enabled;
+    };
+    DraggableDialogComponent.prototype.mousedown = function (event) {
+        this.startDragging();
+        var box = this.mainElement.nativeElement.getBoundingClientRect();
+        this.xOffset = box.left + window.pageXOffset;
+        this.yOffset = box.top + window.pageYOffset;
+        this.lastX = event.pageX;
+        this.lastY = event.pageY;
+    };
+    DraggableDialogComponent.prototype.mouseup = function (event) {
+        this.stopDragging();
+    };
+    DraggableDialogComponent.prototype.mousemove = function (event) {
+        if (this.dragging) {
+            if ((event.buttons & 1) == 0) {
+                this.stopDragging();
+                return;
+            }
+            this.xOffset += event.pageX - this.lastX;
+            this.yOffset += event.pageY - this.lastY;
+            this.lastX = event.pageX;
+            this.lastY = event.pageY;
+        }
+    };
+    DraggableDialogComponent.prototype.startDragging = function () {
+        this.dragging = true;
+        this.onDragStart.emit();
+    };
+    DraggableDialogComponent.prototype.stopDragging = function () {
+        this.dragging = false;
+        this.onDragEnd.emit();
+    };
+    return DraggableDialogComponent;
+}());
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
+    __metadata("design:type", String)
+], DraggableDialogComponent.prototype, "title", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
+    __metadata("design:type", Object)
+], DraggableDialogComponent.prototype, "content", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('start-enabled'),
+    __metadata("design:type", Object)
+], DraggableDialogComponent.prototype, "startEnabled", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('start-x-offset'),
+    __metadata("design:type", Object)
+], DraggableDialogComponent.prototype, "startXOffset", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('start-y-offset'),
+    __metadata("design:type", Object)
+], DraggableDialogComponent.prototype, "startYOffset", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])('drag-start'),
+    __metadata("design:type", Object)
+], DraggableDialogComponent.prototype, "onDragStart", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])('drag-end'),
+    __metadata("design:type", Object)
+], DraggableDialogComponent.prototype, "onDragEnd", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('main'),
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _a || Object)
+], DraggableDialogComponent.prototype, "mainElement", void 0);
+DraggableDialogComponent = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
+        selector: 'app-draggable-dialog',
+        template: __webpack_require__("../../../../../src/app/draggable-dialog/draggable-dialog.component.html"),
+        styles: [__webpack_require__("../../../../../src/app/draggable-dialog/draggable-dialog.component.css")]
+    })
+], DraggableDialogComponent);
+
+var _a;
+//# sourceMappingURL=draggable-dialog.component.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/app/export-plots/export-plots.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -582,7 +775,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/export-plots/export-plots.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Export graphs</h4>\n  <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"cancel()\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n<div class=\"modal-body\">\n  <p>Please select which graphs you want to export.</p>\n  <div class=\"form-check\">\n    <label class=\"form-check-label\">\n      <input class=\"form-check-input\" type=\"checkbox\"\n        [(ngModel)]=\"includeTopLeft\">\n      {{topLeft?.title}}\n    </label>\n  </div>\n  <div class=\"form-check\">\n    <label class=\"form-check-label\">\n      <input class=\"form-check-input\" type=\"checkbox\"\n        [(ngModel)]=\"includeTopRight\">\n      {{topRight?.title}}\n    </label>\n  </div>\n  <div class=\"form-check\">\n    <label class=\"form-check-label\">\n      <input class=\"form-check-input\" type=\"checkbox\"\n        [(ngModel)]=\"includeBottom\">\n      {{bottom?.title}}\n    </label>\n  </div>\n  <div class=\"form-inline mb-4\">\n    <label for=\"export-image-format\" class=\"mr-sm-2\">Image format:</label>\n    <select id=\"export-image-format\" class=\"form-control\" [(ngModel)]=\"imageFormat\">\n      <option value=\"svg\">SVG</option>\n      <option value=\"png\">PNG</option>\n    </select>\n  </div>\n  <p>\n    The graphs you have chosen will be packaged in a ZIP file.\n  </p>\n  <a #downloadLink style=\"display: none\"></a>\n</div>\n<div class=\"modal-footer\">\n  <button type=\"button\" class=\"btn btn-secondary\" (click)=\"save()\"\n    [disabled]=\"!includeTopLeft && !includeTopRight && !includeBottom\">\n    <i class=\"fa fa-floppy-o\"></i> Save\n  </button>\n  <button type=\"button\" class=\"btn btn-secondary\" (click)=\"cancel()\">\n    <i class=\"fa fa-circle-x\"></i> Close\n  </button>\n</div>\n"
+module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Export graphs</h4>\n  <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"cancel()\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n<div class=\"modal-body\">\n  <p>Please select which graphs you want to export.</p>\n  <div class=\"form-check\">\n    <label class=\"form-check-label\">\n      <input class=\"form-check-input\" type=\"checkbox\"\n        [(ngModel)]=\"includeTopLeft\">\n      {{topLeft?.title}}\n    </label>\n  </div>\n  <div class=\"form-check\">\n    <label class=\"form-check-label\">\n      <input class=\"form-check-input\" type=\"checkbox\"\n        [(ngModel)]=\"includeTopRight\">\n      {{topRight?.title}}\n    </label>\n  </div>\n  <div class=\"form-check\">\n    <label class=\"form-check-label\">\n      <input class=\"form-check-input\" type=\"checkbox\"\n        [(ngModel)]=\"includeBottom\">\n      {{bottom?.title}}\n    </label>\n  </div>\n  <div class=\"form-inline mb-4\">\n    <label for=\"export-image-format\" class=\"mr-sm-2\">Image format:</label>\n    <select id=\"export-image-format\" class=\"form-control\" [(ngModel)]=\"imageFormat\">\n      <option value=\"svg\">SVG</option>\n      <option value=\"png\">PNG</option>\n    </select>\n  </div>\n  <p>\n    The graphs you have chosen will be packaged in a ZIP file.\n  </p>\n  <a #downloadLink style=\"display: none\"></a>\n</div>\n<div class=\"modal-footer\">\n  <button type=\"button\" class=\"btn btn-secondary\" (click)=\"save()\"\n    [disabled]=\"!includeTopLeft && !includeTopRight && !includeBottom\">\n    <i class=\"fa fa-floppy-o\"></i> Save\n  </button>\n  <button type=\"button\" class=\"btn btn-secondary\" (click)=\"cancel()\">\n    <i class=\"fa fa-circle-x\"></i> Close\n  </button>\n</div>\n<app-serialize-plot #topLeftSerializer [plot]=\"topLeft\"></app-serialize-plot>\n<app-serialize-plot #topRightSerializer [plot]=\"topRight\"></app-serialize-plot>\n<app-serialize-plot #bottomSerializer [plot]=\"bottom\"></app-serialize-plot>\n"
 
 /***/ }),
 
@@ -594,8 +787,8 @@ module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Expo
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__ = __webpack_require__("../../../../@ng-bootstrap/ng-bootstrap/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jszip__ = __webpack_require__("../../../../jszip/lib/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jszip___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jszip__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__ = __webpack_require__("../../../../../src/app/plot/plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__bottom_plot_bottom_plot_component__ = __webpack_require__("../../../../../src/app/bottom-plot/bottom-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__ = __webpack_require__("../../../../../src/app/abstract-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__serialize_plot_component__ = __webpack_require__("../../../../../src/app/serialize-plot.component.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ExportPlotsComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -623,15 +816,15 @@ var ExportPlotsComponent = (function () {
     };
     ExportPlotsComponent.prototype.save = function () {
         var _this = this;
-        var plots = [];
+        var serializers = [];
         if (this.includeTopLeft)
-            plots.push(this.topLeft);
+            serializers.push(this.topLeftSerializer);
         if (this.includeTopRight)
-            plots.push(this.topRight);
+            serializers.push(this.topRightSerializer);
         if (this.includeBottom)
-            plots.push(this.bottom);
+            serializers.push(this.bottomSerializer);
         var date = new Date();
-        var month = date.getMonth();
+        var month = date.getMonth() + 1;
         var monthStr = month < 10 ? "0" + month : month.toString();
         var day = date.getDate();
         var dayStr = day < 10 ? "0" + day : day.toString();
@@ -639,19 +832,19 @@ var ExportPlotsComponent = (function () {
         var zip = new __WEBPACK_IMPORTED_MODULE_2_jszip__();
         var dir = zip.folder("ps-plots-" + dateStr);
         var promise = Promise.resolve();
-        plots.forEach(function (plot) {
+        serializers.forEach(function (serializer) {
             promise = promise.then(function () {
                 var result;
                 if (_this.imageFormat == 'svg') {
-                    var xml = plot.serializeAsXML();
+                    var xml = serializer.serializeAsXML();
                     var blob = new Blob([xml], { type: "image/svg+xml" });
                     result = Promise.resolve(blob);
                 }
                 else {
-                    result = plot.serialize();
+                    result = serializer.serialize();
                 }
                 return result.then(function (blob) {
-                    dir.file(plot.title + "." + _this.imageFormat, blob);
+                    dir.file(serializer.plotTitle() + "." + _this.imageFormat, blob);
                 });
             });
         });
@@ -674,30 +867,42 @@ var ExportPlotsComponent = (function () {
 }());
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__["a" /* PlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__["a" /* PlotComponent */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["a" /* AbstractPlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["a" /* AbstractPlotComponent */]) === "function" && _a || Object)
 ], ExportPlotsComponent.prototype, "topLeft", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__["a" /* PlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__["a" /* PlotComponent */]) === "function" && _b || Object)
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["a" /* AbstractPlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["a" /* AbstractPlotComponent */]) === "function" && _b || Object)
 ], ExportPlotsComponent.prototype, "topRight", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__bottom_plot_bottom_plot_component__["a" /* BottomPlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__bottom_plot_bottom_plot_component__["a" /* BottomPlotComponent */]) === "function" && _c || Object)
+    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["a" /* AbstractPlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["a" /* AbstractPlotComponent */]) === "function" && _c || Object)
 ], ExportPlotsComponent.prototype, "bottom", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('downloadLink'),
     __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _d || Object)
 ], ExportPlotsComponent.prototype, "downloadLink", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('topLeftSerializer'),
+    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_4__serialize_plot_component__["a" /* SerializePlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__serialize_plot_component__["a" /* SerializePlotComponent */]) === "function" && _e || Object)
+], ExportPlotsComponent.prototype, "topLeftSerializer", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('topRightSerializer'),
+    __metadata("design:type", typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_4__serialize_plot_component__["a" /* SerializePlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__serialize_plot_component__["a" /* SerializePlotComponent */]) === "function" && _f || Object)
+], ExportPlotsComponent.prototype, "topRightSerializer", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('bottomSerializer'),
+    __metadata("design:type", typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_4__serialize_plot_component__["a" /* SerializePlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__serialize_plot_component__["a" /* SerializePlotComponent */]) === "function" && _g || Object)
+], ExportPlotsComponent.prototype, "bottomSerializer", void 0);
 ExportPlotsComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-export-plots',
         template: __webpack_require__("../../../../../src/app/export-plots/export-plots.component.html"),
         styles: [__webpack_require__("../../../../../src/app/export-plots/export-plots.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["b" /* NgbActiveModal */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["b" /* NgbActiveModal */]) === "function" && _e || Object])
+    __metadata("design:paramtypes", [typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["b" /* NgbActiveModal */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["b" /* NgbActiveModal */]) === "function" && _h || Object])
 ], ExportPlotsComponent);
 
-var _a, _b, _c, _d, _e;
+var _a, _b, _c, _d, _e, _f, _g, _h;
 //# sourceMappingURL=export-plots.component.js.map
 
 /***/ }),
@@ -710,7 +915,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ":host {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 40%;\n  z-index: 100;\n  background: white;\n  border: 1px solid black;\n  border-radius: 5px;\n  box-shadow: 3px 3px 2px #aaa;\n}\n\n.header {\n  font-size: larger;\n  font-weight: bold;\n  background-color: #eee;\n  border-bottom: 1px solid #ccc;\n  padding: 5px;\n  border-radius: 5px 5px 0 0;\n}\n.close {\n  float: right;\n  margin: 5px;\n}\n\n.content {\n  overflow: auto;\n  height: 50vh;\n  padding: 10px;\n  margin: 5px;\n}\n\nh5 {\n  font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "h5 {\n  font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -723,7 +928,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/help/help.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ng-template [ngIf]=\"topic == 'overview'\">\n  <div class=\"header\">\n    PS Overview\n    <button type=\"button\" class=\"close fa fa-times-circle\" (click)=\"close()\"></button>\n  </div>\n  <div class=\"content\">\n    <h5>Introduction</h5>\n    <p>\n      PS is a program for performing power and sample size calculations. You are\n      using a web-enabled beta-test version of the program, where we are actively\n      working on the interactive user interface. Currently, it can only be used\n      for paired t-tests but it will be expanded for use in studies with\n      dichotomous, continuous, survival response and other data.\n    </p>\n    <h5>Program Output</h5>\n    <p>\n      The program can determine the sample size needed to detect a specified\n      alternative hypothesis with the required power, the power with which a\n      specific alternative hypothesis can be detected with a given sample size,\n      or the specific alternative hypotheses that can be detected with a given\n      power and sample size. It also gives the 95% confidence interval for the\n      test statistic under the specified alternative hypothesis as a measure of\n      the precision of the test statistic.\n    </p>\n    <h5>Interactive Help</h5>\n    <p>\n      Click on any question-mark icon for help or pull-down menu to determine\n      the needed information. In the Start tab, choose one of sample size,\n      power, or detectable difference  and then complete the other fields that\n      appear. Hover over the i icon for information on what is needed in each\n      field. Then click the calculate button. A new tab will appear with\n      sliders for altering the input variables, the desired output variable and\n      various graphs.\n    </p>\n    <h5>Graphical Output</h5>\n    <p>\n      The graphs that can be generated are sample size vs. power, sample size\n      vs. the detectable alternative hypothesis, power vs. sample size, and\n      power vs. the detectable alternative hypothesis.  The y-axes of these\n      graphs are always show the output variable. In addition, a graph of\n      precision vs effect size is always given.  The red dot on the top two\n      graphs can be dragged to enhance the users intuition on how the input and\n      output variables interact.\n    </p>\n    <h5>Interpretation</h5>\n    <p>\n      The output also includes text that describes the power or sample size\n      calculation in English, which may be a useful starting point for a\n      description in a grant application.\n    </p>\n    <h5>Options gear wheel</h5>\n    <p>\n      Click on this icon to change the point size, line width and other graph\n      options.\n    </p>\n    <p>\n      <img src=\"assets/cc.png\"> &copy; William D. Dupont, Jeffrey D. Blume, W.\n      Dale Plummer, Jeremy Stephens 2017\n    </p>\n    <p>\n      Use of this program is restricted by a Creative Commons Attribution\n      Non-Commercial Share Alike license. See\n      <a href=\"https://creativecommons.org/licenses\">https://creativecommons.org/licenses</a>\n      for details. We are grateful for support from Dr. Gordon R. Bernard and\n      the Vanderbilt Institute for Clinical and Translational Research.\n    </p>\n  </div>\n</ng-template>\n<ng-template [ngIf]=\"topic == 'start'\">\n  <div class=\"header\">\n    PS Start Tab\n    <button type=\"button\" class=\"close fa fa-times-circle\" (click)=\"close()\"></button>\n  </div>\n  <div class=\"content\">\n    <p>Select one of the following:</p>\n    <h5>Sample size</h5>\n    <p>\n      For independent t-tests this is the number of experimental patients that\n      must be studied to detect a true difference in population means &delta;\n      with Type I error probability &alpha; given a standard deviation &sigma;\n      and <em>m</em> controls per experimental patient. For paired t-tests it\n      is the number of pairs of patients needed to detect a true difference in\n      population means &delta; with Type I error probability &alpha; given a\n      standard deviation &sigma;.\n    </p>\n    <h5>Power</h5>\n    <p>\n      For independent studies it is the probability of rejecting the null\n      hypothesis with Type I error probability &alpha; given the specified\n      sample size, a standard deviation &sigma; and a control/experimental\n      patient ratio <em>m</em> when the true difference in population means is\n      &delta;. For paired studies it is the probability of rejecting the null\n      hypothesis with Type I error probability &alpha; given the specified\n      sample size, a standard deviation &sigma; when the true difference in\n      population means is &delta;.\n    </p>\n    <h5>Detectable alternative</h5>\n    <p>\n      A difference in population means that can be detected with the specified\n      power and Type I error probability &alpha; given a standard deviation\n      &sigma;, and the specified sample size.\n    </p>\n  </div>\n</ng-template>\n"
+module.exports = "<ng-template [ngIf]=\"topic == 'overview'\">\n  <h5>Introduction</h5>\n  <p>\n    PS is a program for performing power and sample size calculations. You are\n    using a web-enabled beta-test version of the program, where we are actively\n    working on the interactive user interface. Currently, it can only be used\n    for paired t-tests but it will be expanded for use in studies with\n    dichotomous, continuous, survival response and other data.\n  </p>\n  <h5>Program Output</h5>\n  <p>\n    The program can determine the sample size needed to detect a specified\n    alternative hypothesis with the required power, the power with which a\n    specific alternative hypothesis can be detected with a given sample size,\n    or the specific alternative hypotheses that can be detected with a given\n    power and sample size. It also gives the 95% confidence interval for the\n    test statistic under the specified alternative hypothesis as a measure of\n    the precision of the test statistic.\n  </p>\n  <h5>Interactive Help</h5>\n  <p>\n    Click on any question-mark icon for help or pull-down menu to determine\n    the needed information. In the Start tab, choose one of sample size,\n    power, or detectable difference  and then complete the other fields that\n    appear. Hover over the i icon for information on what is needed in each\n    field. Then click the calculate button. A new tab will appear with\n    sliders for altering the input variables, the desired output variable and\n    various graphs.\n  </p>\n  <h5>Graphical Output</h5>\n  <p>\n    The graphs that can be generated are sample size vs. power, sample size\n    vs. the detectable alternative hypothesis, power vs. sample size, and\n    power vs. the detectable alternative hypothesis.  The y-axes of these\n    graphs are always show the output variable. In addition, a graph of\n    precision vs effect size is always given.  The red dot on the top two\n    graphs can be dragged to enhance the users intuition on how the input and\n    output variables interact.\n  </p>\n  <h5>Interpretation</h5>\n  <p>\n    The output also includes text that describes the power or sample size\n    calculation in English, which may be a useful starting point for a\n    description in a grant application.\n  </p>\n  <h5>Options gear wheel</h5>\n  <p>\n    Click on this icon to change the point size, line width and other graph\n    options.\n  </p>\n  <p>\n    <img src=\"assets/cc.png\"> &copy; William D. Dupont, Jeffrey D. Blume, W.\n    Dale Plummer, Jeremy Stephens 2017\n  </p>\n  <p>\n    Use of this program is restricted by a Creative Commons Attribution\n    Non-Commercial Share Alike license. See\n    <a href=\"https://creativecommons.org/licenses\">https://creativecommons.org/licenses</a>\n    for details. We are grateful for support from Dr. Gordon R. Bernard and\n    the Vanderbilt Institute for Clinical and Translational Research.\n  </p>\n</ng-template>\n<ng-template [ngIf]=\"topic == 'start'\">\n  <p>Select one of the following:</p>\n  <h5>Sample size</h5>\n  <p>\n    For independent t-tests this is the number of experimental patients that\n    must be studied to detect a true difference in population means &delta;\n    with Type I error probability &alpha; given a standard deviation &sigma;\n    and <em>m</em> controls per experimental patient. For paired t-tests it\n    is the number of pairs of patients needed to detect a true difference in\n    population means &delta; with Type I error probability &alpha; given a\n    standard deviation &sigma;.\n  </p>\n  <h5>Power</h5>\n  <p>\n    For independent studies it is the probability of rejecting the null\n    hypothesis with Type I error probability &alpha; given the specified\n    sample size, a standard deviation &sigma; and a control/experimental\n    patient ratio <em>m</em> when the true difference in population means is\n    &delta;. For paired studies it is the probability of rejecting the null\n    hypothesis with Type I error probability &alpha; given the specified\n    sample size, a standard deviation &sigma; when the true difference in\n    population means is &delta;.\n  </p>\n  <h5>Detectable alternative</h5>\n  <p>\n    A difference in population means that can be detected with the specified\n    power and Type I error probability &alpha; given a standard deviation\n    &sigma;, and the specified sample size.\n  </p>\n</ng-template>\n"
 
 /***/ }),
 
@@ -745,28 +950,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var HelpComponent = (function () {
     function HelpComponent() {
-        this.onClose = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["d" /* EventEmitter */]();
     }
-    HelpComponent.prototype.close = function () {
-        this.onClose.emit();
-    };
     return HelpComponent;
 }());
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
     __metadata("design:type", String)
 ], HelpComponent.prototype, "topic", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
-    __metadata("design:type", Object)
-], HelpComponent.prototype, "onClose", void 0);
 HelpComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-help',
         template: __webpack_require__("../../../../../src/app/help/help.component.html"),
         styles: [__webpack_require__("../../../../../src/app/help/help.component.css")]
-    }),
-    __metadata("design:paramtypes", [])
+    })
 ], HelpComponent);
 
 //# sourceMappingURL=help.component.js.map
@@ -794,7 +990,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/output-pane/output-pane.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"plot\" [class.without-text]=\"!showText\">\n  <app-plot #topLeft name=\"top-left\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-plot>\n  <app-plot #topRight name=\"top-right\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-plot>\n  <app-bottom-plot #bottom name=\"bottom\" [modelSet]=\"modelSet\" [plotOptions]=\"plotOptions\">\n  </app-bottom-plot>\n  <div class=\"show-text\" *ngIf=\"modelSet && !showText\">\n    <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleText(true)\">\n      <i class=\"fa fa-envelope-open-o\" aria-hidden=\"true\"></i>\n      Interpretation\n    </button>\n  </div>\n</div>\n<div class=\"output-text\" *ngIf=\"modelSet && showText\">\n  <div *ngIf=\"showText\" class=\"hide-text\">\n    <i class=\"fa fa-times-circle\" (click)=\"toggleText(false)\"></i>\n  </div>\n  <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n    We are planning a study of a continuous response variable from matched\n    pairs of study subjects. Prior data indicate that the difference in the\n    response of matched pairs is normally distributed with standard deviation\n    {{round(modelSet.model.sigma)}}. If the true difference in the mean response of\n    matched pairs is {{round(modelSet.model.delta)}}, we will need to study\n    {{ceil(modelSet.model.n)}} pairs of subjects to be able to reject the null\n    hypothesis that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. If\n    the true difference in the mean response of matched pairs is\n    {{round(modelSet.model.delta)}}, we will be able to reject the null hypothesis\n    that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. We\n    will be able to detect a true difference in the mean response of matched\n    pairs of -{{round(modelSet.model.delta)}} or {{round(modelSet.model.delta)}} with\n    probability (power) {{round(modelSet.model.power)}}. The Type I error probability\n    associated with this test of the null hypothesis that this response\n    difference is zero is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n</div>\n"
+module.exports = "<div class=\"plot\" [class.without-text]=\"!showText\">\n  <app-plot #topLeft name=\"top-left\"\n    [modelSet]=\"modelSet\"\n    [plotOptions]=\"plotOptions\"\n    [hover-disabled]=\"hoverDisabled\">\n  </app-plot>\n  <app-plot #topRight name=\"top-right\"\n    [modelSet]=\"modelSet\"\n    [plotOptions]=\"plotOptions\"\n    [hover-disabled]=\"hoverDisabled\">\n  </app-plot>\n  <app-bottom-plot #bottom name=\"bottom\"\n    [modelSet]=\"modelSet\"\n    [plotOptions]=\"plotOptions\">\n  </app-bottom-plot>\n  <div class=\"show-text\" *ngIf=\"modelSet && !showText\">\n    <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleText(true)\">\n      <i class=\"fa fa-envelope-open-o\" aria-hidden=\"true\"></i>\n      Interpretation\n    </button>\n  </div>\n</div>\n<div class=\"output-text\" *ngIf=\"modelSet && showText\">\n  <div *ngIf=\"showText\" class=\"hide-text\">\n    <i class=\"fa fa-times-circle\" (click)=\"toggleText(false)\"></i>\n  </div>\n  <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n    We are planning a study of a continuous response variable from matched\n    pairs of study subjects. Prior data indicate that the difference in the\n    response of matched pairs is normally distributed with standard deviation\n    {{round(modelSet.model.sigma)}}. If the true difference in the mean response of\n    matched pairs is {{round(modelSet.model.delta)}}, we will need to study\n    {{ceil(modelSet.model.n)}} pairs of subjects to be able to reject the null\n    hypothesis that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. If\n    the true difference in the mean response of matched pairs is\n    {{round(modelSet.model.delta)}}, we will be able to reject the null hypothesis\n    that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. We\n    will be able to detect a true difference in the mean response of matched\n    pairs of -{{round(modelSet.model.delta)}} or {{round(modelSet.model.delta)}} with\n    probability (power) {{round(modelSet.model.power)}}. The Type I error probability\n    associated with this test of the null hypothesis that this response\n    difference is zero is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n</div>\n"
 
 /***/ }),
 
@@ -830,6 +1026,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var OutputPaneComponent = (function () {
     function OutputPaneComponent(modalService) {
         this.modalService = modalService;
+        this.hoverDisabled = false;
         this.showText = true;
     }
     OutputPaneComponent.prototype.ngOnInit = function () {
@@ -870,6 +1067,10 @@ __decorate([
     __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */]) === "function" && _b || Object)
 ], OutputPaneComponent.prototype, "plotOptions", void 0);
 __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('hover-disabled'),
+    __metadata("design:type", Object)
+], OutputPaneComponent.prototype, "hoverDisabled", void 0);
+__decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('topLeft'),
     __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__plot_plot_component__["a" /* PlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__plot_plot_component__["a" /* PlotComponent */]) === "function" && _c || Object)
 ], OutputPaneComponent.prototype, "topLeftPlot", void 0);
@@ -896,6 +1097,48 @@ OutputPaneComponent = __decorate([
 
 var _a, _b, _c, _d, _e, _f, _g;
 //# sourceMappingURL=output-pane.component.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/palette.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PaletteService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+var PaletteService = (function () {
+    function PaletteService() {
+        this.colors = {
+            plasma: ["#0D0887", "#7E03A8", "#CC4678", "#F89441", "#F0F921"],
+            viridis: ["#440154", "#3B528B", "#21908C", "#5DC863", "#FDE725"],
+            magma: ["#000004", "#51127C", "#B63679", "#FB8861", "#FCFDBF"],
+        };
+    }
+    PaletteService.prototype.getColor = function (index, name) {
+        if (name === void 0) { name = "plasma"; }
+        if (!(name in this.colors)) {
+            throw new Error("invalid palette: " + name);
+        }
+        if (index == -1) {
+            return "";
+        }
+        var colors = this.colors[name];
+        return colors[index % colors.length];
+    };
+    return PaletteService;
+}());
+PaletteService = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["e" /* Injectable */])()
+], PaletteService);
+
+//# sourceMappingURL=palette.service.js.map
 
 /***/ }),
 
@@ -935,6 +1178,7 @@ var PlotOptions = (function (_super) {
         _this.axisFontSize = 1;
         _this.lineWidth = 1;
         _this.axisLineWidth = 1;
+        _this.paletteTheme = "plasma";
         _this.noEmit = false;
         _this.changes = {};
         return _this;
@@ -1008,6 +1252,10 @@ __decorate([
     __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
     __metadata("design:type", Number)
 ], PlotOptions.prototype, "axisLineWidth", void 0);
+__decorate([
+    __WEBPACK_IMPORTED_MODULE_0__changeable__["b" /* Changeable */],
+    __metadata("design:type", String)
+], PlotOptions.prototype, "paletteTheme", void 0);
 //# sourceMappingURL=plot-options.js.map
 
 /***/ }),
@@ -1020,7 +1268,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".plot-options {\n  display: block;\n  position: absolute;\n  top: 0;\n  right: 20px;\n  width: 75%;\n  z-index: 100;\n  background-color: white;\n  border: 1px solid #888;\n  border-radius: 10px;\n  box-shadow: 5px 5px 25px #888;\n}\n\n.plot-options .header {\n  font-size: larger;\n  font-weight: bold;\n  background-color: #e5e5e5;\n  border-bottom: 1px solid #ccc;\n  padding: 10px;\n  border-radius: 10px 10px 0 0;\n}\n\n.plot-options .close {\n  float: right;\n  margin: 5px;\n}\n\n.plot-options .content {\n  overflow: auto;\n  height: 50vh;\n  padding: 5px;\n  margin: 0 5px;\n}\n\n.plot-options fieldset {\n  border: 1px solid #bbb;\n  border-radius: 5px;\n  padding: 10px;\n  margin: 10px;\n}\n\n.plot-options fieldset legend {\n  font-size: inherit;\n  font-weight: bold;\n  display: table;\n  width: auto;\n}\n\n.plot-options .form-group {\n  padding: 0 5px;\n}\n", ""]);
+exports.push([module.i, "fieldset {\n  border: 1px solid #bbb;\n  border-radius: 5px;\n  padding: 10px;\n  margin: 10px;\n}\n\nfieldset legend {\n  font-size: inherit;\n  font-weight: bold;\n  display: table;\n  width: auto;\n}\n\n.form-group {\n  padding: 0 5px;\n}\n", ""]);
 
 // exports
 
@@ -1033,7 +1281,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/plot-options/plot-options.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"plot-options\" *ngIf=\"enabled\">\n  <div class=\"header\">\n    Plot options\n    <button type=\"button\" class=\"close fa fa-times-circle\" (click)=\"close()\"></button>\n  </div>\n  <div *ngIf=\"plotOptions && modelSet\" class=\"content\">\n    <fieldset>\n      <legend>Global</legend>\n      <div class=\"form-group\">\n        <label for=\"plot-font-family\">Font family</label>\n        <select id=\"plot-font-family\" class=\"form-control\"\n          [(ngModel)]=\"plotOptions.fontFamily\">\n          <option value=\"\">Default</option>\n          <option value=\"serif\">Serif</option>\n          <option value=\"sans\">Sans-serif</option>\n          <option value=\"monospace\">Monospace</option>\n          <option>Bungee Shade</option>\n          <option>Sancreek</option>\n        </select>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-sm-6\">\n          <label for=\"plot-font-size\">Font size: {{plotOptions.fontSize}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-font-size\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.fontSize\" />\n          </div>\n        </div>\n        <div class=\"col-sm-6\">\n          <label for=\"plot-axis-font-size\">Axis font size: {{plotOptions.axisFontSize}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-axis-font-size\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.axisFontSize\" />\n          </div>\n        </div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-sm-6\">\n          <label for=\"plot-line-width\">Line width: {{plotOptions.lineWidth}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-line-width\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.lineWidth\" />\n          </div>\n        </div>\n        <div class=\"col-sm-6\">\n          <label for=\"plot-axis-line-width\">Axis line width: {{plotOptions.axisLineWidth}}</label>\n          <div class=\"input-group\">\n            <input id=\"plot-axis-line-width\" class=\"form-control\"\n              type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n              [(ngModel)]=\"plotOptions.axisLineWidth\" />\n          </div>\n        </div>\n      </div>\n    </fieldset>\n    <fieldset>\n      <legend *ngIf=\"modelSet.model.output == 'n'\">Sample Size</legend>\n      <legend *ngIf=\"modelSet.model.output == 'power'\">Power</legend>\n      <legend *ngIf=\"modelSet.model.output == 'delta'\">Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-y-min\">Minimum</label>\n          <div class=\"input-group\">\n            <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </ng-template>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-y-max\">Maximum</label>\n          <div class=\"input-group\">\n            <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </ng-template>\n            <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </ng-template>\n          </div>\n        </div>\n      </div>\n    </fieldset>\n    <fieldset>\n      <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n        <legend>Sample Size vs. Power</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n        <legend>Power vs. Sample Size</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n        <legend>Detectable Alternative vs. Sample Size</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n                [(ngModel)]=\"modelSet.ranges.n.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n    </fieldset>\n    <fieldset>\n      <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n        <legend>Sample Size vs. Detectable Alternative</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n        <legend>Power vs. Detectable Alternative</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n                [(ngModel)]=\"modelSet.ranges.delta.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n        <legend>Detectable Alternative vs. Power</legend>\n        <div class=\"row\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.min\" />\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input class=\"form-control\"\n                type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n                [(ngModel)]=\"modelSet.ranges.power.max\" />\n            </div>\n          </div>\n        </div>\n      </ng-template>\n    </fieldset>\n    <fieldset>\n      <legend>Precision vs. Parameter Space</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-bottom-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.pSpace.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.pSpace.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-bottom-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.pSpace.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.pSpace.max\" />\n          </div>\n        </div>\n      </div>\n    </fieldset>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"reset()\">\n      Reset all settings\n    </button>\n  </div>\n</div>\n"
+module.exports = "<div *ngIf=\"plotOptions && modelSet\" class=\"content\">\n  <fieldset>\n    <legend>Global</legend>\n    <div class=\"form-group\">\n      <label for=\"plot-font-family\">Font family</label>\n      <select id=\"plot-font-family\" class=\"form-control\"\n        [(ngModel)]=\"plotOptions.fontFamily\">\n        <option value=\"\">Default</option>\n        <option value=\"serif\">Serif</option>\n        <option value=\"sans\">Sans-serif</option>\n        <option value=\"monospace\">Monospace</option>\n        <option>Bungee Shade</option>\n        <option>Sancreek</option>\n      </select>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-palette-theme\">Palette</label>\n      <select id=\"plot-palette-theme\" class=\"form-control\"\n        [(ngModel)]=\"plotOptions.paletteTheme\">\n        <option value=\"plasma\">Plasma</option>\n        <option value=\"viridis\">Viridis</option>\n        <option value=\"magma\">Magma</option>\n      </select>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-font-size\">Font size: {{plotOptions.fontSize}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.fontSize\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-font-size\">Axis font size: {{plotOptions.axisFontSize}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-axis-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.axisFontSize\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-line-width\">Line width: {{plotOptions.lineWidth}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.lineWidth\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-line-width\">Axis line width: {{plotOptions.axisLineWidth}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-axis-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.axisLineWidth\" />\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <fieldset>\n    <legend *ngIf=\"modelSet.model.output == 'n'\">Sample Size</legend>\n    <legend *ngIf=\"modelSet.model.output == 'power'\">Power</legend>\n    <legend *ngIf=\"modelSet.model.output == 'delta'\">Detectable Alternative</legend>\n    <div class=\"row\">\n      <div class=\"col-sm\">\n        <label for=\"plot-top-y-min\">Minimum</label>\n        <div class=\"input-group\">\n          <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </ng-template>\n          <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </ng-template>\n          <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </ng-template>\n        </div>\n      </div>\n      <div class=\"col-sm\">\n        <label for=\"plot-top-y-max\">Maximum</label>\n        <div class=\"input-group\">\n          <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </ng-template>\n          <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </ng-template>\n          <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </ng-template>\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <fieldset>\n    <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n      <legend>Sample Size vs. Power</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n      <legend>Power vs. Sample Size</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n      <legend>Detectable Alternative vs. Sample Size</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </fieldset>\n  <fieldset>\n    <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n      <legend>Sample Size vs. Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n      <legend>Power vs. Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n      <legend>Detectable Alternative vs. Power</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </fieldset>\n  <fieldset>\n    <legend>Precision vs. Parameter Space</legend>\n    <div class=\"row\">\n      <div class=\"col-sm\">\n        <label for=\"plot-bottom-x-min\">X minimum</label>\n        <div class=\"input-group\">\n          <input class=\"form-control\"\n            type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.pSpace.max - 1)\"\n            [(ngModel)]=\"modelSet.ranges.pSpace.min\" />\n        </div>\n      </div>\n      <div class=\"col-sm\">\n        <label for=\"plot-bottom-x-max\">X maximum</label>\n        <div class=\"input-group\">\n          <input class=\"form-control\"\n            type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.pSpace.min + 1)\"\n            [(ngModel)]=\"modelSet.ranges.pSpace.max\" />\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"reset()\">\n    Reset all settings\n  </button>\n</div>\n"
 
 /***/ }),
 
@@ -1062,7 +1310,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var PlotOptionsComponent = (function () {
     function PlotOptionsComponent() {
-        this.enabled = false;
     }
     PlotOptionsComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -1080,12 +1327,6 @@ var PlotOptionsComponent = (function () {
             }
         });
         this.defaultPlotOptions = new __WEBPACK_IMPORTED_MODULE_3__plot_options__["a" /* PlotOptions */]();
-    };
-    PlotOptionsComponent.prototype.toggle = function () {
-        this.enabled = !this.enabled;
-    };
-    PlotOptionsComponent.prototype.close = function () {
-        this.enabled = false;
     };
     PlotOptionsComponent.prototype.reset = function () {
         this.plotOptions.update(this.defaultPlotOptions.attributes());
@@ -1146,7 +1387,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/plot/plot.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" (window:resize)=\"onResize()\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"x && y && modelSet\">\n    <defs>\n      <clipPath [id]=\"mainClipPathId\">\n        <rect x=\"0\" [attr.y]=\"-plotOptions.lineWidth * 3\"\n          [attr.width]=\"width\"\n          [attr.height]=\"height + plotOptions.lineWidth * 3\" />\n      </clipPath>\n      <clipPath [id]=\"targetClipPathId\">\n        <rect x=\"-5\" [attr.y]=\"-5\"\n          [attr.width]=\"width + 10\"\n          [attr.height]=\"height + 10\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"width / 2 + margin\" [attr.y]=\"height + margin\" dy=\"2.5em\">\n      {{x.title}}\n    </text>\n    <text text-anchor=\"middle\"\n      [attr.dx]=\"-(height / 2 + margin)\" dy=\"1em\"\n      transform=\"rotate(-90)\">\n      {{y.title}}\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"width / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{title}}\n    </text>\n\n    <g *ngFor=\"let path of paths; let i = index\"\n      [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"mainClipPath()\"\n        [attr.d]=\"path\"\n        [attr.stroke]=\"i == (paths.length - 1) ? 'steelblue' : 'lightblue'\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n    </g>\n\n    <g *ngFor=\"let path of dropPaths\"\n      [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"mainClipPath()\"\n        [attr.d]=\"path\"\n        stroke=\"red\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3 / 2\"\n        stroke-dasharray=\"5, 5\"\n        fill=\"none\" />\n    </g>\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, height + margin)\"></g>\n    <g #leftAxis [attr.transform]=\"translate(margin, margin)\"></g>\n\n    <g *ngIf=\"showHoverInfo\"\n      [attr.transform]=\"translate(margin + hoverX, margin + hoverY)\">\n      <circle r=\"4\" fill=\"none\" stroke=\"blue\" />\n      <rect x=\"-3.5em\" [attr.y]=\"hoverInfoY()\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"-2.5em\" [attr.y]=\"hoverInfoY()\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.x}}</tspan>\n        <tspan x=\"-2.5em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <rect [attr.transform]=\"translate(margin, margin)\"\n      [attr.width]=\"width\" [attr.height]=\"height\"\n      fill=\"none\" pointer-events=\"all\"\n      (mouseout)=\"toggleHoverInfo(false)\"\n      (mousemove)=\"hover($event)\" />\n\n    <g *ngIf=\"showTargetInfo\"\n      [attr.transform]=\"translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))\">\n      <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"1em\" y=\"-3.5em\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.x}}</tspan>\n        <tspan x=\"1em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <circle #target class=\"target\" r=\"5\"\n      [attr.cx]=\"xScale(targetPoint.x)\"\n      [attr.cy]=\"yScale(targetPoint.y)\"\n      [attr.transform]=\"translate(margin, margin)\"\n      [attr.clip-path]=\"targetClipPath()\"\n      fill=\"red\"\n      (mouseover)=\"toggleTargetInfo(true)\"\n      (mouseout)=\"toggleTargetInfo(false)\" />\n  </ng-template>\n</svg>\n<canvas #canvas style=\"display: none\"></canvas>\n"
+module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" (window:resize)=\"onResize()\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"x && y && modelSet\">\n    <defs>\n      <clipPath [id]=\"mainClipPathId\">\n        <rect x=\"0\" [attr.y]=\"-plotOptions.lineWidth * 3\"\n          [attr.width]=\"width\"\n          [attr.height]=\"height + plotOptions.lineWidth * 3\" />\n      </clipPath>\n      <clipPath [id]=\"targetClipPathId\">\n        <rect x=\"-5\" [attr.y]=\"-5\"\n          [attr.width]=\"width + 10\"\n          [attr.height]=\"height + 10\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"width / 2 + margin\" [attr.y]=\"height + margin\" dy=\"2.5em\">\n      {{x.title}}\n    </text>\n    <text text-anchor=\"middle\"\n      [attr.dx]=\"-(height / 2 + margin)\" dy=\"1em\"\n      transform=\"rotate(-90)\">\n      {{y.title}}\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"width / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{title}}\n    </text>\n\n    <g *ngFor=\"let path of paths; let i = index\"\n      [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"mainClipPath()\"\n        [attr.d]=\"path\"\n        [attr.stroke]=\"palette.getColor(paths.length - 1 - i, plotOptions.paletteTheme)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [attr.opacity]=\"i == (paths.length - 1) ? 1 : 0.7\"\n        fill=\"none\" />\n    </g>\n\n    <g *ngFor=\"let path of dropPaths\"\n      [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"mainClipPath()\"\n        [attr.d]=\"path\"\n        stroke=\"red\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3 / 2\"\n        stroke-dasharray=\"5, 5\"\n        fill=\"none\" />\n    </g>\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, height + margin)\"></g>\n    <g #leftAxis [attr.transform]=\"translate(margin, margin)\"></g>\n\n    <g *ngIf=\"showHoverInfo\"\n      [attr.transform]=\"translate(margin + hoverX, margin + hoverY)\">\n      <circle r=\"4\" fill=\"none\" stroke=\"blue\" />\n      <rect x=\"-3.5em\" [attr.y]=\"hoverInfoY()\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"-2.5em\" [attr.y]=\"hoverInfoY()\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.x}}</tspan>\n        <tspan x=\"-2.5em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <rect [attr.transform]=\"translate(margin, margin)\"\n      [attr.width]=\"width\" [attr.height]=\"height\"\n      fill=\"none\" pointer-events=\"all\"\n      (mouseout)=\"toggleHoverInfo(false)\"\n      (mousemove)=\"hover($event)\" />\n\n    <g *ngIf=\"showTargetInfo\"\n      [attr.transform]=\"translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))\">\n      <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"1em\" y=\"-3.5em\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.x}}</tspan>\n        <tspan x=\"1em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <circle #target class=\"target\" r=\"5\"\n      [attr.cx]=\"xScale(targetPoint.x)\"\n      [attr.cy]=\"yScale(targetPoint.y)\"\n      [attr.transform]=\"translate(margin, margin)\"\n      [attr.clip-path]=\"targetClipPath()\"\n      fill=\"red\"\n      (mouseover)=\"toggleTargetInfo(true)\"\n      (mouseout)=\"toggleTargetInfo(false)\" />\n  </ng-template>\n</svg>\n"
 
 /***/ }),
 
@@ -1157,9 +1398,20 @@ module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/build/d3.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__plot_options__ = __webpack_require__("../../../../../src/app/plot-options.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__ = __webpack_require__("../../../../../src/app/abstract-plot.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__palette_service__ = __webpack_require__("../../../../../src/app/palette.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PlotComponent; });
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1173,13 +1425,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var PlotComponent = (function () {
-    function PlotComponent() {
-        this.margin = 50;
-        this.targetDragging = false;
-        this.showTargetInfo = false;
-        this.showHoverInfo = false;
-        this.needDraw = false;
+
+var PlotComponent = (function (_super) {
+    __extends(PlotComponent, _super);
+    function PlotComponent(palette) {
+        var _this = _super.call(this) || this;
+        _this.palette = palette;
+        _this.hoverDisabled = false;
+        _this.margin = 50;
+        _this.targetDragging = false;
+        _this.showTargetInfo = false;
+        _this.showHoverInfo = false;
+        _this.needDraw = false;
+        return _this;
     }
     PlotComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -1221,6 +1479,9 @@ var PlotComponent = (function () {
         this.showHoverInfo = value;
     };
     PlotComponent.prototype.hover = function (event) {
+        if (this.hoverDisabled) {
+            return;
+        }
         var dim = event.target.getBoundingClientRect();
         var x = event.clientX - dim.left;
         var y = event.clientY - dim.top;
@@ -1250,32 +1511,6 @@ var PlotComponent = (function () {
             return "-3.5em";
         }
         return "1em";
-    };
-    PlotComponent.prototype.serializeAsXML = function () {
-        var serializer = new XMLSerializer();
-        return serializer.serializeToString(this.plotElement.nativeElement);
-    };
-    PlotComponent.prototype.serialize = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var data = _this.serializeAsXML();
-            var width = _this.getDimension('width');
-            var height = _this.getDimension('height');
-            var canvas = _this.canvasElement.nativeElement;
-            canvas.width = width;
-            canvas.height = height;
-            var context = canvas.getContext("2d");
-            var image = new Image(width, height);
-            image.addEventListener('load', function () {
-                context.clearRect(0, 0, width, height);
-                context.drawImage(image, 0, 0, width, height);
-                canvas.toBlob(function (blob) {
-                    resolve(blob);
-                });
-            });
-            var src = 'data:image/svg+xml;base64,' + btoa(data);
-            image.src = src;
-        });
     };
     PlotComponent.prototype.dragTargetStart = function () {
         this.targetDragging = true;
@@ -1405,7 +1640,7 @@ var PlotComponent = (function () {
         // paths
         data.reverse(); // reverse data so main line is drawn on top
         this.paths = data.map(function (subData) { return _this.getPath(subData, _this.x.name, _this.y.name); });
-        this.mainData = data[data.length - 1];
+        this.mainData = data[data.length - 1].slice();
         this.mainData.sort(function (a, b) { return a[_this.x.name] - b[_this.x.name]; });
         // drop paths
         this.computeDropPaths();
@@ -1455,87 +1690,49 @@ var PlotComponent = (function () {
         target.call(drag);
         this.needDraw = false;
     };
-    PlotComponent.prototype.getDimension = function (key) {
-        var dim = this.plotElement.nativeElement[key];
-        var result = 0;
-        if ('value' in dim) {
-            result = dim.value;
-        }
-        else if ('baseVal' in dim) {
-            result = dim.baseVal.value;
-        }
-        else {
-            throw new Error("can't get " + key);
-        }
-        return result;
-    };
-    PlotComponent.prototype.translate = function (x, y) {
-        if (isNaN(x) || isNaN(y)) {
-            return null;
-        }
-        return "translate(" + x + ", " + y + ")";
-    };
     PlotComponent.prototype.mainClipPath = function () {
         return "url(#" + this.mainClipPathId + ")";
     };
     PlotComponent.prototype.targetClipPath = function () {
         return "url(#" + this.targetClipPathId + ")";
     };
-    PlotComponent.prototype.getPath = function (data, xName, yName) {
-        var _this = this;
-        var line = __WEBPACK_IMPORTED_MODULE_1_d3__["line"]().
-            x(function (d, i) { return _this.xScale(d[xName]); }).
-            y(function (d, i) { return _this.yScale(d[yName]); });
-        return line(data);
-    };
     return PlotComponent;
-}());
+}(__WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["a" /* AbstractPlotComponent */]));
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", String)
-], PlotComponent.prototype, "name", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__plot_options__["a" /* PlotOptions */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__plot_options__["a" /* PlotOptions */]) === "function" && _a || Object)
-], PlotComponent.prototype, "plotOptions", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
-    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTestSet */]) === "function" && _b || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTestSet */]) === "function" && _a || Object)
 ], PlotComponent.prototype, "modelSet", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('plot'),
-    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _c || Object)
-], PlotComponent.prototype, "plotElement", void 0);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('hover-disabled'),
+    __metadata("design:type", Object)
+], PlotComponent.prototype, "hoverDisabled", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('unit'),
-    __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _d || Object)
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _b || Object)
 ], PlotComponent.prototype, "unitElement", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('bottomAxis'),
-    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _e || Object)
+    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _c || Object)
 ], PlotComponent.prototype, "bottomAxisElement", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('leftAxis'),
-    __metadata("design:type", typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _f || Object)
+    __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _d || Object)
 ], PlotComponent.prototype, "leftAxisElement", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('target'),
-    __metadata("design:type", typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _g || Object)
+    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _e || Object)
 ], PlotComponent.prototype, "targetElement", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('canvas'),
-    __metadata("design:type", typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _h || Object)
-], PlotComponent.prototype, "canvasElement", void 0);
 PlotComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-plot',
         template: __webpack_require__("../../../../../src/app/plot/plot.component.html"),
         styles: [__webpack_require__("../../../../../src/app/plot/plot.component.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["M" /* ViewEncapsulation */].None
-    })
+    }),
+    __metadata("design:paramtypes", [typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_4__palette_service__["a" /* PaletteService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__palette_service__["a" /* PaletteService */]) === "function" && _f || Object])
 ], PlotComponent);
 
-var _a, _b, _c, _d, _e, _f, _g, _h;
+var _a, _b, _c, _d, _e, _f;
 //# sourceMappingURL=plot.component.js.map
 
 /***/ }),
@@ -1548,7 +1745,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "div.slider-group {\n  padding: 5px;\n  border-radius: 5px;\n}\n\ndiv.slider-group.output {\n  background-color: #d8ecf3;\n}\n\ndiv.slider-group .label span {\n  font-weight: bold;\n}\n\ndiv.slider-group .slider,\ndiv.slider-group .number {\n  padding-top: 2ex;\n}\ndiv.slider-group .add-remove {\n  padding-top: 2.3ex;\n}\n\ndiv.slider-group div.inputs input {\n  width: 100%;\n}\n\ndiv.slider-group div.slider {\n  position: relative;\n  padding-left: 0;\n  padding-right: 0;\n}\n\ndiv.slider-group div.slider input {\n  display: block;\n}\n\ndiv.slider-group div.slider div.min,\ndiv.slider-group div.slider div.max {\n  position: absolute;\n  font-size: x-small;\n  top: 0;\n  background-color: #ddd;\n  border-radius: 1ex;\n  padding: 0.5ex;\n}\n\ndiv.slider-group.output div.slider div.min,\ndiv.slider-group.output div.slider div.max {\n  background-color: #ccc;\n}\n\ndiv.slider-group div.slider div.min {\n  left: 0;\n}\n\ndiv.slider-group div.slider div.max {\n  right: 0;\n}\n\n.fa {\n  opacity: 0.7;\n}\n.fa:hover {\n  opacity: 1;\n}\n", ""]);
+exports.push([module.i, "div.slider-group {\n  padding: 5px;\n  border-radius: 5px;\n}\n\ndiv.slider-group.output {\n  background-color: #d8ecf3;\n}\n\ndiv.slider-group .label span {\n  font-weight: bold;\n}\n\ndiv.slider-group .slider,\ndiv.slider-group .number {\n  padding-top: 2ex;\n}\ndiv.slider-group .add-remove {\n  padding-top: 2.3ex;\n}\n\ndiv.slider-group div.inputs input {\n  width: 100%;\n}\n\ndiv.slider-group div.slider {\n  position: relative;\n  padding-left: 0;\n  padding-right: 0;\n}\n\ndiv.slider-group div.slider input {\n  display: block;\n}\n\ndiv.slider-group div.slider div.min,\ndiv.slider-group div.slider div.max {\n  position: absolute;\n  font-size: x-small;\n  top: 0;\n  background-color: #ddd;\n  border-radius: 1ex;\n  padding: 0.5ex;\n}\n\ndiv.slider-group.output div.slider div.min,\ndiv.slider-group.output div.slider div.max {\n  background-color: #ccc;\n}\n\ndiv.slider-group div.slider div.min {\n  left: 0;\n}\n\ndiv.slider-group div.slider div.max {\n  right: 0;\n}\n\n.fa {\n  opacity: 0.7;\n}\n.fa:hover {\n  opacity: 1;\n}\n\n.palette-color .fa {\n  opacity: 1;\n}\n\n.error {\n  color: darkred;\n}\n", ""]);
 
 // exports
 
@@ -1561,7 +1758,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/range-slider/range-slider.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"slider-group\" [class.output]=\"isOutput\">\n  <ng-template [ngIf]=\"labelTpl\" [ngIfElse]=\"standardLabel\">\n    <ng-template [ngTemplateOutlet]=\"labelTpl?.templateRef\"></ng-template>\n  </ng-template>\n  <ng-template #standardLabel>\n    <div class=\"label\" *ngIf=\"label\">\n      {{label}}\n      <span *ngIf=\"isOutput\">(Output)</span>\n      <ng-template [ngIf]=\"helpTpl\">\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"rsHelp\" popoverTitle=\"{{label}}\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        <ng-template #rsHelp>\n          <ng-template [ngTemplateOutlet]=\"helpTpl?.templateRef\"></ng-template>\n        </ng-template>\n      </ng-template>\n    </div>\n  </ng-template>\n  <div class=\"inputs row\">\n    <div class=\"col-sm-8\">\n      <div class=\"slider\">\n        <div class=\"min\">{{floor(min)}}</div>\n        <input #range name=\"{{name}}\" type=\"range\" step=\"{{step}}\"\n               min=\"{{min}}\" max=\"{{max}}\"\n               [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"rangeChanged(range.value)\"\n               (input)=\"rangeInput(range.value)\" />\n        <div class=\"max\">{{ceil(max)}}</div>\n      </div>\n    </div>\n    <div class=\"col-sm-3\">\n      <div class=\"number\">\n        <input #number name=\"{{name}}\" type=\"number\" step=\"{{step}}\"\n               [min]=\"hardMin\" [max]=\"hardMax\" [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"numberChanged(number.value)\"\n               (input)=\"numberInput(number.value)\" />\n      </div>\n    </div>\n    <div class=\"col-sm-1\">\n      <div class=\"add-remove\" *ngIf=\"!isOutput && canAdd\">\n        <i class=\"fa fa-plus-circle\" (click)=\"add()\"\n          ngbPopover=\"Click to add line to plot for alternate value of &quot;{{label}}&quot;\"\n          triggers=\"hover\" container=\"body\"></i>\n      </div>\n      <div class=\"add-remove\" *ngIf=\"canRemove\">\n        <i class=\"fa fa-minus-circle\" (click)=\"remove()\"\n          ngbPopover=\"Remove line from plot for &quot;{{label}}&quot;\"\n          triggers=\"hover\" container=\"body\"></i>\n      </div>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<div class=\"slider-group\" [class.output]=\"isOutput\">\n  <ng-template [ngIf]=\"labelTpl\" [ngIfElse]=\"standardLabel\">\n    <ng-template [ngTemplateOutlet]=\"labelTpl?.templateRef\"></ng-template>\n  </ng-template>\n  <ng-template #standardLabel>\n    <div class=\"label\" *ngIf=\"label\">\n      {{label}}\n      <span *ngIf=\"isOutput\">(Output)</span>\n      <ng-template [ngIf]=\"helpTpl\">\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"rsHelp\" popoverTitle=\"{{label}}\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        <ng-template #rsHelp>\n          <ng-template [ngTemplateOutlet]=\"helpTpl?.templateRef\"></ng-template>\n        </ng-template>\n      </ng-template>\n    </div>\n  </ng-template>\n  <div class=\"inputs row\">\n    <div class=\"col-sm-8\">\n      <div class=\"slider\">\n        <div class=\"min\">{{floor(min)}}</div>\n        <input #range name=\"{{name}}\" type=\"range\" step=\"{{step}}\"\n               min=\"{{min}}\" max=\"{{max}}\"\n               [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"rangeChanged(range.value)\"\n               (input)=\"rangeInput(range.value)\" />\n        <div class=\"max\">{{ceil(max)}}</div>\n      </div>\n    </div>\n    <div class=\"col-sm-3\">\n      <div class=\"number\">\n        <input #number name=\"{{name}}\" type=\"number\" step=\"{{step}}\"\n               [min]=\"hardMin\" [max]=\"hardMax\" [value]=\"value\"\n               [disabled]=\"isOutput\"\n               (change)=\"numberChanged(number.value)\"\n               (input)=\"numberInput(number.value)\"\n               [ngbPopover]=\"errorMsg\" triggers=\"manual\"\n               container=\"body\" #errorPopover=\"ngbPopover\" />\n        <ng-template #errorMsg>\n          <span class=\"error\">Value is out of range ({{hardMin}}, {{hardMax}})</span>\n        </ng-template>\n      </div>\n    </div>\n    <div class=\"col-sm-1\"\n      [class.palette-color]=\"paletteColor >= 0\"\n      [style.color]=\"palette.getColor(paletteColor, paletteTheme)\">\n\n      <div class=\"add-remove\" *ngIf=\"!isOutput && canAdd\">\n        <i class=\"fa fa-plus-circle\" (click)=\"add()\"\n          ngbPopover=\"Click to add line to plot for alternate value of &quot;{{label}}&quot;\"\n          triggers=\"hover\" container=\"body\"></i>\n      </div>\n      <div class=\"add-remove\" *ngIf=\"canRemove\">\n        <i class=\"fa fa-minus-circle\" (click)=\"remove()\"\n          ngbPopover=\"Remove line from plot for &quot;{{label}}&quot;\"\n          triggers=\"hover\" container=\"body\"></i>\n      </div>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -1571,6 +1768,8 @@ module.exports = "<div class=\"slider-group\" [class.output]=\"isOutput\">\n  <n
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__("../../../forms/@angular/forms.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ng_bootstrap_ng_bootstrap__ = __webpack_require__("../../../../@ng-bootstrap/ng-bootstrap/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__palette_service__ = __webpack_require__("../../../../../src/app/palette.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return RangeSliderLabel; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return RangeSliderHelp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RangeSliderComponent; });
@@ -1583,6 +1782,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
 
 
 var RangeSliderLabel = (function () {
@@ -1608,15 +1809,33 @@ RangeSliderHelp = __decorate([
 ], RangeSliderHelp);
 
 var RangeSliderComponent = RangeSliderComponent_1 = (function () {
-    function RangeSliderComponent() {
+    function RangeSliderComponent(palette) {
+        this.palette = palette;
         this.step = 0.01;
         this.isOutput = false;
         this.canAdd = true;
         this.canRemove = false;
+        this.paletteColor = -1;
+        this.paletteTheme = "plasma";
         this.onAdd = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["d" /* EventEmitter */]();
         this.onRemove = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["d" /* EventEmitter */]();
     }
     RangeSliderComponent.prototype.ngOnInit = function () {
+    };
+    RangeSliderComponent.prototype.ngOnChanges = function (changes) {
+        if ('isOutput' in changes) {
+            var change = changes.isOutput;
+            if (change.previousValue === true && change.currentValue === false) {
+                // if isOutput changes from true to false, turn on the error message if
+                // the value is out of bounds
+                if (this.value < this.hardMin || this.value > this.hardMax) {
+                    this.errorPopover.open();
+                }
+            }
+            else if (change.previousValue === false && change.currentValue === true) {
+                this.errorPopover.close();
+            }
+        }
     };
     RangeSliderComponent.prototype.floor = function (n) {
         return Math.floor(n);
@@ -1635,15 +1854,13 @@ var RangeSliderComponent = RangeSliderComponent_1 = (function () {
     RangeSliderComponent.prototype.setDisabledState = function (isDisabled) {
     };
     RangeSliderComponent.prototype.rangeChanged = function (newValue) {
-        this.value = parseFloat(newValue);
-        this.propagateChange();
+        this.trySetValue(newValue);
     };
     RangeSliderComponent.prototype.rangeInput = function (newValue) {
         this.value = parseFloat(newValue);
     };
     RangeSliderComponent.prototype.numberChanged = function (newValue) {
-        this.value = parseFloat(newValue);
-        this.propagateChange();
+        this.trySetValue(newValue);
     };
     RangeSliderComponent.prototype.numberInput = function (newValue) {
         this.value = parseFloat(newValue);
@@ -1653,6 +1870,17 @@ var RangeSliderComponent = RangeSliderComponent_1 = (function () {
     };
     RangeSliderComponent.prototype.remove = function () {
         this.onRemove.emit(this.name);
+    };
+    RangeSliderComponent.prototype.trySetValue = function (newValue) {
+        var value = parseFloat(newValue);
+        if (value < this.hardMin || value > this.hardMax) {
+            this.errorPopover.open();
+        }
+        else {
+            this.errorPopover.close();
+            this.value = value;
+            this.propagateChange();
+        }
     };
     RangeSliderComponent.prototype.propagateChange = function () {
         if (this.changeCallback) {
@@ -1702,6 +1930,14 @@ __decorate([
     __metadata("design:type", Object)
 ], RangeSliderComponent.prototype, "canRemove", void 0);
 __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('palette-color'),
+    __metadata("design:type", Object)
+], RangeSliderComponent.prototype, "paletteColor", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('palette-theme'),
+    __metadata("design:type", Object)
+], RangeSliderComponent.prototype, "paletteTheme", void 0);
+__decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])('add'),
     __metadata("design:type", Object)
 ], RangeSliderComponent.prototype, "onAdd", void 0);
@@ -1717,6 +1953,10 @@ __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_7" /* ContentChild */])(RangeSliderHelp),
     __metadata("design:type", RangeSliderHelp)
 ], RangeSliderComponent.prototype, "helpTpl", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])("errorPopover"),
+    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__ng_bootstrap_ng_bootstrap__["d" /* NgbPopover */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__ng_bootstrap_ng_bootstrap__["d" /* NgbPopover */]) === "function" && _c || Object)
+], RangeSliderComponent.prototype, "errorPopover", void 0);
 RangeSliderComponent = RangeSliderComponent_1 = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-range-slider',
@@ -1730,10 +1970,10 @@ RangeSliderComponent = RangeSliderComponent_1 = __decorate([
             }
         ]
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__palette_service__["a" /* PaletteService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__palette_service__["a" /* PaletteService */]) === "function" && _d || Object])
 ], RangeSliderComponent);
 
-var _a, _b, RangeSliderComponent_1;
+var _a, _b, RangeSliderComponent_1, _c, _d;
 //# sourceMappingURL=range-slider.component.js.map
 
 /***/ }),
@@ -1831,6 +2071,78 @@ __decorate([
     __metadata("design:type", Number)
 ], Range.prototype, "max", void 0);
 //# sourceMappingURL=range.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/serialize-plot.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__abstract_plot_component__ = __webpack_require__("../../../../../src/app/abstract-plot.component.ts");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SerializePlotComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var SerializePlotComponent = (function () {
+    function SerializePlotComponent() {
+    }
+    SerializePlotComponent.prototype.plotTitle = function () {
+        return this.plot.title;
+    };
+    SerializePlotComponent.prototype.serializeAsXML = function () {
+        var serializer = new XMLSerializer();
+        return serializer.serializeToString(this.plot.plotElement.nativeElement);
+    };
+    SerializePlotComponent.prototype.serialize = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var data = _this.serializeAsXML();
+            var width = _this.plot.getDimension('width');
+            var height = _this.plot.getDimension('height');
+            var canvas = _this.canvasElement.nativeElement;
+            canvas.width = width;
+            canvas.height = height;
+            var context = canvas.getContext("2d");
+            var image = new Image(width, height);
+            image.addEventListener('load', function () {
+                context.clearRect(0, 0, width, height);
+                context.drawImage(image, 0, 0, width, height);
+                canvas.toBlob(function (blob) {
+                    resolve(blob);
+                });
+            });
+            var src = 'data:image/svg+xml;base64,' + btoa(data);
+            image.src = src;
+        });
+    };
+    return SerializePlotComponent;
+}());
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])('plot'),
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__abstract_plot_component__["a" /* AbstractPlotComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__abstract_plot_component__["a" /* AbstractPlotComponent */]) === "function" && _a || Object)
+], SerializePlotComponent.prototype, "plot", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('canvas'),
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* ElementRef */]) === "function" && _b || Object)
+], SerializePlotComponent.prototype, "canvasElement", void 0);
+SerializePlotComponent = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
+        selector: 'app-serialize-plot',
+        template: '<canvas #canvas style="display: none"></canvas>'
+    })
+], SerializePlotComponent);
+
+var _a, _b;
+//# sourceMappingURL=serialize-plot.component.js.map
 
 /***/ }),
 
@@ -2143,7 +2455,7 @@ var TTestExtra = (function (_super) {
     TTestExtra.prototype.round = function () {
         var attribs = this.attributes();
         for (var key in attribs) {
-            attribs[key] = attribs[key].forEach(function (value) {
+            attribs[key] = attribs[key].map(function (value) {
                 return Math.round(value * 100) / 100;
             });
         }
@@ -2576,7 +2888,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/t-test/t-test.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\">\n  <label>\n    Output\n    <select class=\"form-control\" name=\"output\"\n            [(ngModel)]=\"round.output\">\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </label>\n</div>\n\n<app-range-slider name=\"alpha\" label=\"Type I Error (&alpha;)\"\n  [min]=\"min.alpha\" [max]=\"max.alpha\"\n  [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n  [can-add]=\"!round.extra || round.extra.alpha\" (add)=\"addInput($event)\"\n  [(ngModel)]=\"round.alpha\">\n  <ng-template rsHelp>\n    The Type I error probability for a two sided test. This is the\n    probability that we will falsely reject the null hypothesis.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let alpha of round.extra?.alpha; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"alpha-{{i+2}}\" label=\"Type I Error (&alpha;) #{{i+2}}\"\n    [min]=\"min.alpha\" [max]=\"max.alpha\"\n    [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [(ngModel)]=\"round.extra.alpha[i]\">\n  </app-range-slider>\n</div>\n\n<app-range-slider name=\"sigma\" label=\"Std. deviation (&sigma;)\"\n  [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n  [hard-min]=\"1\"\n  [can-add]=\"!round.extra || round.extra.sigma\" (add)=\"addInput($event)\"\n  [(ngModel)]=\"round.sigma\">\n  <ng-template rsHelp>\n    For independent tests σ is the within group standard deviation. For\n    paired designs it is the standard deviation of difference in the\n    response of matched pairs.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let sigma of round.extra?.sigma; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"sigma-{{i+2}}\" label=\"Std. deviation #{{i+2}}\"\n    [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n    [hard-min]=\"1\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [(ngModel)]=\"round.extra.sigma[i]\">\n  </app-range-slider>\n</div>\n\n<app-range-slider name=\"power\" label=\"Power\"\n  [min]=\"min.power\" [max]=\"max.power\"\n  [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n  [can-add]=\"!round.extra || round.extra.power\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'power'\"\n  [(ngModel)]=\"round.power\">\n  <ng-template rsHelp>\n    For independent tests power is probability of correctly rejecting the\n    null hypothesis of equal population means given n experimental\n    patients, m control patients per experimental patient, a Type I error\n    probability α and a true difference in population means of δ. For\n    paired tests it is the probability of correctly rejecting the null\n    hypothesis of equal population means given n pairs of patients, a Type\n    I error probability α and a true difference in population means of δ.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let power of round.extra?.power; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"power-{{i+2}}\" label=\"Power #{{i+2}}\"\n    [min]=\"min.power\" [max]=\"max.power\"\n    [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [(ngModel)]=\"round.extra.power[i]\">\n  </app-range-slider>\n</div>\n\n<app-range-slider name=\"delta\" label=\"Difference in population means (&delta;)\"\n  [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n    [can-add]=\"!round.extra || round.extra.delta\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'delta'\" [(ngModel)]=\"round.delta\">\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let delta of round.extra?.delta; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"delta-{{i+2}}\" label=\"Difference in population means (&delta;) #{{i+2}}\"\n    [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n    [hard-min]=\"min.delta\" [hard-max]=\"max.delta\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [(ngModel)]=\"round.extra.delta[i]\">\n  </app-range-slider>\n</div>\n\n<app-range-slider name=\"n\" label=\"Sample size\"\n  [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n  [hard-min]=\"1\"\n  [can-add]=\"!round.extra || round.extra.n\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'n'\" [(ngModel)]=\"round.n\">\n  <ng-template rsHelp>\n    For independent t-tests n is the number of experimental subjects. For\n    pair test n is the number of pairs.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let n of round.extra?.n; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"n-{{i+2}}\" label=\"Sample size #{{i+2}}\"\n    [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n    [hard-min]=\"1\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [(ngModel)]=\"round.extra.n[i]\">\n  </app-range-slider>\n</div>\n"
+module.exports = "<div class=\"form-group\">\n  <label>\n    Output\n    <select class=\"form-control\" name=\"output\"\n            [(ngModel)]=\"round.output\">\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </label>\n</div>\n\n<app-range-slider name=\"alpha\" label=\"Type I Error (&alpha;)\"\n  [min]=\"min.alpha\" [max]=\"max.alpha\"\n  [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n  [can-add]=\"!round.extra || round.extra.alpha\" (add)=\"addInput($event)\"\n  [palette-color]=\"round.extra?.alpha ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.alpha\">\n  <ng-template rsHelp>\n    The Type I error probability for a two sided test. This is the\n    probability that we will falsely reject the null hypothesis.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let alpha of round.extra?.alpha; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"alpha-{{i+2}}\" label=\"Type I Error (&alpha;) #{{i+2}}\"\n    [min]=\"min.alpha\" [max]=\"max.alpha\"\n    [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [palette-color]=\"i+1\"\n    [palette-theme]=\"plotOptions.paletteTheme\"\n    [(ngModel)]=\"round.extra.alpha[i]\">\n  </app-range-slider>\n</div>\n\n<app-range-slider name=\"sigma\" label=\"Std. deviation (&sigma;)\"\n  [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n  [hard-min]=\"1\"\n  [can-add]=\"!round.extra || round.extra.sigma\" (add)=\"addInput($event)\"\n  [palette-color]=\"round.extra?.sigma ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.sigma\">\n  <ng-template rsHelp>\n    For independent tests σ is the within group standard deviation. For\n    paired designs it is the standard deviation of difference in the\n    response of matched pairs.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let sigma of round.extra?.sigma; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"sigma-{{i+2}}\" label=\"Std. deviation #{{i+2}}\"\n    [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n    [hard-min]=\"1\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [palette-color]=\"i+1\"\n    [palette-theme]=\"plotOptions.paletteTheme\"\n    [(ngModel)]=\"round.extra.sigma[i]\">\n  </app-range-slider>\n</div>\n\n<app-range-slider name=\"power\" label=\"Power\"\n  [min]=\"min.power\" [max]=\"max.power\"\n  [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n  [can-add]=\"!round.extra || round.extra.power\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'power'\"\n  [palette-color]=\"round.extra?.power ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.power\">\n  <ng-template rsHelp>\n    For independent tests power is probability of correctly rejecting the\n    null hypothesis of equal population means given n experimental\n    patients, m control patients per experimental patient, a Type I error\n    probability α and a true difference in population means of δ. For\n    paired tests it is the probability of correctly rejecting the null\n    hypothesis of equal population means given n pairs of patients, a Type\n    I error probability α and a true difference in population means of δ.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let power of round.extra?.power; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"power-{{i+2}}\" label=\"Power #{{i+2}}\"\n    [min]=\"min.power\" [max]=\"max.power\"\n    [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [palette-color]=\"i+1\"\n    [palette-theme]=\"plotOptions.paletteTheme\"\n    [(ngModel)]=\"round.extra.power[i]\">\n  </app-range-slider>\n</div>\n\n<app-range-slider name=\"delta\" label=\"Difference in population means (&delta;)\"\n  [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n  [can-add]=\"!round.extra || round.extra.delta\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'delta'\"\n  [palette-color]=\"round.extra?.delta ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.delta\">\n  <ng-template rsHelp>\n    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,\n    rutrum at ligula id, tempor tincidunt nunc.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let delta of round.extra?.delta; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"delta-{{i+2}}\" label=\"Difference in population means (&delta;) #{{i+2}}\"\n    [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n    [hard-min]=\"min.delta\" [hard-max]=\"max.delta\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [palette-color]=\"i+1\"\n    [palette-theme]=\"plotOptions.paletteTheme\"\n    [(ngModel)]=\"round.extra.delta[i]\">\n  </app-range-slider>\n</div>\n\n<app-range-slider name=\"n\" label=\"Sample size\"\n  [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n  [hard-min]=\"1\"\n  [can-add]=\"!round.extra || round.extra.n\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'n'\"\n  [palette-color]=\"round.extra?.n ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.n\">\n  <ng-template rsHelp>\n    For independent t-tests n is the number of experimental subjects. For\n    pair test n is the number of pairs.\n  </ng-template>\n</app-range-slider>\n<div class=\"extra\" *ngFor=\"let n of round.extra?.n; let i = index; trackBy: trackByExtra\">\n  <app-range-slider name=\"n-{{i+2}}\" label=\"Sample size #{{i+2}}\"\n    [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n    [hard-min]=\"1\"\n    [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n    [palette-color]=\"i+1\"\n    [palette-theme]=\"plotOptions.paletteTheme\"\n    [(ngModel)]=\"round.extra.n[i]\">\n  </app-range-slider>\n</div>\n"
 
 /***/ }),
 
@@ -2589,6 +2901,7 @@ module.exports = "<div class=\"form-group\">\n  <label>\n    Output\n    <select
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_debounceTime___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_debounceTime__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test_service__ = __webpack_require__("../../../../../src/app/t-test.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plot_options__ = __webpack_require__("../../../../../src/app/plot-options.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TTestComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2599,6 +2912,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -2699,16 +3013,20 @@ __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__t_test__["a" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__t_test__["a" /* TTestSet */]) === "function" && _a || Object)
 ], TTestComponent.prototype, "modelSet", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["p" /* Input */])(),
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__plot_options__["a" /* PlotOptions */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__plot_options__["a" /* PlotOptions */]) === "function" && _b || Object)
+], TTestComponent.prototype, "plotOptions", void 0);
 TTestComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-t-test',
         template: __webpack_require__("../../../../../src/app/t-test/t-test.component.html"),
         styles: [__webpack_require__("../../../../../src/app/t-test/t-test.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__t_test_service__["a" /* TTestService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test_service__["a" /* TTestService */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__t_test_service__["a" /* TTestService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test_service__["a" /* TTestService */]) === "function" && _c || Object])
 ], TTestComponent);
 
-var _a, _b;
+var _a, _b, _c;
 //# sourceMappingURL=t-test.component.js.map
 
 /***/ }),

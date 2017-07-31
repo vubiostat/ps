@@ -2610,7 +2610,7 @@ NgbDropdownModule.ctorParameters = function () { return []; };
 /* unused harmony reexport NgbPagination */
 /* unused harmony reexport NgbPopoverModule */
 /* unused harmony reexport NgbPopoverConfig */
-/* unused harmony reexport NgbPopover */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_10__popover_popover_module__["b"]; });
 /* unused harmony reexport NgbProgressbarModule */
 /* unused harmony reexport NgbProgressbarConfig */
 /* unused harmony reexport NgbProgressbar */
@@ -2619,7 +2619,7 @@ NgbDropdownModule.ctorParameters = function () { return []; };
 /* unused harmony reexport NgbRating */
 /* unused harmony reexport NgbTabsetModule */
 /* unused harmony reexport NgbTabsetConfig */
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_13__tabset_tabset_module__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return __WEBPACK_IMPORTED_MODULE_13__tabset_tabset_module__["b"]; });
 /* unused harmony reexport NgbTab */
 /* unused harmony reexport NgbTabContent */
 /* unused harmony reexport NgbTabTitle */
@@ -3543,7 +3543,7 @@ NgbPopover.propDecorators = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__popover__ = __webpack_require__("../../../../@ng-bootstrap/ng-bootstrap/popover/popover.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__popover_config__ = __webpack_require__("../../../../@ng-bootstrap/ng-bootstrap/popover/popover-config.js");
-/* unused harmony reexport NgbPopover */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__popover__["a"]; });
 /* unused harmony reexport NgbPopoverConfig */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NgbPopoverModule; });
 
