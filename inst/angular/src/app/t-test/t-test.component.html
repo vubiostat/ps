@@ -93,6 +93,10 @@
   [palette-color]="round.extra?.delta ? 0 : -1"
   [palette-theme]="plotOptions.paletteTheme"
   [(ngModel)]="round.delta">
+  <ng-template rsHelp>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
+    rutrum at ligula id, tempor tincidunt nunc.
+  </ng-template>
 </app-range-slider>
 <div class="extra" *ngFor="let delta of round.extra?.delta; let i = index; trackBy: trackByExtra">
   <app-range-slider name="delta-{{i+2}}" label="Difference in population means (&delta;) #{{i+2}}"

@@ -26,6 +26,14 @@
   left: 0;
   font-size: large;
   z-index: 99;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+}
+.plot-buttons button {
+  padding: 0.4rem 0;
+  margin: 0.2rem 0;
+  width: 2.4rem;
 }
 
 :host /deep/ a.nav-link {
