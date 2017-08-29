@@ -6,7 +6,6 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/switch';
 
 import { TTest, TTestRanges, TTestData, TTestSet } from './t-test';
-import { PlotOptions } from './plot-options';
 import { TTestService } from './t-test.service';
 
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component'
@@ -21,7 +20,6 @@ export class AppComponent implements OnInit {
   title = 'PS: Power and Sample Size Calculation';
   newModel = new TTest();
   modelSets: TTestSet[] = [];
-  plotOptions = new PlotOptions();
 
   helpTitles = {
     'overview': 'PS Overview',

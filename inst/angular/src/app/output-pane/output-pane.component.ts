@@ -5,7 +5,6 @@ import * as d3 from 'd3';
 import { Observable } from 'rxjs/Observable';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
-import { PlotOptions } from '../plot-options';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
@@ -17,7 +16,6 @@ import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 })
 export class OutputPaneComponent implements OnInit {
   @Input() selectedModelSet: Observable<TTestSet>;
-  @Input() plotOptions: PlotOptions;
   @Input('hover-disabled') hoverDisabled = false;
   modelSet: TTestSet;
   showText = true;

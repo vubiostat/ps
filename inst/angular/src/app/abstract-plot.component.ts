@@ -1,15 +1,14 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 
-import { PlotOptions } from './plot-options';
-
 export abstract class AbstractPlotComponent {
   @Input() name: string;
-  @Input() plotOptions: PlotOptions;
   @ViewChild('plot') plotElement: ElementRef;
   title: string;
   xScale: any;
   yScale: any;
+
+  constructor() {}
 
   getDimension(key: string): number {
     let dim = this.plotElement.nativeElement[key];

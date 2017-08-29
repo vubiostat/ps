@@ -10,7 +10,7 @@ import 'rxjs/add/operator/debounceTime';
 
 import { TTest, TTestExtra, TTestRanges, TTestSet } from '../t-test';
 import { TTestService } from '../t-test.service';
-import { PlotOptions } from '../plot-options';
+import { PlotOptionsService } from '../plot-options.service';
 
 @Component({
   selector: 'app-t-test',
@@ -19,14 +19,16 @@ import { PlotOptions } from '../plot-options';
 })
 export class TTestComponent implements OnInit {
   @Input() modelSet: TTestSet;
-  @Input() plotOptions: PlotOptions;
 
   model: TTest;
   min: TTest;
   max: TTest;
   round: TTest;
 
-  constructor(private ttestService: TTestService) { }
+  constructor(
+    private plotOptions: PlotOptionsService,
+    private ttestService: TTestService
+  ) { }
 
   ngOnInit(): void {
     this.model = this.modelSet.model;

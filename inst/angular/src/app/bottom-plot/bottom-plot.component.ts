@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 import { AbstractPlotComponent } from '../abstract-plot.component';
 import { TTestSet } from '../t-test';
 import { Range } from '../range';
+import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 
 interface Group { mainPaths: string[], distPath: string, target: number };
@@ -24,6 +25,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
 
+  title = "Precision vs. Effect Size";
   margin: number = 50;
   clipPathId: string;
   width: number;
@@ -35,9 +37,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   needDraw: boolean;
   private subscription: Subscription;
 
-  constructor(public palette: PaletteService) {
+  constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) {
     super();
-    this.title = "Precision vs. Effect Size";
   }
 
   ngOnInit() {

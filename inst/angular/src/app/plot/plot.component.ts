@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 import { AbstractPlotComponent } from '../abstract-plot.component';
 import { Range } from '../range';
 import { TTestSet } from '../t-test';
+import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 import { SerializePlotComponent } from '../serialize-plot.component';
 
@@ -39,7 +40,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   @ViewChild('leftAxis') leftAxisElement: ElementRef;
   @ViewChild('target') targetElement: ElementRef;
 
-  constructor(public palette: PaletteService) { super(); }
+  constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) { super(); }
 
   x: PlotData;
   y: PlotData;

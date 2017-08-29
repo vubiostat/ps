@@ -10,7 +10,6 @@ import 'rxjs/add/operator/toPromise';
 
 import { environment } from '../environments/environment';
 import { TTest, TTestRanges, TTestSet } from './t-test';
-import { PlotOptions } from './plot-options';
 
 @Injectable()
 export class TTestService {

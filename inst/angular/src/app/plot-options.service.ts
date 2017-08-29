@@ -1,6 +1,8 @@
+import { Injectable } from '@angular/core';
 import { ChangeEmitter, Changeable } from './changeable';
 
-export class PlotOptions extends ChangeEmitter {
+@Injectable()
+export class PlotOptionsService extends ChangeEmitter {
   @Changeable height: number;
   @Changeable width: number;
   @Changeable fontFamily: string;
@@ -12,15 +14,18 @@ export class PlotOptions extends ChangeEmitter {
 
   constructor() {
     super();
-    this.noEmit = true;
-    this.fontFamily = "";
-    this.fontSize = 1;
-    this.axisFontSize = 1;
-    this.lineWidth = 1;
-    this.axisLineWidth = 1;
-    this.paletteTheme = "plasma";
-    this.noEmit = false;
-    this.changes = {};
+    this.setDefaults(false);
+  }
+
+  setDefaults(emit = true): void {
+    this.update({
+      fontFamily: "",
+      fontSize: 1,
+      axisFontSize: 1,
+      lineWidth: 1,
+      axisLineWidth: 1,
+      paletteTheme: "plasma"
+    }, emit);
   }
 
   attributes(): any {
@@ -31,7 +36,8 @@ export class PlotOptions extends ChangeEmitter {
       axisFontSize: this.axisFontSize,
       fontSize: this.fontSize,
       lineWidth: this.lineWidth,
-      axisLineWidth: this.axisLineWidth
+      axisLineWidth: this.axisLineWidth,
+      paletteTheme: this.paletteTheme
     });
   }
 
@@ -52,6 +58,9 @@ export class PlotOptions extends ChangeEmitter {
     }
     if ('axisLineWidth' in attribs) {
       this.axisLineWidth = attribs.axisLineWidth;
+    }
+    if ('paletteTheme' in attribs) {
+      this.paletteTheme = attribs.paletteTheme;
     }
     this.noEmit = false;
     if (emit) {

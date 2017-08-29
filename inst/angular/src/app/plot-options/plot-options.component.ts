@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
-import { PlotOptions } from '../plot-options';
+import { PlotOptionsService } from '../plot-options.service';
 
 @Component({
   selector: 'app-plot-options',
@@ -13,11 +13,11 @@ import { PlotOptions } from '../plot-options';
 })
 export class PlotOptionsComponent implements OnInit {
   @Input() selectedModelSet: Observable<TTestSet>;
-  @Input() plotOptions: PlotOptions;
-  defaultPlotOptions: PlotOptions;
   modelSet: TTestSet;
   defaultRanges: TTestRanges;
   private subscription: Subscription;
+
+  constructor(private plotOptions: PlotOptionsService) {}
 
   ngOnInit() {
     this.selectedModelSet.subscribe(modelSet => {
@@ -34,11 +34,10 @@ export class PlotOptionsComponent implements OnInit {
         this.setDefaultRanges();
       }
     });
-    this.defaultPlotOptions = new PlotOptions();
   }
 
   reset(): void {
-    this.plotOptions.update(this.defaultPlotOptions.attributes());
+    this.plotOptions.setDefaults();
     if (this.modelSet) {
       this.modelSet.ranges.updateFromArrays(this.defaultRanges.attributes());
     }

@@ -1,17 +1,14 @@
 <div class="plot" [class.without-text]="!showText">
   <app-plot #topLeft name="top-left"
     [modelSet]="modelSet"
-    [plotOptions]="plotOptions"
     [hover-disabled]="hoverDisabled">
   </app-plot>
   <app-plot #topRight name="top-right"
     [modelSet]="modelSet"
-    [plotOptions]="plotOptions"
     [hover-disabled]="hoverDisabled">
   </app-plot>
   <app-bottom-plot #bottom name="bottom"
-    [modelSet]="modelSet"
-    [plotOptions]="plotOptions">
+    [modelSet]="modelSet">
   </app-bottom-plot>
   <div class="show-text" *ngIf="modelSet && !showText">
     <button type="button" class="btn btn-secondary" (click)="toggleText(true)">
