@@ -113,7 +113,8 @@ TTest <- setRefClass("TTest",
           }
           result$primary <- list(data = data.frame(power = power2, n = n2))
 
-          delta2 <- getDeltaValues()
+          deltaRange <- calculateDeltaRange(sigma, delta)
+          delta2 <- seq(deltaRange[1], deltaRange[2], 0.01)
           args$delta <- delta2
           power3 <- do.call(calculatePower, args)
           result$secondary <- list(data = data.frame(power = power3, delta = delta2))
@@ -163,10 +164,6 @@ TTest <- setRefClass("TTest",
         model$extra <- extra
       }
       return(list(model = model, data = data))
-    },
-    getDeltaValues = function() {
-      r <- calculateDeltaRange(sigma, delta)
-      seq(r[1], r[2], 0.01)
     }
   )
 )
