@@ -36,23 +36,23 @@
   width: 2.4rem;
 }
 
-:host /deep/ a.nav-link {
+#sidebar /deep/ a.nav-link {
   border-color: #bbb #bbb #888;
   background-color: #eee;
 }
 
-:host /deep/ a.nav-link:hover {
+#sidebar /deep/ a.nav-link:hover {
   border-color: #888;
   background-color: #f5f5f5;
   color: #0275d8;
 }
 
-:host /deep/ a.nav-link.active {
+#sidebar /deep/ a.nav-link.active {
   border-color: #888 #888 #fff;
+  background-color: #fff;
 }
 
-:host /deep/ a.nav-link.active:hover {
-  background-color: #fff;
+#sidebar /deep/ a.nav-link.active:hover {
   color: #464a4c;
 }
 

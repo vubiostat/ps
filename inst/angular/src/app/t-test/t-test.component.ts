@@ -18,7 +18,7 @@ import { PlotOptionsService } from '../plot-options.service';
   styleUrls: ['./t-test.component.css']
 })
 export class TTestComponent implements OnInit {
-  @Input() modelSet: TTestSet;
+  @Input('model-set') modelSet: TTestSet;
 
   model: TTest;
   min: TTest;

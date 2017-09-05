@@ -15,7 +15,7 @@ import { ExportPlotsComponent } from '../export-plots/export-plots.component';
   styleUrls: ['./output-pane.component.css']
 })
 export class OutputPaneComponent implements OnInit {
-  @Input() selectedModelSet: Observable<TTestSet>;
+  @Input('selected-model-set') selectedModelSet: Observable<TTestSet>;
   @Input('hover-disabled') hoverDisabled = false;
   modelSet: TTestSet;
   showText = true;
@@ -43,10 +43,8 @@ export class OutputPaneComponent implements OnInit {
   }
 
   openSaveDialog(): void {
-    const modalRef = this.modalService.open(ExportPlotsComponent);
-    modalRef.componentInstance.topLeft = this.topLeftPlot;
-    modalRef.componentInstance.topRight = this.topRightPlot;
-    modalRef.componentInstance.bottom = this.bottomPlot;
+    const modalRef = this.modalService.open(ExportPlotsComponent, { windowClass: 'export-plots' });
+    modalRef.componentInstance.modelSet = this.modelSet;
   }
 
   round(n: number): number {
@@ -55,5 +53,11 @@ export class OutputPaneComponent implements OnInit {
 
   ceil(n: number): number {
     return Math.ceil(n);
+  }
+
+  resize(): void {
+    this.topLeftPlot.resize();
+    this.topRightPlot.resize();
+    this.bottomPlot.resize();
   }
 }

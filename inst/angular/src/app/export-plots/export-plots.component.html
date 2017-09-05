@@ -4,50 +4,150 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="modal-body">
-  <p>Please select which graphs you want to export.</p>
-  <div class="form-check">
-    <label class="form-check-label">
-      <input class="form-check-input" type="checkbox"
-        [(ngModel)]="includeTopLeft">
-      {{topLeft?.title}}
-    </label>
+<div class="modal-body grow-vert h-100">
+  <div class="d-flex flex-column h-100">
+    <ngb-tabset [destroyOnHide]="false">
+      <ngb-tab [title]="topLeftTitle">
+        <ng-template ngbTabContent>
+          <div class="left">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox"
+                  [(ngModel)]="includeTopLeft">
+                  Export this graph
+              </label>
+            </div>
+            <ng-template [ngIf]="includeTopLeft">
+              <div class="form-group">
+                <label>
+                  Width
+                  <input class="form-control" type="number"
+                    [(ngModel)]="topLeftWidth">
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  Height
+                  <input class="form-control" type="number"
+                    [(ngModel)]="topLeftHeight">
+                </label>
+              </div>
+            </ng-template>
+          </div>
+          <div class="right">
+            <app-plot #topLeftPlot name="top-left-export"
+              [model-set]="modelSet" [hover-disabled]="true"
+              [width]="topLeftWidth" [height]="topLeftHeight">
+            </app-plot>
+          </div>
+          <app-serialize-plot #topLeftSerializer
+            [plot]="topLeftPlot"
+            [width]="topLeftWidth" [height]="topLeftHeight">
+          </app-serialize-plot>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab [title]="topRightTitle">
+        <ng-template ngbTabContent>
+          <div class="left">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox"
+                  [(ngModel)]="includeTopRight">
+                  Export this graph
+              </label>
+            </div>
+            <ng-template [ngIf]="includeTopRight">
+              <div class="form-group">
+                <label>
+                  Width
+                  <input class="form-control" type="number"
+                    [(ngModel)]="topRightWidth">
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  Height
+                  <input class="form-control" type="number"
+                    [(ngModel)]="topRightHeight">
+                </label>
+              </div>
+            </ng-template>
+          </div>
+          <div class="right">
+            <app-plot #topRightPlot name="top-right-export"
+              [model-set]="modelSet" [hover-disabled]="true"
+              [width]="topRightWidth" [height]="topRightHeight">
+            </app-plot>
+          </div>
+          <app-serialize-plot #topRightSerializer
+            [plot]="topRightPlot"
+            [width]="topRightWidth" [height]="topRightHeight">
+          </app-serialize-plot>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab [title]="bottomTitle">
+        <ng-template ngbTabContent>
+          <div class="left">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox"
+                  [(ngModel)]="includeBottom">
+                  Export this graph
+              </label>
+            </div>
+            <ng-template [ngIf]="includeBottom">
+              <div class="form-group">
+                <label>
+                  Width
+                  <input class="form-control" type="number"
+                    [(ngModel)]="bottomWidth">
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  Height
+                  <input class="form-control" type="number"
+                    [(ngModel)]="bottomHeight">
+                </label>
+              </div>
+            </ng-template>
+          </div>
+          <div class="right">
+            <app-bottom-plot #bottomPlot name="bottom-export"
+              [model-set]="modelSet"
+              [width]="bottomWidth" [height]="bottomHeight">
+            </app-bottom-plot>
+          </div>
+          <app-serialize-plot #bottomSerializer
+            [plot]="bottomPlot"
+            [width]="bottomWidth" [height]="bottomHeight">
+          </app-serialize-plot>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
   </div>
-  <div class="form-check">
-    <label class="form-check-label">
-      <input class="form-check-input" type="checkbox"
-        [(ngModel)]="includeTopRight">
-      {{topRight?.title}}
-    </label>
-  </div>
-  <div class="form-check">
-    <label class="form-check-label">
-      <input class="form-check-input" type="checkbox"
-        [(ngModel)]="includeBottom">
-      {{bottom?.title}}
-    </label>
-  </div>
-  <div class="form-inline mb-4">
-    <label for="export-image-format" class="mr-sm-2">Image format:</label>
-    <select id="export-image-format" class="form-control" [(ngModel)]="imageFormat">
-      <option value="svg">SVG</option>
-      <option value="png">PNG</option>
-    </select>
+</div>
+<div class="modal-footer">
+  <div class="d-flex-inline flex-row">
+    <div class="form-inline">
+      <label for="export-image-format" class="mr-sm-2">Image format:</label>
+      <select id="export-image-format" class="form-control" [(ngModel)]="imageFormat">
+        <option value="svg">SVG</option>
+        <option value="png">PNG</option>
+      </select>
+    </div>
   </div>
   <p>
     The graphs you have chosen will be packaged in a ZIP file.
+    <a #downloadLink style="display: none"></a>
   </p>
-  <a #downloadLink style="display: none"></a>
+  <div class="d-flex flex-row align-items-center">
+    <button type="button" class="btn btn-secondary m-1" (click)="save()"
+      [disabled]="!includeTopLeft && !includeTopRight && !includeBottom">
+      <i class="fa fa-floppy-o"></i> Save
+    </button>
+    <button type="button" class="btn btn-secondary m-1" (click)="cancel()">
+      <i class="fa fa-circle-x"></i> Close
+    </button>
+  </div>
 </div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="save()"
-    [disabled]="!includeTopLeft && !includeTopRight && !includeBottom">
-    <i class="fa fa-floppy-o"></i> Save
-  </button>
-  <button type="button" class="btn btn-secondary" (click)="cancel()">
-    <i class="fa fa-circle-x"></i> Close
-  </button>
-</div>
-<app-serialize-plot #topLeftSerializer [plot]="topLeft"></app-serialize-plot>
-<app-serialize-plot #topRightSerializer [plot]="topRight"></app-serialize-plot>
-<app-serialize-plot #bottomSerializer [plot]="bottom"></app-serialize-plot>

@@ -7,6 +7,9 @@ import { AbstractPlotComponent } from './abstract-plot.component';
 })
 export class SerializePlotComponent {
   @Input('plot') plot: AbstractPlotComponent;
+  @Input() width: number;
+  @Input() height: number;
+
   @ViewChild('canvas') canvasElement: ElementRef;
 
   plotTitle(): string {
@@ -22,17 +25,15 @@ export class SerializePlotComponent {
     return new Promise((resolve, reject) => {
       let data = this.serializeAsXML();
 
-      let width = this.plot.getDimension('width');
-      let height = this.plot.getDimension('height');
       let canvas = this.canvasElement.nativeElement;
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = this.width;
+      canvas.height = this.height;
 
       let context = canvas.getContext("2d");
-      let image = new Image(width, height);
+      let image = new Image(this.width, this.height);
       image.addEventListener('load', () => {
-        context.clearRect(0, 0, width, height);
-        context.drawImage(image, 0, 0, width, height);
+        context.clearRect(0, 0, this.width, this.height);
+        context.drawImage(image, 0, 0, this.width, this.height);
 
         canvas.toBlob(function(blob) {
           resolve(blob);

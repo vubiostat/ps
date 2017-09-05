@@ -2,3 +2,32 @@
 .popover {
   max-width: 500px;
 }
+
+.grow {
+  display: flex;
+  flex: 1;
+}
+
+.grow-horiz {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.grow-vert {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+ngb-modal-window.export-plots .modal-dialog {
+  max-width: 90vw;
+  width: 90vw;
+  height: 90vh;
+  margin: 5vh auto;
+}
+
+ngb-modal-window.export-plots .modal-content {
+  height: 100%;
+  width: 100%;
+}

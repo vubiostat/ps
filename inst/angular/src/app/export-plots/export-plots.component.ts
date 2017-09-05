@@ -1,8 +1,11 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, OnInit} from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as JSZip from 'jszip';
 
-import { AbstractPlotComponent } from '../abstract-plot.component';
+import { TTestSet } from '../t-test';
+import { PlotComponent } from '../plot/plot.component';
+import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { SerializePlotComponent } from '../serialize-plot.component';
 
 @Component({
@@ -11,22 +14,50 @@ import { SerializePlotComponent } from '../serialize-plot.component';
   styleUrls: ['./export-plots.component.css']
 })
 export class ExportPlotsComponent implements OnInit {
-  @Input() topLeft: AbstractPlotComponent;
-  @Input() topRight: AbstractPlotComponent;
-  @Input() bottom: AbstractPlotComponent;
+  @Input('model-set') modelSet: TTestSet;
+
   includeTopLeft = true;
+  topLeftTitle: string;
+  topLeftWidth = 640;
+  topLeftHeight = 480;
+
   includeTopRight = true;
+  topRightTitle: string;
+  topRightWidth = 640;
+  topRightHeight = 480;
+
   includeBottom = true;
+  bottomTitle = "Precision vs. Effect Size";
+  bottomWidth = 640;
+  bottomHeight = 240;
+
   imageFormat = "svg";
 
-  @ViewChild('downloadLink') downloadLink: ElementRef;
+  @ViewChild('topLeftPlot') topLeftPlot: PlotComponent;
+  @ViewChild('topRightPlot') topRightPlot: PlotComponent;
+  @ViewChild('bottomPlot') bottomPlot: BottomPlotComponent;
   @ViewChild('topLeftSerializer') topLeftSerializer: SerializePlotComponent;
   @ViewChild('topRightSerializer') topRightSerializer: SerializePlotComponent;
   @ViewChild('bottomSerializer') bottomSerializer: SerializePlotComponent;
+  @ViewChild('downloadLink') downloadLink: ElementRef;
 
   constructor(private activeModal: NgbActiveModal) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    switch (this.modelSet.model.output) {
+      case "n":
+        this.topLeftTitle = "Sample Size vs. Power";
+        this.topRightTitle = "Sample Size vs. Detectable Alternative";
+        break;
+      case "power":
+        this.topLeftTitle = "Power vs. Sample Size";
+        this.topRightTitle = "Power vs. Detectable Alternative";
+        break;
+      case "delta":
+        this.topLeftTitle = "Detectable Alternative vs. Sample Size";
+        this.topRightTitle = "Detectable Alternative vs. Power";
+        break;
+    }
   }
 
   save(): void {
@@ -45,7 +76,7 @@ export class ExportPlotsComponent implements OnInit {
     let zip = new JSZip();
     let dir = zip.folder(`ps-plots-${dateStr}`);
     let promise = Promise.resolve();
-    serializers.forEach(serializer => {
+    serializers.forEach((serializer, i) => {
       promise = promise.then(() => {
         let result;
         if (this.imageFormat == 'svg') {
@@ -55,9 +86,12 @@ export class ExportPlotsComponent implements OnInit {
         } else {
           result = serializer.serialize();
         }
-        return result.then(blob => {
-          dir.file(`${serializer.plotTitle()}.${this.imageFormat}`, blob);
-        });
+        return result.then(
+          blob => {
+            dir.file(`${serializer.plotTitle()}.${this.imageFormat}`, blob);
+          },
+          err => console.error(err)
+        );
       });
     });
 

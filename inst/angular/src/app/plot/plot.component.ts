@@ -32,8 +32,11 @@ interface Point {
   encapsulation: ViewEncapsulation.None
 })
 export class PlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
-  @Input() modelSet: TTestSet;
+  @Input('model-set') modelSet: TTestSet;
   @Input('hover-disabled') hoverDisabled = false;
+  @Input('draw-on-init') drawOnInit = true;
+  @Input() width: number;
+  @Input() height: number;
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
@@ -44,9 +47,9 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   x: PlotData;
   y: PlotData;
+  innerWidth: number;
+  innerHeight: number;
   margin: number = 50;
-  width: number;
-  height: number;
   mainClipPathId: string;
   targetClipPathId: string;
   xScale: any;
@@ -66,18 +69,23 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   showTargetInfo = false;
   showHoverInfo = false;
   needDraw = false;
+  initialized = false;
 
   private subscription: Subscription;
 
   ngOnInit(): void {
     this.mainClipPathId = `${this.name}-plot-area`;
     this.targetClipPathId = `${this.name}-target-area`;
-    this.plotOptions.onChange.subscribe(() => { this.compute(); } );
-    this.compute();
+    this.plotOptions.onChange.subscribe(() => { this.compute(); });
+    if (this.drawOnInit) {
+      this.compute();
+    }
+    this.initialized = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.modelSet) {
+      // model set changed
       if (this.subscription) {
         this.subscription.unsubscribe();
       }
@@ -86,6 +94,13 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
         let ranges = this.modelSet.ranges;
         this.subscription = this.modelSet.onCompute.subscribe(callback);
         this.subscription.add(ranges.onChange.subscribe(callback));
+
+        if (this.initialized) {
+          this.compute();
+        }
+      }
+    } else if (changes.width || changes.height) {
+      if (this.initialized) {
         this.compute();
       }
     }
@@ -95,7 +110,9 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.draw();
   }
 
-  onResize(): void {
+  resize(width?: number, height?: number): void {
+    this.width = width;
+    this.height = height;
     this.compute();
   }
 
@@ -189,18 +206,28 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       return;
     }
 
+    // dimensions
+    if (!this.width) {
+      this.width = this.getDimension('width');
+    }
+    if (!this.height) {
+      this.height = this.getDimension('height');
+    }
+    this.innerWidth  = this.width  - (this.margin * 2);
+    this.innerHeight = this.height - (this.margin * 2);
+
     // setup
     let model = this.modelSet.model;
     let ranges = this.modelSet.ranges;
     let data;
     switch (this.modelSet.model.output) {
       case "n":
-        if (this.name == "top-left") {
+        if (this.name == "top-left" || this.name == "top-left-export") {
           this.x = {
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
-        } else if (this.name == "top-right") {
+        } else if (this.name == "top-right" || this.name == "top-right-export") {
           this.x = {
             name: "delta", range: ranges.delta, target: model.delta,
             title: "Detectable Alternative", sym: "δ"
@@ -213,7 +240,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
         data = this.modelSet.data.map(d => d.primary.data);
         break;
       case "power":
-        if (this.name == "top-left") {
+        if (this.name == "top-left" || this.name == "top-left-export") {
           this.x = {
             name: "n", range: ranges.n, target: model.n,
             title: "Sample Size", sym: "n"
@@ -223,7 +250,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             title: "Power", sym: "1-β"
           };
           data = this.modelSet.data.map(d => d.primary.data);
-        } else if (this.name == "top-right") {
+        } else if (this.name == "top-right" || this.name == "top-right-export") {
           this.x = {
             name: "delta", range: ranges.delta, target: model.delta,
             title: "Detectable Alternative", sym: "δ"
@@ -236,12 +263,12 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
         }
         break;
       case "delta":
-        if (this.name == "top-left") {
+        if (this.name == "top-left" || this.name == "top-left-export") {
           this.x = {
             name: "n", range: ranges.n, target: model.n,
             title: "Sample Size", sym: "n"
           };
-        } else if (this.name == "top-right") {
+        } else if (this.name == "top-right" || this.name == "top-right-export") {
           this.x = {
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
@@ -267,18 +294,14 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
     }
 
-    // dimensions
-    this.width  = this.getDimension('width')  - (this.margin * 2);
-    this.height = this.getDimension('height') - (this.margin * 2);
-
     // scales
     this.xScale = d3.scaleLinear().
       domain(this.x.range.toArray()).
-      range([0, this.width]);
+      range([0, this.innerWidth]);
 
     this.yScale = d3.scaleLinear().
       domain(this.y.range.toArray().reverse()).
-      range([0, this.height]);
+      range([0, this.innerHeight]);
 
     // paths
     data.reverse(); // reverse data so main line is drawn on top

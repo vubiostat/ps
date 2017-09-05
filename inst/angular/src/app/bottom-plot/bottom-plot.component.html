@@ -1,22 +1,22 @@
 <svg #plot
-  [style.fontFamily]="plotOptions.fontFamily == '' ? null : plotOptions.fontFamily"
+  [style.fontFamily]="plotOptions.fontFamily"
   [style.fontSize]="(plotOptions.fontSize * 110).toString() + '%'"
-  [attr.class]="name" (window:resize)="onResize()">
+  [attr.class]="name" [attr.width]="width" [attr.height]="height">
 
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
   <ng-template [ngIf]="groups && modelSet">
     <defs>
       <clipPath [id]="clipPathId">
-        <rect x="0" y="0" [attr.width]="width" [attr.height]="height" />
+        <rect x="0" y="0" [attr.width]="innerWidth" [attr.height]="innerHeight" />
       </clipPath>
     </defs>
 
     <text text-anchor="middle"
-      [attr.x]="width / 2 + margin" [attr.y]="height + margin" dy="2.5em">
+      [attr.x]="innerWidth / 2 + margin" [attr.y]="innerHeight + margin" dy="2.5em">
       Parameter Space
     </text>
     <text text-anchor="middle" font-weight="bold"
-      [attr.x]="width / 2 + margin" y="0" dy="2em">
+      [attr.x]="innerWidth / 2 + margin" y="0" dy="2em">
       {{title}}
     </text>
 
@@ -48,6 +48,6 @@
       [attr.transform]="translate(margin, margin)"
       fill="darkseagreen" />
 
-    <g #bottomAxis [attr.transform]="translate(margin, height + margin)"></g>
+    <g #bottomAxis [attr.transform]="translate(margin, innerHeight + margin)"></g>
   </ng-template>
 </svg>

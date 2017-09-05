@@ -20,7 +20,10 @@ interface Group { mainPaths: string[], distPath: string, target: number };
   encapsulation: ViewEncapsulation.None
 })
 export class BottomPlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
-  @Input() modelSet: TTestSet;
+  @Input('model-set') modelSet: TTestSet;
+  @Input('draw-on-init') drawOnInit = true;
+  @Input() width: number;
+  @Input() height: number;
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
@@ -28,13 +31,14 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   title = "Precision vs. Effect Size";
   margin: number = 50;
   clipPathId: string;
-  width: number;
-  height: number;
+  innerWidth: number;
+  innerHeight: number;
   xScale: any;
   yScale: any;
   yScaleSD: any;
   groups: Group[];
   needDraw: boolean;
+  initialized = false;
   private subscription: Subscription;
 
   constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) {
@@ -44,7 +48,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   ngOnInit() {
     this.clipPathId = `${this.name}-plot-area`;
     this.plotOptions.onChange.subscribe(() => { this.compute(); } );
-    this.compute();
+    if (this.drawOnInit) {
+      this.compute();
+    }
+    this.initialized = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -57,6 +64,13 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
         let ranges = this.modelSet.ranges;
         this.subscription = this.modelSet.onCompute.subscribe(callback);
         this.subscription.add(ranges.onChange.subscribe(callback));
+
+        if (this.initialized) {
+          this.compute();
+        }
+      }
+    } else if (changes.width || changes.height) {
+      if (this.initialized) {
         this.compute();
       }
     }
@@ -66,7 +80,9 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     this.draw();
   }
 
-  onResize(): void {
+  resize(width?: number, height?: number): void {
+    this.width = width;
+    this.height = height;
     this.compute();
   }
 
@@ -86,8 +102,14 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     }
 
     // dimensions
-    this.width  = this.getDimension('width')  - (this.margin * 2);
-    this.height = this.getDimension('height') - (this.margin * 2);
+    if (!this.width) {
+      this.width = this.getDimension('width');
+    }
+    if (!this.height) {
+      this.height = this.getDimension('height');
+    }
+    this.innerWidth  = this.width  - (this.margin * 2);
+    this.innerHeight = this.height - (this.margin * 2);
 
     let ranges = this.modelSet.ranges;
     let data = this.modelSet.data.map(d => d.tertiary);
@@ -95,11 +117,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     // compute scales
     this.xScale = d3.scaleLinear().
       domain(ranges.pSpace.toArray()).
-      range([0, this.width]);
+      range([0, this.innerWidth]);
 
     this.yScale = d3.scaleLinear().
       domain([0, 0.8]).
-      range([0, this.height]);
+      range([0, this.innerHeight]);
 
     let sampDistExtent = data.reduce((arr, subData) => {
       let extent = d3.extent(subData.data, d => d.sampDist);

@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, HostListener, OnInit } from '@angular/core';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
 import { Observable } from 'rxjs/Observable';
@@ -110,5 +110,11 @@ export class AppComponent implements OnInit {
 
   childDragEnded(): void {
     this.blockSelection = false;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event): void {
+    console.log('resized');
+    this.outputChild.resize();
   }
 }

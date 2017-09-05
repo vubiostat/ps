@@ -12,7 +12,7 @@ import { PlotOptionsService } from '../plot-options.service';
   styleUrls: ['./plot-options.component.css']
 })
 export class PlotOptionsComponent implements OnInit {
-  @Input() selectedModelSet: Observable<TTestSet>;
+  @Input('selected-model-set') selectedModelSet: Observable<TTestSet>;
   modelSet: TTestSet;
   defaultRanges: TTestRanges;
   private subscription: Subscription;

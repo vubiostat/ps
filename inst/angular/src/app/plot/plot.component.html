@@ -1,34 +1,34 @@
 <svg #plot
   [style.fontFamily]="plotOptions.fontFamily == '' ? null : plotOptions.fontFamily"
   [style.fontSize]="(plotOptions.fontSize * 110).toString() + '%'"
-  [attr.class]="name" (window:resize)="onResize()">
+  [attr.class]="name" [attr.width]="width" [attr.height]="height">
 
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
   <ng-template [ngIf]="x && y && modelSet">
     <defs>
       <clipPath [id]="mainClipPathId">
         <rect x="0" [attr.y]="-plotOptions.lineWidth * 3"
-          [attr.width]="width"
-          [attr.height]="height + plotOptions.lineWidth * 3" />
+          [attr.width]="innerWidth"
+          [attr.height]="innerHeight + plotOptions.lineWidth * 3" />
       </clipPath>
       <clipPath [id]="targetClipPathId">
         <rect x="-5" [attr.y]="-5"
-          [attr.width]="width + 10"
-          [attr.height]="height + 10" />
+          [attr.width]="innerWidth + 10"
+          [attr.height]="innerHeight + 10" />
       </clipPath>
     </defs>
 
     <text text-anchor="middle"
-      [attr.x]="width / 2 + margin" [attr.y]="height + margin" dy="2.5em">
+      [attr.x]="innerWidth / 2 + margin" [attr.y]="innerHeight + margin" dy="2.5em">
       {{x.title}}
     </text>
     <text text-anchor="middle"
-      [attr.dx]="-(height / 2 + margin)" dy="1em"
+      [attr.dx]="-(innerHeight / 2 + margin)" dy="1em"
       transform="rotate(-90)">
       {{y.title}}
     </text>
     <text text-anchor="middle" font-weight="bold"
-      [attr.x]="width / 2 + margin" y="0" dy="2em">
+      [attr.x]="innerWidth / 2 + margin" y="0" dy="2em">
       {{title}}
     </text>
 
@@ -54,7 +54,7 @@
         fill="none" />
     </g>
 
-    <g #bottomAxis [attr.transform]="translate(margin, height + margin)"></g>
+    <g #bottomAxis [attr.transform]="translate(margin, innerHeight + margin)"></g>
     <g #leftAxis [attr.transform]="translate(margin, margin)"></g>
 
     <g *ngIf="showHoverInfo"
@@ -71,7 +71,7 @@
     </g>
 
     <rect [attr.transform]="translate(margin, margin)"
-      [attr.width]="width" [attr.height]="height"
+      [attr.width]="innerWidth" [attr.height]="innerHeight"
       fill="none" pointer-events="all"
       (mouseout)="toggleHoverInfo(false)"
       (mousemove)="hover($event)" />

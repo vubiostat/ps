@@ -44,7 +44,7 @@
           <ngb-tab *ngFor="let modelSet of modelSets; let i = index"
             title="Test {{i+1}}" id="test-{{i+1}}">
             <ng-template ngbTabContent>
-              <app-t-test [modelSet]="modelSet"></app-t-test>
+              <app-t-test [model-set]="modelSet"></app-t-test>
             </ng-template>
           </ngb-tab>
         </ngb-tabset>
@@ -68,7 +68,7 @@
         </button>
       </div>
       <app-output-pane #outputPaneChild
-        [selectedModelSet]="selectedModelSet"
+        [selected-model-set]="selectedModelSet"
         [hover-disabled]="!hoverBoxEnabled">
       </app-output-pane>
     </div>
@@ -85,7 +85,7 @@
     start-x-offset="5%" start-y-offset="55px"
     (drag-start)="childDragStarted()"
     (drag-end)="childDragEnded()">
-    <app-plot-options [selectedModelSet]="selectedModelSet">
+    <app-plot-options [selected-model-set]="selectedModelSet">
     </app-plot-options>
   </app-draggable-dialog>
 </div>

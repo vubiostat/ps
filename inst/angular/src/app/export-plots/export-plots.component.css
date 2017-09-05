@@ -1,0 +1,82 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modal-body {
+}
+
+.modal-body /deep/ a.nav-link {
+  border-color: #bbb #bbb #888;
+  background-color: #eee;
+}
+
+.modal-body /deep/ a.nav-link:hover {
+  border-color: #888;
+  background-color: #f5f5f5;
+  color: #0275d8;
+}
+
+.modal-body /deep/ a.nav-link.active {
+  border-color: #888 #888 #fff;
+  background-color: #fff;
+}
+
+.modal-body /deep/ a.nav-link.active:hover {
+  color: #464a4c;
+}
+
+.modal-body /deep/ ngb-tabset {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modal-body /deep/ ul.nav-tabs {
+  /*display: flex;*/
+  flex: 0 0 auto;
+  border-bottom: 1px solid #888;
+}
+
+.modal-body /deep/ .tab-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modal-body /deep/ .tab-pane {
+  border: 1px solid #888;
+  border-top: 0;
+  overflow: auto;
+  max-height: 73vh;
+}
+
+.modal-body /deep/ .tab-pane.active {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  background: white;
+}
+
+.modal-body .left {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  border-right: 1px solid #888;
+  padding: 10px;
+}
+
+.modal-body .right {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: 10px;
+  overflow: auto;
+  padding: 10px;
+}
+
+.modal-footer {
+  align-items: center;
+  justify-content: space-between;
+}
