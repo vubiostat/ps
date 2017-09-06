@@ -20,11 +20,15 @@ export class ExportPlotsComponent implements OnInit {
   topLeftTitle: string;
   topLeftWidth = 640;
   topLeftHeight = 480;
+  topLeftDropLines = true;
+  topLeftTarget = true;
 
   includeTopRight = true;
   topRightTitle: string;
   topRightWidth = 640;
   topRightHeight = 480;
+  topRightDropLines = true;
+  topRightTarget = true;
 
   includeBottom = true;
   bottomTitle = "Precision vs. Effect Size";

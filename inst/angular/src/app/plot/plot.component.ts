@@ -35,6 +35,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   @Input('model-set') modelSet: TTestSet;
   @Input('hover-disabled') hoverDisabled = false;
   @Input('draw-on-init') drawOnInit = true;
+  @Input('hide-drop-lines') hideDropLines = false;
+  @Input('hide-target') hideTarget = false;
   @Input() width: number;
   @Input() height: number;
 
@@ -185,7 +187,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
     this.targetPoint.x = data[this.x.name];
     this.targetPoint.y = data[this.y.name];
-    this.computeDropPaths();
+    this.dropPaths = this.getDropPaths();
   }
 
   private dragTargetEnd(): void {
@@ -310,7 +312,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
 
     // drop paths
-    this.computeDropPaths();
+    this.dropPaths = this.getDropPaths();
 
     // target hover ranges
     let xTargetPos = this.xScale(this.targetPoint.x);
@@ -322,7 +324,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.needDraw = true;
   }
 
-  private computeDropPaths(): void {
+  private getDropPaths(): string[] {
     let data = [
       [
         { x: this.xScale.domain()[0], y: this.targetPoint.y },
@@ -333,7 +335,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
         { x: this.targetPoint.x, y: this.targetPoint.y }
       ],
     ];
-    this.dropPaths = data.map(subData => this.getPath(subData, 'x', 'y'));
+    return data.map(subData => this.getPath(subData, 'x', 'y'));
   }
 
   private draw(): void {

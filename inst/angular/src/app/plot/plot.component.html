@@ -43,16 +43,18 @@
         fill="none" />
     </g>
 
-    <g *ngFor="let path of dropPaths"
-      [attr.transform]="translate(margin, margin)">
-      <path
-        [attr.clip-path]="mainClipPath()"
-        [attr.d]="path"
-        stroke="red"
-        [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
-        stroke-dasharray="5, 5"
-        fill="none" />
-    </g>
+    <ng-template [ngIf]="!hideDropLines">
+      <g *ngFor="let path of dropPaths"
+        [attr.transform]="translate(margin, margin)">
+        <path
+          [attr.clip-path]="mainClipPath()"
+          [attr.d]="path"
+          stroke="red"
+          [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
+          stroke-dasharray="5, 5"
+          fill="none" />
+      </g>
+    </ng-template>
 
     <g #bottomAxis [attr.transform]="translate(margin, innerHeight + margin)"></g>
     <g #leftAxis [attr.transform]="translate(margin, margin)"></g>
@@ -70,31 +72,33 @@
       </text>
     </g>
 
-    <rect [attr.transform]="translate(margin, margin)"
-      [attr.width]="innerWidth" [attr.height]="innerHeight"
-      fill="none" pointer-events="all"
-      (mouseout)="toggleHoverInfo(false)"
-      (mousemove)="hover($event)" />
+    <ng-template [ngIf]="!hideTarget">
+      <rect [attr.transform]="translate(margin, margin)"
+        [attr.width]="innerWidth" [attr.height]="innerHeight"
+        fill="none" pointer-events="all"
+        (mouseout)="toggleHoverInfo(false)"
+        (mousemove)="hover($event)" />
 
-    <g *ngIf="showTargetInfo"
-      [attr.transform]="translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))">
-      <rect x="0" y="-3.5em" width="8em" height="2.5em"
-        stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
-      <text x="1em" y="-3.5em">
-        <tspan dy="1em" text-anchor="right">{{x.sym}}:</tspan>
-        <tspan x="3.5em" text-anchor="left">{{targetPoint.x}}</tspan>
-        <tspan x="1em" dy="1em" text-anchor="right">{{y.sym}}:</tspan>
-        <tspan x="3.5em" text-anchor="left">{{targetPoint.y}}</tspan>
-      </text>
-    </g>
+      <g *ngIf="showTargetInfo"
+        [attr.transform]="translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))">
+        <rect x="0" y="-3.5em" width="8em" height="2.5em"
+          stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
+        <text x="1em" y="-3.5em">
+          <tspan dy="1em" text-anchor="right">{{x.sym}}:</tspan>
+          <tspan x="3.5em" text-anchor="left">{{targetPoint.x}}</tspan>
+          <tspan x="1em" dy="1em" text-anchor="right">{{y.sym}}:</tspan>
+          <tspan x="3.5em" text-anchor="left">{{targetPoint.y}}</tspan>
+        </text>
+      </g>
 
-    <circle #target class="target" r="5"
-      [attr.cx]="xScale(targetPoint.x)"
-      [attr.cy]="yScale(targetPoint.y)"
-      [attr.transform]="translate(margin, margin)"
-      [attr.clip-path]="targetClipPath()"
-      fill="red"
-      (mouseover)="toggleTargetInfo(true)"
-      (mouseout)="toggleTargetInfo(false)" />
+      <circle #target class="target" r="5"
+        [attr.cx]="xScale(targetPoint.x)"
+        [attr.cy]="yScale(targetPoint.y)"
+        [attr.transform]="translate(margin, margin)"
+        [attr.clip-path]="targetClipPath()"
+        fill="red"
+        (mouseover)="toggleTargetInfo(true)"
+        (mouseout)="toggleTargetInfo(false)" />
+    </ng-template>
   </ng-template>
 </svg>

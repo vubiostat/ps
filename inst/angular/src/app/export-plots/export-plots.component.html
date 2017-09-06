@@ -18,6 +18,20 @@
               </label>
             </div>
             <ng-template [ngIf]="includeTopLeft">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"
+                    [(ngModel)]="topLeftDropLines">
+                    Show drop lines
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"
+                    [(ngModel)]="topLeftTarget">
+                    Show target
+                </label>
+              </div>
               <div class="form-group">
                 <label>
                   Width
@@ -37,6 +51,8 @@
           <div class="right">
             <app-plot #topLeftPlot name="top-left-export"
               [model-set]="modelSet" [hover-disabled]="true"
+              [hide-drop-lines]="!topLeftDropLines"
+              [hide-target]="!topLeftTarget"
               [width]="topLeftWidth" [height]="topLeftHeight">
             </app-plot>
           </div>
@@ -57,6 +73,20 @@
               </label>
             </div>
             <ng-template [ngIf]="includeTopRight">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"
+                    [(ngModel)]="topRightDropLines">
+                    Show drop lines
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"
+                    [(ngModel)]="topRightTarget">
+                    Show target
+                </label>
+              </div>
               <div class="form-group">
                 <label>
                   Width
@@ -76,6 +106,8 @@
           <div class="right">
             <app-plot #topRightPlot name="top-right-export"
               [model-set]="modelSet" [hover-disabled]="true"
+              [hide-drop-lines]="!topRightDropLines"
+              [hide-target]="!topRightTarget"
               [width]="topRightWidth" [height]="topRightHeight">
             </app-plot>
           </div>
