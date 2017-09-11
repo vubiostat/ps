@@ -47,6 +47,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   targetOffset = 0;
   translateOffset = 0;
   targetDragging = false;
+  showTargetInfo = false;
   private subscription: Subscription;
 
   constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) {
@@ -90,6 +91,12 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
 
   redraw(): void {
     this.compute();
+  }
+
+  toggleTargetInfo(value: boolean): void {
+    if (!this.targetDragging) {
+      this.showTargetInfo = value;
+    }
   }
 
   private compute(): void {

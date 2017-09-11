@@ -23,6 +23,7 @@ import { ExportPlotsComponent } from './export-plots/export-plots.component';
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
 
 import { environment } from '../environments/environment';
+import { RoundPipe } from './round.pipe';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { environment } from '../environments/environment';
     SerializePlotComponent,
     ExportPlotsComponent,
     DraggableDialogComponent,
+    RoundPipe,
   ],
   imports: [
     BrowserModule,

@@ -57,11 +57,23 @@
         [attr.opacity]="targetDragging ? 0.1 : 0.9"
         fill="none" />
 
+      <g *ngIf="showTargetInfo"
+        [attr.transform]="translate(xScale(mainGroup.target), yScale(0.5))">
+        <rect x="0" y="-3.5em" width="6em" height="1.5em"
+          stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
+        <text x="1em" y="-3.5em">
+          <tspan dy="1em" text-anchor="right">&delta;:</tspan>
+          <tspan x="2.5em" text-anchor="left">{{(mainGroup.target + targetOffset) | round}}</tspan>
+        </text>
+      </g>
+
       <circle #target class="target" r="5"
         [attr.cx]="xScale(mainGroup.target)"
         [attr.cy]="yScale(0.5)"
         [attr.clip-path]="clipPath()"
-        [attr.fill]="palette.getColor(0, plotOptions.paletteTheme)" />
+        [attr.fill]="palette.getColor(0, plotOptions.paletteTheme)"
+        (mouseover)="toggleTargetInfo(true)"
+        (mouseout)="toggleTargetInfo(false)" />
     </g>
 
     <circle r="5"
