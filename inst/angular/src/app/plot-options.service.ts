@@ -11,6 +11,7 @@ export class PlotOptionsService extends ChangeEmitter {
   @Changeable lineWidth: number;
   @Changeable axisLineWidth: number;
   @Changeable paletteTheme: string;
+  @Changeable lineStyle: string;
 
   constructor() {
     super();
@@ -24,7 +25,8 @@ export class PlotOptionsService extends ChangeEmitter {
       axisFontSize: 1,
       lineWidth: 1,
       axisLineWidth: 1,
-      paletteTheme: "plasma"
+      paletteTheme: "plasma",
+      lineStyle: "solid"
     }, emit);
   }
 
@@ -37,7 +39,8 @@ export class PlotOptionsService extends ChangeEmitter {
       fontSize: this.fontSize,
       lineWidth: this.lineWidth,
       axisLineWidth: this.axisLineWidth,
-      paletteTheme: this.paletteTheme
+      paletteTheme: this.paletteTheme,
+      lineStyle: this.lineStyle
     });
   }
 
@@ -62,11 +65,32 @@ export class PlotOptionsService extends ChangeEmitter {
     if ('paletteTheme' in attribs) {
       this.paletteTheme = attribs.paletteTheme;
     }
+    if ('lineStyle' in attribs) {
+      this.lineStyle = attribs.lineStyle;
+    }
     this.noEmit = false;
     if (emit) {
       this.emit();
     } else {
       this.changes = {};
     }
+  }
+
+  dashArray(): string {
+    switch (this.lineStyle) {
+      case "solid":
+        return "";
+      case "dashed":
+        return "5,5";
+      case "dotted":
+        return "1,5";
+    }
+  }
+
+  lineCap(): string {
+    if (this.lineStyle == "dotted") {
+      return "round";
+    }
+    return "";
   }
 }

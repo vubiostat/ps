@@ -58,6 +58,15 @@
         </div>
       </div>
     </div>
+    <div class="form-group">
+      <label for="plot-line-style">Line style</label>
+      <select id="plot-line-style" class="form-control"
+        [(ngModel)]="plotOptions.lineStyle">
+        <option value="solid">Solid</option>
+        <option value="dashed">Dashed</option>
+        <option value="dotted">Dotted</option>
+      </select>
+    </div>
   </fieldset>
   <fieldset>
     <legend *ngIf="modelSet.model.output == 'n'">Sample Size</legend>

@@ -39,6 +39,8 @@
         [attr.d]="path"
         [attr.stroke]="palette.getColor(paths.length - 1 - i, plotOptions.paletteTheme)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
+        [attr.stroke-dasharray]="plotOptions.dashArray()"
+        [attr.stroke-linecap]="plotOptions.lineCap()"
         [attr.opacity]="i == (paths.length - 1) ? 1 : 0.7"
         fill="none" />
     </g>
