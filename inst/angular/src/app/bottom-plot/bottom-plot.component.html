@@ -1,7 +1,7 @@
 <svg #plot
   [style.fontFamily]="plotOptions.fontFamily"
   [style.fontSize]="(plotOptions.fontSize * 110).toString() + '%'"
-  [attr.class]="name" [attr.width]="width" [attr.height]="height">
+  [attr.class]="name" [attr.width]="fixedWidth" [attr.height]="fixedHeight">
 
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
   <ng-template [ngIf]="groups && modelSet">

@@ -22,8 +22,8 @@ interface Group { mainPaths: string[], distPath: string, target: number };
 export class BottomPlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input('model-set') modelSet: TTestSet;
   @Input('draw-on-init') drawOnInit = true;
-  @Input() width: number;
-  @Input() height: number;
+  @Input('fixed-width') fixedWidth: number;
+  @Input('fixed-height') fixedHeight: number;
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
@@ -32,6 +32,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   title = "Precision vs. Effect Size";
   margin: number = 50;
   clipPathId: string;
+  width: number;
+  height: number;
   innerWidth: number;
   innerHeight: number;
   xScale: any;
@@ -74,7 +76,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
           this.compute();
         }
       }
-    } else if (changes.width || changes.height) {
+    } else if (changes.fixedWidth || changes.fixedHeight) {
       if (this.initialized) {
         this.compute();
       }
@@ -83,12 +85,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
 
   ngAfterViewChecked(): void {
     this.draw();
-  }
-
-  resize(width?: number, height?: number): void {
-    this.width = width;
-    this.height = height;
-    this.compute();
   }
 
   redraw(): void {
@@ -107,10 +103,15 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     }
 
     // dimensions
-    if (!this.width) {
+    if (this.fixedWidth) {
+      this.width = this.fixedWidth;
+    } else {
       this.width = this.getDimension('width');
     }
-    if (!this.height) {
+
+    if (this.fixedHeight) {
+      this.height = this.fixedHeight;
+    } else {
       this.height = this.getDimension('height');
     }
     this.innerWidth  = this.width  - (this.margin * 2);

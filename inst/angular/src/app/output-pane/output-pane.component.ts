@@ -56,8 +56,8 @@ export class OutputPaneComponent implements OnInit {
   }
 
   resize(): void {
-    this.topLeftPlot.resize();
-    this.topRightPlot.resize();
-    this.bottomPlot.resize();
+    this.topLeftPlot.redraw();
+    this.topRightPlot.redraw();
+    this.bottomPlot.redraw();
   }
 }

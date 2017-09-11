@@ -37,8 +37,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   @Input('draw-on-init') drawOnInit = true;
   @Input('hide-drop-lines') hideDropLines = false;
   @Input('hide-target') hideTarget = false;
-  @Input() width: number;
-  @Input() height: number;
+  @Input('fixed-width') fixedWidth: number;
+  @Input('fixed-height') fixedHeight: number;
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
@@ -49,6 +49,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   x: PlotData;
   y: PlotData;
+  width: number;
+  height: number;
   innerWidth: number;
   innerHeight: number;
   margin: number = 50;
@@ -101,7 +103,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
           this.compute();
         }
       }
-    } else if (changes.width || changes.height) {
+    } else if (changes.fixedWidth || changes.fixedHeight) {
       if (this.initialized) {
         this.compute();
       }
@@ -110,12 +112,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   ngAfterViewChecked(): void {
     this.draw();
-  }
-
-  resize(width?: number, height?: number): void {
-    this.width = width;
-    this.height = height;
-    this.compute();
   }
 
   redraw(): void {
@@ -209,10 +205,14 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     }
 
     // dimensions
-    if (!this.width) {
+    if (this.fixedWidth) {
+      this.width = this.fixedWidth;
+    } else {
       this.width = this.getDimension('width');
     }
-    if (!this.height) {
+    if (this.fixedHeight) {
+      this.height = this.fixedHeight;
+    } else {
       this.height = this.getDimension('height');
     }
     this.innerWidth  = this.width  - (this.margin * 2);

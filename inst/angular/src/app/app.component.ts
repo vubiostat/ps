@@ -114,7 +114,6 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event): void {
-    console.log('resized');
     this.outputChild.resize();
   }
 }

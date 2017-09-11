@@ -53,7 +53,7 @@
               [model-set]="modelSet" [hover-disabled]="true"
               [hide-drop-lines]="!topLeftDropLines"
               [hide-target]="!topLeftTarget"
-              [width]="topLeftWidth" [height]="topLeftHeight">
+              [fixed-width]="topLeftWidth" [fixed-height]="topLeftHeight">
             </app-plot>
           </div>
           <app-serialize-plot #topLeftSerializer
@@ -108,7 +108,7 @@
               [model-set]="modelSet" [hover-disabled]="true"
               [hide-drop-lines]="!topRightDropLines"
               [hide-target]="!topRightTarget"
-              [width]="topRightWidth" [height]="topRightHeight">
+              [fixed-width]="topRightWidth" [fixed-height]="topRightHeight">
             </app-plot>
           </div>
           <app-serialize-plot #topRightSerializer
@@ -147,7 +147,7 @@
           <div class="right">
             <app-bottom-plot #bottomPlot name="bottom-export"
               [model-set]="modelSet"
-              [width]="bottomWidth" [height]="bottomHeight">
+              [fixed-width]="bottomWidth" [fixed-height]="bottomHeight">
             </app-bottom-plot>
           </div>
           <app-serialize-plot #bottomSerializer
