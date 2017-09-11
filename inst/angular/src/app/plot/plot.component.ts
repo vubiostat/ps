@@ -39,6 +39,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   @Input('hide-target') hideTarget = false;
   @Input('fixed-width') fixedWidth: number;
   @Input('fixed-height') fixedHeight: number;
+  @Input('disable-drag') disableDrag = false;
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
@@ -357,12 +358,14 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
 
     // make target point draggable
-    let target = d3.select(this.targetElement.nativeElement);
-    let drag = d3.drag().
-      on("start", this.dragTargetStart.bind(this)).
-      on("drag", this.dragTarget.bind(this)).
-      on("end", this.dragTargetEnd.bind(this));
-    target.call(drag);
+    if (!this.disableDrag) {
+      let target = d3.select(this.targetElement.nativeElement);
+      let drag = d3.drag().
+        on("start", this.dragTargetStart.bind(this)).
+        on("drag", this.dragTarget.bind(this)).
+        on("end", this.dragTargetEnd.bind(this));
+      target.call(drag);
+    }
 
     this.needDraw = false;
   }

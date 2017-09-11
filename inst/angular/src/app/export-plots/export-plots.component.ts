@@ -33,7 +33,7 @@ export class ExportPlotsComponent implements OnInit {
   includeBottom = true;
   bottomTitle = "Precision vs. Effect Size";
   bottomWidth = 640;
-  bottomHeight = 240;
+  bottomHeight = 200;
 
   imageFormat = "svg";
 

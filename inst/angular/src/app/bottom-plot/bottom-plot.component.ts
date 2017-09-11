@@ -24,6 +24,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   @Input('draw-on-init') drawOnInit = true;
   @Input('fixed-width') fixedWidth: number;
   @Input('fixed-height') fixedHeight: number;
+  @Input('disable-drag') disableDrag = false;
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
@@ -136,6 +137,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     this.yScaleSD = d3.scaleLinear().
       domain(sampDistExtent.reverse()).
       range([0, this.yScale(0.5)]);
+    //console.log("sampDistExtent:", sampDistExtent);
+    //console.log("ySD range:", [0, this.yScale(0.5)]);
 
     this.groups = data.reverse().map(subData => {
       // sample distribution
@@ -185,14 +188,16 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
 
     // make target point draggable
-    let elt = this.targetElement.nativeElement;
-    let target = d3.select(elt);
-    let drag = d3.drag().
-      container(elt.parentNode.parentNode).
-      on("start", this.dragTargetStart.bind(this)).
-      on("drag", this.dragTarget.bind(this)).
-      on("end", this.dragTargetEnd.bind(this));
-    target.call(drag);
+    if (!this.disableDrag) {
+      let elt = this.targetElement.nativeElement;
+      let target = d3.select(elt);
+      let drag = d3.drag().
+        container(elt.parentNode.parentNode).
+        on("start", this.dragTargetStart.bind(this)).
+        on("drag", this.dragTarget.bind(this)).
+        on("end", this.dragTargetEnd.bind(this));
+      target.call(drag);
+    }
 
     this.needDraw = false;
   }
