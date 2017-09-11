@@ -20,17 +20,18 @@
       {{title}}
     </text>
 
+    <!-- alternate groups -->
     <g *ngFor="let group of groups; let i = index"
       [attr.transform]="translate(margin, margin)">
 
       <path [attr.clip-path]="clipPath()" [attr.d]="group.distPath"
-        [attr.fill]="palette.getColor(groups.length - 1 - i, plotOptions.paletteTheme)"
+        [attr.fill]="palette.getColor(groups.length - i, plotOptions.paletteTheme)"
         stroke="none" opacity="0.5" />
 
       <path *ngFor="let path of group.mainPaths"
         [attr.clip-path]="clipPath()"
         [attr.d]="path"
-        [attr.stroke]="palette.getColor(groups.length - 1 - i, plotOptions.paletteTheme)"
+        [attr.stroke]="palette.getColor(groups.length - i, plotOptions.paletteTheme)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         fill="none" />
 
@@ -38,7 +39,29 @@
         [attr.cx]="xScale(group.target)"
         [attr.cy]="yScale(0.5)"
         [attr.clip-path]="clipPath()"
-        [attr.fill]="palette.getColor(groups.length - 1 - i, plotOptions.paletteTheme)" />
+        [attr.fill]="palette.getColor(groups.length - i, plotOptions.paletteTheme)" />
+    </g>
+
+    <!-- main group -->
+    <g [attr.transform]="translate(margin + translateOffset, margin)">
+
+      <path [attr.clip-path]="clipPath()" [attr.d]="mainGroup.distPath"
+        [attr.fill]="palette.getColor(0, plotOptions.paletteTheme)"
+        stroke="none" [attr.opacity]="targetDragging ? 0.1 : 0.5" />
+
+      <path *ngFor="let path of mainGroup.mainPaths"
+        [attr.clip-path]="clipPath()"
+        [attr.d]="path"
+        [attr.stroke]="palette.getColor(0, plotOptions.paletteTheme)"
+        [attr.stroke-width]="plotOptions.lineWidth * 3"
+        [attr.opacity]="targetDragging ? 0.1 : 0.9"
+        fill="none" />
+
+      <circle #target class="target" r="5"
+        [attr.cx]="xScale(mainGroup.target)"
+        [attr.cy]="yScale(0.5)"
+        [attr.clip-path]="clipPath()"
+        [attr.fill]="palette.getColor(0, plotOptions.paletteTheme)" />
     </g>
 
     <circle r="5"

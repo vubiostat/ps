@@ -27,6 +27,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
+  @ViewChild('target') targetElement: ElementRef;
 
   title = "Precision vs. Effect Size";
   margin: number = 50;
@@ -36,9 +37,13 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   xScale: any;
   yScale: any;
   yScaleSD: any;
+  mainGroup: Group;
   groups: Group[];
   needDraw: boolean;
   initialized = false;
+  targetOffset = 0;
+  translateOffset = 0;
+  targetDragging = false;
   private subscription: Subscription;
 
   constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) {
@@ -160,7 +165,9 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       }
       return result;
     });
-
+    this.mainGroup = this.groups.pop();
+    this.translateOffset = this.targetOffset = 0;
+    this.targetDragging = false;
     this.needDraw = true;
   }
 
@@ -176,6 +183,16 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       attr("font-size", 15 * this.plotOptions.axisFontSize).
       attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
 
+    // make target point draggable
+    let elt = this.targetElement.nativeElement;
+    let target = d3.select(elt);
+    let drag = d3.drag().
+      container(elt.parentNode.parentNode).
+      on("start", this.dragTargetStart.bind(this)).
+      on("drag", this.dragTarget.bind(this)).
+      on("end", this.dragTargetEnd.bind(this));
+    target.call(drag);
+
     this.needDraw = false;
   }
 
@@ -190,5 +207,34 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       y1((d, i) => this.yScaleSD(d[yName]));
 
     return area(points);
+  }
+
+  private dragTargetStart(): void {
+    this.targetDragging = true;
+  }
+
+  private dragTarget(event: any): void {
+    let mouseX = d3.event.x - this.margin;
+    let x = this.xScale.invert(mouseX);
+    if (x >= 0 && x < 1) {
+      x = 1;
+      mouseX = this.xScale(1);
+    } else if (x < 0 && x > -1) {
+      x = -1;
+      mouseX = this.xScale(-1);
+    }
+
+    let targetX = this.xScale(this.mainGroup.target);
+    this.translateOffset = mouseX - targetX;
+
+    this.targetOffset = x - this.mainGroup.target;
+  }
+
+  private dragTargetEnd(): void {
+    if (this.modelSet) {
+      this.modelSet.model.update({
+        delta: this.mainGroup.target + this.targetOffset
+      });
+    }
   }
 }
