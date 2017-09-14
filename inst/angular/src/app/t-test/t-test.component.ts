@@ -39,7 +39,25 @@ export class TTestComponent implements OnInit {
         this.modelChanged(changes);
       });
     this.round.onChange.subscribe(changes => {
-      this.model.update(changes);
+      // process changes
+      let attribs = {};
+      for (let key in changes) {
+        let value = changes[key];
+        if (key == "extra") {
+          value.forEach(change => {
+            if ('append' in change) {
+              this.model.addExtra(change.append.value);
+            } else if ('remove' in change) {
+              this.model.removeExtra(change.remove.index);
+            } else if ('replace' in change) {
+              this.model.replaceExtra(change.replace.index, change.replace.value);
+            }
+          });
+        } else {
+          attribs[key] = value;
+        }
+      }
+      this.model.update(attribs);
     });
 
     this.min = new TTest(this.model);
@@ -57,26 +75,12 @@ export class TTestComponent implements OnInit {
   }
 
   addInput(name: any): void {
-    let extra = this.round.extra;
-    if (extra) {
-      extra.push(name, this.round[name]);
-    } else {
-      extra = new TTestExtra({ [name]: [this.round[name]] });
-      this.round.update({ extra: extra });
-    }
+    let ex = new TTestExtra({ [name]: this.round[name] });
+    this.round.addExtra(ex);
   }
 
   removeInput(name: string, index: number): void {
-    let extra = this.round.extra;
-    if (!extra) {
-      return;
-    }
-    name = name.split("-")[0];
-    extra.remove(name, index);
-
-    if (extra.isEmpty(name)) {
-      this.round.update({ extra: undefined });
-    }
+    this.round.removeExtra(index);
   }
 
   trackByExtra(index: number, item: number): number {

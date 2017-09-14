@@ -5,11 +5,12 @@ import { ChangeEmitter, Changeable } from './changeable';
 import { Range } from './range';
 
 export class TTestExtra extends ChangeEmitter {
-  @Changeable alpha?: number[];
-  @Changeable sigma?: number[];
-  @Changeable delta?: number[];
-  @Changeable power?: number[];
-  @Changeable n?: number[];
+  @Changeable alpha?: number;
+  @Changeable sigma?: number;
+  @Changeable delta?: number;
+  @Changeable power?: number;
+  @Changeable n?: number;
+  which: string;
 
   constructor(attribs: any) {
     super();
@@ -20,15 +21,20 @@ export class TTestExtra extends ChangeEmitter {
 
     this.noEmit = true;
     if ('alpha' in attribs) {
-      this.alpha = this.proxy('alpha', attribs.alpha.slice());
+      this.alpha = attribs.alpha;
+      this.which = 'alpha';
     } else if ('sigma' in attribs) {
-      this.sigma = this.proxy('sigma', attribs.sigma.slice());
+      this.sigma = attribs.sigma;
+      this.which = 'sigma';
     } else if ('delta' in attribs) {
-      this.delta = this.proxy('delta', attribs.delta.slice());
+      this.delta = attribs.delta;
+      this.which = 'delta';
     } else if ('power' in attribs) {
-      this.power = this.proxy('power', attribs.power.slice());
+      this.power = attribs.power;
+      this.which = 'power';
     } else if ('n' in attribs) {
-      this.n = this.proxy('n', attribs.n.slice());
+      this.n = attribs.n;
+      this.which = 'n';
     }
     this.noEmit = false;
     this.changes = {};
@@ -44,94 +50,39 @@ export class TTestExtra extends ChangeEmitter {
     if (current === undefined) {
       throw new Error(`invalid key: ${key}`);
     }
-    let obj = attribs[key];
-    if (Array.isArray(obj)) {
-      // normally I'd want to catch all the change events here and combine
-      // then into one event, but only one value should be changing here at a time
-      obj.forEach((value, i) => {
-        current[i] = value;
-      });
-    } else if ('replace' in obj) {
-      obj = obj.replace;
-      current[obj.index] = obj.value;
-    } else if ('remove' in obj) {
-      obj = obj.remove;
-      current.splice(obj.index, 1);
-    } else if ('append' in obj) {
-      obj = obj.append;
-      current.push(obj.value);
-    }
+    this[key] = attribs[key];
   }
 
   attributes(): any {
     let result: any = {};
     if (this.alpha) {
-      result.alpha = this.alpha.slice();
+      //result.alpha = this.alpha.slice();
+      result.alpha = this.alpha;
     } else if (this.sigma) {
-      result.sigma = this.sigma.slice();
+      //result.sigma = this.sigma.slice();
+      result.sigma = this.sigma;
     } else if (this.delta) {
-      result.delta = this.delta.slice();
+      //result.delta = this.delta.slice();
+      result.delta = this.delta;
     } else if (this.power) {
-      result.power = this.power.slice();
+      //result.power = this.power.slice();
+      result.power = this.power;
     } else if (this.n) {
-      result.n = this.n.slice();
+      //result.n = this.n.slice();
+      result.n = this.n;
     }
     return result;
-  }
-
-  push(name: string, value: number): void {
-    if (this[name] === undefined) {
-      throw new Error("elements must be mutually exclusive");
-    }
-    this.noEmit = true;
-    this[name].push(value);
-    this.noEmit = false;
-
-    this.changes = { [name]: { append: { value: value } } };
-    this.emit();
-  }
-
-  remove(name: string, index: number): void {
-    if (this[name] === undefined) {
-      throw new Error(`invalid name: ${name}`);
-    }
-    this.noEmit = true;
-    this[name].splice(index, 1);
-    this.noEmit = false;
-
-    this.changes = { [name]: { remove: { index: index } } };
-    this.emit();
-  }
-
-  isEmpty(name: string): boolean {
-    if (this[name] === undefined) {
-      throw new Error(`invalid name: ${name}`);
-    }
-    return this[name].length == 0;
   }
 
   round(): TTestExtra {
     let attribs = this.attributes();
     for (let key in attribs) {
-      attribs[key] = attribs[key].map(value => {
-        return Math.round(value * 100) / 100;
-      });
+      //attribs[key] = attribs[key].map(value => {
+        //return Math.round(value * 100) / 100;
+      //});
+      attribs[key] = Math.round(attribs[key] * 100) / 100;
     }
     return new TTestExtra(attribs);
-  }
-
-  private proxy(name: string, arr: number[]): any {
-    let result = new Proxy(arr, {
-      set: (target, property, value, receiver) => {
-        if (target[property] !== value) {
-          target[property] = value;
-          this.changes = { [name]: { replace: { index: property, value: value } } };
-          this.emit();
-        }
-        return true;
-      }
-    });
-    return result;
   }
 }
 
@@ -144,12 +95,13 @@ export class TTest extends ChangeEmitter {
   @Changeable delta: number;
   @Changeable power: number;
   @Changeable n: number;
-  @Changeable extra?: TTestExtra;
+  @Changeable extra: TTestExtra[] = [];
 
-  private subscription = new Subscription();
+  private extraSubs: Subscription[] = [];
 
   constructor(attribs?: any) {
     super();
+
     if (attribs) {
       this.update(attribs, false);
     }
@@ -181,22 +133,28 @@ export class TTest extends ChangeEmitter {
     if (attribs.n !== undefined) {
       this.n = attribs.n;
     }
-    if ('extra' in attribs) {
-      let extra = attribs.extra;
-      if (extra) {
-        if (!this.extra) {
-          extra = extra.attributes();
-          this.extra = new TTestExtra(extra);
-          this.subscription = this.extra.onChange.subscribe((value) => {
-            this.changes.extra = value;
-            this.emit();
-          });
+    if (attribs.extra !== undefined) {
+      if (!Array.isArray(attribs.extra)) {
+        throw new Error('extra must be an array');
+      }
+
+      // replace elements
+      attribs.extra.forEach((ex, index) => {
+        if (ex instanceof TTestExtra) {
+          this.replaceExtra(index, ex);
         } else {
-          this.extra.update(extra);
+          this.extra[index].update(ex);
         }
-      } else {
-        this.subscription.unsubscribe();
-        this.extra = undefined;
+      });
+
+      // remove missing
+      if (this.extra.length > attribs.extra.length) {
+        let lower = attribs.extra.length;
+        for (let i = lower; i < this.extra.length; i++) {
+          this.removeExtra(i);
+        }
+        this.extra.length = attribs.extra.length;
+        this.extraSubs.length = attribs.extra.length;
       }
     }
     this.noEmit = false;
@@ -230,13 +188,65 @@ export class TTest extends ChangeEmitter {
     this.update(attribs, emit);
   }
 
-  isValid(): boolean {
-    return this.alpha > 0 && this.alpha < 1 &&
-      this.sigma > 0 &&
-      (this.output == "n" || this.output == "power" || this.output == "delta") &&
-      (this.output == "n" || this.n > 0) &&
-      (this.output == "power" || (this.power > this.alpha && this.power < 1)) &&
-      (this.output == "delta" || this.delta > 0);
+  canAddExtra(name: string): boolean {
+    return this.extra.length == 0 || this.extra[0].which == name;
+  }
+
+  addExtra(ex: TTestExtra): void {
+    // check for uniformity
+    if (!this.canAddExtra(ex.which)) {
+      throw new Error("invalid key");
+    }
+    this.extra.push(ex);
+
+    let index = this.extra.length - 1;
+    let sub = this.subscribeToExtra(index, ex);
+    this.extraSubs.push(sub);
+
+    let change = { append: { value: ex } };
+    if (this.changes.extra) {
+      this.changes.extra.push(change);
+    } else {
+      this.changes.extra = [change];
+    }
+    this.emit();
+  }
+
+  removeExtra(index: number): void {
+    this.extraSubs[index].unsubscribe();
+    this.extraSubs.splice(index, 1);
+    this.extra.splice(index, 1);
+
+    let change = { remove: { index: index } };
+    if (this.changes.extra) {
+      this.changes.extra.push(change);
+    } else {
+      this.changes.extra = [change];
+    }
+    this.emit();
+  }
+
+  replaceExtra(index: number, ex: TTestExtra): void {
+    if (this.extra[index]) {
+      this.extraSubs[index].unsubscribe();
+    }
+
+    this.extra[index] = ex;
+    if (ex) {
+      this.extraSubs[index] = this.subscribeToExtra(index, ex);
+    }
+
+    let change = { replace: { index: index, value: ex } };
+    if (this.changes.extra) {
+      this.changes.extra.push(change);
+    } else {
+      this.changes.extra = [change];
+    }
+    this.emit();
+  }
+
+  hasExtra(): boolean {
+    return this.extra.length > 0;
   }
 
   attributes(): any {
@@ -251,9 +261,9 @@ export class TTest extends ChangeEmitter {
       result.design = this.design;
     }
     if (this.extra) {
-      result.extra = this.extra.attributes();
+      result.extra = this.extra.map(ex => ex.attributes());
     }
-    return(result);
+    return result;
   }
 
   round(): TTest {
@@ -264,9 +274,23 @@ export class TTest extends ChangeEmitter {
     attribs.power = Math.round(attribs.power * 100) / 100;
     attribs.n = Math.ceil(attribs.n);
     if (this.extra) {
-      attribs.extra = this.extra.round();
+      attribs.extra = this.extra.map(ex => ex.round());
     }
     return new TTest(attribs);
+  }
+
+  private subscribeToExtra(index: number, ex: TTestExtra): Subscription {
+    let result = ex.onChange.subscribe(value => {
+      let change = Object.assign({}, value);
+      change.index = index;
+      if (this.changes.extra) {
+        this.changes.extra.push(change);
+      } else {
+        this.changes.extra = [change];
+      }
+      this.emit();
+    });
+    return result;
   }
 }
 

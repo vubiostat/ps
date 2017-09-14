@@ -73,16 +73,12 @@ TTest <- setRefClass("TTest",
         delta <<- calculateDelta(alpha, sigma, n, power)
       }
 
+      params <- list(alpha = alpha, power = power, n = n, delta = delta, sigma = sigma)
       extraParams <- if (is.null(extra)) list() else extra
-      params <- data.frame(
-        alpha = c(alpha, extra$alpha),
-        power = c(power, extra$power),
-        n     = c(n,     extra$n),
-        delta = c(delta, extra$delta),
-        sigma = c(sigma, extra$sigma)
-      )
+      allParams <- c(list(params), extraParams)
 
-      data <<- apply(params, 1, function(params) {
+      data <<- lapply(allParams, function(ex) {
+        params[names(ex)] <- ex
         result <- list()
         if (output == "n") {
           n2 <- seq(n * 0.25, n * 1.75, 0.1)

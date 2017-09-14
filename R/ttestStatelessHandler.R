@@ -67,7 +67,7 @@ TTestStatelessHandler <- setRefClass("TTestStatelessHandler",
 
       # parse params from JSON
       params <- try({
-        fromJSON(rawToChar(req$rook.input$read()))
+        fromJSON(rawToChar(req$rook.input$read()), simplifyVector = FALSE)
       }, silent = TRUE)
       if (inherits(params, "try-error")) {
         return(fail(list(errors = list(base = "invalid JSON"))))

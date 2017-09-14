@@ -88,22 +88,35 @@ validateModelParams <- function(params) {
     if (!is.list(modelParams$extra)) {
       errors$model.extra <- "must be a list"
     } else {
-      keys <- names(modelParams$extra)
-      if (length(keys) == 0) {
-        errors$model.extra <- "must not be empty"
-      } else if (length(keys) > 1) {
-        errors$model.extra <- "must have only one entry"
-      } else if (!(keys[1] %in% c("alpha", "sigma", "delta", "power", "n"))) {
-        errors$model.extra <- paste("has invalid key:", keys[1])
-      } else if (keys[1] == modelParams$output) {
-        errors$model.extra <- "must not be the same as 'output'"
-      } else {
-        value <- modelParams$extra[[keys[1]]]
-        errorKey <- paste0("model.extra.", keys[[1]])
-        if (!is.numeric(value)) {
-          errors[[errorKey]] <- "must be numeric"
-        } else if (length(value) == 0) {
-          errors[[errorKey]] <- "must not be empty"
+      mainKey <- NULL
+      len <- length(modelParams$extra)
+      indexes <- if (len > 0) 1:len else c()
+      for (index in indexes) {
+        extra <- modelParams$extra[[index]]
+        errorKey <- paste0("model.extra.", index)
+
+        keys <- names(extra)
+        if (length(keys) > 1) {
+          errors[[errorKey]] <- "must have only one entry"
+        } else {
+          key <- keys[1]
+          if (is.null(mainKey)) {
+            mainKey <- key
+          } else if (key != mainKey) {
+            errors[[errorKey]] <- paste("has invalid key:", key)
+          } else if (!(key %in% c("alpha", "sigma", "delta", "power", "n"))) {
+            errors[[errorKey]] <- paste("has invalid key:", key)
+          } else if (key == modelParams$output) {
+            errors[[errorKey]] <- "must not be the same as 'output'"
+          } else {
+            value <- extra[[key]]
+            errorKey2 <- paste0(errorKey, ".", keys)
+            if (!is.numeric(value)) {
+              errors[[errorKey]] <- "must be numeric"
+            } else if (length(value) == 0) {
+              errors[[errorKey]] <- "must not be empty"
+            }
+          }
         }
       }
     }

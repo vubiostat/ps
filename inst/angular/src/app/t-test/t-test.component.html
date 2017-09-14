@@ -13,8 +13,8 @@
 <app-range-slider name="alpha" label="Type I Error (&alpha;)"
   [min]="min.alpha" [max]="max.alpha"
   [hard-min]="min.alpha" [hard-max]="max.alpha"
-  [can-add]="!round.extra || round.extra.alpha" (add)="addInput($event)"
-  [palette-color]="round.extra?.alpha ? 0 : -1"
+  [can-add]="round.canAddExtra('alpha')" (add)="addInput($event)"
+  [palette-color]="round.extra[0]?.alpha ? 0 : -1"
   [palette-theme]="plotOptions.paletteTheme"
   [(ngModel)]="round.alpha">
   <ng-template rsHelp>
@@ -22,22 +22,24 @@
     probability that we will falsely reject the null hypothesis.
   </ng-template>
 </app-range-slider>
-<div class="extra" *ngFor="let alpha of round.extra?.alpha; let i = index; trackBy: trackByExtra">
-  <app-range-slider name="alpha-{{i+2}}" label="Type I Error (&alpha;) #{{i+2}}"
-    [min]="min.alpha" [max]="max.alpha"
-    [hard-min]="min.alpha" [hard-max]="max.alpha"
-    [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
-    [palette-color]="i+1"
-    [palette-theme]="plotOptions.paletteTheme"
-    [(ngModel)]="round.extra.alpha[i]">
-  </app-range-slider>
-</div>
+<ng-template [ngIf]="round.extra[0]?.alpha">
+  <div class="extra" *ngFor="let extra of round.extra; let i = index; trackBy: trackByExtra">
+    <app-range-slider name="alpha-{{i+2}}" label="Type I Error (&alpha;) #{{i+2}}"
+      [min]="min.alpha" [max]="max.alpha"
+      [hard-min]="min.alpha" [hard-max]="max.alpha"
+      [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+      [palette-color]="i+1"
+      [palette-theme]="plotOptions.paletteTheme"
+      [(ngModel)]="round.extra[i].alpha">
+    </app-range-slider>
+  </div>
+</ng-template>
 
 <app-range-slider name="sigma" label="Std. deviation (&sigma;)"
   [min]="min.sigma" [max]="max.sigma" step="0.1"
   [hard-min]="1"
-  [can-add]="!round.extra || round.extra.sigma" (add)="addInput($event)"
-  [palette-color]="round.extra?.sigma ? 0 : -1"
+  [can-add]="round.canAddExtra('sigma')" (add)="addInput($event)"
+  [palette-color]="round.extra[0]?.sigma ? 0 : -1"
   [palette-theme]="plotOptions.paletteTheme"
   [(ngModel)]="round.sigma">
   <ng-template rsHelp>
@@ -46,23 +48,25 @@
     response of matched pairs.
   </ng-template>
 </app-range-slider>
-<div class="extra" *ngFor="let sigma of round.extra?.sigma; let i = index; trackBy: trackByExtra">
-  <app-range-slider name="sigma-{{i+2}}" label="Std. deviation #{{i+2}}"
-    [min]="min.sigma" [max]="max.sigma" step="0.1"
-    [hard-min]="1"
-    [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
-    [palette-color]="i+1"
-    [palette-theme]="plotOptions.paletteTheme"
-    [(ngModel)]="round.extra.sigma[i]">
-  </app-range-slider>
-</div>
+<ng-template [ngIf]="round.extra[0]?.sigma">
+  <div class="extra" *ngFor="let extra of round.extra; let i = index; trackBy: trackByExtra">
+    <app-range-slider name="sigma-{{i+2}}" label="Std. deviation #{{i+2}}"
+      [min]="min.sigma" [max]="max.sigma" step="0.1"
+      [hard-min]="1"
+      [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+      [palette-color]="i+1"
+      [palette-theme]="plotOptions.paletteTheme"
+      [(ngModel)]="round.extra[i].sigma">
+    </app-range-slider>
+  </div>
+</ng-template>
 
 <app-range-slider name="power" label="Power"
   [min]="min.power" [max]="max.power"
   [hard-min]="min.power" [hard-max]="max.power"
-  [can-add]="!round.extra || round.extra.power" (add)="addInput($event)"
+  [can-add]="round.canAddExtra('power')" (add)="addInput($event)"
   [is-output]="round.output == 'power'"
-  [palette-color]="round.extra?.power ? 0 : -1"
+  [palette-color]="round.extra[0]?.power ? 0 : -1"
   [palette-theme]="plotOptions.paletteTheme"
   [(ngModel)]="round.power">
   <ng-template rsHelp>
@@ -75,22 +79,24 @@
     I error probability α and a true difference in population means of δ.
   </ng-template>
 </app-range-slider>
-<div class="extra" *ngFor="let power of round.extra?.power; let i = index; trackBy: trackByExtra">
-  <app-range-slider name="power-{{i+2}}" label="Power #{{i+2}}"
-    [min]="min.power" [max]="max.power"
-    [hard-min]="min.power" [hard-max]="max.power"
-    [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
-    [palette-color]="i+1"
-    [palette-theme]="plotOptions.paletteTheme"
-    [(ngModel)]="round.extra.power[i]">
-  </app-range-slider>
-</div>
+<ng-template [ngIf]="round.extra[0]?.power">
+  <div class="extra" *ngFor="let extra of round.extra; let i = index; trackBy: trackByExtra">
+    <app-range-slider name="power-{{i+2}}" label="Power #{{i+2}}"
+      [min]="min.power" [max]="max.power"
+      [hard-min]="min.power" [hard-max]="max.power"
+      [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+      [palette-color]="i+1"
+      [palette-theme]="plotOptions.paletteTheme"
+      [(ngModel)]="round.extra[i].power">
+    </app-range-slider>
+  </div>
+</ng-template>
 
 <app-range-slider name="delta" label="Difference in population means (&delta;)"
   [min]="min.delta" [max]="max.delta" step="0.1"
-  [can-add]="!round.extra || round.extra.delta" (add)="addInput($event)"
+  [can-add]="round.canAddExtra('delta')" (add)="addInput($event)"
   [is-output]="round.output == 'delta'"
-  [palette-color]="round.extra?.delta ? 0 : -1"
+  [palette-color]="round.extra[0]?.delta ? 0 : -1"
   [palette-theme]="plotOptions.paletteTheme"
   [(ngModel)]="round.delta">
   <ng-template rsHelp>
@@ -98,21 +104,23 @@
     rutrum at ligula id, tempor tincidunt nunc.
   </ng-template>
 </app-range-slider>
-<div class="extra" *ngFor="let delta of round.extra?.delta; let i = index; trackBy: trackByExtra">
-  <app-range-slider name="delta-{{i+2}}" label="Difference in population means (&delta;) #{{i+2}}"
-    [min]="min.delta" [max]="max.delta" step="0.1"
-    [hard-min]="min.delta" [hard-max]="max.delta"
-    [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
-    [palette-color]="i+1"
-    [palette-theme]="plotOptions.paletteTheme"
-    [(ngModel)]="round.extra.delta[i]">
-  </app-range-slider>
-</div>
+<ng-template [ngIf]="round.extra[0]?.delta">
+  <div class="extra" *ngFor="let extra of round.extra; let i = index; trackBy: trackByExtra">
+    <app-range-slider name="delta-{{i+2}}" label="Difference in population means (&delta;) #{{i+2}}"
+      [min]="min.delta" [max]="max.delta" step="0.1"
+      [hard-min]="min.delta" [hard-max]="max.delta"
+      [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+      [palette-color]="i+1"
+      [palette-theme]="plotOptions.paletteTheme"
+      [(ngModel)]="round.extra[i].delta">
+    </app-range-slider>
+  </div>
+</ng-template>
 
 <app-range-slider name="n" label="Sample size"
   [min]="min.n" [max]="max.n" step="1"
   [hard-min]="1"
-  [can-add]="!round.extra || round.extra.n" (add)="addInput($event)"
+  [can-add]="round.canAddExtra('n')" (add)="addInput($event)"
   [is-output]="round.output == 'n'"
   [palette-color]="round.extra?.n ? 0 : -1"
   [palette-theme]="plotOptions.paletteTheme"
@@ -122,13 +130,15 @@
     pair test n is the number of pairs.
   </ng-template>
 </app-range-slider>
-<div class="extra" *ngFor="let n of round.extra?.n; let i = index; trackBy: trackByExtra">
-  <app-range-slider name="n-{{i+2}}" label="Sample size #{{i+2}}"
-    [min]="min.n" [max]="max.n" step="1"
-    [hard-min]="1"
-    [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
-    [palette-color]="i+1"
-    [palette-theme]="plotOptions.paletteTheme"
-    [(ngModel)]="round.extra.n[i]">
-  </app-range-slider>
-</div>
+<ng-template [ngIf]="round.extra[0]?.n">
+  <div class="extra" *ngFor="let extra of round.extra; let i = index; trackBy: trackByExtra">
+    <app-range-slider name="n-{{i+2}}" label="Sample size #{{i+2}}"
+      [min]="min.n" [max]="max.n" step="1"
+      [hard-min]="1"
+      [can-add]="false" [can-remove]="true" (remove)="removeInput($event, i)"
+      [palette-color]="i+1"
+      [palette-theme]="plotOptions.paletteTheme"
+      [(ngModel)]="round.extra[i].n">
+    </app-range-slider>
+  </div>
+</ng-template>
