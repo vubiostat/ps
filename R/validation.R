@@ -13,7 +13,7 @@ validateModelParams <- function(params) {
   }
 
   keys <- names(modelParams)
-  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "output", "design", "extra")
+  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "output", "design")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {
@@ -81,44 +81,6 @@ validateModelParams <- function(params) {
     }
     if (!("power" %in% keys)) {
       errors$model.power <- "is required when output is 'delta'"
-    }
-  }
-
-  if ("extra" %in% keys) {
-    if (!is.list(modelParams$extra)) {
-      errors$model.extra <- "must be a list"
-    } else {
-      mainKey <- NULL
-      len <- length(modelParams$extra)
-      indexes <- if (len > 0) 1:len else c()
-      for (index in indexes) {
-        extra <- modelParams$extra[[index]]
-        errorKey <- paste0("model.extra.", index)
-
-        keys <- names(extra)
-        if (length(keys) > 1) {
-          errors[[errorKey]] <- "must have only one entry"
-        } else {
-          key <- keys[1]
-          if (is.null(mainKey)) {
-            mainKey <- key
-          } else if (key != mainKey) {
-            errors[[errorKey]] <- paste("has invalid key:", key)
-          } else if (!(key %in% c("alpha", "sigma", "delta", "power", "n"))) {
-            errors[[errorKey]] <- paste("has invalid key:", key)
-          } else if (key == modelParams$output) {
-            errors[[errorKey]] <- "must not be the same as 'output'"
-          } else {
-            value <- extra[[key]]
-            errorKey2 <- paste0(errorKey, ".", keys)
-            if (!is.numeric(value)) {
-              errors[[errorKey]] <- "must be numeric"
-            } else if (length(value) == 0) {
-              errors[[errorKey]] <- "must not be empty"
-            }
-          }
-        }
-      }
     }
   }
 

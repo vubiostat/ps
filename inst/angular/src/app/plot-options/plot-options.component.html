@@ -69,24 +69,24 @@
     </div>
   </fieldset>
   <fieldset>
-    <legend *ngIf="modelSet.model.output == 'n'">Sample Size</legend>
-    <legend *ngIf="modelSet.model.output == 'power'">Power</legend>
-    <legend *ngIf="modelSet.model.output == 'delta'">Detectable Alternative</legend>
+    <legend *ngIf="model.output == 'n'">Sample Size</legend>
+    <legend *ngIf="model.output == 'power'">Power</legend>
+    <legend *ngIf="model.output == 'delta'">Detectable Alternative</legend>
     <div class="row">
       <div class="col-sm">
         <label for="plot-top-y-min">Minimum</label>
         <div class="input-group">
-          <ng-template [ngIf]="modelSet.model.output == 'n'">
+          <ng-template [ngIf]="model.output == 'n'">
             <input class="form-control"
               type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
               [(ngModel)]="modelSet.ranges.n.min" />
           </ng-template>
-          <ng-template [ngIf]="modelSet.model.output == 'power'">
+          <ng-template [ngIf]="model.output == 'power'">
             <input class="form-control"
               type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
               [(ngModel)]="modelSet.ranges.power.min" />
           </ng-template>
-          <ng-template [ngIf]="modelSet.model.output == 'delta'">
+          <ng-template [ngIf]="model.output == 'delta'">
             <input class="form-control"
               type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
               [(ngModel)]="modelSet.ranges.delta.min" />
@@ -96,17 +96,17 @@
       <div class="col-sm">
         <label for="plot-top-y-max">Maximum</label>
         <div class="input-group">
-          <ng-template [ngIf]="modelSet.model.output == 'n'">
+          <ng-template [ngIf]="model.output == 'n'">
             <input class="form-control"
               type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
               [(ngModel)]="modelSet.ranges.n.max" />
           </ng-template>
-          <ng-template [ngIf]="modelSet.model.output == 'power'">
+          <ng-template [ngIf]="model.output == 'power'">
             <input class="form-control"
               type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
               [(ngModel)]="modelSet.ranges.power.max" />
           </ng-template>
-          <ng-template [ngIf]="modelSet.model.output == 'delta'">
+          <ng-template [ngIf]="model.output == 'delta'">
             <input class="form-control"
               type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min + 1)"
               [(ngModel)]="modelSet.ranges.delta.max" />
@@ -116,7 +116,7 @@
     </div>
   </fieldset>
   <fieldset>
-    <ng-template [ngIf]="modelSet.model.output == 'n'">
+    <ng-template [ngIf]="model.output == 'n'">
       <legend>Sample Size vs. Power</legend>
       <div class="row">
         <div class="col-sm">
@@ -137,7 +137,7 @@
         </div>
       </div>
     </ng-template>
-    <ng-template [ngIf]="modelSet.model.output == 'power'">
+    <ng-template [ngIf]="model.output == 'power'">
       <legend>Power vs. Sample Size</legend>
       <div class="row">
         <div class="col-sm">
@@ -158,7 +158,7 @@
         </div>
       </div>
     </ng-template>
-    <ng-template [ngIf]="modelSet.model.output == 'delta'">
+    <ng-template [ngIf]="model.output == 'delta'">
       <legend>Detectable Alternative vs. Sample Size</legend>
       <div class="row">
         <div class="col-sm">
@@ -181,7 +181,7 @@
     </ng-template>
   </fieldset>
   <fieldset>
-    <ng-template [ngIf]="modelSet.model.output == 'n'">
+    <ng-template [ngIf]="model.output == 'n'">
       <legend>Sample Size vs. Detectable Alternative</legend>
       <div class="row">
         <div class="col-sm">
@@ -202,7 +202,7 @@
         </div>
       </div>
     </ng-template>
-    <ng-template [ngIf]="modelSet.model.output == 'power'">
+    <ng-template [ngIf]="model.output == 'power'">
       <legend>Power vs. Detectable Alternative</legend>
       <div class="row">
         <div class="col-sm">
@@ -223,7 +223,7 @@
         </div>
       </div>
     </ng-template>
-    <ng-template [ngIf]="modelSet.model.output == 'delta'">
+    <ng-template [ngIf]="model.output == 'delta'">
       <legend>Detectable Alternative vs. Power</legend>
       <div class="row">
         <div class="col-sm">

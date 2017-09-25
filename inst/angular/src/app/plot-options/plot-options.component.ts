@@ -14,6 +14,7 @@ import { PlotOptionsService } from '../plot-options.service';
 export class PlotOptionsComponent implements OnInit {
   @Input('selected-model-set') selectedModelSet: Observable<TTestSet>;
   modelSet: TTestSet;
+  model: TTest;
   defaultRanges: TTestRanges;
   private subscription: Subscription;
 
@@ -31,6 +32,7 @@ export class PlotOptionsComponent implements OnInit {
         this.subscription = modelSet.onCompute.subscribe(() => {
           this.setDefaultRanges();
         });
+        this.model = modelSet.getModel(0);
         this.setDefaultRanges();
       }
     });

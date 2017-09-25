@@ -192,9 +192,9 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.showTargetInfo = false;
 
     if (this.modelSet && this.x.name) {
-      let output = this.modelSet.model.output;
-      this.modelSet.model.update({
-        [output]: this.targetPoint.y,
+      let model = this.modelSet.getModel(0);
+      model.update({
+        [model.output]: this.targetPoint.y,
         [this.x.name]: this.targetPoint.x
       });
     }
@@ -220,10 +220,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.innerHeight = this.height - (this.margin * 2);
 
     // setup
-    let model = this.modelSet.model;
+    let model = this.modelSet.getModel(0);
     let ranges = this.modelSet.ranges;
     let data;
-    switch (this.modelSet.model.output) {
+    switch (model.output) {
       case "n":
         if (this.name == "top-left" || this.name == "top-left-export") {
           this.x = {
@@ -240,7 +240,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
           name: "n", range: ranges.n, target: model.n,
           title: "Sample Size", sym: "n"
         };
-        data = this.modelSet.data.map(d => d.primary.data);
+        data = this.modelSet.models.map(m => m.data.primary.data);
         break;
       case "power":
         if (this.name == "top-left" || this.name == "top-left-export") {
@@ -252,7 +252,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
-          data = this.modelSet.data.map(d => d.primary.data);
+          data = this.modelSet.models.map(m => m.data.primary.data);
         } else if (this.name == "top-right" || this.name == "top-right-export") {
           this.x = {
             name: "delta", range: ranges.delta, target: model.delta,
@@ -262,7 +262,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
-          data = this.modelSet.data.map(d => d.secondary.data);
+          data = this.modelSet.models.map(m => m.data.secondary.data);
         }
         break;
       case "delta":
@@ -281,7 +281,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
           name: "delta", range: ranges.delta, target: model.delta,
           title: "Detectable Alternative", sym: "δ"
         };
-        data = this.modelSet.data.map(d => d.primary.data);
+        data = this.modelSet.models.map(m => m.data.primary.data);
         break;
     }
     if (!this.x || !this.y) {

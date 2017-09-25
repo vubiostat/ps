@@ -18,6 +18,7 @@ export class OutputPaneComponent implements OnInit {
   @Input('selected-model-set') selectedModelSet: Observable<TTestSet>;
   @Input('hover-disabled') hoverDisabled = false;
   modelSet: TTestSet;
+  model: TTest;
   showText = true;
 
   @ViewChild('topLeft') topLeftPlot: PlotComponent;
@@ -30,6 +31,7 @@ export class OutputPaneComponent implements OnInit {
   ngOnInit(): void {
     this.selectedModelSet.subscribe(modelSet => {
       this.modelSet = modelSet;
+      this.model = modelSet.getModel(0);
     });
   }
 

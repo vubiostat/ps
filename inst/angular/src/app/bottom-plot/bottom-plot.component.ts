@@ -126,7 +126,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     this.innerHeight = this.height - (this.margin * 2);
 
     let ranges = this.modelSet.ranges;
-    let data = this.modelSet.data.map(d => d.tertiary);
+    let data = this.modelSet.models.map(m => m.data.tertiary);
 
     // compute scales
     this.xScale = d3.scaleLinear().
@@ -245,9 +245,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
 
   private dragTargetEnd(): void {
     if (this.modelSet) {
-      this.modelSet.model.update({
+      let modelChanges = {
         delta: this.mainGroup.target + this.targetOffset
-      });
+      };
+      this.modelSet.getModel(0).update(modelChanges);
     }
   }
 }

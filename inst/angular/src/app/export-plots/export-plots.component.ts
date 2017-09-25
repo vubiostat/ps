@@ -48,7 +48,7 @@ export class ExportPlotsComponent implements OnInit {
   constructor(private activeModal: NgbActiveModal) {}
 
   ngOnInit(): void {
-    switch (this.modelSet.model.output) {
+    switch (this.modelSet.getModel(0).output) {
       case "n":
         this.topLeftTitle = "Sample Size vs. Power";
         this.topRightTitle = "Sample Size vs. Detectable Alternative";

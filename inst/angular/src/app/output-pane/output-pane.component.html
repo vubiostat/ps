@@ -21,35 +21,35 @@
   <div *ngIf="showText" class="hide-text">
     <i class="fa fa-times-circle" (click)="toggleText(false)"></i>
   </div>
-  <ng-template [ngIf]="modelSet.model.output == 'n'">
+  <ng-template [ngIf]="model.output == 'n'">
     We are planning a study of a continuous response variable from matched
     pairs of study subjects. Prior data indicate that the difference in the
     response of matched pairs is normally distributed with standard deviation
-    {{round(modelSet.model.sigma)}}. If the true difference in the mean response of
-    matched pairs is {{round(modelSet.model.delta)}}, we will need to study
-    {{ceil(modelSet.model.n)}} pairs of subjects to be able to reject the null
+    {{round(model.sigma)}}. If the true difference in the mean response of
+    matched pairs is {{round(model.delta)}}, we will need to study
+    {{ceil(model.n)}} pairs of subjects to be able to reject the null
     hypothesis that this response difference is zero with probability (power)
-    {{round(modelSet.model.power)}}. The Type I error probability associated with this
-    test of this null hypothesis is {{round(modelSet.model.alpha)}}.
+    {{round(model.power)}}. The Type I error probability associated with this
+    test of this null hypothesis is {{round(model.alpha)}}.
   </ng-template>
-  <ng-template [ngIf]="modelSet.model.output == 'power'">
-    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior
+  <ng-template [ngIf]="model.output == 'power'">
+    We are planning a study with {{ceil(model.n)}} pairs of subjects. Prior
     data indicate that the difference in the response of matched pairs is
-    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. If
+    normally distributed with standard deviation {{round(model.sigma)}}. If
     the true difference in the mean response of matched pairs is
-    {{round(modelSet.model.delta)}}, we will be able to reject the null hypothesis
+    {{round(model.delta)}}, we will be able to reject the null hypothesis
     that this response difference is zero with probability (power)
-    {{round(modelSet.model.power)}}. The Type I error probability associated with this
-    test of this null hypothesis is {{round(modelSet.model.alpha)}}.
+    {{round(model.power)}}. The Type I error probability associated with this
+    test of this null hypothesis is {{round(model.alpha)}}.
   </ng-template>
-  <ng-template [ngIf]="modelSet.model.output == 'delta'">
-    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior
+  <ng-template [ngIf]="model.output == 'delta'">
+    We are planning a study with {{ceil(model.n)}} pairs of subjects. Prior
     data indicate that the difference in the response of matched pairs is
-    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. We
+    normally distributed with standard deviation {{round(model.sigma)}}. We
     will be able to detect a true difference in the mean response of matched
-    pairs of -{{round(modelSet.model.delta)}} or {{round(modelSet.model.delta)}} with
-    probability (power) {{round(modelSet.model.power)}}. The Type I error probability
+    pairs of -{{round(model.delta)}} or {{round(model.delta)}} with
+    probability (power) {{round(model.power)}}. The Type I error probability
     associated with this test of the null hypothesis that this response
-    difference is zero is {{round(modelSet.model.alpha)}}.
+    difference is zero is {{round(model.alpha)}}.
   </ng-template>
 </div>

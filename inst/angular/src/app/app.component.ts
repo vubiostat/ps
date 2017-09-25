@@ -87,8 +87,9 @@ export class AppComponent implements OnInit {
     this.ttestService.create(model).
       then(result => {
         let model = new TTest(result.model);
-        let data = result.data as TTestData[];
-        let modelSet = new TTestSet(model, data);
+        let data = result.data as TTestData;
+        let modelSet = new TTestSet();
+        modelSet.add(model, data);
         this.modelSets.push(modelSet);
 
         if (select) {

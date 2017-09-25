@@ -48,7 +48,7 @@ paramTitles <- list(
 )
 
 TTest <- setRefClass("TTest",
-  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "extra", "data"),
+  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "data"),
 
   methods = list(
     initialize = function(params) {
@@ -59,90 +59,72 @@ TTest <- setRefClass("TTest",
       delta  <<- params$delta
       sigma  <<- params$sigma
       output <<- params$output
-      extra  <<- params$extra
       data   <<- NULL
 
       update()
     },
     update = function() {
+      data <<- list()
       if (output == "n") {
         n <<- calculateN(alpha, delta, sigma, power)
-      } else if (output == "power") {
-        power <<- calculatePower(alpha, delta, sigma, n)
-      } else if (output == "delta") {
-        delta <<- calculateDelta(alpha, sigma, n, power)
-      }
 
-      params <- list(alpha = alpha, power = power, n = n, delta = delta, sigma = sigma)
-      extraParams <- if (is.null(extra)) list() else extra
-      allParams <- c(list(params), extraParams)
-
-      data <<- lapply(allParams, function(ex) {
-        params[names(ex)] <- ex
-        result <- list()
-        if (output == "n") {
-          n2 <- seq(n * 0.25, n * 1.75, 0.1)
-          if (!(n %in% n2)) {
-            n2 <- sort(c(n2, n))
-          }
-          args <- as.list(params)
-          args$n <- n2
-
-          power2 <- do.call(calculatePower, args)
-          delta2 <- do.call(calculateDelta, args)
-          result$primary <- list(data = data.frame(n = n2, power = power2, delta = delta2))
-
-        } else if (output == "power") {
-          power2 <- seq(alpha + 0.01, 0.99, 0.01)
-          if (power < 1 && !(power %in% power2)) {
-            power2 <- sort(c(power2, power))
-          }
-          args <- as.list(params)
-          args$power <- power2
-
-          n2 <- do.call(calculateN, args)
-          if (max(n2) < n) {
-            n3 <- seq(ceiling(max(n2)), n)
-            power3 <- rep(1, length(n3))
-            power2 <- c(power2, power3)
-            n2 <- c(n2, n3)
-          }
-          result$primary <- list(data = data.frame(power = power2, n = n2))
-
-          deltaRange <- calculateDeltaRange(sigma, delta)
-          delta2 <- seq(deltaRange[1], deltaRange[2], 0.01)
-          args$delta <- delta2
-          power3 <- do.call(calculatePower, args)
-          result$secondary <- list(data = data.frame(power = power3, delta = delta2))
-
-        } else if (output == "delta") {
-          delta2 <- seq(delta * 0.25, delta * 1.75, 0.01)
-          if (!(delta %in% delta2)) {
-            delta2 <- sort(c(delta2, delta))
-          }
-          args <- as.list(params)
-          args$delta <- delta2
-
-          n2 <- do.call(calculateN, args)
-          power2 <- do.call(calculatePower, args)
-          result$primary <- list(data = data.frame(delta = delta2, n = n2, power = power2))
+        # Calculate data for plots
+        n2 <- seq(n * 0.25, n * 1.75, 0.1)
+        if (!(n %in% n2)) {
+          n2 <- sort(c(n2, n))
         }
 
-        # calculate values for bottom/tertiary graph
-        args <- as.list(params)
-        precision <- do.call(calculatePrecision, args)
-        args$precision <- precision
+        power2 <- calculatePower(alpha, delta, sigma, n2)
+        delta2 <- calculateDelta(alpha, sigma, n2, power)
+        data$primary <<- list(data = data.frame(n = n2, power = power2, delta = delta2))
 
-        pSpace <- do.call(calculatePSpace, args)
-        args$pSpace <- pSpace
-        sampDist <- do.call(calculateSampDist, args)
-        tertiary <- data.frame(pSpace = pSpace, sampDist = sampDist)
-        result$tertiary <- list(
-          data = tertiary[!is.na(tertiary$sampDist), ],
-          range = precision, target = unbox(args$delta)
-        )
-        result
-      })
+      } else if (output == "power") {
+        power <<- calculatePower(alpha, delta, sigma, n)
+
+        # Calculate data for plots
+        power2 <- seq(alpha + 0.01, 0.99, 0.01)
+        if (power < 1 && !(power %in% power2)) {
+          power2 <- sort(c(power2, power))
+        }
+
+        n2 <- calculateN(alpha, delta, sigma, power)
+        if (max(n2) < n) {
+          n3 <- seq(ceiling(max(n2)), n)
+          power3 <- rep(1, length(n3))
+          power2 <- c(power2, power3)
+          n2 <- c(n2, n3)
+        }
+        data$primary <<- list(data = data.frame(power = power2, n = n2))
+
+        deltaRange <- calculateDeltaRange(sigma, delta)
+        delta2 <- seq(deltaRange[1], deltaRange[2], 0.01)
+        power3 <- calculatePower(alpha, delta2, sigma, n)
+        data$secondary <<- list(data = data.frame(power = power3, delta = delta2))
+
+      } else if (output == "delta") {
+        delta <<- calculateDelta(alpha, sigma, n, power)
+
+        # Calculate data for plots
+        delta2 <- seq(delta * 0.25, delta * 1.75, 0.01)
+        if (!(delta %in% delta2)) {
+          delta2 <- sort(c(delta2, delta))
+        }
+
+        n2 <- calculateN(alpha, delta2, sigma, power)
+        power2 <- calculatePower(alpha, delta2, sigma, n)
+        data$primary <<- list(data = data.frame(delta = delta2, n = n2, power = power2))
+      }
+
+      # Calculate data for bottom/tertiary graph
+      precision <- calculatePrecision(alpha, delta, sigma, n)
+      pSpace <- calculatePSpace(precision, sigma, delta)
+      sampDist <- calculateSampDist(pSpace, delta, sigma, n)
+
+      tertiary <- data.frame(pSpace = pSpace, sampDist = sampDist)
+      data$tertiary <<- list(
+        data = tertiary[!is.na(tertiary$sampDist), ],
+        range = precision, target = unbox(delta)
+      )
     },
     attributes = function() {
       model <- list(
@@ -155,9 +137,6 @@ TTest <- setRefClass("TTest",
       )
       if (!inherits(id, "uninitializedField")) {
         model$id <- unbox(id)
-      }
-      if (!is.null(extra)) {
-        model$extra <- extra
       }
       return(list(model = model, data = data))
     }

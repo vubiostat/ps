@@ -1,14 +1,7 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit
-} from '@angular/core';
-
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import 'rxjs/add/operator/debounceTime';
 
-import { TTest, TTestExtra, TTestRanges, TTestSet } from '../t-test';
+import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { TTestService } from '../t-test.service';
 import { PlotOptionsService } from '../plot-options.service';
 
@@ -23,7 +16,8 @@ export class TTestComponent implements OnInit {
   model: TTest;
   min: TTest;
   max: TTest;
-  round: TTest;
+  extraName: string;
+  extraModels: TTest[];
 
   constructor(
     private plotOptions: PlotOptionsService,
@@ -31,34 +25,13 @@ export class TTestComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.model = this.modelSet.model;
-    this.round = this.model.round();
+    this.model = this.modelSet.getModel(0);
+    this.extraModels = this.modelSet.extraModels();
     this.model.onChange.
       debounceTime(100).
       subscribe(changes => {
-        this.modelChanged(changes);
+        this.modelChanged(0, changes);
       });
-    this.round.onChange.subscribe(changes => {
-      // process changes
-      let attribs = {};
-      for (let key in changes) {
-        let value = changes[key];
-        if (key == "extra") {
-          value.forEach(change => {
-            if ('append' in change) {
-              this.model.addExtra(change.append.value);
-            } else if ('remove' in change) {
-              this.model.removeExtra(change.remove.index);
-            } else if ('replace' in change) {
-              this.model.replaceExtra(change.replace.index, change.replace.value);
-            }
-          });
-        } else {
-          attribs[key] = value;
-        }
-      }
-      this.model.update(attribs);
-    });
 
     this.min = new TTest(this.model);
     this.max = new TTest(this.model);
@@ -75,12 +48,28 @@ export class TTestComponent implements OnInit {
   }
 
   addInput(name: any): void {
-    let ex = new TTestExtra({ [name]: this.round[name] });
-    this.round.addExtra(ex);
+    if (this.extraName && this.extraName != name) {
+      throw new Error("extra attributes must be mutually exclusive");
+    }
+    this.extraName = name;
+
+    let model = this.model.clone();
+    let index = this.modelSet.add(model, this.modelSet.getData(0));
+    model.onChange.
+      debounceTime(100).
+      subscribe(changes => {
+        this.modelChanged(index, changes);
+      });
+    this.extraModels = this.modelSet.extraModels();
   }
 
-  removeInput(name: string, index: number): void {
-    this.round.removeExtra(index);
+  removeInput(index: number): void {
+    this.modelSet.remove(index);
+    this.extraModels = this.modelSet.extraModels();
+
+    if (this.modelSet.models.length == 0) {
+      this.extraName = undefined;
+    }
   }
 
   trackByExtra(index: number, item: number): number {
@@ -94,37 +83,41 @@ export class TTestComponent implements OnInit {
     this.max[name] = range[1];
   }
 
-  private modelChanged(changes: any): void {
+  private modelChanged(index: number, changes: any): void {
     let keys = Object.keys(changes);
-    if (keys.length > 1 || keys[0] != this.model.output) {
-      this.updateModelSet();
+    let output = this.modelSet.getModel(index).output;
+    if (keys.length > 1 || keys[0] != output) {
+      this.updateModelSet(index);
     }
   }
 
-  private updateModelSet(): void {
-    this.ttestService.update(this.modelSet.model).
+  private updateModelSet(index: number): void {
+    let model = this.modelSet.getModel(index);
+    this.ttestService.update(model).
       then(result => {
-        this.modelSet.update(result.model, result.data);
-        this.round.roundUpdate(result.model, false);
-
-        // adjust min/max
-        if (this.model.sigma < this.min.sigma) {
-          this.min.sigma = Math.floor(this.model.sigma);
-        } else if (this.model.sigma > this.max.sigma) {
-          this.max.sigma = Math.ceil(this.model.sigma);
-        }
-
-        if (this.model.delta < this.min.delta) {
-          this.min.delta = Math.floor(this.model.delta);
-        } else if (this.model.delta > this.max.delta) {
-          this.max.delta = Math.ceil(this.model.delta);
-        }
-
-        if (this.model.n < this.min.n) {
-          this.min.n = Math.floor(this.model.n);
-        } else if (this.model.n > this.max.n) {
-          this.max.n = Math.ceil(this.model.n);
-        }
+        this.modelSet.update(index, result.model, result.data);
+        this.adjustMinMax(index);
       }, error => { });
+  }
+
+  private adjustMinMax(index: number): void {
+    let model = this.modelSet.getModel(index);
+    if (model.sigma < this.min.sigma) {
+      this.min.sigma = Math.floor(model.sigma);
+    } else if (model.sigma > this.max.sigma) {
+      this.max.sigma = Math.ceil(model.sigma);
+    }
+
+    if (model.delta < this.min.delta) {
+      this.min.delta = Math.floor(model.delta);
+    } else if (model.delta > this.max.delta) {
+      this.max.delta = Math.ceil(model.delta);
+    }
+
+    if (model.n < this.min.n) {
+      this.min.n = Math.floor(model.n);
+    } else if (model.n > this.max.n) {
+      this.max.n = Math.ceil(model.n);
+    }
   }
 }
