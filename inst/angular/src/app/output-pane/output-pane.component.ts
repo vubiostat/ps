@@ -31,7 +31,11 @@ export class OutputPaneComponent implements OnInit {
   ngOnInit(): void {
     this.selectedModelSet.subscribe(modelSet => {
       this.modelSet = modelSet;
-      this.model = modelSet.getModel(0);
+      if (this.modelSet) {
+        this.model = modelSet.getModel(0);
+      } else {
+        this.model = undefined;
+      }
     });
   }
 
