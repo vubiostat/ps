@@ -29,8 +29,8 @@ export class TTestComponent implements OnInit {
     this.extraModels = this.modelSet.extraModels();
     this.model.onChange.
       debounceTime(100).
-      subscribe(changes => {
-        this.modelChanged(0, changes);
+      subscribe(event => {
+        this.modelChanged(0, event);
       });
 
     this.min = new TTest(this.model);
@@ -57,8 +57,8 @@ export class TTestComponent implements OnInit {
     let index = this.modelSet.add(model, this.modelSet.getData(0));
     model.onChange.
       debounceTime(100).
-      subscribe(changes => {
-        this.modelChanged(index, changes);
+      subscribe(event => {
+        this.modelChanged(index, event);
       });
     this.extraModels = this.modelSet.extraModels();
   }
@@ -83,10 +83,28 @@ export class TTestComponent implements OnInit {
     this.max[name] = range[1];
   }
 
-  private modelChanged(index: number, changes: any): void {
-    let keys = Object.keys(changes);
-    let output = this.modelSet.getModel(index).output;
-    if (keys.length > 1 || keys[0] != output) {
+  private modelChanged(index: number, event: any): void {
+    if (event.recalculation) {
+      // Don't do anything, since this change came from a backend
+      // recalculation.
+      return;
+    }
+
+    let changes = event.changes;
+    let model = this.modelSet.getModel(index);
+    if (index == 0 && 'output' in changes) {
+      // output was changed, which means each model needs to be updated before
+      // firing the compute event, or the plots will get confused
+      this.modelSet.setOutputQuietly(changes.output);
+      let promise = this.modelSet.reduceModels(Promise.resolve(), (promise, model, index) => {
+        return promise.then(() => this.ttestService.update(model)).
+          then(result => {
+            console.log('updating index:', index, 'model:', result.model, 'data:', result.data);
+            this.modelSet.update(index, result.model, result.data, {}, false);
+          });
+      });
+      promise.then(() => this.modelSet.triggerCompute());
+    } else {
       this.updateModelSet(index);
     }
   }
@@ -95,7 +113,7 @@ export class TTestComponent implements OnInit {
     let model = this.modelSet.getModel(index);
     this.ttestService.update(model).
       then(result => {
-        this.modelSet.update(index, result.model, result.data);
+        this.modelSet.update(index, result.model, result.data, { recalculation: true });
         this.adjustMinMax(index);
       }, error => { });
   }

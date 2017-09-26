@@ -22,7 +22,7 @@ export class TTest extends ChangeEmitter {
     }
   }
 
-  update(attribs: any, emit = true): any {
+  update(attribs: any, emit = true, eventAttribs: any = {}): any {
     this.noEmit = true;
     if (attribs.id !== undefined) {
       this.id = attribs.id;
@@ -52,7 +52,7 @@ export class TTest extends ChangeEmitter {
 
     let changes = this.changes;
     if (emit) {
-      this.emit();
+      this.emit(eventAttribs);
     } else {
       this.changes = {};
     }
@@ -188,8 +188,16 @@ export class TTestRanges extends ChangeEmitter {
   private subscribeToChild(name: string): void {
     let child = this[name];
     if (child) {
-      let sub = child.onChange.subscribe((value) => {
-        this.onChange.emit({ [name]: value });
+      let sub = child.onChange.subscribe((childEvent: any) => {
+        let event: any = {};
+        for (var key in childEvent) {
+          if (key == 'changes') {
+            event.changes = { [name]: childEvent.changes };
+          } else {
+            event[key] = childEvent[key];
+          }
+        }
+        this.onChange.emit(event);
       });
       this.subscription.add(sub);
     }
@@ -215,6 +223,7 @@ export class TTestSet {
   private rangeSub: Subscription;
 
   add(model: TTest, data: TTestData): number {
+    let index = this.models.length;
     this.models.push({ model: model, data: data });
 
     let modelSub = model.onChange.subscribe(value => {
@@ -229,8 +238,8 @@ export class TTestSet {
         this.onChange.emit({ ranges: value });
       });
     }
-    this.onChange.emit({});
-    return this.models.length - 1;
+    this.onChange.emit({ added: index });
+    return index;
   }
 
   getModel(index: number): TTest {
@@ -241,12 +250,12 @@ export class TTestSet {
     return this.models[index].data;
   }
 
-  update(index: number, modelChanges: any, data: TTestData) {
+  update(index: number, modelChanges: any, data: TTestData, eventAttribs: any = {}, emit = true) {
     let model = this.models[index].model;
     this.models[index].data = data;
 
     let prevChanges = model.prevChanges;
-    model.update(modelChanges);
+    model.update(modelChanges, emit, eventAttribs);
 
     if (index == 0) {
       let skip;
@@ -255,10 +264,20 @@ export class TTestSet {
         skip = changeKeys.find(k => k != model.output);
       }
       let attribs = this.calcRangeAttributes(model, data, skip);
-      this.ranges.update(attribs);
+      this.ranges.update(attribs, emit);
     }
 
+    if (emit) {
+      this.onCompute.emit();
+    }
+  }
+
+  triggerCompute(): void {
     this.onCompute.emit();
+  }
+
+  setOutputQuietly(output: string) {
+    this.models.forEach(m => m.model.update({ output: output }, false));
   }
 
   remove(index: number) {
@@ -270,11 +289,17 @@ export class TTestSet {
     this.models.splice(index, 1);
     this.modelSubs[index].unsubscribe();
     this.modelSubs.splice(index, 1);
-    this.onChange.emit({});
+    this.onChange.emit({ removed: index });
   }
 
   extraModels(): TTest[] {
     return this.models.slice(1).map(m => m.model);
+  }
+
+  reduceModels(initial: any, callback: Function): any {
+    return this.models.reduce((a, m, i) => {
+      return callback(a, m.model, i);
+    }, initial);
   }
 
   private calcRangeAttributes(model: TTest, data: TTestData, skip?: string): any {

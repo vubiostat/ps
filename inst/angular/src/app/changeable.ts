@@ -6,12 +6,14 @@ export abstract class ChangeEmitter {
   protected noEmit = false;
   onChange = new EventEmitter();
 
-  protected emit(): void {
+  protected emit(attribs: any = {}): void {
     if (!this.noEmit && this.changes && Object.keys(this.changes).length > 0) {
-      let changes = Object.assign({}, this.changes);
+      let event = Object.assign({}, attribs);
+      event.changes = Object.assign({}, this.changes);
+
       this.prevChanges = Object.assign({}, this.changes);
       this.changes = {};
-      this.onChange.emit(changes);
+      this.onChange.emit(event);
     }
   }
 }
