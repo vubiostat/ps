@@ -67,7 +67,7 @@ export class TTestComponent implements OnInit {
     this.modelSet.remove(index);
     this.extraModels = this.modelSet.extraModels();
 
-    if (this.modelSet.models.length == 0) {
+    if (this.modelSet.models.length == 1) {
       this.extraName = undefined;
     }
   }
