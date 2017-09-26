@@ -1169,7 +1169,12 @@ var OutputPaneComponent = (function () {
         var _this = this;
         this.selectedModelSet.subscribe(function (modelSet) {
             _this.modelSet = modelSet;
-            _this.model = modelSet.getModel(0);
+            if (_this.modelSet) {
+                _this.model = modelSet.getModel(0);
+            }
+            else {
+                _this.model = undefined;
+            }
         });
     };
     OutputPaneComponent.prototype.toggleText = function (value) {
