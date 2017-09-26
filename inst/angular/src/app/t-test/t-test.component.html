@@ -125,6 +125,19 @@
     pair test n is the number of pairs.
   </ng-template>
 </app-range-slider>
+
+<app-range-slider name="ci" label="95% confidence interval width"
+  [min]="min.ci" [max]="max.ci" step="1"
+  [hard-min]="1"
+  [can-add]="!extraName || extraName == 'n'" (add)="addInput('n')"
+  [is-output]="model.output == 'n'"
+  [palette-color]="0" [palette-theme]="plotOptions.paletteTheme"
+  [(ngModel)]="model.ci">
+  <ng-template rsHelp>
+    Specifying the 95% confidence interval width will automatically calculate
+    the sample size parameter.
+  </ng-template>
+</app-range-slider>
 <ng-template [ngIf]="extraName == 'n'">
   <div class="extra" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
     <app-range-slider name="n-{{i+2}}" label="Sample size #{{i+2}}"
@@ -134,6 +147,14 @@
       [palette-color]="i+1"
       [palette-theme]="plotOptions.paletteTheme"
       [(ngModel)]="ex.n">
+    </app-range-slider>
+    <app-range-slider name="ci-{{i+2}}" label="95% confidence interval width #{{i+2}}"
+      [min]="min.ci" [max]="max.ci" step="1"
+      [hard-min]="1"
+      [can-add]="false" [can-remove]="true" (remove)="removeInput(i+1)"
+      [palette-color]="i+1"
+      [palette-theme]="plotOptions.paletteTheme"
+      [(ngModel)]="ex.ci">
     </app-range-slider>
   </div>
 </ng-template>

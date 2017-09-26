@@ -4,6 +4,7 @@ import 'rxjs/add/operator/debounceTime';
 import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { TTestService } from '../t-test.service';
 import { PlotOptionsService } from '../plot-options.service';
+import { PaletteService } from '../palette.service';
 
 @Component({
   selector: 'app-t-test',
@@ -21,7 +22,8 @@ export class TTestComponent implements OnInit {
 
   constructor(
     private plotOptions: PlotOptionsService,
-    private ttestService: TTestService
+    private ttestService: TTestService,
+    public palette: PaletteService
   ) { }
 
   ngOnInit(): void {
@@ -43,6 +45,7 @@ export class TTestComponent implements OnInit {
     this.max.power = 0.99;
 
     this.calculateSliderRange('n');
+    this.calculateSliderRange('ci');
     this.calculateSliderRange('delta');
     this.calculateSliderRange('sigma');
   }
@@ -99,12 +102,19 @@ export class TTestComponent implements OnInit {
       let promise = this.modelSet.reduceModels(Promise.resolve(), (promise, model, index) => {
         return promise.then(() => this.ttestService.update(model)).
           then(result => {
-            console.log('updating index:', index, 'model:', result.model, 'data:', result.data);
             this.modelSet.update(index, result.model, result.data, {}, false);
           });
       });
       promise.then(() => this.modelSet.triggerCompute());
     } else {
+      if ('ci' in changes) {
+        // 95% confidence interval width was changed, so turn on "ciMode"
+        model.ciMode = true;
+
+      } else if ('n' in changes) {
+        // Sample size was changed, so turn off "ciMode"
+        model.ciMode = false;
+      }
       this.updateModelSet(index);
     }
   }

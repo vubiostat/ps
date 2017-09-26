@@ -1,18 +1,21 @@
-# helper functions
+# Calculate sample size, given the other parameters
 calculateN <- function(alpha, delta, sigma, power, ...) {
   (sigma * (qnorm(1 - alpha/2) + qnorm(power)) / delta) ^ 2
 }
 
+# Calculate power, given the other parameters
 calculatePower <- function(alpha, delta, sigma, n, ...) {
   z <- delta / sigma * sqrt(n)
   pnorm(z - qnorm(1 - alpha/2)) + pnorm(-z - qnorm(1 - alpha/2))
 }
 
+# Calculate detectable alternative, given the other parameters
 calculateDelta <- function(alpha, sigma, n, power, ...) {
   # Note: ignores the smaller tail (typical)
   sqrt((qnorm(1 - alpha/2) - qnorm(1 - power)) ^ 2 * (sigma ^ 2) / n)
 }
 
+# Calculate detectable alternative axis range
 calculateDeltaRange <- function(sigma, delta, ...) {
   mu.0 <- 0
   lo <- mu.0 - max(3 * sigma, delta + sigma/2)
@@ -20,11 +23,13 @@ calculateDeltaRange <- function(sigma, delta, ...) {
   c(lo, high)
 }
 
+# Calculate precision end points
 calculatePrecision <- function(alpha, delta, sigma, n, ...) {
   moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
   c(delta - moe, delta + moe)
 }
 
+# Calculate parameter space
 calculatePSpace <- function(precision, sigma, delta, ...) {
   pSpaceRange <- calculateDeltaRange(sigma, delta)
   if (precision[1] < pSpaceRange[1]) {
@@ -36,9 +41,20 @@ calculatePSpace <- function(precision, sigma, delta, ...) {
   seq(pSpaceRange[1], pSpaceRange[2], 0.01)
 }
 
+# Calculate sample distribution for precision vs. effect size graph
 calculateSampDist <- function(pSpace, delta, sigma, n, ...) {
   sampDist <- dnorm(pSpace, mean = delta, sd = sigma/sqrt(n))
   ifelse(sampDist < 0.01, NA, sampDist)
+}
+
+# Calculate 95% confidence interval width, given std. dev. and sample size
+calculateCI <- function(sigma, n, ...) {
+  2 * 1.96 * sigma / sqrt(n)
+}
+
+# Calculate sample size, given 95% confidence interval width and std. dev.
+calculateNFromCI <- function(sigma, ci, ...) {
+  (2 * 1.96 * sigma / ci) ** 2
 }
 
 paramTitles <- list(
@@ -48,7 +64,8 @@ paramTitles <- list(
 )
 
 TTest <- setRefClass("TTest",
-  fields = c("id", "alpha", "power", "n", "delta", "sigma", "output", "data"),
+  fields = c("id", "alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
+             "output", "data"),
 
   methods = list(
     initialize = function(params) {
@@ -58,15 +75,21 @@ TTest <- setRefClass("TTest",
       n      <<- params$n
       delta  <<- params$delta
       sigma  <<- params$sigma
+      ci     <<- params$ci
+      ciMode <<- params$ciMode
       output <<- params$output
       data   <<- NULL
 
+      if (is.null(ciMode)) {
+        ciMode <<- FALSE
+      }
       update()
     },
     update = function() {
       data <<- list()
       if (output == "n") {
         n <<- calculateN(alpha, delta, sigma, power)
+        ci <<- calculateCI(sigma, n)
 
         # Calculate data for plots
         n2 <- seq(n * 0.25, n * 1.75, 0.1)
@@ -79,6 +102,11 @@ TTest <- setRefClass("TTest",
         data$primary <<- list(data = data.frame(n = n2, power = power2, delta = delta2))
 
       } else if (output == "power") {
+        if (ciMode) {
+          n <<- calculateNFromCI(sigma, ci)
+        } else {
+          ci <<- calculateCI(sigma, n)
+        }
         power <<- calculatePower(alpha, delta, sigma, n)
 
         # Calculate data for plots
@@ -87,7 +115,7 @@ TTest <- setRefClass("TTest",
           power2 <- sort(c(power2, power))
         }
 
-        n2 <- calculateN(alpha, delta, sigma, power)
+        n2 <- calculateN(alpha, delta, sigma, power2)
         if (max(n2) < n) {
           n3 <- seq(ceiling(max(n2)), n)
           power3 <- rep(1, length(n3))
@@ -102,6 +130,11 @@ TTest <- setRefClass("TTest",
         data$secondary <<- list(data = data.frame(power = power3, delta = delta2))
 
       } else if (output == "delta") {
+        if (ciMode) {
+          n <<- calculateNFromCI(sigma, ci)
+        } else {
+          ci <<- calculateCI(sigma, n)
+        }
         delta <<- calculateDelta(alpha, sigma, n, power)
 
         # Calculate data for plots
@@ -133,6 +166,8 @@ TTest <- setRefClass("TTest",
         n      = unbox(n),
         delta  = unbox(delta),
         sigma  = unbox(sigma),
+        ci     = unbox(ci),
+        ciMode = unbox(ciMode),
         output = unbox(output)
       )
       if (!inherits(id, "uninitializedField")) {

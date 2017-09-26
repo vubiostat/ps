@@ -13,6 +13,8 @@ export class TTest extends ChangeEmitter {
   @Changeable delta: number;
   @Changeable power: number;
   @Changeable n: number;
+  @Changeable ci: number;
+  ciMode: boolean;
 
   constructor(attribs?: any) {
     super();
@@ -48,6 +50,12 @@ export class TTest extends ChangeEmitter {
     if (attribs.n !== undefined) {
       this.n = attribs.n;
     }
+    if (attribs.ci !== undefined) {
+      this.ci = attribs.ci;
+    }
+    if (attribs.ciMode !== undefined) {
+      this.ciMode = attribs.ciMode;
+    }
     this.noEmit = false;
 
     let changes = this.changes;
@@ -76,13 +84,17 @@ export class TTest extends ChangeEmitter {
     if (attribs.n !== undefined) {
       attribs.n = Math.ceil(attribs.n);
     }
+    if (attribs.ci !== undefined) {
+      attribs.ci = Math.ceil(attribs.ci);
+    }
     this.update(attribs, emit);
   }
 
   attributes(): any {
     let result: any = {
       output: this.output, alpha: this.alpha, sigma: this.sigma,
-      delta: this.delta, power: this.power, n: this.n
+      delta: this.delta, power: this.power, n: this.n, ci: this.ci,
+      ciMode: this.ciMode
     };
     if (this.id) {
       result.id = this.id;

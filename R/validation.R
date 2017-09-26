@@ -13,7 +13,7 @@ validateModelParams <- function(params) {
   }
 
   keys <- names(modelParams)
-  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "output", "design")
+  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "ci", "ciMode", "output", "design")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {
@@ -59,6 +59,22 @@ validateModelParams <- function(params) {
     }
   }
 
+  if ("ci" %in% keys) {
+    if (!is.numeric(modelParams$ci)) {
+      errors$model.ci <- "must be numeric"
+    }
+  }
+
+  ciMode <-
+    if ("ciMode" %in% keys) {
+      if (!is.logical(modelParams$ciMode)) {
+        errors$model.ciMode <- "must be logical"
+        FALSE
+      } else {
+        modelParams$ciMode
+      }
+    }
+
   if (!("output" %in% keys)) {
     errors$model.output <- "is required"
   } else if (modelParams$output == "n") {
@@ -69,15 +85,19 @@ validateModelParams <- function(params) {
       errors$model.delta <- "is required when output is 'n'"
     }
   } else if (modelParams$output == "power") {
-    if (!("n" %in% keys)) {
-      errors$model.n <- "is required when output is 'power'"
+    if (!ciMode && !("n" %in% keys)) {
+      errors$model.n <- "is required when output is 'power' and ciMode is false"
+    } else if (ciMode && !("ci" %in% keys)) {
+      errors$model.ci <- "is required when output is 'power' and ciMode is true"
     }
     if (!("delta" %in% keys)) {
       errors$model.delta <- "is required when output is 'power'"
     }
   } else if (modelParams$output == "delta") {
-    if (!("n" %in% keys)) {
-      errors$model.n <- "is required when output is 'delta'"
+    if (!ciMode && !("n" %in% keys)) {
+      errors$model.n <- "is required when output is 'delta' and ciMode is false"
+    } else if (ciMode && !("ci" %in% keys)) {
+      errors$model.ci <- "is required when output is 'delta' and ciMode is true"
     }
     if (!("power" %in% keys)) {
       errors$model.power <- "is required when output is 'delta'"
