@@ -4,11 +4,7 @@ webpackJsonp(["main"],{
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
-	// Here Promise.resolve().then() is used instead of new Promise() to prevent
-	// uncatched exception popping up in devtools
-	return Promise.resolve().then(function() {
-		throw new Error("Cannot find module '" + req + "'.");
-	});
+	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
 }
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
@@ -23,7 +19,8 @@ webpackEmptyAsyncContext.id = "../../../../../src/$$_gendir lazy recursive";
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractPlotComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/build/d3.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -62,7 +59,7 @@ var AbstractPlotComponent = (function () {
         var _this = this;
         if (xName === void 0) { xName = "x"; }
         if (yName === void 0) { yName = "y"; }
-        var line = __WEBPACK_IMPORTED_MODULE_1_d3__["h" /* line */]().
+        var line = __WEBPACK_IMPORTED_MODULE_1_d3__["line"]().
             x(function (d, i) { return _this.xScale(d[xName]); }).
             y(function (d, i) { return _this.yScale(d[yName]); });
         return line(data);
@@ -202,7 +199,8 @@ var AppComponent = (function () {
             then(function (result) {
             var model = new __WEBPACK_IMPORTED_MODULE_4__t_test__["a" /* TTest */](result.model);
             var data = result.data;
-            var modelSet = new __WEBPACK_IMPORTED_MODULE_4__t_test__["d" /* TTestSet */](model, data);
+            var modelSet = new __WEBPACK_IMPORTED_MODULE_4__t_test__["c" /* TTestSet */]();
+            modelSet.add(model, data);
             _this.modelSets.push(modelSet);
             if (select) {
                 setTimeout(function () {
@@ -395,7 +393,8 @@ module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily\"\n 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BottomPlotComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/build/d3.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__ = __webpack_require__("../../../../../src/app/abstract-plot.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plot_options_service__ = __webpack_require__("../../../../../src/app/plot-options.service.ts");
@@ -511,19 +510,19 @@ var BottomPlotComponent = (function (_super) {
         this.innerWidth = this.width - (this.margin * 2);
         this.innerHeight = this.height - (this.margin * 2);
         var ranges = this.modelSet.ranges;
-        var data = this.modelSet.data.map(function (d) { return d.tertiary; });
+        var data = this.modelSet.models.map(function (m) { return m.data.tertiary; });
         // compute scales
-        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* scaleLinear */]().
+        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
             domain(ranges.pSpace.toArray()).
             range([0, this.innerWidth]);
-        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* scaleLinear */]().
+        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
             domain([0, 0.8]).
             range([0, this.innerHeight]);
         var sampDistExtent = data.reduce(function (arr, subData) {
-            var extent = __WEBPACK_IMPORTED_MODULE_1_d3__["g" /* extent */](subData.data, function (d) { return d.sampDist; });
-            return __WEBPACK_IMPORTED_MODULE_1_d3__["g" /* extent */](arr.concat(extent));
+            var extent = __WEBPACK_IMPORTED_MODULE_1_d3__["extent"](subData.data, function (d) { return d.sampDist; });
+            return __WEBPACK_IMPORTED_MODULE_1_d3__["extent"](arr.concat(extent));
         }, []);
-        this.yScaleSD = __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* scaleLinear */]().
+        this.yScaleSD = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
             domain(sampDistExtent.reverse()).
             range([0, this.yScale(0.5)]);
         //console.log("sampDistExtent:", sampDistExtent);
@@ -565,16 +564,16 @@ var BottomPlotComponent = (function (_super) {
             return;
         }
         // axes (drawn by d3)
-        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* axisBottom */](this.xScale).ticks(6);
-        __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* select */](this.bottomAxisElement.nativeElement).
+        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["axisBottom"](this.xScale).ticks(6);
+        __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.bottomAxisElement.nativeElement).
             call(xAxis).
             attr("font-size", 15 * this.plotOptions.axisFontSize).
             attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
         // make target point draggable
         if (!this.disableDrag) {
             var elt = this.targetElement.nativeElement;
-            var target = __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* select */](elt);
-            var drag = __WEBPACK_IMPORTED_MODULE_1_d3__["e" /* drag */]().
+            var target = __WEBPACK_IMPORTED_MODULE_1_d3__["select"](elt);
+            var drag = __WEBPACK_IMPORTED_MODULE_1_d3__["drag"]().
                 container(elt.parentNode.parentNode).
                 on("start", this.dragTargetStart.bind(this)).
                 on("drag", this.dragTarget.bind(this)).
@@ -588,7 +587,7 @@ var BottomPlotComponent = (function (_super) {
     };
     BottomPlotComponent.prototype.getArea = function (points, xName, yName) {
         var _this = this;
-        var area = __WEBPACK_IMPORTED_MODULE_1_d3__["a" /* area */]().
+        var area = __WEBPACK_IMPORTED_MODULE_1_d3__["area"]().
             x(function (d, i) { return _this.xScale(d[xName]); }).
             y0(this.yScaleSD(0)).
             y1(function (d, i) { return _this.yScaleSD(d[yName]); });
@@ -598,7 +597,7 @@ var BottomPlotComponent = (function (_super) {
         this.targetDragging = true;
     };
     BottomPlotComponent.prototype.dragTarget = function (event) {
-        var mouseX = __WEBPACK_IMPORTED_MODULE_1_d3__["f" /* event */].x - this.margin;
+        var mouseX = __WEBPACK_IMPORTED_MODULE_1_d3__["event"].x - this.margin;
         var x = this.xScale.invert(mouseX);
         if (x >= 0 && x < 1) {
             x = 1;
@@ -614,16 +613,17 @@ var BottomPlotComponent = (function (_super) {
     };
     BottomPlotComponent.prototype.dragTargetEnd = function () {
         if (this.modelSet) {
-            this.modelSet.model.update({
+            var modelChanges = {
                 delta: this.mainGroup.target + this.targetOffset
-            });
+            };
+            this.modelSet.getModel(0).update(modelChanges);
         }
     };
     return BottomPlotComponent;
 }(__WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["a" /* AbstractPlotComponent */]));
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('model-set'),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["d" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["d" /* TTestSet */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["c" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["c" /* TTestSet */]) === "function" && _a || Object)
 ], BottomPlotComponent.prototype, "modelSet", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('draw-on-init'),
@@ -683,12 +683,14 @@ var ChangeEmitter = (function () {
         this.noEmit = false;
         this.onChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
     }
-    ChangeEmitter.prototype.emit = function () {
+    ChangeEmitter.prototype.emit = function (attribs) {
+        if (attribs === void 0) { attribs = {}; }
         if (!this.noEmit && this.changes && Object.keys(this.changes).length > 0) {
-            var changes = Object.assign({}, this.changes);
+            var event = Object.assign({}, attribs);
+            event.changes = Object.assign({}, this.changes);
             this.prevChanges = Object.assign({}, this.changes);
             this.changes = {};
-            this.onChange.emit(changes);
+            this.onChange.emit(event);
         }
     };
     return ChangeEmitter;
@@ -931,7 +933,7 @@ var ExportPlotsComponent = (function () {
         this.imageFormat = "svg";
     }
     ExportPlotsComponent.prototype.ngOnInit = function () {
-        switch (this.modelSet.model.output) {
+        switch (this.modelSet.getModel(0).output) {
             case "n":
                 this.topLeftTitle = "Sample Size vs. Power";
                 this.topRightTitle = "Sample Size vs. Detectable Alternative";
@@ -999,7 +1001,7 @@ var ExportPlotsComponent = (function () {
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('model-set'),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["d" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["d" /* TTestSet */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["c" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["c" /* TTestSet */]) === "function" && _a || Object)
 ], ExportPlotsComponent.prototype, "modelSet", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('topLeftPlot'),
@@ -1126,7 +1128,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/output-pane/output-pane.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"plot\" [class.without-text]=\"!showText\">\n  <app-plot #topLeft name=\"top-left\"\n    [model-set]=\"modelSet\"\n    [hover-disabled]=\"hoverDisabled\">\n  </app-plot>\n  <app-plot #topRight name=\"top-right\"\n    [model-set]=\"modelSet\"\n    [hover-disabled]=\"hoverDisabled\">\n  </app-plot>\n  <app-bottom-plot #bottom name=\"bottom\"\n    [model-set]=\"modelSet\">\n  </app-bottom-plot>\n  <div class=\"show-text\" *ngIf=\"modelSet && !showText\">\n    <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleText(true)\">\n      <i class=\"fa fa-envelope-open-o\" aria-hidden=\"true\"></i>\n      Interpretation\n    </button>\n  </div>\n</div>\n<div class=\"output-text\" *ngIf=\"modelSet && showText\">\n  <div *ngIf=\"showText\" class=\"hide-text\">\n    <i class=\"fa fa-times-circle\" (click)=\"toggleText(false)\"></i>\n  </div>\n  <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n    We are planning a study of a continuous response variable from matched\n    pairs of study subjects. Prior data indicate that the difference in the\n    response of matched pairs is normally distributed with standard deviation\n    {{round(modelSet.model.sigma)}}. If the true difference in the mean response of\n    matched pairs is {{round(modelSet.model.delta)}}, we will need to study\n    {{ceil(modelSet.model.n)}} pairs of subjects to be able to reject the null\n    hypothesis that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. If\n    the true difference in the mean response of matched pairs is\n    {{round(modelSet.model.delta)}}, we will be able to reject the null hypothesis\n    that this response difference is zero with probability (power)\n    {{round(modelSet.model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n    We are planning a study with {{ceil(modelSet.model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(modelSet.model.sigma)}}. We\n    will be able to detect a true difference in the mean response of matched\n    pairs of -{{round(modelSet.model.delta)}} or {{round(modelSet.model.delta)}} with\n    probability (power) {{round(modelSet.model.power)}}. The Type I error probability\n    associated with this test of the null hypothesis that this response\n    difference is zero is {{round(modelSet.model.alpha)}}.\n  </ng-template>\n</div>\n"
+module.exports = "<div class=\"plot\" [class.without-text]=\"!showText\">\n  <app-plot #topLeft name=\"top-left\"\n    [model-set]=\"modelSet\"\n    [hover-disabled]=\"hoverDisabled\">\n  </app-plot>\n  <app-plot #topRight name=\"top-right\"\n    [model-set]=\"modelSet\"\n    [hover-disabled]=\"hoverDisabled\">\n  </app-plot>\n  <app-bottom-plot #bottom name=\"bottom\"\n    [model-set]=\"modelSet\">\n  </app-bottom-plot>\n  <div class=\"show-text\" *ngIf=\"modelSet && !showText\">\n    <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleText(true)\">\n      <i class=\"fa fa-envelope-open-o\" aria-hidden=\"true\"></i>\n      Interpretation\n    </button>\n  </div>\n</div>\n<div class=\"output-text\" *ngIf=\"modelSet && showText\">\n  <div *ngIf=\"showText\" class=\"hide-text\">\n    <i class=\"fa fa-times-circle\" (click)=\"toggleText(false)\"></i>\n  </div>\n  <ng-template [ngIf]=\"model.output == 'n'\">\n    We are planning a study of a continuous response variable from matched\n    pairs of study subjects. Prior data indicate that the difference in the\n    response of matched pairs is normally distributed with standard deviation\n    {{round(model.sigma)}}. If the true difference in the mean response of\n    matched pairs is {{round(model.delta)}}, we will need to study\n    {{ceil(model.n)}} pairs of subjects to be able to reject the null\n    hypothesis that this response difference is zero with probability (power)\n    {{round(model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"model.output == 'power'\">\n    We are planning a study with {{ceil(model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(model.sigma)}}. If\n    the true difference in the mean response of matched pairs is\n    {{round(model.delta)}}, we will be able to reject the null hypothesis\n    that this response difference is zero with probability (power)\n    {{round(model.power)}}. The Type I error probability associated with this\n    test of this null hypothesis is {{round(model.alpha)}}.\n  </ng-template>\n  <ng-template [ngIf]=\"model.output == 'delta'\">\n    We are planning a study with {{ceil(model.n)}} pairs of subjects. Prior\n    data indicate that the difference in the response of matched pairs is\n    normally distributed with standard deviation {{round(model.sigma)}}. We\n    will be able to detect a true difference in the mean response of matched\n    pairs of -{{round(model.delta)}} or {{round(model.delta)}} with\n    probability (power) {{round(model.power)}}. The Type I error probability\n    associated with this test of the null hypothesis that this response\n    difference is zero is {{round(model.alpha)}}.\n  </ng-template>\n</div>\n"
 
 /***/ }),
 
@@ -1167,6 +1169,7 @@ var OutputPaneComponent = (function () {
         var _this = this;
         this.selectedModelSet.subscribe(function (modelSet) {
             _this.modelSet = modelSet;
+            _this.model = modelSet.getModel(0);
         });
     };
     OutputPaneComponent.prototype.toggleText = function (value) {
@@ -1452,7 +1455,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/plot-options/plot-options.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"plotOptions && modelSet\" class=\"content\">\n  <fieldset>\n    <legend>Global</legend>\n    <div class=\"form-group\">\n      <label for=\"plot-font-family\">Font family</label>\n      <select id=\"plot-font-family\" class=\"form-control\"\n        [(ngModel)]=\"plotOptions.fontFamily\">\n        <option value=\"\">Default</option>\n        <option value=\"serif\">Serif</option>\n        <option value=\"sans\">Sans-serif</option>\n        <option value=\"monospace\">Monospace</option>\n        <option>Bungee Shade</option>\n        <option>Sancreek</option>\n      </select>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-palette-theme\">Palette</label>\n      <select id=\"plot-palette-theme\" class=\"form-control\"\n        [(ngModel)]=\"plotOptions.paletteTheme\">\n        <option value=\"plasma\">Plasma</option>\n        <option value=\"viridis\">Viridis</option>\n        <option value=\"magma\">Magma</option>\n      </select>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-font-size\">Font size: {{plotOptions.fontSize}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.fontSize\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-font-size\">Axis font size: {{plotOptions.axisFontSize}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-axis-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.axisFontSize\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-line-width\">Line width: {{plotOptions.lineWidth}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.lineWidth\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-line-width\">Axis line width: {{plotOptions.axisLineWidth}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-axis-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.axisLineWidth\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-line-style\">Line style</label>\n      <select id=\"plot-line-style\" class=\"form-control\"\n        [(ngModel)]=\"plotOptions.lineStyle\">\n        <option value=\"solid\">Solid</option>\n        <option value=\"dashed\">Dashed</option>\n        <option value=\"dotted\">Dotted</option>\n      </select>\n    </div>\n  </fieldset>\n  <fieldset>\n    <legend *ngIf=\"modelSet.model.output == 'n'\">Sample Size</legend>\n    <legend *ngIf=\"modelSet.model.output == 'power'\">Power</legend>\n    <legend *ngIf=\"modelSet.model.output == 'delta'\">Detectable Alternative</legend>\n    <div class=\"row\">\n      <div class=\"col-sm\">\n        <label for=\"plot-top-y-min\">Minimum</label>\n        <div class=\"input-group\">\n          <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </ng-template>\n          <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </ng-template>\n          <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </ng-template>\n        </div>\n      </div>\n      <div class=\"col-sm\">\n        <label for=\"plot-top-y-max\">Maximum</label>\n        <div class=\"input-group\">\n          <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </ng-template>\n          <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </ng-template>\n          <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </ng-template>\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <fieldset>\n    <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n      <legend>Sample Size vs. Power</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n      <legend>Power vs. Sample Size</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n      <legend>Detectable Alternative vs. Sample Size</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </fieldset>\n  <fieldset>\n    <ng-template [ngIf]=\"modelSet.model.output == 'n'\">\n      <legend>Sample Size vs. Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"modelSet.model.output == 'power'\">\n      <legend>Power vs. Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"modelSet.model.output == 'delta'\">\n      <legend>Detectable Alternative vs. Power</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </fieldset>\n  <fieldset>\n    <legend>Precision vs. Parameter Space</legend>\n    <div class=\"row\">\n      <div class=\"col-sm\">\n        <label for=\"plot-bottom-x-min\">X minimum</label>\n        <div class=\"input-group\">\n          <input class=\"form-control\"\n            type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.pSpace.max - 1)\"\n            [(ngModel)]=\"modelSet.ranges.pSpace.min\" />\n        </div>\n      </div>\n      <div class=\"col-sm\">\n        <label for=\"plot-bottom-x-max\">X maximum</label>\n        <div class=\"input-group\">\n          <input class=\"form-control\"\n            type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.pSpace.min + 1)\"\n            [(ngModel)]=\"modelSet.ranges.pSpace.max\" />\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"reset()\">\n    Reset all settings\n  </button>\n</div>\n"
+module.exports = "<div *ngIf=\"plotOptions && modelSet\" class=\"content\">\n  <fieldset>\n    <legend>Global</legend>\n    <div class=\"form-group\">\n      <label for=\"plot-font-family\">Font family</label>\n      <select id=\"plot-font-family\" class=\"form-control\"\n        [(ngModel)]=\"plotOptions.fontFamily\">\n        <option value=\"\">Default</option>\n        <option value=\"serif\">Serif</option>\n        <option value=\"sans\">Sans-serif</option>\n        <option value=\"monospace\">Monospace</option>\n        <option>Bungee Shade</option>\n        <option>Sancreek</option>\n      </select>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-palette-theme\">Palette</label>\n      <select id=\"plot-palette-theme\" class=\"form-control\"\n        [(ngModel)]=\"plotOptions.paletteTheme\">\n        <option value=\"plasma\">Plasma</option>\n        <option value=\"viridis\">Viridis</option>\n        <option value=\"magma\">Magma</option>\n      </select>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-font-size\">Font size: {{plotOptions.fontSize}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.fontSize\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-font-size\">Axis font size: {{plotOptions.axisFontSize}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-axis-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.axisFontSize\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-line-width\">Line width: {{plotOptions.lineWidth}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.lineWidth\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-line-width\">Axis line width: {{plotOptions.axisLineWidth}}</label>\n        <div class=\"input-group\">\n          <input id=\"plot-axis-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [(ngModel)]=\"plotOptions.axisLineWidth\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-line-style\">Line style</label>\n      <select id=\"plot-line-style\" class=\"form-control\"\n        [(ngModel)]=\"plotOptions.lineStyle\">\n        <option value=\"solid\">Solid</option>\n        <option value=\"dashed\">Dashed</option>\n        <option value=\"dotted\">Dotted</option>\n      </select>\n    </div>\n  </fieldset>\n  <fieldset>\n    <legend *ngIf=\"model.output == 'n'\">Sample Size</legend>\n    <legend *ngIf=\"model.output == 'power'\">Power</legend>\n    <legend *ngIf=\"model.output == 'delta'\">Detectable Alternative</legend>\n    <div class=\"row\">\n      <div class=\"col-sm\">\n        <label for=\"plot-top-y-min\">Minimum</label>\n        <div class=\"input-group\">\n          <ng-template [ngIf]=\"model.output == 'n'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </ng-template>\n          <ng-template [ngIf]=\"model.output == 'power'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </ng-template>\n          <ng-template [ngIf]=\"model.output == 'delta'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </ng-template>\n        </div>\n      </div>\n      <div class=\"col-sm\">\n        <label for=\"plot-top-y-max\">Maximum</label>\n        <div class=\"input-group\">\n          <ng-template [ngIf]=\"model.output == 'n'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </ng-template>\n          <ng-template [ngIf]=\"model.output == 'power'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </ng-template>\n          <ng-template [ngIf]=\"model.output == 'delta'\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </ng-template>\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <fieldset>\n    <ng-template [ngIf]=\"model.output == 'n'\">\n      <legend>Sample Size vs. Power</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"model.output == 'power'\">\n      <legend>Power vs. Sample Size</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"model.output == 'delta'\">\n      <legend>Detectable Alternative vs. Sample Size</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.n.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.n.min + 1)\"\n              [(ngModel)]=\"modelSet.ranges.n.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </fieldset>\n  <fieldset>\n    <ng-template [ngIf]=\"model.output == 'n'\">\n      <legend>Sample Size vs. Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"model.output == 'power'\">\n      <legend>Power vs. Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.delta.max - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.delta.min - 1)\"\n              [(ngModel)]=\"modelSet.ranges.delta.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"model.output == 'delta'\">\n      <legend>Detectable Alternative vs. Power</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.power.max - 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.min\" />\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.power.min + 0.01)\"\n              [(ngModel)]=\"modelSet.ranges.power.max\" />\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </fieldset>\n  <fieldset>\n    <legend>Precision vs. Parameter Space</legend>\n    <div class=\"row\">\n      <div class=\"col-sm\">\n        <label for=\"plot-bottom-x-min\">X minimum</label>\n        <div class=\"input-group\">\n          <input class=\"form-control\"\n            type=\"number\" step=\"0.01\" [max]=\"roundFloor(modelSet.ranges.pSpace.max - 1)\"\n            [(ngModel)]=\"modelSet.ranges.pSpace.min\" />\n        </div>\n      </div>\n      <div class=\"col-sm\">\n        <label for=\"plot-bottom-x-max\">X maximum</label>\n        <div class=\"input-group\">\n          <input class=\"form-control\"\n            type=\"number\" step=\"0.01\" [min]=\"roundCeil(modelSet.ranges.pSpace.min + 1)\"\n            [(ngModel)]=\"modelSet.ranges.pSpace.max\" />\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"reset()\">\n    Reset all settings\n  </button>\n</div>\n"
 
 /***/ }),
 
@@ -1495,6 +1498,7 @@ var PlotOptionsComponent = (function () {
                 _this.subscription = modelSet.onCompute.subscribe(function () {
                     _this.setDefaultRanges();
                 });
+                _this.model = modelSet.getModel(0);
                 _this.setDefaultRanges();
             }
         });
@@ -1512,7 +1516,7 @@ var PlotOptionsComponent = (function () {
         return Math.ceil(n * 100) / 100;
     };
     PlotOptionsComponent.prototype.setDefaultRanges = function () {
-        this.defaultRanges = __WEBPACK_IMPORTED_MODULE_2__t_test__["c" /* TTestRanges */].fromArrays(this.modelSet.ranges.attributes());
+        this.defaultRanges = __WEBPACK_IMPORTED_MODULE_2__t_test__["b" /* TTestRanges */].fromArrays(this.modelSet.ranges.attributes());
     };
     return PlotOptionsComponent;
 }());
@@ -1565,7 +1569,8 @@ module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PlotComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/build/d3.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__ = __webpack_require__("../../../../../src/app/abstract-plot.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plot_options_service__ = __webpack_require__("../../../../../src/app/plot-options.service.ts");
@@ -1699,7 +1704,7 @@ var PlotComponent = (function (_super) {
         this.targetDragging = true;
     };
     PlotComponent.prototype.dragTarget = function (event) {
-        var x = this.xScale.invert(__WEBPACK_IMPORTED_MODULE_1_d3__["f" /* event */].x - this.margin);
+        var x = this.xScale.invert(__WEBPACK_IMPORTED_MODULE_1_d3__["event"].x - this.margin);
         if (x < this.x.range.min) {
             x = this.x.range.min;
         }
@@ -1718,9 +1723,9 @@ var PlotComponent = (function (_super) {
         this.targetDragging = false;
         this.showTargetInfo = false;
         if (this.modelSet && this.x.name) {
-            var output = this.modelSet.model.output;
-            this.modelSet.model.update((_a = {},
-                _a[output] = this.targetPoint.y,
+            var model = this.modelSet.getModel(0);
+            model.update((_a = {},
+                _a[model.output] = this.targetPoint.y,
                 _a[this.x.name] = this.targetPoint.x,
                 _a));
         }
@@ -1747,10 +1752,10 @@ var PlotComponent = (function (_super) {
         this.innerWidth = this.width - (this.margin * 2);
         this.innerHeight = this.height - (this.margin * 2);
         // setup
-        var model = this.modelSet.model;
+        var model = this.modelSet.getModel(0);
         var ranges = this.modelSet.ranges;
         var data;
-        switch (this.modelSet.model.output) {
+        switch (model.output) {
             case "n":
                 if (this.name == "top-left" || this.name == "top-left-export") {
                     this.x = {
@@ -1768,7 +1773,7 @@ var PlotComponent = (function (_super) {
                     name: "n", range: ranges.n, target: model.n,
                     title: "Sample Size", sym: "n"
                 };
-                data = this.modelSet.data.map(function (d) { return d.primary.data; });
+                data = this.modelSet.models.map(function (m) { return m.data.primary.data; });
                 break;
             case "power":
                 if (this.name == "top-left" || this.name == "top-left-export") {
@@ -1780,7 +1785,7 @@ var PlotComponent = (function (_super) {
                         name: "power", range: ranges.power, target: model.power,
                         title: "Power", sym: "1-β"
                     };
-                    data = this.modelSet.data.map(function (d) { return d.primary.data; });
+                    data = this.modelSet.models.map(function (m) { return m.data.primary.data; });
                 }
                 else if (this.name == "top-right" || this.name == "top-right-export") {
                     this.x = {
@@ -1791,7 +1796,7 @@ var PlotComponent = (function (_super) {
                         name: "power", range: ranges.power, target: model.power,
                         title: "Power", sym: "1-β"
                     };
-                    data = this.modelSet.data.map(function (d) { return d.secondary.data; });
+                    data = this.modelSet.models.map(function (m) { return m.data.secondary.data; });
                 }
                 break;
             case "delta":
@@ -1811,7 +1816,7 @@ var PlotComponent = (function (_super) {
                     name: "delta", range: ranges.delta, target: model.delta,
                     title: "Detectable Alternative", sym: "δ"
                 };
-                data = this.modelSet.data.map(function (d) { return d.primary.data; });
+                data = this.modelSet.models.map(function (m) { return m.data.primary.data; });
                 break;
         }
         if (!this.x || !this.y) {
@@ -1826,10 +1831,10 @@ var PlotComponent = (function (_super) {
             this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
         }
         // scales
-        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* scaleLinear */]().
+        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
             domain(this.x.range.toArray()).
             range([0, this.innerWidth]);
-        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* scaleLinear */]().
+        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
             domain(this.y.range.toArray().reverse()).
             range([0, this.innerHeight]);
         // paths
@@ -1844,7 +1849,7 @@ var PlotComponent = (function (_super) {
         this.xTargetRange = [xTargetPos - 5, xTargetPos + 5];
         var yTargetPos = this.yScale(this.targetPoint.y);
         this.yTargetRange = [yTargetPos - 5, yTargetPos + 5];
-        this.xBisector = __WEBPACK_IMPORTED_MODULE_1_d3__["d" /* bisector */](function (point) { return point[_this.x.name]; }).left;
+        this.xBisector = __WEBPACK_IMPORTED_MODULE_1_d3__["bisector"](function (point) { return point[_this.x.name]; }).left;
         this.needDraw = true;
     };
     PlotComponent.prototype.getDropPaths = function () {
@@ -1866,20 +1871,20 @@ var PlotComponent = (function (_super) {
             return;
         }
         // axes (drawn by d3)
-        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* axisBottom */](this.xScale).ticks(6);
-        __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* select */](this.bottomAxisElement.nativeElement).
+        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["axisBottom"](this.xScale).ticks(6);
+        __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.bottomAxisElement.nativeElement).
             call(xAxis).
             attr("font-size", 15 * this.plotOptions.axisFontSize).
             attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
-        var yAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["c" /* axisLeft */](this.yScale).ticks(6);
-        __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* select */](this.leftAxisElement.nativeElement).
+        var yAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["axisLeft"](this.yScale).ticks(6);
+        __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.leftAxisElement.nativeElement).
             call(yAxis).
             attr("font-size", 15 * this.plotOptions.axisFontSize).
             attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
         // make target point draggable
         if (!this.disableDrag) {
-            var target = __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* select */](this.targetElement.nativeElement);
-            var drag = __WEBPACK_IMPORTED_MODULE_1_d3__["e" /* drag */]().
+            var target = __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.targetElement.nativeElement);
+            var drag = __WEBPACK_IMPORTED_MODULE_1_d3__["drag"]().
                 on("start", this.dragTargetStart.bind(this)).
                 on("drag", this.dragTarget.bind(this)).
                 on("end", this.dragTargetEnd.bind(this));
@@ -1897,7 +1902,7 @@ var PlotComponent = (function (_super) {
 }(__WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["a" /* AbstractPlotComponent */]));
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('model-set'),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["d" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["d" /* TTestSet */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["c" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["c" /* TTestSet */]) === "function" && _a || Object)
 ], PlotComponent.prototype, "modelSet", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('hover-disabled'),
@@ -2571,11 +2576,10 @@ var _a;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return TTestExtra; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TTest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TTestRanges; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return TTestRanges; });
 /* unused harmony export TTestData */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return TTestSet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TTestSet; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Subscription__ = __webpack_require__("../../../../rxjs/Subscription.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Subscription___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Subscription__);
@@ -2604,122 +2608,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var TTestExtra = (function (_super) {
-    __extends(TTestExtra, _super);
-    function TTestExtra(attribs) {
-        var _this = _super.call(this) || this;
-        if (Object.keys(attribs).length > 1) {
-            throw new Error("elements must be mutually exclusive");
-        }
-        _this.noEmit = true;
-        if ('alpha' in attribs) {
-            _this.alpha = attribs.alpha;
-            _this.which = 'alpha';
-        }
-        else if ('sigma' in attribs) {
-            _this.sigma = attribs.sigma;
-            _this.which = 'sigma';
-        }
-        else if ('delta' in attribs) {
-            _this.delta = attribs.delta;
-            _this.which = 'delta';
-        }
-        else if ('power' in attribs) {
-            _this.power = attribs.power;
-            _this.which = 'power';
-        }
-        else if ('n' in attribs) {
-            _this.n = attribs.n;
-            _this.which = 'n';
-        }
-        _this.noEmit = false;
-        _this.changes = {};
-        return _this;
-    }
-    TTestExtra.prototype.update = function (attribs, emit) {
-        if (emit === void 0) { emit = true; }
-        var keys = Object.keys(attribs);
-        if (keys.length > 1) {
-            throw new Error("elements must be mutually exclusive");
-        }
-        var key = keys[0];
-        var current = this[key];
-        if (current === undefined) {
-            throw new Error("invalid key: " + key);
-        }
-        this[key] = attribs[key];
-    };
-    TTestExtra.prototype.attributes = function () {
-        var result = {};
-        if (this.alpha) {
-            //result.alpha = this.alpha.slice();
-            result.alpha = this.alpha;
-        }
-        else if (this.sigma) {
-            //result.sigma = this.sigma.slice();
-            result.sigma = this.sigma;
-        }
-        else if (this.delta) {
-            //result.delta = this.delta.slice();
-            result.delta = this.delta;
-        }
-        else if (this.power) {
-            //result.power = this.power.slice();
-            result.power = this.power;
-        }
-        else if (this.n) {
-            //result.n = this.n.slice();
-            result.n = this.n;
-        }
-        return result;
-    };
-    TTestExtra.prototype.round = function () {
-        var attribs = this.attributes();
-        for (var key in attribs) {
-            //attribs[key] = attribs[key].map(value => {
-            //return Math.round(value * 100) / 100;
-            //});
-            attribs[key] = Math.round(attribs[key] * 100) / 100;
-        }
-        return new TTestExtra(attribs);
-    };
-    return TTestExtra;
-}(__WEBPACK_IMPORTED_MODULE_2__changeable__["a" /* ChangeEmitter */]));
-
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_2__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], TTestExtra.prototype, "alpha", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_2__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], TTestExtra.prototype, "sigma", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_2__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], TTestExtra.prototype, "delta", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_2__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], TTestExtra.prototype, "power", void 0);
-__decorate([
-    __WEBPACK_IMPORTED_MODULE_2__changeable__["b" /* Changeable */],
-    __metadata("design:type", Number)
-], TTestExtra.prototype, "n", void 0);
 var TTest = (function (_super) {
     __extends(TTest, _super);
     function TTest(attribs) {
         var _this = _super.call(this) || this;
-        _this.extra = [];
-        _this.extraSubs = [];
         if (attribs) {
             _this.update(attribs, false);
         }
         return _this;
     }
-    TTest.prototype.update = function (attribs, emit) {
-        var _this = this;
+    TTest.prototype.update = function (attribs, emit, eventAttribs) {
         if (emit === void 0) { emit = true; }
+        if (eventAttribs === void 0) { eventAttribs = {}; }
         this.noEmit = true;
         if (attribs.id !== undefined) {
             this.id = attribs.id;
@@ -2745,33 +2645,16 @@ var TTest = (function (_super) {
         if (attribs.n !== undefined) {
             this.n = attribs.n;
         }
-        if (attribs.extra !== undefined) {
-            if (!Array.isArray(attribs.extra)) {
-                throw new Error('extra must be an array');
-            }
-            // replace elements
-            attribs.extra.forEach(function (ex, index) {
-                if (ex instanceof TTestExtra) {
-                    _this.replaceExtra(index, ex);
-                }
-                else {
-                    _this.extra[index].update(ex);
-                }
-            });
-            // remove missing
-            if (this.extra.length > attribs.extra.length) {
-                var lower = attribs.extra.length;
-                for (var i = lower; i < this.extra.length; i++) {
-                    this.removeExtra(i);
-                }
-                this.extra.length = attribs.extra.length;
-                this.extraSubs.length = attribs.extra.length;
-            }
+        if (attribs.ci !== undefined) {
+            this.ci = attribs.ci;
+        }
+        if (attribs.ciMode !== undefined) {
+            this.ciMode = attribs.ciMode;
         }
         this.noEmit = false;
         var changes = this.changes;
         if (emit) {
-            this.emit();
+            this.emit(eventAttribs);
         }
         else {
             this.changes = {};
@@ -2796,75 +2679,22 @@ var TTest = (function (_super) {
         if (attribs.n !== undefined) {
             attribs.n = Math.ceil(attribs.n);
         }
+        if (attribs.ci !== undefined) {
+            attribs.ci = Math.ceil(attribs.ci);
+        }
         this.update(attribs, emit);
-    };
-    TTest.prototype.canAddExtra = function (name) {
-        return this.extra.length == 0 || this.extra[0].which == name;
-    };
-    TTest.prototype.addExtra = function (ex) {
-        // check for uniformity
-        if (!this.canAddExtra(ex.which)) {
-            throw new Error("invalid key");
-        }
-        this.extra.push(ex);
-        var index = this.extra.length - 1;
-        var sub = this.subscribeToExtra(index, ex);
-        this.extraSubs.push(sub);
-        var change = { append: { value: ex } };
-        if (this.changes.extra) {
-            this.changes.extra.push(change);
-        }
-        else {
-            this.changes.extra = [change];
-        }
-        this.emit();
-    };
-    TTest.prototype.removeExtra = function (index) {
-        this.extraSubs[index].unsubscribe();
-        this.extraSubs.splice(index, 1);
-        this.extra.splice(index, 1);
-        var change = { remove: { index: index } };
-        if (this.changes.extra) {
-            this.changes.extra.push(change);
-        }
-        else {
-            this.changes.extra = [change];
-        }
-        this.emit();
-    };
-    TTest.prototype.replaceExtra = function (index, ex) {
-        if (this.extra[index]) {
-            this.extraSubs[index].unsubscribe();
-        }
-        this.extra[index] = ex;
-        if (ex) {
-            this.extraSubs[index] = this.subscribeToExtra(index, ex);
-        }
-        var change = { replace: { index: index, value: ex } };
-        if (this.changes.extra) {
-            this.changes.extra.push(change);
-        }
-        else {
-            this.changes.extra = [change];
-        }
-        this.emit();
-    };
-    TTest.prototype.hasExtra = function () {
-        return this.extra.length > 0;
     };
     TTest.prototype.attributes = function () {
         var result = {
             output: this.output, alpha: this.alpha, sigma: this.sigma,
-            delta: this.delta, power: this.power, n: this.n
+            delta: this.delta, power: this.power, n: this.n, ci: this.ci,
+            ciMode: this.ciMode
         };
         if (this.id) {
             result.id = this.id;
         }
         if (this.design) {
             result.design = this.design;
-        }
-        if (this.extra) {
-            result.extra = this.extra.map(function (ex) { return ex.attributes(); });
         }
         return result;
     };
@@ -2875,25 +2705,10 @@ var TTest = (function (_super) {
         attribs.delta = Math.round(attribs.delta * 100) / 100;
         attribs.power = Math.round(attribs.power * 100) / 100;
         attribs.n = Math.ceil(attribs.n);
-        if (this.extra) {
-            attribs.extra = this.extra.map(function (ex) { return ex.round(); });
-        }
         return new TTest(attribs);
     };
-    TTest.prototype.subscribeToExtra = function (index, ex) {
-        var _this = this;
-        var result = ex.onChange.subscribe(function (value) {
-            var change = Object.assign({}, value);
-            change.index = index;
-            if (_this.changes.extra) {
-                _this.changes.extra.push(change);
-            }
-            else {
-                _this.changes.extra = [change];
-            }
-            _this.emit();
-        });
-        return result;
+    TTest.prototype.clone = function () {
+        return new TTest(this.attributes());
     };
     return TTest;
 }(__WEBPACK_IMPORTED_MODULE_2__changeable__["a" /* ChangeEmitter */]));
@@ -2932,8 +2747,8 @@ __decorate([
 ], TTest.prototype, "n", void 0);
 __decorate([
     __WEBPACK_IMPORTED_MODULE_2__changeable__["b" /* Changeable */],
-    __metadata("design:type", Array)
-], TTest.prototype, "extra", void 0);
+    __metadata("design:type", Number)
+], TTest.prototype, "ci", void 0);
 var TTestRanges = (function (_super) {
     __extends(TTestRanges, _super);
     function TTestRanges(attribs) {
@@ -3004,8 +2819,17 @@ var TTestRanges = (function (_super) {
         var _this = this;
         var child = this[name];
         if (child) {
-            var sub = child.onChange.subscribe(function (value) {
-                _this.onChange.emit((_a = {}, _a[name] = value, _a));
+            var sub = child.onChange.subscribe(function (childEvent) {
+                var event = {};
+                for (var key in childEvent) {
+                    if (key == 'changes') {
+                        event.changes = (_a = {}, _a[name] = childEvent.changes, _a);
+                    }
+                    else {
+                        event[key] = childEvent[key];
+                    }
+                }
+                _this.onChange.emit(event);
                 var _a;
             });
             this.subscription.add(sub);
@@ -3037,41 +2861,89 @@ var TTestData = (function () {
 }());
 
 var TTestSet = (function () {
-    function TTestSet(model, data) {
-        var _this = this;
-        this.model = model;
-        this.data = data;
+    function TTestSet() {
+        this.models = [];
         this.onChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
         this.onCompute = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
-        this.model.onChange.subscribe(function (value) {
+        this.modelSubs = [];
+    }
+    TTestSet.prototype.add = function (model, data) {
+        var _this = this;
+        var index = this.models.length;
+        this.models.push({ model: model, data: data });
+        var modelSub = model.onChange.subscribe(function (value) {
             _this.onChange.emit({ model: value });
         });
-        this.calcRanges();
-        this.ranges.onChange.subscribe(function (value) {
-            _this.onChange.emit({ ranges: value });
-        });
-    }
-    TTestSet.prototype.update = function (model, data) {
-        var _this = this;
-        var prevChanges = this.model.prevChanges;
-        this.model.update(model);
-        this.data = data;
-        var skip;
-        var changeKeys = Object.keys(prevChanges);
-        if (changeKeys.length == 2 && this.model.output in prevChanges) {
-            skip = changeKeys.find(function (k) { return k != _this.model.output; });
+        this.modelSubs.push(modelSub);
+        if (this.models.length == 1) {
+            var attribs = this.calcRangeAttributes(model, data);
+            this.ranges = new TTestRanges(attribs);
+            this.rangeSub = this.ranges.onChange.subscribe(function (value) {
+                _this.onChange.emit({ ranges: value });
+            });
         }
-        this.calcRanges(skip);
+        this.onChange.emit({ added: index });
+        return index;
+    };
+    TTestSet.prototype.getModel = function (index) {
+        return this.models[index].model;
+    };
+    TTestSet.prototype.getData = function (index) {
+        return this.models[index].data;
+    };
+    TTestSet.prototype.update = function (index, modelChanges, data, eventAttribs, emit) {
+        if (eventAttribs === void 0) { eventAttribs = {}; }
+        if (emit === void 0) { emit = true; }
+        var model = this.models[index].model;
+        this.models[index].data = data;
+        var prevChanges = model.prevChanges;
+        model.update(modelChanges, emit, eventAttribs);
+        if (index == 0) {
+            var skip = void 0;
+            var changeKeys = Object.keys(prevChanges);
+            if (changeKeys.length == 2 && model.output in prevChanges) {
+                skip = changeKeys.find(function (k) { return k != model.output; });
+            }
+            var attribs = this.calcRangeAttributes(model, data, skip);
+            this.ranges.update(attribs, emit);
+        }
+        if (emit) {
+            this.onCompute.emit();
+        }
+    };
+    TTestSet.prototype.triggerCompute = function () {
         this.onCompute.emit();
     };
-    TTestSet.prototype.calcRanges = function (skip) {
+    TTestSet.prototype.setOutputQuietly = function (output) {
+        this.models.forEach(function (m) { return m.model.update({ output: output }, false); });
+    };
+    TTestSet.prototype.remove = function (index) {
+        if (index == 0) {
+            throw new Error("can't remove first model");
+        }
+        var m = this.models[index];
+        m.model.onChange.complete();
+        this.models.splice(index, 1);
+        this.modelSubs[index].unsubscribe();
+        this.modelSubs.splice(index, 1);
+        this.onChange.emit({ removed: index });
+    };
+    TTestSet.prototype.extraModels = function () {
+        return this.models.slice(1).map(function (m) { return m.model; });
+    };
+    TTestSet.prototype.reduceModels = function (initial, callback) {
+        return this.models.reduce(function (a, m, i) {
+            return callback(a, m.model, i);
+        }, initial);
+    };
+    TTestSet.prototype.calcRangeAttributes = function (model, data, skip) {
         var n, power, delta, pSpace, indices, values, min, max;
-        var deltaMax = 2.5 * this.model.sigma;
-        var primary = this.data[0].primary;
-        var tertiary = this.data[0].tertiary;
-        switch (this.model.output) {
+        var deltaMax = 2.5 * model.sigma;
+        var primary = data.primary;
+        var tertiary = data.tertiary;
+        switch (model.output) {
             case "n":
-                values = [this.model.n * 0.5, this.model.n * 1.5].sort(function (a, b) { return a - b; });
+                values = [model.n * 0.5, model.n * 1.5].sort(function (a, b) { return a - b; });
                 min = Math.floor(values[0] * 100) / 100;
                 max = Math.ceil(values[1] * 100) / 100;
                 n = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](min, max);
@@ -3094,7 +2966,7 @@ var TTestSet = (function () {
                 }
                 break;
             case "delta":
-                values = [this.model.delta * 0.5, this.model.delta * 1.5].sort(function (a, b) { return a - b; });
+                values = [model.delta * 0.5, model.delta * 1.5].sort(function (a, b) { return a - b; });
                 min = Math.floor(values[0] * 100) / 100;
                 max = Math.ceil(values[1] * 100) / 100;
                 delta = new __WEBPACK_IMPORTED_MODULE_3__range__["a" /* Range */](min, max);
@@ -3124,12 +2996,7 @@ var TTestSet = (function () {
             attribs.power = power;
         if (delta)
             attribs.delta = delta;
-        if (!this.ranges) {
-            this.ranges = new TTestRanges(attribs);
-        }
-        else {
-            this.ranges.update(attribs);
-        }
+        return attribs;
     };
     return TTestSet;
 }());
@@ -3160,7 +3027,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/t-test/t-test.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\">\n  <label>\n    Output\n    <select class=\"form-control\" name=\"output\"\n            [(ngModel)]=\"round.output\">\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </label>\n</div>\n\n<app-range-slider name=\"alpha\" label=\"Type I Error (&alpha;)\"\n  [min]=\"min.alpha\" [max]=\"max.alpha\"\n  [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n  [can-add]=\"round.canAddExtra('alpha')\" (add)=\"addInput($event)\"\n  [palette-color]=\"round.extra[0]?.alpha ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.alpha\">\n  <ng-template rsHelp>\n    The Type I error probability for a two sided test. This is the\n    probability that we will falsely reject the null hypothesis.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"round.extra[0]?.alpha\">\n  <div class=\"extra\" *ngFor=\"let extra of round.extra; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"alpha-{{i+2}}\" label=\"Type I Error (&alpha;) #{{i+2}}\"\n      [min]=\"min.alpha\" [max]=\"max.alpha\"\n      [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"round.extra[i].alpha\">\n    </app-range-slider>\n  </div>\n</ng-template>\n\n<app-range-slider name=\"sigma\" label=\"Std. deviation (&sigma;)\"\n  [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n  [hard-min]=\"1\"\n  [can-add]=\"round.canAddExtra('sigma')\" (add)=\"addInput($event)\"\n  [palette-color]=\"round.extra[0]?.sigma ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.sigma\">\n  <ng-template rsHelp>\n    For independent tests σ is the within group standard deviation. For\n    paired designs it is the standard deviation of difference in the\n    response of matched pairs.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"round.extra[0]?.sigma\">\n  <div class=\"extra\" *ngFor=\"let extra of round.extra; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"sigma-{{i+2}}\" label=\"Std. deviation #{{i+2}}\"\n      [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n      [hard-min]=\"1\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"round.extra[i].sigma\">\n    </app-range-slider>\n  </div>\n</ng-template>\n\n<app-range-slider name=\"power\" label=\"Power\"\n  [min]=\"min.power\" [max]=\"max.power\"\n  [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n  [can-add]=\"round.canAddExtra('power')\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'power'\"\n  [palette-color]=\"round.extra[0]?.power ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.power\">\n  <ng-template rsHelp>\n    For independent tests power is probability of correctly rejecting the\n    null hypothesis of equal population means given n experimental\n    patients, m control patients per experimental patient, a Type I error\n    probability α and a true difference in population means of δ. For\n    paired tests it is the probability of correctly rejecting the null\n    hypothesis of equal population means given n pairs of patients, a Type\n    I error probability α and a true difference in population means of δ.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"round.extra[0]?.power\">\n  <div class=\"extra\" *ngFor=\"let extra of round.extra; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"power-{{i+2}}\" label=\"Power #{{i+2}}\"\n      [min]=\"min.power\" [max]=\"max.power\"\n      [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"round.extra[i].power\">\n    </app-range-slider>\n  </div>\n</ng-template>\n\n<app-range-slider name=\"delta\" label=\"Difference in population means (&delta;)\"\n  [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n  [can-add]=\"round.canAddExtra('delta')\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'delta'\"\n  [palette-color]=\"round.extra[0]?.delta ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.delta\">\n  <ng-template rsHelp>\n    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,\n    rutrum at ligula id, tempor tincidunt nunc.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"round.extra[0]?.delta\">\n  <div class=\"extra\" *ngFor=\"let extra of round.extra; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"delta-{{i+2}}\" label=\"Difference in population means (&delta;) #{{i+2}}\"\n      [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n      [hard-min]=\"min.delta\" [hard-max]=\"max.delta\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"round.extra[i].delta\">\n    </app-range-slider>\n  </div>\n</ng-template>\n\n<app-range-slider name=\"n\" label=\"Sample size\"\n  [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n  [hard-min]=\"1\"\n  [can-add]=\"round.canAddExtra('n')\" (add)=\"addInput($event)\"\n  [is-output]=\"round.output == 'n'\"\n  [palette-color]=\"round.extra?.n ? 0 : -1\"\n  [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"round.n\">\n  <ng-template rsHelp>\n    For independent t-tests n is the number of experimental subjects. For\n    pair test n is the number of pairs.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"round.extra[0]?.n\">\n  <div class=\"extra\" *ngFor=\"let extra of round.extra; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"n-{{i+2}}\" label=\"Sample size #{{i+2}}\"\n      [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n      [hard-min]=\"1\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput($event, i)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"round.extra[i].n\">\n    </app-range-slider>\n  </div>\n</ng-template>\n"
+module.exports = "<div class=\"form-group\">\n  <label>\n    Output\n    <select class=\"form-control\" name=\"output\"\n            [(ngModel)]=\"model.output\">\n      <option value=\"n\">Sample size</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </label>\n</div>\n\n<app-range-slider name=\"alpha\" label=\"Type I Error (&alpha;)\"\n  [min]=\"min.alpha\" [max]=\"max.alpha\"\n  [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n  [can-add]=\"!extraName || extraName == 'alpha'\" (add)=\"addInput('alpha')\"\n  [palette-color]=\"0\" [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"model.alpha\">\n  <ng-template rsHelp>\n    The Type I error probability for a two sided test. This is the\n    probability that we will falsely reject the null hypothesis.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"extraName == 'alpha'\">\n  <div class=\"extra\" *ngFor=\"let ex of extraModels; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"alpha-{{i+2}}\" label=\"Type I Error (&alpha;) #{{i+2}}\"\n      [min]=\"min.alpha\" [max]=\"max.alpha\"\n      [hard-min]=\"min.alpha\" [hard-max]=\"max.alpha\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput(i+1)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"ex.alpha\">\n    </app-range-slider>\n  </div>\n</ng-template>\n\n<app-range-slider name=\"sigma\" label=\"Std. deviation (&sigma;)\"\n  [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n  [hard-min]=\"1\"\n  [can-add]=\"!extraName || extraName == 'sigma'\" (add)=\"addInput('sigma')\"\n  [palette-color]=\"0\" [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"model.sigma\">\n  <ng-template rsHelp>\n    For independent tests σ is the within group standard deviation. For\n    paired designs it is the standard deviation of difference in the\n    response of matched pairs.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"extraName == 'sigma'\">\n  <div class=\"extra\" *ngFor=\"let ex of extraModels; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"sigma-{{i+2}}\" label=\"Std. deviation #{{i+2}}\"\n      [min]=\"min.sigma\" [max]=\"max.sigma\" step=\"0.1\"\n      [hard-min]=\"1\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput(i+1)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"ex.sigma\">\n    </app-range-slider>\n  </div>\n</ng-template>\n\n<app-range-slider name=\"power\" label=\"Power\"\n  [min]=\"min.power\" [max]=\"max.power\"\n  [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n  [can-add]=\"!extraName || extraName == 'power'\" (add)=\"addInput('power')\"\n  [is-output]=\"model.output == 'power'\"\n  [palette-color]=\"0\" [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"model.power\">\n  <ng-template rsHelp>\n    For independent tests power is probability of correctly rejecting the\n    null hypothesis of equal population means given n experimental\n    patients, m control patients per experimental patient, a Type I error\n    probability α and a true difference in population means of δ. For\n    paired tests it is the probability of correctly rejecting the null\n    hypothesis of equal population means given n pairs of patients, a Type\n    I error probability α and a true difference in population means of δ.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"extraName == 'power'\">\n  <div class=\"extra\" *ngFor=\"let ex of extraModels; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"power-{{i+2}}\" label=\"Power #{{i+2}}\"\n      [min]=\"min.power\" [max]=\"max.power\"\n      [hard-min]=\"min.power\" [hard-max]=\"max.power\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput(i+1)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"ex.power\">\n    </app-range-slider>\n  </div>\n</ng-template>\n\n<app-range-slider name=\"delta\" label=\"Difference in population means (&delta;)\"\n  [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n  [can-add]=\"!extraName || extraName == 'delta'\" (add)=\"addInput('delta')\"\n  [is-output]=\"model.output == 'delta'\"\n  [palette-color]=\"0\" [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"model.delta\">\n  <ng-template rsHelp>\n    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,\n    rutrum at ligula id, tempor tincidunt nunc.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"extraName == 'delta'\">\n  <div class=\"extra\" *ngFor=\"let ex of extraModels; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"delta-{{i+2}}\" label=\"Difference in population means (&delta;) #{{i+2}}\"\n      [min]=\"min.delta\" [max]=\"max.delta\" step=\"0.1\"\n      [hard-min]=\"min.delta\" [hard-max]=\"max.delta\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput(i+1)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"ex.delta\">\n    </app-range-slider>\n  </div>\n</ng-template>\n\n<app-range-slider name=\"n\" label=\"Sample size\"\n  [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n  [hard-min]=\"1\"\n  [can-add]=\"!extraName || extraName == 'n'\" (add)=\"addInput('n')\"\n  [is-output]=\"model.output == 'n'\"\n  [palette-color]=\"0\" [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"model.n\">\n  <ng-template rsHelp>\n    For independent t-tests n is the number of experimental subjects. For\n    pair test n is the number of pairs.\n  </ng-template>\n</app-range-slider>\n\n<app-range-slider name=\"ci\" label=\"95% confidence interval width\"\n  [min]=\"min.ci\" [max]=\"max.ci\" step=\"1\"\n  [hard-min]=\"1\"\n  [can-add]=\"!extraName || extraName == 'n'\" (add)=\"addInput('n')\"\n  [is-output]=\"model.output == 'n'\"\n  [palette-color]=\"0\" [palette-theme]=\"plotOptions.paletteTheme\"\n  [(ngModel)]=\"model.ci\">\n  <ng-template rsHelp>\n    Specifying the 95% confidence interval width will automatically calculate\n    the sample size parameter.\n  </ng-template>\n</app-range-slider>\n<ng-template [ngIf]=\"extraName == 'n'\">\n  <div class=\"extra\" *ngFor=\"let ex of extraModels; let i = index; trackBy: trackByExtra\">\n    <app-range-slider name=\"n-{{i+2}}\" label=\"Sample size #{{i+2}}\"\n      [min]=\"min.n\" [max]=\"max.n\" step=\"1\"\n      [hard-min]=\"1\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput(i+1)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"ex.n\">\n    </app-range-slider>\n    <app-range-slider name=\"ci-{{i+2}}\" label=\"95% confidence interval width #{{i+2}}\"\n      [min]=\"min.ci\" [max]=\"max.ci\" step=\"1\"\n      [hard-min]=\"1\"\n      [can-add]=\"false\" [can-remove]=\"true\" (remove)=\"removeInput(i+1)\"\n      [palette-color]=\"i+1\"\n      [palette-theme]=\"plotOptions.paletteTheme\"\n      [(ngModel)]=\"ex.ci\">\n    </app-range-slider>\n  </div>\n</ng-template>\n"
 
 /***/ }),
 
@@ -3175,6 +3042,7 @@ module.exports = "<div class=\"form-group\">\n  <label>\n    Output\n    <select
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test_service__ = __webpack_require__("../../../../../src/app/t-test.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plot_options_service__ = __webpack_require__("../../../../../src/app/plot-options.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__palette_service__ = __webpack_require__("../../../../../src/app/palette.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3189,43 +3057,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var TTestComponent = (function () {
-    function TTestComponent(plotOptions, ttestService) {
+    function TTestComponent(plotOptions, ttestService, palette) {
         this.plotOptions = plotOptions;
         this.ttestService = ttestService;
+        this.palette = palette;
     }
     TTestComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.model = this.modelSet.model;
-        this.round = this.model.round();
+        this.model = this.modelSet.getModel(0);
+        this.extraModels = this.modelSet.extraModels();
         this.model.onChange.
             debounceTime(100).
-            subscribe(function (changes) {
-            _this.modelChanged(changes);
-        });
-        this.round.onChange.subscribe(function (changes) {
-            // process changes
-            var attribs = {};
-            for (var key in changes) {
-                var value = changes[key];
-                if (key == "extra") {
-                    value.forEach(function (change) {
-                        if ('append' in change) {
-                            _this.model.addExtra(change.append.value);
-                        }
-                        else if ('remove' in change) {
-                            _this.model.removeExtra(change.remove.index);
-                        }
-                        else if ('replace' in change) {
-                            _this.model.replaceExtra(change.replace.index, change.replace.value);
-                        }
-                    });
-                }
-                else {
-                    attribs[key] = value;
-                }
-            }
-            _this.model.update(attribs);
+            subscribe(function (event) {
+            _this.modelChanged(0, event);
         });
         this.min = new __WEBPACK_IMPORTED_MODULE_2__t_test__["a" /* TTest */](this.model);
         this.max = new __WEBPACK_IMPORTED_MODULE_2__t_test__["a" /* TTest */](this.model);
@@ -3234,16 +3080,31 @@ var TTestComponent = (function () {
         this.min.power = 0.01;
         this.max.power = 0.99;
         this.calculateSliderRange('n');
+        this.calculateSliderRange('ci');
         this.calculateSliderRange('delta');
         this.calculateSliderRange('sigma');
     };
     TTestComponent.prototype.addInput = function (name) {
-        var ex = new __WEBPACK_IMPORTED_MODULE_2__t_test__["b" /* TTestExtra */]((_a = {}, _a[name] = this.round[name], _a));
-        this.round.addExtra(ex);
-        var _a;
+        var _this = this;
+        if (this.extraName && this.extraName != name) {
+            throw new Error("extra attributes must be mutually exclusive");
+        }
+        this.extraName = name;
+        var model = this.model.clone();
+        var index = this.modelSet.add(model, this.modelSet.getData(0));
+        model.onChange.
+            debounceTime(100).
+            subscribe(function (event) {
+            _this.modelChanged(index, event);
+        });
+        this.extraModels = this.modelSet.extraModels();
     };
-    TTestComponent.prototype.removeInput = function (name, index) {
-        this.round.removeExtra(index);
+    TTestComponent.prototype.removeInput = function (index) {
+        this.modelSet.remove(index);
+        this.extraModels = this.modelSet.extraModels();
+        if (this.modelSet.models.length == 1) {
+            this.extraName = undefined;
+        }
     };
     TTestComponent.prototype.trackByExtra = function (index, item) {
         return index;
@@ -3254,44 +3115,74 @@ var TTestComponent = (function () {
         this.min[name] = range[0];
         this.max[name] = range[1];
     };
-    TTestComponent.prototype.modelChanged = function (changes) {
-        var keys = Object.keys(changes);
-        if (keys.length > 1 || keys[0] != this.model.output) {
-            this.updateModelSet();
+    TTestComponent.prototype.modelChanged = function (index, event) {
+        var _this = this;
+        if (event.recalculation) {
+            // Don't do anything, since this change came from a backend
+            // recalculation.
+            return;
+        }
+        var changes = event.changes;
+        var model = this.modelSet.getModel(index);
+        if (index == 0 && 'output' in changes) {
+            // output was changed, which means each model needs to be updated before
+            // firing the compute event, or the plots will get confused
+            this.modelSet.setOutputQuietly(changes.output);
+            var promise = this.modelSet.reduceModels(Promise.resolve(), function (promise, model, index) {
+                return promise.then(function () { return _this.ttestService.update(model); }).
+                    then(function (result) {
+                    _this.modelSet.update(index, result.model, result.data, {}, false);
+                });
+            });
+            promise.then(function () { return _this.modelSet.triggerCompute(); });
+        }
+        else {
+            if ('ci' in changes) {
+                // 95% confidence interval width was changed, so turn on "ciMode"
+                model.ciMode = true;
+            }
+            else if ('n' in changes) {
+                // Sample size was changed, so turn off "ciMode"
+                model.ciMode = false;
+            }
+            this.updateModelSet(index);
         }
     };
-    TTestComponent.prototype.updateModelSet = function () {
+    TTestComponent.prototype.updateModelSet = function (index) {
         var _this = this;
-        this.ttestService.update(this.modelSet.model).
+        var model = this.modelSet.getModel(index);
+        this.ttestService.update(model).
             then(function (result) {
-            _this.modelSet.update(result.model, result.data);
-            _this.round.roundUpdate(result.model, false);
-            // adjust min/max
-            if (_this.model.sigma < _this.min.sigma) {
-                _this.min.sigma = Math.floor(_this.model.sigma);
-            }
-            else if (_this.model.sigma > _this.max.sigma) {
-                _this.max.sigma = Math.ceil(_this.model.sigma);
-            }
-            if (_this.model.delta < _this.min.delta) {
-                _this.min.delta = Math.floor(_this.model.delta);
-            }
-            else if (_this.model.delta > _this.max.delta) {
-                _this.max.delta = Math.ceil(_this.model.delta);
-            }
-            if (_this.model.n < _this.min.n) {
-                _this.min.n = Math.floor(_this.model.n);
-            }
-            else if (_this.model.n > _this.max.n) {
-                _this.max.n = Math.ceil(_this.model.n);
-            }
+            _this.modelSet.update(index, result.model, result.data, { recalculation: true });
+            _this.adjustMinMax(index);
         }, function (error) { });
+    };
+    TTestComponent.prototype.adjustMinMax = function (index) {
+        var model = this.modelSet.getModel(index);
+        if (model.sigma < this.min.sigma) {
+            this.min.sigma = Math.floor(model.sigma);
+        }
+        else if (model.sigma > this.max.sigma) {
+            this.max.sigma = Math.ceil(model.sigma);
+        }
+        if (model.delta < this.min.delta) {
+            this.min.delta = Math.floor(model.delta);
+        }
+        else if (model.delta > this.max.delta) {
+            this.max.delta = Math.ceil(model.delta);
+        }
+        if (model.n < this.min.n) {
+            this.min.n = Math.floor(model.n);
+        }
+        else if (model.n > this.max.n) {
+            this.max.n = Math.ceil(model.n);
+        }
     };
     return TTestComponent;
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('model-set'),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__t_test__["d" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__t_test__["d" /* TTestSet */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__t_test__["c" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__t_test__["c" /* TTestSet */]) === "function" && _a || Object)
 ], TTestComponent.prototype, "modelSet", void 0);
 TTestComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
@@ -3299,10 +3190,10 @@ TTestComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/t-test/t-test.component.html"),
         styles: [__webpack_require__("../../../../../src/app/t-test/t-test.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__t_test_service__["a" /* TTestService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test_service__["a" /* TTestService */]) === "function" && _c || Object])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__t_test_service__["a" /* TTestService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test_service__["a" /* TTestService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */]) === "function" && _d || Object])
 ], TTestComponent);
 
-var _a, _b, _c;
+var _a, _b, _c, _d;
 //# sourceMappingURL=t-test.component.js.map
 
 /***/ }),
