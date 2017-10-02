@@ -17,7 +17,7 @@
     </div>
   </ng-template>
   <div class="inputs row">
-    <div class="col-sm-8">
+    <div class="col-sm-9">
       <div class="slider">
         <div class="min">{{floor(min)}}</div>
         <input #range name="{{name}}" type="range" step="{{step}}"
@@ -41,21 +41,6 @@
         <ng-template #errorMsg>
           <span class="error">Value is out of range ({{hardMin}}, {{hardMax}})</span>
         </ng-template>
-      </div>
-    </div>
-    <div class="col-sm-1"
-      [class.palette-color]="paletteColor >= 0"
-      [style.color]="palette.getColor(paletteColor, paletteTheme)">
-
-      <div class="add-remove" *ngIf="!isOutput && canAdd">
-        <i class="fa fa-plus-circle" (click)="add()"
-          ngbPopover="Click to add line to plot for alternate value of &quot;{{label}}&quot;"
-          triggers="hover" container="body"></i>
-      </div>
-      <div class="add-remove" *ngIf="canRemove">
-        <i class="fa fa-minus-circle" (click)="remove()"
-          ngbPopover="Remove line from plot for &quot;{{label}}&quot;"
-          triggers="hover" container="body"></i>
       </div>
     </div>
   </div>

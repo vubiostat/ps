@@ -2,8 +2,6 @@ import { Component, Directive, Input, Output, ContentChild, ViewChild, TemplateR
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 
-import { PaletteService } from '../palette.service';
-
 @Directive({selector: 'ng-template[rsLabel]'})
 export class RangeSliderLabel {
   constructor(public templateRef: TemplateRef<any>) {}
@@ -35,20 +33,12 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   @Input('hard-min') hardMin: number;
   @Input('hard-max') hardMax: number;
   @Input('is-output') isOutput = false;
-  @Input('can-add') canAdd = true;
-  @Input('can-remove') canRemove = false;
-  @Input('palette-color') paletteColor = -1;
-  @Input('palette-theme') paletteTheme = "plasma";
-  @Output('add') onAdd = new EventEmitter<string>();
-  @Output('remove') onRemove = new EventEmitter<string>();
   value: number;
   private changeCallback: any;
 
   @ContentChild(RangeSliderLabel) labelTpl: RangeSliderLabel;
   @ContentChild(RangeSliderHelp) helpTpl: RangeSliderHelp;
   @ViewChild("errorPopover") errorPopover: NgbPopover;
-
-  constructor(public palette: PaletteService) { }
 
   ngOnInit() {
   }
@@ -104,14 +94,6 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
 
   numberInput(newValue: string): void {
     this.value = parseFloat(newValue);
-  }
-
-  add(): void {
-    this.onAdd.emit(this.name);
-  }
-
-  remove(): void {
-    this.onRemove.emit(this.name);
   }
 
   private trySetValue(newValue: string): void {

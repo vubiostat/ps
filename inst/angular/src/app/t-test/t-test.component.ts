@@ -50,6 +50,15 @@ export class TTestComponent implements OnInit {
     this.calculateSliderRange('sigma');
   }
 
+  canAdd(name: string): boolean {
+    return this.model.output !== name &&
+      (this.extraName === undefined || this.extraName === name);
+  }
+
+  getColor(index: number): string {
+    return this.palette.getColor(index);
+  }
+
   addInput(name: any): void {
     if (this.extraName && this.extraName != name) {
       throw new Error("extra attributes must be mutually exclusive");
