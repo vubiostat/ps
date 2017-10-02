@@ -231,17 +231,11 @@ export class TTestSet {
   onChange = new EventEmitter();
   onCompute = new EventEmitter();
 
-  private modelSubs: Subscription[] = [];
   private rangeSub: Subscription;
 
   add(model: TTest, data: TTestData): number {
     let index = this.models.length;
     this.models.push({ model: model, data: data });
-
-    let modelSub = model.onChange.subscribe(value => {
-      this.onChange.emit({ model: value });
-    });
-    this.modelSubs.push(modelSub);
 
     if (this.models.length == 1) {
       let attribs = this.calcRangeAttributes(model, data);
@@ -299,8 +293,6 @@ export class TTestSet {
     let m = this.models[index];
     m.model.onChange.complete();
     this.models.splice(index, 1);
-    this.modelSubs[index].unsubscribe();
-    this.modelSubs.splice(index, 1);
     this.onChange.emit({ removed: index });
   }
 
