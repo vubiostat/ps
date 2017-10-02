@@ -7,5 +7,16 @@
 }
 
 .add-remove {
-  padding: 0 0 0.5rem 0.5rem;
+  display: flex !important;
+  align-items: flex-end !important;
+  padding: 0 0 0.75rem 0.5rem;
+  margin-left: 10px;
+}
+
+.add-remove-center {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 0 0 0.5rem;
+  margin: 2rem 0 0 1rem;
+  margin-left: 10px;
 }
