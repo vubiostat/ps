@@ -9,16 +9,18 @@
 .add-remove {
   display: flex !important;
   align-items: flex-end !important;
-  padding: 0 0 0.75rem 0.5rem;
+  padding: 0 0.1rem 0.75rem 0.1rem;
   margin-left: 10px;
 }
 
 .add-remove-center {
   display: flex !important;
   align-items: center !important;
-  padding: 0 0 0 0.5rem;
+  padding: 0 0 0 0.1rem;
   margin: 2rem 0 0 1rem;
   margin-left: 10px;
+  border: 1px solid #333;
+  border-left: 0;
 }
 
 .output {
