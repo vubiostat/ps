@@ -50,6 +50,10 @@ export class TTestComponent implements OnInit {
     this.calculateSliderRange('sigma');
   }
 
+  isOutput(name: string): boolean {
+    return this.model.output === name;
+  }
+
   canAdd(name: string): boolean {
     return this.model.output !== name &&
       (this.extraName === undefined || this.extraName === name);

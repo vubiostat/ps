@@ -20,3 +20,8 @@
   margin: 2rem 0 0 1rem;
   margin-left: 10px;
 }
+
+.output {
+  background-color: #d8ecf3;
+  border-radius: 0.5em;
+}

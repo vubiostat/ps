@@ -12,10 +12,6 @@ div.slider-group {
   border-radius: 5px;
 }
 
-div.slider-group.output {
-  background-color: #d8ecf3;
-}
-
 div.slider-group .label span {
   font-weight: bold;
 }

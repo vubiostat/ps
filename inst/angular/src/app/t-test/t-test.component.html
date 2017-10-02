@@ -74,21 +74,23 @@
 </ng-template>
 
 <div class="grow-horiz">
-  <app-range-slider name="power" label="Power"
-    [min]="min.power" [max]="max.power"
-    [hard-min]="min.power" [hard-max]="max.power"
-    [is-output]="model.output == 'power'"
-    [(ngModel)]="model.power">
-    <ng-template rsHelp>
-      For independent tests power is probability of correctly rejecting the
-      null hypothesis of equal population means given n experimental
-      patients, m control patients per experimental patient, a Type I error
-      probability α and a true difference in population means of δ. For
-      paired tests it is the probability of correctly rejecting the null
-      hypothesis of equal population means given n pairs of patients, a Type
-      I error probability α and a true difference in population means of δ.
-    </ng-template>
-  </app-range-slider>
+  <div class="grow-vert" [class.output]="isOutput('power')">
+    <app-range-slider name="power" label="Power"
+      [min]="min.power" [max]="max.power"
+      [hard-min]="min.power" [hard-max]="max.power"
+      [is-output]="model.output == 'power'"
+      [(ngModel)]="model.power">
+      <ng-template rsHelp>
+        For independent tests power is probability of correctly rejecting the
+        null hypothesis of equal population means given n experimental
+        patients, m control patients per experimental patient, a Type I error
+        probability α and a true difference in population means of δ. For
+        paired tests it is the probability of correctly rejecting the null
+        hypothesis of equal population means given n pairs of patients, a Type
+        I error probability α and a true difference in population means of δ.
+      </ng-template>
+    </app-range-slider>
+  </div>
   <div class="add-remove fa-fw" [style.color]="getColor(0)">
     <i *ngIf="canAdd('power')" class="fa fa-plus-circle" (click)="addInput('power')"
       ngbPopover="Click to add line to plot for alternate value of &quot;power&quot;"
@@ -111,15 +113,17 @@
 </ng-template>
 
 <div class="grow-horiz">
-  <app-range-slider name="delta" label="Difference in population means (&delta;)"
-    [min]="min.delta" [max]="max.delta" step="0.1"
-    [is-output]="model.output == 'delta'"
-    [(ngModel)]="model.delta">
-    <ng-template rsHelp>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
-      rutrum at ligula id, tempor tincidunt nunc.
-    </ng-template>
-  </app-range-slider>
+  <div class="grow-vert" [class.output]="isOutput('delta')">
+    <app-range-slider name="delta" label="Difference in population means (&delta;)"
+      [min]="min.delta" [max]="max.delta" step="0.1"
+      [is-output]="model.output == 'delta'"
+      [(ngModel)]="model.delta">
+      <ng-template rsHelp>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
+        rutrum at ligula id, tempor tincidunt nunc.
+      </ng-template>
+    </app-range-slider>
+  </div>
   <div class="add-remove fa-fw" [style.color]="getColor(0)">
     <i *ngIf="canAdd('delta')" class="fa fa-plus-circle" (click)="addInput('delta')"
       ngbPopover="Click to add line to plot for alternate value of &quot;delta&quot;"
@@ -142,7 +146,7 @@
 </ng-template>
 
 <div class="grow-horiz">
-  <div class="grow-vert">
+  <div class="grow-vert" [class.output]="isOutput('n')">
     <app-range-slider name="n" label="Sample size"
       [min]="min.n" [max]="max.n" step="1"
       [hard-min]="1"
