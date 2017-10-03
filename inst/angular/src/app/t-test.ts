@@ -308,7 +308,7 @@ export class TTestSet {
 
   private calcRangeAttributes(model: TTest, data: TTestData, skip?: string): any {
     let n, power, delta, pSpace, indices, values, min, max;
-    let deltaMax = 2.5 * model.sigma;
+    let deltaMax = 1.5 * model.sigma;
     let primary = data.primary;
     let tertiary = data.tertiary;
     switch (model.output) {

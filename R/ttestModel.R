@@ -18,8 +18,8 @@ calculateDelta <- function(alpha, sigma, n, power, ...) {
 # Calculate detectable alternative axis range
 calculateDeltaRange <- function(sigma, delta, ...) {
   mu.0 <- 0
-  lo <- mu.0 - max(3 * sigma, delta + sigma/2)
-  high <- mu.0 + max(3 * sigma, delta + sigma/2)
+  lo <- mu.0 - max(2 * sigma, delta + sigma/2)
+  high <- mu.0 + max(2 * sigma, delta + sigma/2)
   c(lo, high)
 }
 
