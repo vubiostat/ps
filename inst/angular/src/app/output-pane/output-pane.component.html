@@ -8,7 +8,9 @@
     [hover-disabled]="hoverDisabled">
   </app-plot>
   <app-bottom-plot #bottom name="bottom"
-    [model-set]="modelSet" [disable-drag]="model?.output == 'delta'">
+    [model-set]="modelSet"
+    [disable-drag-target]="model?.output == 'delta'"
+    [disable-drag-ci]="model?.output == 'n'">
   </app-bottom-plot>
   <div class="show-text" *ngIf="modelSet && !showText">
     <button type="button" class="btn btn-secondary" (click)="toggleText(true)">

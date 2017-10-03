@@ -11,7 +11,20 @@ import { Range } from '../range';
 import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 
-interface Group { mainPaths: string[], distPath: string, target: number };
+interface Group {
+  leftPath: string,
+  centerPath: string,
+  rightPath: string,
+  distPath: string,
+  left: number,
+  target: number
+  right: number
+};
+
+enum CIBar {
+  Left,
+  Right
+};
 
 @Component({
   selector: 'app-bottom-plot',
@@ -24,11 +37,14 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   @Input('draw-on-init') drawOnInit = true;
   @Input('fixed-width') fixedWidth: number;
   @Input('fixed-height') fixedHeight: number;
-  @Input('disable-drag') disableDrag = false;
+  @Input('disable-drag-target') disableDragTarget = false;
+  @Input('disable-drag-ci') disableDragCI = false;
 
   @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
   @ViewChild('target') targetElement: ElementRef;
+  @ViewChild('leftBar') leftBarElement: ElementRef;
+  @ViewChild('rightBar') rightBarElement: ElementRef;
 
   title = "Precision vs. Effect Size";
   margin: number = 50;
@@ -44,10 +60,18 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   groups: Group[];
   needDraw: boolean;
   initialized = false;
+
+  // target dragging
   targetOffset = 0;
-  translateOffset = 0;
+  targetTranslateOffset = 0;
   targetDragging = false;
   showTargetInfo = false;
+
+  // bar dragging
+  barOffset = 0;
+  barTranslateOffset = 0;
+  barDragging = false;
+
   private subscription: Subscription;
 
   constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) {
@@ -100,6 +124,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     }
   }
 
+  getColor(index: number): string {
+    return this.palette.getColor(index, this.plotOptions.paletteTheme);
+  }
+
   private compute(): void {
     if (!this.modelSet) {
       return;
@@ -149,37 +177,46 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     //console.log("ySD range:", [0, this.yScale(0.5)]);
 
     this.groups = data.reverse().map(subData => {
+      // main lines
+      let leftLimit = subData.range[0];
+      let leftPath = this.getPath([
+        { x: leftLimit, y: 0.35 },
+        { x: leftLimit, y: 0.65 }
+      ]);
+
+      let rightLimit = subData.range[1];
+      let rightPath = this.getPath([
+        { x: rightLimit, y: 0.35 },
+        { x: rightLimit, y: 0.65 }
+      ]);
+
+      let centerPath = this.getPath([
+        { x: leftLimit, y: 0.5 },
+        { x: rightLimit, y: 0.5 }
+      ]);
+
       // sample distribution
       let distPath = this.getArea(subData.data, 'pSpace', 'sampDist');
 
-      // main lines
-      let leftLimit = subData.range[0];
-      let rightLimit = subData.range[1];
-      let points = [
-        subData.range.map((xValue, i) => {
-          return { x: xValue, y: 0.5 };
-        }),
-        [
-          { x: leftLimit, y: 0.35 },
-          { x: leftLimit, y: 0.65 }
-        ],
-        [
-          { x: rightLimit, y: 0.35 },
-          { x: rightLimit, y: 0.65 }
-        ]
-      ];
-      let mainPaths = points.map(data => this.getPath(data));
-
       let result = {
-        mainPaths: mainPaths,
+        leftPath: leftPath,
+        centerPath: centerPath,
+        rightPath: rightPath,
         distPath: distPath,
-        target: subData.target
+        left: leftLimit,
+        target: subData.target,
+        right: rightLimit
       }
       return result;
     });
     this.mainGroup = this.groups.pop();
-    this.translateOffset = this.targetOffset = 0;
+
+    // reset dragging
+    this.targetTranslateOffset = this.targetOffset = 0;
     this.targetDragging = false;
+    this.barTranslateOffset = this.barOffset = 0;
+    this.barDragging = false;
+
     this.needDraw = true;
   }
 
@@ -196,21 +233,39 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
 
     // make target point draggable
-    if (!this.disableDrag) {
-      let elt = this.targetElement.nativeElement;
-      let target = d3.select(elt);
-      let drag = d3.drag().
-        container(elt.parentNode.parentNode).
-        on("start", this.dragTargetStart.bind(this)).
-        on("drag", this.dragTarget.bind(this)).
-        on("end", this.dragTargetEnd.bind(this));
-      target.call(drag);
-    }
+    let targetElt = this.targetElement.nativeElement;
+    let target = d3.select(targetElt);
+    let targetDrag = d3.drag().
+      container(targetElt.parentNode.parentNode).
+      on("start", this.dragTargetStart.bind(this)).
+      on("drag", this.dragTarget.bind(this)).
+      on("end", this.dragTargetEnd.bind(this));
+    target.call(targetDrag);
+
+    // make left bar draggable
+    let leftBarElt = this.leftBarElement.nativeElement;
+    let leftBar = d3.select(leftBarElt);
+    let leftBarDrag = d3.drag().
+      container(leftBarElt.parentNode.parentNode).
+      on("start", this.dragBarStart.bind(this, CIBar.Left)).
+      on("drag", this.dragBar.bind(this, CIBar.Left)).
+      on("end", this.dragBarEnd.bind(this, CIBar.Left));
+    leftBar.call(leftBarDrag);
+
+    // make right bar draggable
+    let rightBarElt = this.rightBarElement.nativeElement;
+    let rightBar = d3.select(rightBarElt);
+    let rightBarDrag = d3.drag().
+      container(rightBarElt.parentNode.parentNode).
+      on("start", this.dragBarStart.bind(this, CIBar.Right)).
+      on("drag", this.dragBar.bind(this, CIBar.Right)).
+      on("end", this.dragBarEnd.bind(this, CIBar.Right));
+    rightBar.call(rightBarDrag);
 
     this.needDraw = false;
   }
 
-  private clipPath(): string {
+  clipPath(): string {
     return `url(#${this.clipPathId})`;
   }
 
@@ -224,13 +279,13 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   }
 
   private dragTargetStart(): void {
-    if (this.disableDrag) return;
+    if (this.disableDragTarget) return;
 
     this.targetDragging = true;
   }
 
   private dragTarget(event: any): void {
-    if (this.disableDrag) return;
+    if (this.disableDragTarget) return;
 
     let mouseX = d3.event.x - this.margin;
     let x = this.xScale.invert(mouseX);
@@ -243,17 +298,62 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     }
 
     let targetX = this.xScale(this.mainGroup.target);
-    this.translateOffset = mouseX - targetX;
+    this.targetTranslateOffset = mouseX - targetX;
 
     this.targetOffset = x - this.mainGroup.target;
   }
 
   private dragTargetEnd(): void {
-    if (this.disableDrag) return;
+    if (this.disableDragTarget) return;
 
     if (this.modelSet) {
       let modelChanges = {
         delta: this.mainGroup.target + this.targetOffset
+      };
+      this.modelSet.getModel(0).update(modelChanges);
+    }
+  }
+
+  private dragBarStart(which: CIBar): void {
+    if (this.disableDragCI) return;
+
+    this.barDragging = true;
+  }
+
+  private dragBar(which: CIBar, event: any): void {
+    if (this.disableDragCI) return;
+
+    let mouseX = d3.event.x - this.margin;
+    let x = this.xScale.invert(mouseX);
+
+    switch (which) {
+      case CIBar.Left:
+        let leftBarX = this.xScale(this.mainGroup.left);
+        this.barTranslateOffset = mouseX - leftBarX;
+        this.barOffset = x - this.mainGroup.left;
+        break;
+
+      case CIBar.Right:
+        let rightBarX = this.xScale(this.mainGroup.right);
+        this.barTranslateOffset = rightBarX - mouseX;
+        this.barOffset = this.mainGroup.right - x;
+        break;
+    }
+
+    this.mainGroup.centerPath = this.getPath([
+      { x: this.mainGroup.left + this.barOffset, y: 0.5 },
+      { x: this.mainGroup.right - this.barOffset, y: 0.5 }
+    ]);
+  }
+
+  private dragBarEnd(which: CIBar): void {
+    if (this.disableDragCI) return;
+
+    if (this.modelSet) {
+      let ci = (this.mainGroup.right - this.barOffset) - (this.mainGroup.left + this.barOffset);
+      let modelChanges = {
+        ci: Math.abs(ci),
+        ciMode: true
       };
       this.modelSet.getModel(0).update(modelChanges);
     }

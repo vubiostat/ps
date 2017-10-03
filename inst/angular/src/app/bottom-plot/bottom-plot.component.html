@@ -24,14 +24,30 @@
     <g *ngFor="let group of groups; let i = index"
       [attr.transform]="translate(margin, margin)">
 
-      <path [attr.clip-path]="clipPath()" [attr.d]="group.distPath"
-        [attr.fill]="palette.getColor(groups.length - i, plotOptions.paletteTheme)"
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="group.distPath"
+        [attr.fill]="getColor(groups.length - i)"
         stroke="none" opacity="0.5" />
 
-      <path *ngFor="let path of group.mainPaths"
+      <path
         [attr.clip-path]="clipPath()"
-        [attr.d]="path"
-        [attr.stroke]="palette.getColor(groups.length - i, plotOptions.paletteTheme)"
+        [attr.d]="group.centerPath"
+        [attr.stroke]="getColor(groups.length - i)"
+        [attr.stroke-width]="plotOptions.lineWidth * 3"
+        fill="none" />
+
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="group.leftPath"
+        [attr.stroke]="getColor(groups.length - i)"
+        [attr.stroke-width]="plotOptions.lineWidth * 3"
+        fill="none" />
+
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="group.rightPath"
+        [attr.stroke]="getColor(groups.length - i)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         fill="none" />
 
@@ -39,22 +55,42 @@
         [attr.cx]="xScale(group.target)"
         [attr.cy]="yScale(0.5)"
         [attr.clip-path]="clipPath()"
-        [attr.fill]="palette.getColor(groups.length - i, plotOptions.paletteTheme)" />
+        [attr.fill]="getColor(groups.length - i)" />
     </g>
 
     <!-- main group -->
-    <g [attr.transform]="translate(margin + translateOffset, margin)">
+    <g [attr.transform]="translate(margin + targetTranslateOffset, margin)">
 
-      <path [attr.clip-path]="clipPath()" [attr.d]="mainGroup.distPath"
-        [attr.fill]="palette.getColor(0, plotOptions.paletteTheme)"
+      <path
+        [attr.clip-path]="clipPath()"
+        [attr.d]="mainGroup.distPath"
+        [attr.fill]="getColor(0)"
         stroke="none" [attr.opacity]="targetDragging ? 0.1 : 0.5" />
 
-      <path *ngFor="let path of mainGroup.mainPaths"
+      <path
         [attr.clip-path]="clipPath()"
-        [attr.d]="path"
-        [attr.stroke]="palette.getColor(0, plotOptions.paletteTheme)"
+        [attr.d]="mainGroup.centerPath"
+        [attr.stroke]="getColor(0)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         [attr.opacity]="targetDragging ? 0.1 : 0.9"
+        fill="none" />
+
+      <path #leftBar class="bar"
+        [attr.clip-path]="clipPath()"
+        [attr.d]="mainGroup.leftPath"
+        [attr.stroke]="getColor(0)"
+        [attr.stroke-width]="plotOptions.lineWidth * 4"
+        [attr.opacity]="targetDragging ? 0.1 : 0.9"
+        [attr.transform]="translate(barTranslateOffset, 0)"
+        fill="none" />
+
+      <path #rightBar class="bar"
+        [attr.clip-path]="clipPath()"
+        [attr.d]="mainGroup.rightPath"
+        [attr.stroke]="getColor(0)"
+        [attr.stroke-width]="plotOptions.lineWidth * 4"
+        [attr.opacity]="targetDragging ? 0.1 : 0.9"
+        [attr.transform]="translate(-barTranslateOffset, 0)"
         fill="none" />
 
       <g *ngIf="showTargetInfo"
@@ -71,7 +107,7 @@
         [attr.cx]="xScale(mainGroup.target)"
         [attr.cy]="yScale(0.5)"
         [attr.clip-path]="clipPath()"
-        [attr.fill]="palette.getColor(0, plotOptions.paletteTheme)"
+        [attr.fill]="getColor(0)"
         (mouseover)="toggleTargetInfo(true)"
         (mouseout)="toggleTargetInfo(false)" />
     </g>

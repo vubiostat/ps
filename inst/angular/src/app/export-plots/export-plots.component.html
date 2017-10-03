@@ -148,7 +148,8 @@
           </div>
           <div class="right">
             <app-bottom-plot #bottomPlot name="bottom-export"
-              [model-set]="modelSet" [disable-drag]="true"
+              [model-set]="modelSet"
+              [disable-drag-target]="true" [disable-drag-ci]="true"
               [fixed-width]="bottomWidth" [fixed-height]="bottomHeight">
             </app-bottom-plot>
           </div>
