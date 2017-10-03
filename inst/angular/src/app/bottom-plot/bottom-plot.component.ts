@@ -53,6 +53,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   height: number;
   innerWidth: number;
   innerHeight: number;
+  unitLength: number;
   xScale: any;
   yScale: any;
   yScaleSD: any;
@@ -71,6 +72,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   barOffset = 0;
   barTranslateOffset = 0;
   barDragging = false;
+  showLeftBarInfo = false;
+  showRightBarInfo = false;
 
   private subscription: Subscription;
 
@@ -119,8 +122,20 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   }
 
   toggleTargetInfo(value: boolean): void {
-    if (!this.targetDragging) {
+    if (!this.targetDragging && !this.barDragging) {
       this.showTargetInfo = value;
+    }
+  }
+
+  toggleLeftBarInfo(value: boolean): void {
+    if (!this.targetDragging && !this.barDragging) {
+      this.showLeftBarInfo = value;
+    }
+  }
+
+  toggleRightBarInfo(value: boolean): void {
+    if (!this.targetDragging && !this.barDragging) {
+      this.showRightBarInfo = value;
     }
   }
 
@@ -137,6 +152,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     let unitBox = this.unitElement.nativeElement.getBBox();
     if (unitBox && unitBox.width) {
       this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
+      this.unitLength = unitBox.width;
     }
 
     // dimensions
@@ -345,13 +361,16 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     ]);
   }
 
+  ciWidth(): number {
+    return Math.abs((this.mainGroup.right - this.barOffset) - (this.mainGroup.left + this.barOffset));
+  }
+
   private dragBarEnd(which: CIBar): void {
     if (this.disableDragCI) return;
 
     if (this.modelSet) {
-      let ci = (this.mainGroup.right - this.barOffset) - (this.mainGroup.left + this.barOffset);
       let modelChanges = {
-        ci: Math.abs(ci),
+        ci: this.ciWidth(),
         ciMode: true
       };
       this.modelSet.getModel(0).update(modelChanges);
