@@ -5,8 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class RoundPipe implements PipeTransform {
 
-  transform(value: number, args?: any): number {
-    return Math.round(value * 100) / 100;
+  transform(value: number, digits = 2): number {
+    let amount = 10 ** digits;
+    return Math.round(value * amount) / amount;
   }
 
 }

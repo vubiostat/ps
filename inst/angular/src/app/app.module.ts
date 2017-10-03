@@ -24,6 +24,7 @@ import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.co
 
 import { environment } from '../environments/environment';
 import { RoundPipe } from './round.pipe';
+import { CeilPipe } from './ceil.pipe';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { RoundPipe } from './round.pipe';
     ExportPlotsComponent,
     DraggableDialogComponent,
     RoundPipe,
+    CeilPipe,
   ],
   imports: [
     BrowserModule,

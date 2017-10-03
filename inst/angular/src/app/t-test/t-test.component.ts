@@ -160,5 +160,11 @@ export class TTestComponent implements OnInit {
     } else if (model.n > this.max.n) {
       this.max.n = Math.ceil(model.n);
     }
+
+    if (model.ci < this.min.ci) {
+      this.min.ci = Math.floor(model.ci);
+    } else if (model.ci > this.max.ci) {
+      this.max.ci = Math.ceil(model.ci);
+    }
   }
 }

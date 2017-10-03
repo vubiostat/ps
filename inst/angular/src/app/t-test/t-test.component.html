@@ -14,7 +14,7 @@
   <app-range-slider name="alpha" label="Type I Error (&alpha;)"
     [min]="min.alpha" [max]="max.alpha"
     [hard-min]="min.alpha" [hard-max]="max.alpha"
-    [(ngModel)]="model.alpha">
+    [ngModel]="model.alpha | round" (ngModelChange)="model.alpha = $event">
     <ng-template rsHelp>
       The Type I error probability for a two sided test. This is the
       probability that we will falsely reject the null hypothesis.
@@ -31,7 +31,7 @@
     <app-range-slider name="alpha-{{i+2}}" label="Type I Error (&alpha;) #{{i+2}}"
       [min]="min.alpha" [max]="max.alpha"
       [hard-min]="min.alpha" [hard-max]="max.alpha"
-      [(ngModel)]="ex.alpha">
+      [ngModel]="ex.alpha | round" (ngModelChange)="ex.alpha = $event">
     </app-range-slider>
     <div class="add-remove fa-fw" [style.color]="getColor(i+1)">
       <i class="fa fa-minus-circle" (click)="removeInput(i+1)"
@@ -45,7 +45,7 @@
   <app-range-slider name="sigma" label="Std. deviation (&sigma;)"
     [min]="min.sigma" [max]="max.sigma" step="0.1"
     [hard-min]="1"
-    [(ngModel)]="model.sigma">
+    [ngModel]="model.sigma | round:1" (ngModelChange)="model.sigma = $event">
     <ng-template rsHelp>
       For independent tests σ is the within group standard deviation. For
       paired designs it is the standard deviation of difference in the
@@ -63,7 +63,7 @@
     <app-range-slider name="sigma-{{i+2}}" label="Std. deviation #{{i+2}}"
       [min]="min.sigma" [max]="max.sigma" step="0.1"
       [hard-min]="1"
-      [(ngModel)]="ex.sigma">
+      [ngModel]="ex.sigma | round:1" (ngModelChange)="ex.sigma = $event">
     </app-range-slider>
     <div class="add-remove fa-fw" [style.color]="getColor(i+1)">
       <i class="fa fa-minus-circle" (click)="removeInput(i+1)"
@@ -79,7 +79,7 @@
       [min]="min.power" [max]="max.power"
       [hard-min]="min.power" [hard-max]="max.power"
       [is-output]="model.output == 'power'"
-      [(ngModel)]="model.power">
+      [ngModel]="model.power | round" (ngModelChange)="model.power = $event">
       <ng-template rsHelp>
         For independent tests power is probability of correctly rejecting the
         null hypothesis of equal population means given n experimental
@@ -102,7 +102,7 @@
     <app-range-slider name="power-{{i+2}}" label="Power #{{i+2}}"
       [min]="min.power" [max]="max.power"
       [hard-min]="min.power" [hard-max]="max.power"
-      [(ngModel)]="ex.power">
+      [ngModel]="ex.power | round" (ngModelChange)="ex.power = $event">
     </app-range-slider>
     <div class="add-remove fa-fw" [style.color]="getColor(i+1)">
       <i class="fa fa-minus-circle" (click)="removeInput(i+1)"
@@ -117,7 +117,7 @@
     <app-range-slider name="delta" label="Difference in population means (&delta;)"
       [min]="min.delta" [max]="max.delta" step="0.1"
       [is-output]="model.output == 'delta'"
-      [(ngModel)]="model.delta">
+      [ngModel]="model.delta | round:1" (ngModelChange)="model.delta = $event">
       <ng-template rsHelp>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
         rutrum at ligula id, tempor tincidunt nunc.
@@ -135,7 +135,7 @@
     <app-range-slider name="delta-{{i+2}}" label="Difference in population means (&delta;) #{{i+2}}"
       [min]="min.delta" [max]="max.delta" step="0.1"
       [hard-min]="min.delta" [hard-max]="max.delta"
-      [(ngModel)]="ex.delta">
+      [ngModel]="ex.delta | round:1" (ngModelChange)="ex.delta = $event">
     </app-range-slider>
     <div class="add-remove fa-fw" [style.color]="getColor(i+1)">
       <i class="fa fa-minus-circle" (click)="removeInput(i+1)"
@@ -151,17 +151,17 @@
       [min]="min.n" [max]="max.n" step="1"
       [hard-min]="1"
       [is-output]="model.output == 'n'"
-      [(ngModel)]="model.n">
+      [ngModel]="model.n | ceil" (ngModelChange)="model.n = $event">
       <ng-template rsHelp>
         For independent t-tests n is the number of experimental subjects. For
         pair test n is the number of pairs.
       </ng-template>
     </app-range-slider>
     <app-range-slider name="ci" label="95% confidence interval width"
-      [min]="min.ci" [max]="max.ci" step="1"
+      [min]="min.ci" [max]="max.ci"
       [hard-min]="1"
       [is-output]="model.output == 'n'"
-      [(ngModel)]="model.ci">
+      [ngModel]="model.ci | round" (ngModelChange)="model.ci = $event">
       <ng-template rsHelp>
         Specifying the 95% confidence interval width will automatically calculate
         the sample size parameter.
@@ -180,13 +180,13 @@
       <app-range-slider name="n-{{i+2}}" label="Sample size #{{i+2}}"
         [min]="min.n" [max]="max.n" step="1"
         [hard-min]="1"
-        [(ngModel)]="ex.n">
+        [ngModel]="ex.n | ceil" (ngModelChange)="ex.n = $event">
       </app-range-slider>
 
       <app-range-slider name="ci-{{i+2}}" label="95% confidence interval width #{{i+2}}"
-        [min]="min.ci" [max]="max.ci" step="1"
+        [min]="min.ci" [max]="max.ci"
         [hard-min]="1"
-        [(ngModel)]="ex.ci">
+        [ngModel]="ex.ci | round" (ngModelChange)="ex.ci = $event">
       </app-range-slider>
     </div>
     <div class="add-remove-center fa-fw" [style.color]="getColor(i+1)">
