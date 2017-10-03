@@ -14,7 +14,7 @@ export class TTest extends ChangeEmitter {
   @Changeable power: number;
   @Changeable n: number;
   @Changeable ci: number;
-  ciMode: boolean;
+  ciMode = false;
 
   constructor(attribs?: any) {
     super();

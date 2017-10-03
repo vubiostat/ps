@@ -32,7 +32,7 @@
         Type I Error (&alpha;)
         <i class="fa fa-info-circle" aria-hidden="true"
           [ngbPopover]="alphaHelp" popoverTitle="Type I Error (&alpha;)"
-          placement="right" triggers="hover"></i>
+          placement="right" triggers="hover" container="body"></i>
       </label>
       <ng-template #alphaHelp>
         The Type I error probability for a two sided test. This is the
@@ -48,7 +48,7 @@
         Standard deviation (&sigma;)
         <i class="fa fa-info-circle" aria-hidden="true"
           [ngbPopover]="sigmaHelp" popoverTitle="Standard deviation (&sigma;)"
-          placement="right" triggers="hover"></i>
+          placement="right" triggers="hover" container="body"></i>
       </label>
       <ng-template #sigmaHelp>
         For independent tests σ is the within group standard deviation. For
@@ -65,7 +65,7 @@
         Power
         <i class="fa fa-info-circle" aria-hidden="true"
           [ngbPopover]="powerHelp" popoverTitle="Power"
-          placement="right" triggers="hover"></i>
+          placement="right" triggers="hover" container="body"></i>
       </label>
       <ng-template #powerHelp>
         For independent tests power is probability of correctly rejecting the
@@ -88,22 +88,43 @@
              required
              [(ngModel)]="model.delta" name="delta">
     </div>
-    <div *ngIf="model.output != 'n'" class="form-group">
-      <label for="n">
-        Sample size
-        <i class="fa fa-info-circle" aria-hidden="true"
-          [ngbPopover]="nHelp" popoverTitle="Sample size"
-          placement="right" triggers="hover"></i>
-      </label>
+    <ng-template [ngIf]="model.output != 'n'">
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio"
+                 name="ciMode" id="ciMode-false"
+                 [(ngModel)]="model.ciMode" [value]="false">
+          Sample size
+          <i class="fa fa-info-circle" aria-hidden="true"
+            [ngbPopover]="nHelp" popoverTitle="Sample size"
+            placement="right" triggers="hover" container="body"></i>
+        </label>
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio"
+                 name="ciMode" id="ciMode-true"
+                 [(ngModel)]="model.ciMode" [value]="true">
+          95% confidence interval width
+        </label>
+      </div>
       <ng-template #nHelp>
         For independent t-tests n is the number of experimental subjects. For
         pair test n is the number of pairs.
       </ng-template>
-      <input class="form-control" id="n"
-             type="number"
-             required
-             [(ngModel)]="model.n" name="n">
-    </div>
+
+      <div class="form-group">
+        <input *ngIf="!model.ciMode"
+               class="form-control" id="n"
+               type="number"
+               required
+               [(ngModel)]="model.n" name="n">
+        <input *ngIf="model.ciMode"
+               class="form-control" id="ci"
+               type="number"
+               required
+               [(ngModel)]="model.ci" name="ci">
+      </div>
+
+    </ng-template>
     <button type="submit" class="btn btn-success"
             [disabled]="!startForm.form.valid">
       Calculate
