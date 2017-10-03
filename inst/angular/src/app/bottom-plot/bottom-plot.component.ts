@@ -172,9 +172,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     }, []);
     this.yScaleSD = d3.scaleLinear().
       domain(sampDistExtent.reverse()).
-      range([0, this.yScale(0.5)]);
-    //console.log("sampDistExtent:", sampDistExtent);
-    //console.log("ySD range:", [0, this.yScale(0.5)]);
+      range([0, this.yScale(0.5)]).
+      clamp(true);
 
     this.groups = data.reverse().map(subData => {
       // main lines
