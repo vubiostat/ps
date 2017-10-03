@@ -224,10 +224,14 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   }
 
   private dragTargetStart(): void {
+    if (this.disableDrag) return;
+
     this.targetDragging = true;
   }
 
   private dragTarget(event: any): void {
+    if (this.disableDrag) return;
+
     let mouseX = d3.event.x - this.margin;
     let x = this.xScale.invert(mouseX);
     if (x >= 0 && x < 1) {
@@ -245,6 +249,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   }
 
   private dragTargetEnd(): void {
+    if (this.disableDrag) return;
+
     if (this.modelSet) {
       let modelChanges = {
         delta: this.mainGroup.target + this.targetOffset
