@@ -284,6 +284,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     return `url(#${this.clipPathId})`;
   }
 
+  ciWidth(): number {
+    return Math.abs((this.mainGroup.right - this.barOffset) - (this.mainGroup.left + this.barOffset));
+  }
+
   private getArea(points: any[], xName: string, yName: string): string {
     let area = d3.area().
       x((d, i) => this.xScale(d[xName])).
@@ -327,6 +331,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       };
       this.modelSet.getModel(0).update(modelChanges);
     }
+    this.showTargetInfo = false;
   }
 
   private dragBarStart(which: CIBar): void {
@@ -361,10 +366,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     ]);
   }
 
-  ciWidth(): number {
-    return Math.abs((this.mainGroup.right - this.barOffset) - (this.mainGroup.left + this.barOffset));
-  }
-
   private dragBarEnd(which: CIBar): void {
     if (this.disableDragCI) return;
 
@@ -375,5 +376,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       };
       this.modelSet.getModel(0).update(modelChanges);
     }
+    this.showLeftBarInfo = false;
+    this.showRightBarInfo = false;
   }
 }
