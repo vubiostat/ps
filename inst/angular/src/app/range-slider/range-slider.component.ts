@@ -1,6 +1,9 @@
 import { Component, Directive, Input, Output, ContentChild, ViewChild, TemplateRef, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/filter';
 
 @Directive({selector: 'ng-template[rsLabel]'})
 export class RangeSliderLabel {
@@ -35,12 +38,23 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   @Input('is-output') isOutput = false;
   value: number;
   private changeCallback: any;
+  private inputSubject: Subject<string> = new Subject();
+  private dirty = false;
 
   @ContentChild(RangeSliderLabel) labelTpl: RangeSliderLabel;
   @ContentChild(RangeSliderHelp) helpTpl: RangeSliderHelp;
   @ViewChild("errorPopover") errorPopover: NgbPopover;
 
   ngOnInit() {
+    this.inputSubject.
+      debounceTime(400).
+      filter(value => {
+        // skip values when not dirty
+        return this.dirty;
+      }).
+      subscribe(value => {
+        this.trySetValue(value);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -85,7 +99,8 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   }
 
   rangeInput(newValue: string): void {
-    this.value = parseFloat(newValue);
+    this.dirty = true;
+    this.inputSubject.next(newValue);
   }
 
   numberChanged(newValue: string): void {
@@ -93,7 +108,8 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   }
 
   numberInput(newValue: string): void {
-    this.value = parseFloat(newValue);
+    this.dirty = true;
+    this.inputSubject.next(newValue);
   }
 
   private trySetValue(newValue: string): void {
@@ -108,6 +124,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   }
 
   private propagateChange(): void {
+    this.dirty = false;
     if (this.changeCallback) {
       this.changeCallback(this.value);
     }
