@@ -96,10 +96,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       }
       if (this.modelSet) {
         let callback = () => { this.compute(); };
-        let ranges = this.modelSet.ranges;
         this.subscription = this.modelSet.onCompute.subscribe(callback);
         this.subscription.add(this.modelSet.onChange.subscribe(callback));
-        this.subscription.add(ranges.onChange.subscribe(callback));
 
         if (this.initialized) {
           this.compute();
