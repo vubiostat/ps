@@ -41391,6 +41391,18 @@ Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
 
 /***/ }),
 
+/***/ "../../../../rxjs/add/operator/filter.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__("../../../../rxjs/Observable.js");
+var filter_1 = __webpack_require__("../../../../rxjs/operator/filter.js");
+Observable_1.Observable.prototype.filter = filter_1.filter;
+//# sourceMappingURL=filter.js.map
+
+/***/ }),
+
 /***/ "../../../../rxjs/add/operator/switch.js":
 /***/ (function(module, exports, __webpack_require__) {
 
