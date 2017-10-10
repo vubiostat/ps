@@ -6,12 +6,12 @@
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
   <ng-template [ngIf]="x && y && modelSet">
     <defs>
-      <clipPath [id]="mainClipPathId">
+      <clipPath id="{{name}}-plot-area">
         <rect x="0" [attr.y]="-plotOptions.lineWidth * 3"
           [attr.width]="innerWidth"
           [attr.height]="innerHeight + plotOptions.lineWidth * 3" />
       </clipPath>
-      <clipPath [id]="targetClipPathId">
+      <clipPath id="{{name}}-target-area">
         <rect x="-5" [attr.y]="-5"
           [attr.width]="innerWidth + 10"
           [attr.height]="innerHeight + 10" />
@@ -33,9 +33,10 @@
     </text>
 
     <g *ngFor="let path of paths; let i = index"
+      id="path-{{i}}"
       [attr.transform]="translate(margin, margin)">
       <path
-        [attr.clip-path]="mainClipPath()"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.d]="path"
         [attr.stroke]="palette.getColor(paths.length - 1 - i, plotOptions.paletteTheme)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
@@ -49,7 +50,7 @@
       <g *ngFor="let path of dropPaths"
         [attr.transform]="translate(margin, margin)">
         <path
-          [attr.clip-path]="mainClipPath()"
+          attr.clip-path="url(#{{name}}-plot-area)"
           [attr.d]="path"
           stroke="red"
           [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
@@ -97,7 +98,7 @@
         [attr.cx]="xScale(targetPoint.x)"
         [attr.cy]="yScale(targetPoint.y)"
         [attr.transform]="translate(margin, margin)"
-        [attr.clip-path]="targetClipPath()"
+        attr.clip-path="url(#{{name}}-target-area)"
         fill="red"
         (mouseover)="toggleTargetInfo(true)"
         (mouseout)="toggleTargetInfo(false)" />

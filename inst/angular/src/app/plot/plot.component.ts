@@ -55,8 +55,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   innerWidth: number;
   innerHeight: number;
   margin: number = 50;
-  mainClipPathId: string;
-  targetClipPathId: string;
   xScale: any;
   yScale: any;
   paths: string[];
@@ -79,8 +77,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   private subscription: Subscription;
 
   ngOnInit(): void {
-    this.mainClipPathId = `${this.name}-plot-area`;
-    this.targetClipPathId = `${this.name}-target-area`;
     this.plotOptions.onChange.subscribe(() => { this.compute(); });
     if (this.drawOnInit) {
       this.compute();
@@ -367,13 +363,5 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     }
 
     this.needDraw = false;
-  }
-
-  private mainClipPath(): string {
-    return `url(#${this.mainClipPathId})`;
-  }
-
-  private targetClipPath(): string {
-    return `url(#${this.targetClipPathId})`;
   }
 }
