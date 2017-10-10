@@ -36,10 +36,12 @@
                [disabled]="isOutput"
                (change)="numberChanged(number.value)"
                (input)="numberInput(number.value)"
+               (blur)="blurred()"
                [ngbPopover]="errorMsg" triggers="manual"
                container="body" #errorPopover="ngbPopover" />
         <ng-template #errorMsg>
-          <span class="error">Value is out of range ({{hardMin}}, {{hardMax}})</span>
+          <span class="error">Value is out of range ({{hardMin}}, {{hardMax}}).</span><br/>
+          Current value: {{value}}
         </ng-template>
       </div>
     </div>

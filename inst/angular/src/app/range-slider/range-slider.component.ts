@@ -1,4 +1,4 @@
-import { Component, Directive, Input, Output, ContentChild, ViewChild, TemplateRef, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
+import { Component, Directive, Input, Output, ContentChild, ViewChild, TemplateRef, ElementRef, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
@@ -45,6 +45,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   @ContentChild(RangeSliderLabel) labelTpl: RangeSliderLabel;
   @ContentChild(RangeSliderHelp) helpTpl: RangeSliderHelp;
   @ViewChild("errorPopover") errorPopover: NgbPopover;
+  @ViewChild("number") numberElement: ElementRef;
 
   ngOnInit() {
     this.inputSubject.
@@ -115,6 +116,14 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
     this.inputSubject.next(newValue);
   }
 
+  blurred(): void {
+    if (this.hasError) {
+      this.numberElement.nativeElement.value = this.value;
+      this.hasError = false;
+      this.errorPopover.close();
+    }
+  }
+
   private trySetValue(newValue: string): void {
     let value = parseFloat(newValue);
     if (value < this.hardMin || value > this.hardMax) {
@@ -126,10 +135,10 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
       this.value = value;
       this.propagateChange();
     }
+    this.dirty = false;
   }
 
   private propagateChange(): void {
-    this.dirty = false;
     if (this.changeCallback) {
       this.changeCallback(this.value);
     }
