@@ -37,6 +37,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   @Input('hard-max') hardMax: number;
   @Input('is-output') isOutput = false;
   value: number;
+  hasError = false;
   private changeCallback: any;
   private inputSubject: Subject<string> = new Subject();
   private dirty = false;
@@ -64,9 +65,11 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
         // if isOutput changes from true to false, turn on the error message if
         // the value is out of bounds
         if (this.value < this.hardMin || this.value > this.hardMax) {
+          this.hasError = true;
           this.errorPopover.open();
         }
       } else if (change.previousValue === false && change.currentValue === true) {
+        this.hasError = false;
         this.errorPopover.close();
       }
     }
@@ -115,8 +118,10 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   private trySetValue(newValue: string): void {
     let value = parseFloat(newValue);
     if (value < this.hardMin || value > this.hardMax) {
+      this.hasError = true;
       this.errorPopover.open();
     } else {
+      this.hasError = false;
       this.errorPopover.close();
       this.value = value;
       this.propagateChange();

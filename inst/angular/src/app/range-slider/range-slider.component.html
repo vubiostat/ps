@@ -31,8 +31,8 @@
     </div>
     <div class="col-sm-3">
       <div class="number">
-        <input #number name="{{name}}" type="number" step="{{step}}"
-               [min]="hardMin" [max]="hardMax" [value]="value"
+        <input #number [class.error]="hasError" name="{{name}}" type="number"
+               step="{{step}}" [min]="hardMin" [max]="hardMax" [value]="value"
                [disabled]="isOutput"
                (change)="numberChanged(number.value)"
                (input)="numberInput(number.value)"

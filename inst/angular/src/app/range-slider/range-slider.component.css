@@ -72,6 +72,11 @@ div.slider-group div.slider div.max {
   opacity: 1;
 }
 
-.error {
-  color: darkred;
+span.error {
+  color: red;
+}
+
+input.error {
+  border: 2px solid red;
+  color: red;
 }
