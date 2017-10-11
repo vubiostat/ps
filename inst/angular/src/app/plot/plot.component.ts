@@ -41,10 +41,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   @Input('fixed-height') fixedHeight: number;
   @Input('disable-drag') disableDrag = false;
 
+  @ViewChild('plot') plotElement: ElementRef;
   @ViewChild('unit') unitElement: ElementRef;
-  @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
-  @ViewChild('leftAxis') leftAxisElement: ElementRef;
   @ViewChild('target') targetElement: ElementRef;
+  @ViewChild('drop1') drop1Element: ElementRef;
+  @ViewChild('drop2') drop2Element: ElementRef;
 
   constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) { super(); }
 
@@ -59,8 +60,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   yScale: any;
   paths: string[];
   dropPaths: string[];
+  newDropPaths: string[];
   mainData: any[];
   targetPoint: Point;
+  newTargetPoint: Point;
   hoverX: number;
   hoverY: number;
   hoverPoint: Point;
@@ -177,9 +180,16 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     let data = this.mainData[index];
     if (!data) return;
 
-    this.targetPoint.x = data[this.x.name];
-    this.targetPoint.y = data[this.y.name];
-    this.dropPaths = this.getDropPaths();
+    let svg = d3.select(this.plotElement.nativeElement);
+    this.newTargetPoint = { x: data[this.x.name], y: data[this.y.name] }
+    console.log(this.newTargetPoint);
+    svg.select(`circle.target`).
+      attr("cx", this.xScale(this.newTargetPoint.x)).
+      attr("cy", this.yScale(this.newTargetPoint.y));
+
+    this.newDropPaths = this.getDropPaths();
+    svg.select(`#${this.name}-drop-0`).attr("d", this.newDropPaths[0]);
+    svg.select(`#${this.name}-drop-1`).attr("d", this.newDropPaths[1]);
   }
 
   private dragTargetEnd(): void {
@@ -189,8 +199,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     if (this.modelSet && this.x.name) {
       let model = this.modelSet.getModel(0);
       model.update({
-        [model.output]: this.targetPoint.y,
-        [this.x.name]: this.targetPoint.x
+        [model.output]: this.newTargetPoint.y,
+        [this.x.name]: this.newTargetPoint.x
       });
     }
   }
@@ -285,6 +295,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     }
     this.title = `${this.y.title} vs. ${this.x.title}`;
     this.targetPoint = { x: this.x.target, y: this.y.target };
+    this.newTargetPoint = undefined;
 
     // margin
     let unitBox = this.unitElement.nativeElement.getBBox();
@@ -321,14 +332,15 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   }
 
   private getDropPaths(): string[] {
+    let point = this.newTargetPoint || this.targetPoint;
     let data = [
       [
-        { x: this.xScale.domain()[0], y: this.targetPoint.y },
-        { x: this.targetPoint.x, y: this.targetPoint.y }
+        { x: this.xScale.domain()[0], y: point.y },
+        { x: point.x, y: point.y }
       ],
       [
-        { x: this.targetPoint.x, y: this.yScale.domain()[1] },
-        { x: this.targetPoint.x, y: this.targetPoint.y }
+        { x: point.x, y: this.yScale.domain()[1] },
+        { x: point.x, y: point.y }
       ],
     ];
     return data.map(subData => this.getPath(subData, 'x', 'y'));
@@ -339,18 +351,33 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       return;
     }
 
+    let t = d3.select(this.plotElement.nativeElement).transition();
+
     // axes (drawn by d3)
     let xAxis = d3.axisBottom(this.xScale).ticks(6);
-    d3.select(this.bottomAxisElement.nativeElement).
+    t.select(`#${this.name}-x-axis`).
       call(xAxis).
       attr("font-size", 15 * this.plotOptions.axisFontSize).
       attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
 
     let yAxis = d3.axisLeft(this.yScale).ticks(6);
-    d3.select(this.leftAxisElement.nativeElement).
+    t.select(`#${this.name}-y-axis`).
       call(yAxis).
       attr("font-size", 15 * this.plotOptions.axisFontSize).
       attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
+
+    // paths
+    for (let i = 0, ilen = this.paths.length; i < ilen; i++) {
+      t.select(`#${this.name}-path-${i}`).attr("d", this.paths[i]);
+    }
+    for (let i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
+      t.select(`#${this.name}-drop-${i}`).attr("d", this.dropPaths[i]);
+    }
+
+    // target
+    t.select('circle.target').
+      attr("cx", this.xScale(this.targetPoint.x)).
+      attr("cy", this.yScale(this.targetPoint.y));
 
     // make target point draggable
     if (!this.disableDrag) {
