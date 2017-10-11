@@ -12,7 +12,7 @@ import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 import { SerializePlotComponent } from '../serialize-plot.component';
 
-interface PlotData {
+interface Param {
   name: string;
   target?: number;
   range: Range;
@@ -49,8 +49,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) { super(); }
 
-  x: PlotData;
-  y: PlotData;
+  lastX: Param;
+  lastY: Param;
+  x: Param;
+  y: Param;
+
   width: number;
   height: number;
   innerWidth: number;
@@ -58,7 +61,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   margin: number = 50;
   xScale: any;
   yScale: any;
-  paths: string[] = [];
+  paths: string[];
   dropPaths: string[] = [];
   newDropPaths: string[];
   mainData: any[];
@@ -228,9 +231,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.innerHeight = this.height - (this.margin * 2);
 
     // setup
+    this.lastX = this.x;
+    this.lastY = this.y;
     let model = this.modelSet.getModel(0);
     let ranges = this.modelSet.ranges;
-    let data;
+    let plotData;
     switch (model.output) {
       case "n":
         if (this.name == "top-left" || this.name == "top-left-export") {
@@ -248,7 +253,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
           name: "n", range: ranges.n, target: model.n,
           title: "Sample Size", sym: "n"
         };
-        data = this.modelSet.models.map(m => m.data.primary.data);
+        plotData = this.modelSet.models.map(m => m.data.primary.data);
         break;
       case "power":
         if (this.name == "top-left" || this.name == "top-left-export") {
@@ -260,7 +265,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
-          data = this.modelSet.models.map(m => m.data.primary.data);
+          plotData = this.modelSet.models.map(m => m.data.primary.data);
         } else if (this.name == "top-right" || this.name == "top-right-export") {
           this.x = {
             name: "delta", range: ranges.delta, target: model.delta,
@@ -270,7 +275,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
-          data = this.modelSet.models.map(m => m.data.secondary.data);
+          plotData = this.modelSet.models.map(m => m.data.secondary.data);
         }
         break;
       case "delta":
@@ -289,16 +294,20 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
           name: "delta", range: ranges.delta, target: model.delta,
           title: "Detectable Alternative", sym: "δ"
         };
-        data = this.modelSet.models.map(m => m.data.primary.data);
+        plotData = this.modelSet.models.map(m => m.data.primary.data);
         break;
     }
     if (!this.x || !this.y) {
       console.log("bad:", this.x, this.y);
       return;
     }
+
     this.title = `${this.y.title} vs. ${this.x.title}`;
     this.targetPoint = { x: this.x.target, y: this.y.target };
     this.newTargetPoint = undefined;
+
+    this.mainData = plotData[0].slice();
+    this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
 
     // margin
     let unitBox = this.unitElement.nativeElement.getBBox();
@@ -316,24 +325,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       range([0, this.innerHeight]);
 
     // paths
-    data.reverse(); // reverse data so main line is drawn on top
-    data.forEach((subData, index) => {
-      this.paths[index] = this.getPath(subData, this.x.name, this.y.name);
-    });
-    if (data.length < this.paths.length) {
-      this.paths.slice(data.length);
-    }
-    this.mainData = data[data.length - 1].slice();
-    this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
+    plotData.reverse(); // plot lines in reverse for proper z-index
+    this.paths = plotData.map(d => this.getPath(d, this.x.name, this.y.name))
 
     // drop paths
-    let paths = this.getDropPaths();
-    paths.forEach((path, index) => {
-      this.dropPaths[index] = path;
-    });
-    if (paths.length < this.dropPaths.length) {
-      this.dropPaths.splice(paths.length)
-    }
+    this.dropPaths = this.getDropPaths();
 
     // target hover ranges
     let xTargetPos = this.xScale(this.targetPoint.x);
@@ -365,7 +361,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       return;
     }
 
-    let t = d3.select(this.plotElement.nativeElement).transition();
+    let svg = d3.select(this.plotElement.nativeElement);
+    let t = svg.transition();
 
     // axes (drawn by d3)
     let xAxis = d3.axisBottom(this.xScale).ticks(6);
@@ -382,7 +379,12 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
     // paths
     for (let i = 0, ilen = this.paths.length; i < ilen; i++) {
-      t.select(`#${this.name}-path-${i}`).attr("d", this.paths[i]);
+      let path = t.select(`#${this.name}-path-${i}`);
+      if (!path.attr("d")) {
+        path.attr("d", this.paths[i]);
+      } else {
+        path.attrTween("d", this.pathTween(this.paths[i], 4))
+      }
     }
     for (let i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
       t.select(`#${this.name}-drop-${i}`).attr("d", this.dropPaths[i]);
@@ -404,5 +406,31 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     }
 
     this.needDraw = false;
+  }
+
+  // from https://bl.ocks.org/mbostock/3916621
+  private pathTween(d1, precision): Function {
+    return function() {
+      var path0 = this,
+          path1 = path0.cloneNode(),
+          n0 = path0.getTotalLength(),
+          n1 = (path1.setAttribute("d", d1), path1).getTotalLength();
+
+      // Uniform sampling of distance based on specified precision.
+      var distances = [0], i = 0, dt = precision / Math.max(n0, n1);
+      while ((i += dt) < 1) distances.push(i);
+      distances.push(1);
+
+      // Compute point-interpolators at each distance.
+      var points = distances.map(function(t) {
+        var p0 = path0.getPointAtLength(t * n0),
+            p1 = path1.getPointAtLength(t * n1);
+        return d3.interpolate([p0.x, p0.y], [p1.x, p1.y]);
+      });
+
+      return function(t) {
+        return t < 1 ? "M" + points.map(function(p) { return p(t); }).join("L") : d1;
+      };
+    };
   }
 }
