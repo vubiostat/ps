@@ -41379,6 +41379,18 @@ function flattenUnsubscriptionErrors(errors) {
 
 /***/ }),
 
+/***/ "../../../../rxjs/add/observable/merge.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__("../../../../rxjs/Observable.js");
+var merge_1 = __webpack_require__("../../../../rxjs/observable/merge.js");
+Observable_1.Observable.merge = merge_1.merge;
+//# sourceMappingURL=merge.js.map
+
+/***/ }),
+
 /***/ "../../../../rxjs/add/operator/debounceTime.js":
 /***/ (function(module, exports, __webpack_require__) {
 

@@ -386,7 +386,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/bottom-plot/bottom-plot.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" [attr.width]=\"fixedWidth\" [attr.height]=\"fixedHeight\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"groups && modelSet\">\n    <defs>\n      <clipPath [id]=\"clipPathId\">\n        <rect x=\"0\" y=\"0\" [attr.width]=\"innerWidth\" [attr.height]=\"innerHeight\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"innerWidth / 2 + margin\" [attr.y]=\"innerHeight + margin\" dy=\"2.5em\">\n      Parameter Space\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"innerWidth / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{title}}\n    </text>\n\n    <!-- alternate groups -->\n    <g *ngFor=\"let group of groups; let i = index\"\n      [attr.transform]=\"translate(margin, margin)\">\n\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"group.distPath\"\n        [attr.fill]=\"getColor(groups.length - i)\"\n        stroke=\"none\" opacity=\"0.5\" />\n\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"group.centerPath\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"group.leftPath\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"group.rightPath\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <circle r=\"5\"\n        [attr.cx]=\"xScale(group.target)\"\n        [attr.cy]=\"yScale(0.5)\"\n        [attr.clip-path]=\"clipPath()\"\n        [attr.fill]=\"getColor(groups.length - i)\" />\n    </g>\n\n    <!-- main group -->\n    <g [attr.transform]=\"translate(margin + targetTranslateOffset, margin)\">\n\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"mainGroup.distPath\"\n        [attr.fill]=\"getColor(0)\"\n        stroke=\"none\" [attr.opacity]=\"targetDragging ? 0.1 : 0.5\" />\n\n      <path\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"mainGroup.centerPath\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        fill=\"none\" />\n\n      <path #leftBar class=\"bar\"\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"mainGroup.leftPath\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 4\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        [attr.transform]=\"translate(barTranslateOffset, 0)\"\n        fill=\"none\"\n        (mouseover)=\"toggleLeftBarInfo(true)\"\n        (mouseout)=\"toggleLeftBarInfo(false)\" />\n\n      <g *ngIf=\"showLeftBarInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.left + barOffset) - (4 * unitLength), yScale(0.5))\">\n        <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"1.5em\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text x=\"1em\" y=\"-2.5em\">95% CI: {{ciWidth() | round}}</text>\n      </g>\n\n      <path #rightBar class=\"bar\"\n        [attr.clip-path]=\"clipPath()\"\n        [attr.d]=\"mainGroup.rightPath\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 4\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        [attr.transform]=\"translate(-barTranslateOffset, 0)\"\n        fill=\"none\"\n        (mouseover)=\"toggleRightBarInfo(true)\"\n        (mouseout)=\"toggleRightBarInfo(false)\" />\n\n      <g *ngIf=\"showRightBarInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.right - barOffset) - (4 * unitLength), yScale(0.5))\">\n        <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"1.5em\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text x=\"1em\" y=\"-2.5em\">95% CI: {{ciWidth() | round}}</text>\n      </g>\n\n      <g *ngIf=\"showTargetInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.target), yScale(0.5))\">\n        <rect x=\"0\" y=\"-3.5em\" width=\"6em\" height=\"1.5em\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n        <text x=\"1em\" y=\"-3.5em\">\n          <tspan dy=\"1em\" text-anchor=\"right\">&delta;:</tspan>\n          <tspan x=\"2.5em\" text-anchor=\"left\">{{(mainGroup.target + targetOffset) | round}}</tspan>\n        </text>\n      </g>\n\n      <circle #target class=\"target\" r=\"5\"\n        [attr.cx]=\"xScale(mainGroup.target)\"\n        [attr.cy]=\"yScale(0.5)\"\n        [attr.clip-path]=\"clipPath()\"\n        [attr.fill]=\"getColor(0)\"\n        (mouseover)=\"toggleTargetInfo(true)\"\n        (mouseout)=\"toggleTargetInfo(false)\" />\n    </g>\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(0)\"\n      [attr.cy]=\"yScale(0.5)\"\n      [attr.clip-path]=\"clipPath()\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"darkseagreen\" />\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, innerHeight + margin)\"></g>\n  </ng-template>\n</svg>\n"
+module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" [attr.width]=\"fixedWidth\" [attr.height]=\"fixedHeight\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"groups && modelSet\">\n    <defs>\n      <clipPath id=\"{{name}}-plot-area\">\n        <rect x=\"0\" y=\"0\" [attr.width]=\"innerWidth\" [attr.height]=\"innerHeight\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"innerWidth / 2 + margin\" [attr.y]=\"innerHeight + margin\" dy=\"2.5em\">\n      Parameter Space\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"innerWidth / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{title}}\n    </text>\n\n    <!-- alternate groups -->\n    <g *ngFor=\"let group of groups; let i = index; trackBy: trackByIndex\"\n      [attr.transform]=\"translate(margin, margin)\">\n\n      <path id=\"{{name}}-group-{{i}}-dist\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.fill]=\"getColor(groups.length - i)\"\n        stroke=\"none\" opacity=\"0.5\" />\n\n      <path id=\"{{name}}-group-{{i}}-center\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <path id=\"{{name}}-group-{{i}}-left\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <path id=\"{{name}}-group-{{i}}-right\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <circle id=\"{{name}}-group-{{i}}-target\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        r=\"5\"\n        [attr.fill]=\"getColor(groups.length - i)\" />\n    </g>\n\n    <!-- main group -->\n    <g [attr.transform]=\"translate(margin + targetTranslateOffset, margin)\">\n      <path id=\"{{name}}-main-dist\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.fill]=\"getColor(0)\"\n        stroke=\"none\" [attr.opacity]=\"targetDragging ? 0.1 : 0.5\" />\n\n      <path id=\"{{name}}-main-center\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        fill=\"none\" />\n\n      <path #leftBar id=\"{{name}}-main-left\" class=\"bar\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 4\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        [attr.transform]=\"translate(barTranslateOffset, 0)\"\n        fill=\"none\"\n        (mouseover)=\"toggleLeftBarInfo(true)\"\n        (mouseout)=\"toggleLeftBarInfo(false)\" />\n\n      <g *ngIf=\"showLeftBarInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.left + barOffset) - (4 * unitLength), yScale(0.5))\">\n        <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"1.5em\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text x=\"1em\" y=\"-2.5em\">95% CI: {{ciWidth() | round}}</text>\n      </g>\n\n      <path #rightBar id=\"{{name}}-main-right\" class=\"bar\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 4\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        [attr.transform]=\"translate(-barTranslateOffset, 0)\"\n        fill=\"none\"\n        (mouseover)=\"toggleRightBarInfo(true)\"\n        (mouseout)=\"toggleRightBarInfo(false)\" />\n\n      <g *ngIf=\"showRightBarInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.right - barOffset) - (4 * unitLength), yScale(0.5))\">\n        <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"1.5em\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text x=\"1em\" y=\"-2.5em\">95% CI: {{ciWidth() | round}}</text>\n      </g>\n\n      <g *ngIf=\"showTargetInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.target), yScale(0.5))\">\n        <rect x=\"0\" y=\"-3.5em\" width=\"6em\" height=\"1.5em\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n        <text x=\"1em\" y=\"-3.5em\">\n          <tspan dy=\"1em\" text-anchor=\"right\">&delta;:</tspan>\n          <tspan x=\"2.5em\" text-anchor=\"left\">{{(mainGroup.target + targetOffset) | round}}</tspan>\n        </text>\n      </g>\n\n      <circle #target id=\"{{name}}-main-target\" class=\"target\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        r=\"5\"\n        [attr.fill]=\"getColor(0)\"\n        (mouseover)=\"toggleTargetInfo(true)\"\n        (mouseout)=\"toggleTargetInfo(false)\" />\n    </g>\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(0)\"\n      [attr.cy]=\"yScale(0.5)\"\n      attr.clip-path=\"url(#{{name}}-plot-area)\"\n      [attr.transform]=\"translate(margin, margin)\"\n      fill=\"darkseagreen\" />\n\n    <g id=\"{{name}}-bottom-axis\" [attr.transform]=\"translate(margin, innerHeight + margin)\"></g>\n  </ng-template>\n</svg>\n"
 
 /***/ }),
 
@@ -396,12 +396,18 @@ module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily\"\n 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BottomPlotComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("../../../../d3/build/d3.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__ = __webpack_require__("../../../../../src/app/abstract-plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plot_options_service__ = __webpack_require__("../../../../../src/app/plot-options.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__palette_service__ = __webpack_require__("../../../../../src/app/palette.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__ = __webpack_require__("../../../../rxjs/Observable.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_observable_merge__ = __webpack_require__("../../../../rxjs/add/observable/merge.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_observable_merge___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_observable_merge__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_debounceTime__ = __webpack_require__("../../../../rxjs/add/operator/debounceTime.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_debounceTime___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_debounceTime__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_d3__ = __webpack_require__("../../../../d3/build/d3.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_d3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_d3__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__ = __webpack_require__("../../../../../src/app/abstract-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__t_test__ = __webpack_require__("../../../../../src/app/t-test.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__plot_options_service__ = __webpack_require__("../../../../../src/app/plot-options.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__palette_service__ = __webpack_require__("../../../../../src/app/palette.service.ts");
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -427,6 +433,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
+
 ;
 var CIBar;
 (function (CIBar) {
@@ -440,55 +449,42 @@ var BottomPlotComponent = (function (_super) {
         var _this = _super.call(this) || this;
         _this.plotOptions = plotOptions;
         _this.palette = palette;
-        _this.drawOnInit = true;
         _this.disableDragTarget = false;
         _this.disableDragCI = false;
         _this.title = "Precision vs. Effect Size";
         _this.margin = 50;
-        _this.initialized = false;
         // target dragging
         _this.targetOffset = 0;
         _this.targetTranslateOffset = 0;
         _this.targetDragging = false;
+        _this.targetWasDragging = false;
         _this.showTargetInfo = false;
         // bar dragging
         _this.barOffset = 0;
         _this.barTranslateOffset = 0;
         _this.barDragging = false;
+        _this.barWasDragging = false;
         _this.showLeftBarInfo = false;
         _this.showRightBarInfo = false;
         return _this;
     }
     BottomPlotComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.clipPathId = this.name + "-plot-area";
-        this.plotOptions.onChange.subscribe(function () { _this.compute(); });
-        if (this.drawOnInit) {
-            this.compute();
-        }
-        this.initialized = true;
+        this.plotOptions.onChange.subscribe(this.compute.bind(this));
+        this.compute();
     };
     BottomPlotComponent.prototype.ngOnChanges = function (changes) {
-        var _this = this;
         if (changes.modelSet) {
             if (this.subscription) {
                 this.subscription.unsubscribe();
             }
             if (this.modelSet) {
-                var callback = function () { _this.compute(); };
-                var ranges = this.modelSet.ranges;
-                this.subscription = this.modelSet.onCompute.subscribe(callback);
-                this.subscription.add(this.modelSet.onChange.subscribe(callback));
-                this.subscription.add(ranges.onChange.subscribe(callback));
-                if (this.initialized) {
-                    this.compute();
-                }
+                var observable = __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__["Observable"].merge(this.modelSet.onCompute, this.modelSet.onChange);
+                this.subscription = observable.debounceTime(10).subscribe(this.compute.bind(this));
+                this.compute();
             }
         }
         else if (changes.fixedWidth || changes.fixedHeight) {
-            if (this.initialized) {
-                this.compute();
-            }
+            this.compute();
         }
     };
     BottomPlotComponent.prototype.ngAfterViewChecked = function () {
@@ -514,6 +510,9 @@ var BottomPlotComponent = (function (_super) {
     };
     BottomPlotComponent.prototype.getColor = function (index) {
         return this.palette.getColor(index, this.plotOptions.paletteTheme);
+    };
+    BottomPlotComponent.prototype.trackByIndex = function (index, thing) {
+        return index;
     };
     BottomPlotComponent.prototype.compute = function () {
         var _this = this;
@@ -544,17 +543,17 @@ var BottomPlotComponent = (function (_super) {
         var ranges = this.modelSet.ranges;
         var data = this.modelSet.models.map(function (m) { return m.data.tertiary; });
         // compute scales
-        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
+        this.xScale = __WEBPACK_IMPORTED_MODULE_4_d3__["scaleLinear"]().
             domain(ranges.pSpace.toArray()).
             range([0, this.innerWidth]);
-        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
+        this.yScale = __WEBPACK_IMPORTED_MODULE_4_d3__["scaleLinear"]().
             domain([0, 0.8]).
             range([0, this.innerHeight]);
         var sampDistExtent = data.reduce(function (arr, subData) {
-            var extent = __WEBPACK_IMPORTED_MODULE_1_d3__["extent"](subData.data, function (d) { return d.sampDist; });
-            return __WEBPACK_IMPORTED_MODULE_1_d3__["extent"](arr.concat(extent));
+            var extent = __WEBPACK_IMPORTED_MODULE_4_d3__["extent"](subData.data, function (d) { return d.sampDist; });
+            return __WEBPACK_IMPORTED_MODULE_4_d3__["extent"](arr.concat(extent));
         }, []);
-        this.yScaleSD = __WEBPACK_IMPORTED_MODULE_1_d3__["scaleLinear"]().
+        this.yScaleSD = __WEBPACK_IMPORTED_MODULE_4_d3__["scaleLinear"]().
             domain(sampDistExtent.reverse()).
             range([0, this.yScale(0.5)]).
             clamp(true);
@@ -590,25 +589,53 @@ var BottomPlotComponent = (function (_super) {
         this.mainGroup = this.groups.pop();
         // reset dragging
         this.targetTranslateOffset = this.targetOffset = 0;
+        this.targetWasDragging = this.targetDragging;
         this.targetDragging = false;
         this.barTranslateOffset = this.barOffset = 0;
+        this.barWasDragging = this.barDragging;
         this.barDragging = false;
         this.needDraw = true;
     };
     BottomPlotComponent.prototype.draw = function () {
+        var _this = this;
         if (!this.needDraw) {
             return;
         }
+        var t = __WEBPACK_IMPORTED_MODULE_4_d3__["select"](this.plotElement.nativeElement).transition();
         // axes (drawn by d3)
-        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["axisBottom"](this.xScale).ticks(6);
-        __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.bottomAxisElement.nativeElement).
+        var xAxis = __WEBPACK_IMPORTED_MODULE_4_d3__["axisBottom"](this.xScale).ticks(6);
+        t.select("#" + this.name + "-bottom-axis").
             call(xAxis).
             attr("font-size", 15 * this.plotOptions.axisFontSize).
             attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
+        // alternate groups
+        this.groups.forEach(function (group, index) {
+            var prefix = "#" + _this.name + "-group-" + index;
+            t.select(prefix + "-dist").attr('d', group.distPath);
+            t.select(prefix + "-center").attr('d', group.centerPath);
+            t.select(prefix + "-left").attr('d', group.leftPath);
+            t.select(prefix + "-right").attr('d', group.rightPath);
+            t.select(prefix + "-target").
+                attr('cx', _this.xScale(group.target)).
+                attr('cy', _this.yScale(0.5));
+        });
+        // main group
+        if (this.targetWasDragging || this.barWasDragging) {
+            // don't use animations if user was dragging things
+            t = __WEBPACK_IMPORTED_MODULE_4_d3__["select"](this.plotElement.nativeElement);
+        }
+        var prefix = "#" + this.name + "-main";
+        t.select(prefix + "-dist").attr('d', this.mainGroup.distPath);
+        t.select(prefix + "-center").attr('d', this.mainGroup.centerPath);
+        t.select(prefix + "-left").attr('d', this.mainGroup.leftPath);
+        t.select(prefix + "-right").attr('d', this.mainGroup.rightPath);
+        t.select(prefix + "-target").
+            attr('cx', this.xScale(this.mainGroup.target)).
+            attr('cy', this.yScale(0.5));
         // make target point draggable
         var targetElt = this.targetElement.nativeElement;
-        var target = __WEBPACK_IMPORTED_MODULE_1_d3__["select"](targetElt);
-        var targetDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["drag"]().
+        var target = __WEBPACK_IMPORTED_MODULE_4_d3__["select"](targetElt);
+        var targetDrag = __WEBPACK_IMPORTED_MODULE_4_d3__["drag"]().
             container(targetElt.parentNode.parentNode).
             on("start", this.dragTargetStart.bind(this)).
             on("drag", this.dragTarget.bind(this)).
@@ -616,8 +643,8 @@ var BottomPlotComponent = (function (_super) {
         target.call(targetDrag);
         // make left bar draggable
         var leftBarElt = this.leftBarElement.nativeElement;
-        var leftBar = __WEBPACK_IMPORTED_MODULE_1_d3__["select"](leftBarElt);
-        var leftBarDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["drag"]().
+        var leftBar = __WEBPACK_IMPORTED_MODULE_4_d3__["select"](leftBarElt);
+        var leftBarDrag = __WEBPACK_IMPORTED_MODULE_4_d3__["drag"]().
             container(leftBarElt.parentNode.parentNode).
             on("start", this.dragBarStart.bind(this, CIBar.Left)).
             on("drag", this.dragBar.bind(this, CIBar.Left)).
@@ -625,8 +652,8 @@ var BottomPlotComponent = (function (_super) {
         leftBar.call(leftBarDrag);
         // make right bar draggable
         var rightBarElt = this.rightBarElement.nativeElement;
-        var rightBar = __WEBPACK_IMPORTED_MODULE_1_d3__["select"](rightBarElt);
-        var rightBarDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["drag"]().
+        var rightBar = __WEBPACK_IMPORTED_MODULE_4_d3__["select"](rightBarElt);
+        var rightBarDrag = __WEBPACK_IMPORTED_MODULE_4_d3__["drag"]().
             container(rightBarElt.parentNode.parentNode).
             on("start", this.dragBarStart.bind(this, CIBar.Right)).
             on("drag", this.dragBar.bind(this, CIBar.Right)).
@@ -634,15 +661,12 @@ var BottomPlotComponent = (function (_super) {
         rightBar.call(rightBarDrag);
         this.needDraw = false;
     };
-    BottomPlotComponent.prototype.clipPath = function () {
-        return "url(#" + this.clipPathId + ")";
-    };
     BottomPlotComponent.prototype.ciWidth = function () {
         return Math.abs((this.mainGroup.right - this.barOffset) - (this.mainGroup.left + this.barOffset));
     };
     BottomPlotComponent.prototype.getArea = function (points, xName, yName) {
         var _this = this;
-        var area = __WEBPACK_IMPORTED_MODULE_1_d3__["area"]().
+        var area = __WEBPACK_IMPORTED_MODULE_4_d3__["area"]().
             x(function (d, i) { return _this.xScale(d[xName]); }).
             y0(this.yScaleSD(0)).
             y1(function (d, i) { return _this.yScaleSD(d[yName]); });
@@ -656,7 +680,7 @@ var BottomPlotComponent = (function (_super) {
     BottomPlotComponent.prototype.dragTarget = function (event) {
         if (this.disableDragTarget)
             return;
-        var mouseX = __WEBPACK_IMPORTED_MODULE_1_d3__["event"].x - this.margin;
+        var mouseX = __WEBPACK_IMPORTED_MODULE_4_d3__["event"].x - this.margin;
         var x = this.xScale.invert(mouseX);
         if (x >= 0 && x < 1) {
             x = 1;
@@ -689,7 +713,7 @@ var BottomPlotComponent = (function (_super) {
     BottomPlotComponent.prototype.dragBar = function (which, event) {
         if (this.disableDragCI)
             return;
-        var mouseX = __WEBPACK_IMPORTED_MODULE_1_d3__["event"].x - this.margin;
+        var mouseX = __WEBPACK_IMPORTED_MODULE_4_d3__["event"].x - this.margin;
         var x = this.xScale.invert(mouseX);
         switch (which) {
             case CIBar.Left:
@@ -703,10 +727,11 @@ var BottomPlotComponent = (function (_super) {
                 this.barOffset = this.mainGroup.right - x;
                 break;
         }
-        this.mainGroup.centerPath = this.getPath([
+        var centerPath = this.getPath([
             { x: this.mainGroup.left + this.barOffset, y: 0.5 },
             { x: this.mainGroup.right - this.barOffset, y: 0.5 }
         ]);
+        __WEBPACK_IMPORTED_MODULE_4_d3__["select"]("#" + this.name + "-main-center").attr('d', centerPath);
     };
     BottomPlotComponent.prototype.dragBarEnd = function (which) {
         if (this.disableDragCI)
@@ -722,15 +747,11 @@ var BottomPlotComponent = (function (_super) {
         this.showRightBarInfo = false;
     };
     return BottomPlotComponent;
-}(__WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["a" /* AbstractPlotComponent */]));
+}(__WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["a" /* AbstractPlotComponent */]));
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('model-set'),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__t_test__["c" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__t_test__["c" /* TTestSet */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_6__t_test__["c" /* TTestSet */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__t_test__["c" /* TTestSet */]) === "function" && _a || Object)
 ], BottomPlotComponent.prototype, "modelSet", void 0);
-__decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('draw-on-init'),
-    __metadata("design:type", Object)
-], BottomPlotComponent.prototype, "drawOnInit", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('fixed-width'),
     __metadata("design:type", Number)
@@ -752,20 +773,16 @@ __decorate([
     __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _b || Object)
 ], BottomPlotComponent.prototype, "unitElement", void 0);
 __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('bottomAxis'),
-    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _c || Object)
-], BottomPlotComponent.prototype, "bottomAxisElement", void 0);
-__decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('target'),
-    __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _d || Object)
+    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _c || Object)
 ], BottomPlotComponent.prototype, "targetElement", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('leftBar'),
-    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _e || Object)
+    __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _d || Object)
 ], BottomPlotComponent.prototype, "leftBarElement", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('rightBar'),
-    __metadata("design:type", typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _f || Object)
+    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _e || Object)
 ], BottomPlotComponent.prototype, "rightBarElement", void 0);
 BottomPlotComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
@@ -774,10 +791,10 @@ BottomPlotComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/bottom-plot/bottom-plot.component.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["_16" /* ViewEncapsulation */].None
     }),
-    __metadata("design:paramtypes", [typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */]) === "function" && _h || Object])
+    __metadata("design:paramtypes", [typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_7__plot_options_service__["a" /* PlotOptionsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__plot_options_service__["a" /* PlotOptionsService */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_8__palette_service__["a" /* PaletteService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__palette_service__["a" /* PaletteService */]) === "function" && _g || Object])
 ], BottomPlotComponent);
 
-var _a, _b, _c, _d, _e, _f, _g, _h;
+var _a, _b, _c, _d, _e, _f, _g;
 //# sourceMappingURL=bottom-plot.component.js.map
 
 /***/ }),
@@ -1709,7 +1726,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/plot/plot.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" [attr.width]=\"fixedWidth\" [attr.height]=\"fixedHeight\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"x && y && modelSet\">\n    <defs>\n      <clipPath [id]=\"mainClipPathId\">\n        <rect x=\"0\" [attr.y]=\"-plotOptions.lineWidth * 3\"\n          [attr.width]=\"innerWidth\"\n          [attr.height]=\"innerHeight + plotOptions.lineWidth * 3\" />\n      </clipPath>\n      <clipPath [id]=\"targetClipPathId\">\n        <rect x=\"-5\" [attr.y]=\"-5\"\n          [attr.width]=\"innerWidth + 10\"\n          [attr.height]=\"innerHeight + 10\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"innerWidth / 2 + margin\" [attr.y]=\"innerHeight + margin\" dy=\"2.5em\">\n      {{x.title}}\n    </text>\n    <text text-anchor=\"middle\"\n      [attr.dx]=\"-(innerHeight / 2 + margin)\" dy=\"1em\"\n      transform=\"rotate(-90)\">\n      {{y.title}}\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"innerWidth / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{title}}\n    </text>\n\n    <g *ngFor=\"let path of paths; let i = index\"\n      [attr.transform]=\"translate(margin, margin)\">\n      <path\n        [attr.clip-path]=\"mainClipPath()\"\n        [attr.d]=\"path\"\n        [attr.stroke]=\"palette.getColor(paths.length - 1 - i, plotOptions.paletteTheme)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [attr.stroke-dasharray]=\"plotOptions.dashArray()\"\n        [attr.stroke-linecap]=\"plotOptions.lineCap()\"\n        [attr.opacity]=\"i == (paths.length - 1) ? 1 : 0.7\"\n        fill=\"none\" />\n    </g>\n\n    <ng-template [ngIf]=\"!hideDropLines\">\n      <g *ngFor=\"let path of dropPaths\"\n        [attr.transform]=\"translate(margin, margin)\">\n        <path\n          [attr.clip-path]=\"mainClipPath()\"\n          [attr.d]=\"path\"\n          stroke=\"red\"\n          [attr.stroke-width]=\"plotOptions.lineWidth * 3 / 2\"\n          stroke-dasharray=\"5, 5\"\n          fill=\"none\" />\n      </g>\n    </ng-template>\n\n    <g #bottomAxis [attr.transform]=\"translate(margin, innerHeight + margin)\"></g>\n    <g #leftAxis [attr.transform]=\"translate(margin, margin)\"></g>\n\n    <g *ngIf=\"showHoverInfo\"\n      [attr.transform]=\"translate(margin + hoverX, margin + hoverY)\">\n      <circle r=\"4\" fill=\"none\" stroke=\"blue\" />\n      <rect x=\"-3.5em\" [attr.y]=\"hoverInfoY()\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"-2.5em\" [attr.y]=\"hoverInfoY()\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.x}}</tspan>\n        <tspan x=\"-2.5em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <ng-template [ngIf]=\"!hideTarget\">\n      <rect [attr.transform]=\"translate(margin, margin)\"\n        [attr.width]=\"innerWidth\" [attr.height]=\"innerHeight\"\n        fill=\"none\" pointer-events=\"all\"\n        (mouseout)=\"toggleHoverInfo(false)\"\n        (mousemove)=\"hover($event)\" />\n\n      <g *ngIf=\"showTargetInfo\"\n        [attr.transform]=\"translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))\">\n        <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"2.5em\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n        <text x=\"1em\" y=\"-3.5em\">\n          <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n          <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.x}}</tspan>\n          <tspan x=\"1em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n          <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.y}}</tspan>\n        </text>\n      </g>\n\n      <circle #target class=\"target\" r=\"5\"\n        [attr.cx]=\"xScale(targetPoint.x)\"\n        [attr.cy]=\"yScale(targetPoint.y)\"\n        [attr.transform]=\"translate(margin, margin)\"\n        [attr.clip-path]=\"targetClipPath()\"\n        fill=\"red\"\n        (mouseover)=\"toggleTargetInfo(true)\"\n        (mouseout)=\"toggleTargetInfo(false)\" />\n    </ng-template>\n  </ng-template>\n</svg>\n"
+module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily == '' ? null : plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 110).toString() + '%'\"\n  [attr.class]=\"name\" [attr.width]=\"fixedWidth\" [attr.height]=\"fixedHeight\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"x && y && modelSet\">\n    <defs>\n      <clipPath id=\"{{name}}-plot-area\">\n        <rect x=\"0\" [attr.y]=\"-plotOptions.lineWidth * 3\"\n          [attr.width]=\"innerWidth\"\n          [attr.height]=\"innerHeight + plotOptions.lineWidth * 3\" />\n      </clipPath>\n      <clipPath id=\"{{name}}-target-area\">\n        <rect x=\"-5\" [attr.y]=\"-5\"\n          [attr.width]=\"innerWidth + 10\"\n          [attr.height]=\"innerHeight + 10\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"innerWidth / 2 + margin\" [attr.y]=\"innerHeight + margin\" dy=\"2.5em\">\n      {{x.title}}\n    </text>\n    <text text-anchor=\"middle\"\n      [attr.dx]=\"-(innerHeight / 2 + margin)\" dy=\"1em\"\n      transform=\"rotate(-90)\">\n      {{y.title}}\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"innerWidth / 2 + margin\" y=\"0\" dy=\"2em\">\n      {{title}}\n    </text>\n\n    <g *ngFor=\"let path of paths; index as i; trackBy: trackPathBy\"\n      [attr.transform]=\"translate(margin, margin)\">\n      <path\n        id=\"{{name}}-path-{{i}}\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"palette.getColor(paths.length - 1 - i, plotOptions.paletteTheme)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [attr.stroke-dasharray]=\"plotOptions.dashArray()\"\n        [attr.stroke-linecap]=\"plotOptions.lineCap()\"\n        [attr.opacity]=\"(paths.length - 1) == i ? 1 : 0.7\"\n        fill=\"none\" />\n    </g>\n\n    <ng-template [ngIf]=\"!hideDropLines\">\n      <g *ngFor=\"let path of dropPaths; index as i; trackBy: trackPathBy\"\n        [attr.transform]=\"translate(margin, margin)\">\n        <path id=\"{{name}}-drop-{{i}}\"\n          attr.clip-path=\"url(#{{name}}-plot-area)\"\n          stroke=\"red\"\n          [attr.stroke-width]=\"plotOptions.lineWidth * 3 / 2\"\n          stroke-dasharray=\"5, 5\"\n          fill=\"none\" />\n      </g>\n    </ng-template>\n\n    <g id=\"{{name}}-x-axis\" [attr.transform]=\"translate(margin, innerHeight + margin)\"></g>\n    <g id=\"{{name}}-y-axis\" [attr.transform]=\"translate(margin, margin)\"></g>\n\n    <g *ngIf=\"showHoverInfo\"\n      [attr.transform]=\"translate(margin + hoverX, margin + hoverY)\">\n      <circle r=\"4\" fill=\"none\" stroke=\"blue\" />\n      <rect x=\"-3.5em\" [attr.y]=\"hoverInfoY()\" width=\"8em\" height=\"2.5em\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text x=\"-2.5em\" [attr.y]=\"hoverInfoY()\">\n        <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.x}}</tspan>\n        <tspan x=\"-2.5em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n        <tspan x=\"0em\" text-anchor=\"left\">{{hoverPoint.y}}</tspan>\n      </text>\n    </g>\n\n    <ng-template [ngIf]=\"!hideTarget\">\n      <rect [attr.transform]=\"translate(margin, margin)\"\n        [attr.width]=\"innerWidth\" [attr.height]=\"innerHeight\"\n        fill=\"none\" pointer-events=\"all\"\n        (mouseout)=\"toggleHoverInfo(false)\"\n        (mousemove)=\"hover($event)\" />\n\n      <g *ngIf=\"showTargetInfo\"\n        [attr.transform]=\"translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))\">\n        <rect x=\"0\" y=\"-3.5em\" width=\"8em\" height=\"2.5em\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n        <text x=\"1em\" y=\"-3.5em\">\n          <tspan dy=\"1em\" text-anchor=\"right\">{{x.sym}}:</tspan>\n          <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.x}}</tspan>\n          <tspan x=\"1em\" dy=\"1em\" text-anchor=\"right\">{{y.sym}}:</tspan>\n          <tspan x=\"3.5em\" text-anchor=\"left\">{{targetPoint.y}}</tspan>\n        </text>\n      </g>\n\n      <circle #target class=\"target\" r=\"5\"\n        [attr.transform]=\"translate(margin, margin)\"\n        attr.clip-path=\"url(#{{name}}-target-area)\"\n        fill=\"red\"\n        (mouseover)=\"toggleTargetInfo(true)\"\n        (mouseout)=\"toggleTargetInfo(false)\" />\n    </ng-template>\n  </ng-template>\n</svg>\n"
 
 /***/ }),
 
@@ -1762,6 +1779,7 @@ var PlotComponent = (function (_super) {
         _this.hideTarget = false;
         _this.disableDrag = false;
         _this.margin = 50;
+        _this.dropPaths = [];
         _this.targetDragging = false;
         _this.showTargetInfo = false;
         _this.showHoverInfo = false;
@@ -1771,8 +1789,6 @@ var PlotComponent = (function (_super) {
     }
     PlotComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.mainClipPathId = this.name + "-plot-area";
-        this.targetClipPathId = this.name + "-target-area";
         this.plotOptions.onChange.subscribe(function () { _this.compute(); });
         if (this.drawOnInit) {
             this.compute();
@@ -1788,10 +1804,8 @@ var PlotComponent = (function (_super) {
             }
             if (this.modelSet) {
                 var callback = function () { _this.compute(); };
-                var ranges = this.modelSet.ranges;
                 this.subscription = this.modelSet.onCompute.subscribe(callback);
                 this.subscription.add(this.modelSet.onChange.subscribe(callback));
-                this.subscription.add(ranges.onChange.subscribe(callback));
                 if (this.initialized) {
                     this.compute();
                 }
@@ -1851,6 +1865,9 @@ var PlotComponent = (function (_super) {
         }
         return "1em";
     };
+    PlotComponent.prototype.trackPathBy = function (index, path) {
+        return index;
+    };
     PlotComponent.prototype.dragTargetStart = function () {
         this.targetDragging = true;
     };
@@ -1866,9 +1883,14 @@ var PlotComponent = (function (_super) {
         var data = this.mainData[index];
         if (!data)
             return;
-        this.targetPoint.x = data[this.x.name];
-        this.targetPoint.y = data[this.y.name];
-        this.dropPaths = this.getDropPaths();
+        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.plotElement.nativeElement);
+        this.newTargetPoint = { x: data[this.x.name], y: data[this.y.name] };
+        svg.select("circle.target").
+            attr("cx", this.xScale(this.newTargetPoint.x)).
+            attr("cy", this.yScale(this.newTargetPoint.y));
+        this.newDropPaths = this.getDropPaths();
+        svg.select("#" + this.name + "-drop-0").attr("d", this.newDropPaths[0]);
+        svg.select("#" + this.name + "-drop-1").attr("d", this.newDropPaths[1]);
     };
     PlotComponent.prototype.dragTargetEnd = function () {
         this.targetDragging = false;
@@ -1876,8 +1898,8 @@ var PlotComponent = (function (_super) {
         if (this.modelSet && this.x.name) {
             var model = this.modelSet.getModel(0);
             model.update((_a = {},
-                _a[model.output] = this.targetPoint.y,
-                _a[this.x.name] = this.targetPoint.x,
+                _a[model.output] = this.newTargetPoint.y,
+                _a[this.x.name] = this.newTargetPoint.x,
                 _a));
         }
         var _a;
@@ -1903,9 +1925,11 @@ var PlotComponent = (function (_super) {
         this.innerWidth = this.width - (this.margin * 2);
         this.innerHeight = this.height - (this.margin * 2);
         // setup
+        this.lastX = this.x;
+        this.lastY = this.y;
         var model = this.modelSet.getModel(0);
         var ranges = this.modelSet.ranges;
-        var data;
+        var plotData;
         switch (model.output) {
             case "n":
                 if (this.name == "top-left" || this.name == "top-left-export") {
@@ -1924,7 +1948,7 @@ var PlotComponent = (function (_super) {
                     name: "n", range: ranges.n, target: model.n,
                     title: "Sample Size", sym: "n"
                 };
-                data = this.modelSet.models.map(function (m) { return m.data.primary.data; });
+                plotData = this.modelSet.models.map(function (m) { return m.data.primary.data; });
                 break;
             case "power":
                 if (this.name == "top-left" || this.name == "top-left-export") {
@@ -1936,7 +1960,7 @@ var PlotComponent = (function (_super) {
                         name: "power", range: ranges.power, target: model.power,
                         title: "Power", sym: "1-β"
                     };
-                    data = this.modelSet.models.map(function (m) { return m.data.primary.data; });
+                    plotData = this.modelSet.models.map(function (m) { return m.data.primary.data; });
                 }
                 else if (this.name == "top-right" || this.name == "top-right-export") {
                     this.x = {
@@ -1947,7 +1971,7 @@ var PlotComponent = (function (_super) {
                         name: "power", range: ranges.power, target: model.power,
                         title: "Power", sym: "1-β"
                     };
-                    data = this.modelSet.models.map(function (m) { return m.data.secondary.data; });
+                    plotData = this.modelSet.models.map(function (m) { return m.data.secondary.data; });
                 }
                 break;
             case "delta":
@@ -1967,7 +1991,7 @@ var PlotComponent = (function (_super) {
                     name: "delta", range: ranges.delta, target: model.delta,
                     title: "Detectable Alternative", sym: "δ"
                 };
-                data = this.modelSet.models.map(function (m) { return m.data.primary.data; });
+                plotData = this.modelSet.models.map(function (m) { return m.data.primary.data; });
                 break;
         }
         if (!this.x || !this.y) {
@@ -1976,6 +2000,9 @@ var PlotComponent = (function (_super) {
         }
         this.title = this.y.title + " vs. " + this.x.title;
         this.targetPoint = { x: this.x.target, y: this.y.target };
+        this.newTargetPoint = undefined;
+        this.mainData = plotData[0].slice();
+        this.mainData.sort(function (a, b) { return a[_this.x.name] - b[_this.x.name]; });
         // margin
         var unitBox = this.unitElement.nativeElement.getBBox();
         if (unitBox && unitBox.width) {
@@ -1989,10 +2016,8 @@ var PlotComponent = (function (_super) {
             domain(this.y.range.toArray().reverse()).
             range([0, this.innerHeight]);
         // paths
-        data.reverse(); // reverse data so main line is drawn on top
-        this.paths = data.map(function (subData) { return _this.getPath(subData, _this.x.name, _this.y.name); });
-        this.mainData = data[data.length - 1].slice();
-        this.mainData.sort(function (a, b) { return a[_this.x.name] - b[_this.x.name]; });
+        plotData.reverse(); // plot lines in reverse for proper z-index
+        this.paths = plotData.map(function (d) { return _this.getPath(d, _this.x.name, _this.y.name); });
         // drop paths
         this.dropPaths = this.getDropPaths();
         // target hover ranges
@@ -2005,14 +2030,15 @@ var PlotComponent = (function (_super) {
     };
     PlotComponent.prototype.getDropPaths = function () {
         var _this = this;
+        var point = this.newTargetPoint || this.targetPoint;
         var data = [
             [
-                { x: this.xScale.domain()[0], y: this.targetPoint.y },
-                { x: this.targetPoint.x, y: this.targetPoint.y }
+                { x: this.xScale.domain()[0], y: point.y },
+                { x: point.x, y: point.y }
             ],
             [
-                { x: this.targetPoint.x, y: this.yScale.domain()[1] },
-                { x: this.targetPoint.x, y: this.targetPoint.y }
+                { x: point.x, y: this.yScale.domain()[1] },
+                { x: point.x, y: point.y }
             ],
         ];
         return data.map(function (subData) { return _this.getPath(subData, 'x', 'y'); });
@@ -2021,17 +2047,36 @@ var PlotComponent = (function (_super) {
         if (!this.needDraw) {
             return;
         }
+        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.plotElement.nativeElement);
+        var t = svg.transition();
         // axes (drawn by d3)
         var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["axisBottom"](this.xScale).ticks(6);
-        __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.bottomAxisElement.nativeElement).
+        t.select("#" + this.name + "-x-axis").
             call(xAxis).
             attr("font-size", 15 * this.plotOptions.axisFontSize).
             attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
         var yAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["axisLeft"](this.yScale).ticks(6);
-        __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.leftAxisElement.nativeElement).
+        t.select("#" + this.name + "-y-axis").
             call(yAxis).
             attr("font-size", 15 * this.plotOptions.axisFontSize).
             attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
+        // paths
+        for (var i = 0, ilen = this.paths.length; i < ilen; i++) {
+            var path = t.select("#" + this.name + "-path-" + i);
+            if (!path.attr("d")) {
+                path.attr("d", this.paths[i]);
+            }
+            else {
+                path.attrTween("d", this.pathTween(this.paths[i], 4));
+            }
+        }
+        for (var i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
+            t.select("#" + this.name + "-drop-" + i).attr("d", this.dropPaths[i]);
+        }
+        // target
+        t.select('circle.target').
+            attr("cx", this.xScale(this.targetPoint.x)).
+            attr("cy", this.yScale(this.targetPoint.y));
         // make target point draggable
         if (!this.disableDrag) {
             var target = __WEBPACK_IMPORTED_MODULE_1_d3__["select"](this.targetElement.nativeElement);
@@ -2043,11 +2088,24 @@ var PlotComponent = (function (_super) {
         }
         this.needDraw = false;
     };
-    PlotComponent.prototype.mainClipPath = function () {
-        return "url(#" + this.mainClipPathId + ")";
-    };
-    PlotComponent.prototype.targetClipPath = function () {
-        return "url(#" + this.targetClipPathId + ")";
+    // from https://bl.ocks.org/mbostock/3916621
+    PlotComponent.prototype.pathTween = function (d1, precision) {
+        return function () {
+            var path0 = this, path1 = path0.cloneNode(), n0 = path0.getTotalLength(), n1 = (path1.setAttribute("d", d1), path1).getTotalLength();
+            // Uniform sampling of distance based on specified precision.
+            var distances = [0], i = 0, dt = precision / Math.max(n0, n1);
+            while ((i += dt) < 1)
+                distances.push(i);
+            distances.push(1);
+            // Compute point-interpolators at each distance.
+            var points = distances.map(function (t) {
+                var p0 = path0.getPointAtLength(t * n0), p1 = path1.getPointAtLength(t * n1);
+                return __WEBPACK_IMPORTED_MODULE_1_d3__["interpolate"]([p0.x, p0.y], [p1.x, p1.y]);
+            });
+            return function (t) {
+                return t < 1 ? "M" + points.map(function (p) { return p(t); }).join("L") : d1;
+            };
+        };
     };
     return PlotComponent;
 }(__WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["a" /* AbstractPlotComponent */]));
@@ -2084,21 +2142,25 @@ __decorate([
     __metadata("design:type", Object)
 ], PlotComponent.prototype, "disableDrag", void 0);
 __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('unit'),
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('plot'),
     __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _b || Object)
+], PlotComponent.prototype, "plotElement", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('unit'),
+    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _c || Object)
 ], PlotComponent.prototype, "unitElement", void 0);
 __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('bottomAxis'),
-    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _c || Object)
-], PlotComponent.prototype, "bottomAxisElement", void 0);
-__decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('leftAxis'),
-    __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _d || Object)
-], PlotComponent.prototype, "leftAxisElement", void 0);
-__decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('target'),
-    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _e || Object)
+    __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _d || Object)
 ], PlotComponent.prototype, "targetElement", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('drop1'),
+    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _e || Object)
+], PlotComponent.prototype, "drop1Element", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])('drop2'),
+    __metadata("design:type", typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _f || Object)
+], PlotComponent.prototype, "drop2Element", void 0);
 PlotComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
         selector: 'app-plot',
@@ -2106,10 +2168,10 @@ PlotComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/plot/plot.component.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["_16" /* ViewEncapsulation */].None
     }),
-    __metadata("design:paramtypes", [typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */]) === "function" && _g || Object])
+    __metadata("design:paramtypes", [typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */]) === "function" && _h || Object])
 ], PlotComponent);
 
-var _a, _b, _c, _d, _e, _f, _g;
+var _a, _b, _c, _d, _e, _f, _g, _h;
 //# sourceMappingURL=plot.component.js.map
 
 /***/ }),
@@ -2250,6 +2312,7 @@ var RangeSliderComponent = RangeSliderComponent_1 = (function () {
     };
     RangeSliderComponent.prototype.rangeInput = function (newValue) {
         this.dirty = true;
+        this.numberElement.nativeElement.value = newValue;
         this.inputSubject.next(newValue);
     };
     RangeSliderComponent.prototype.numberChanged = function (newValue) {
@@ -2257,6 +2320,7 @@ var RangeSliderComponent = RangeSliderComponent_1 = (function () {
     };
     RangeSliderComponent.prototype.numberInput = function (newValue) {
         this.dirty = true;
+        this.rangeElement.nativeElement.value = newValue;
         this.inputSubject.next(newValue);
     };
     RangeSliderComponent.prototype.blurred = function () {
@@ -2335,6 +2399,10 @@ __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])("number"),
     __metadata("design:type", typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _d || Object)
 ], RangeSliderComponent.prototype, "numberElement", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewChild */])("range"),
+    __metadata("design:type", typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */]) === "function" && _e || Object)
+], RangeSliderComponent.prototype, "rangeElement", void 0);
 RangeSliderComponent = RangeSliderComponent_1 = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
         selector: 'app-range-slider',
@@ -2350,7 +2418,7 @@ RangeSliderComponent = RangeSliderComponent_1 = __decorate([
     })
 ], RangeSliderComponent);
 
-var _a, _b, RangeSliderComponent_1, _c, _d;
+var _a, _b, RangeSliderComponent_1, _c, _d, _e;
 //# sourceMappingURL=range-slider.component.js.map
 
 /***/ }),
