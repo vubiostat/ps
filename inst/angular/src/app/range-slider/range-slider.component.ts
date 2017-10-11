@@ -46,6 +46,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   @ContentChild(RangeSliderHelp) helpTpl: RangeSliderHelp;
   @ViewChild("errorPopover") errorPopover: NgbPopover;
   @ViewChild("number") numberElement: ElementRef;
+  @ViewChild("range") rangeElement: ElementRef;
 
   ngOnInit() {
     this.inputSubject.
@@ -104,6 +105,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
 
   rangeInput(newValue: string): void {
     this.dirty = true;
+    this.numberElement.nativeElement.value = newValue;
     this.inputSubject.next(newValue);
   }
 
@@ -113,6 +115,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
 
   numberInput(newValue: string): void {
     this.dirty = true;
+    this.rangeElement.nativeElement.value = newValue;
     this.inputSubject.next(newValue);
   }
 
