@@ -2,7 +2,11 @@ import {
   Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewChecked,
   ViewChild, ElementRef, ViewEncapsulation
 } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/debounceTime';
+
 import * as d3 from 'd3';
 
 import { AbstractPlotComponent } from '../abstract-plot.component';
@@ -34,21 +38,18 @@ enum CIBar {
 })
 export class BottomPlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input('model-set') modelSet: TTestSet;
-  @Input('draw-on-init') drawOnInit = true;
   @Input('fixed-width') fixedWidth: number;
   @Input('fixed-height') fixedHeight: number;
   @Input('disable-drag-target') disableDragTarget = false;
   @Input('disable-drag-ci') disableDragCI = false;
 
   @ViewChild('unit') unitElement: ElementRef;
-  @ViewChild('bottomAxis') bottomAxisElement: ElementRef;
   @ViewChild('target') targetElement: ElementRef;
   @ViewChild('leftBar') leftBarElement: ElementRef;
   @ViewChild('rightBar') rightBarElement: ElementRef;
 
   title = "Precision vs. Effect Size";
   margin: number = 50;
-  clipPathId: string;
   width: number;
   height: number;
   innerWidth: number;
@@ -60,18 +61,19 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   mainGroup: Group;
   groups: Group[];
   needDraw: boolean;
-  initialized = false;
 
   // target dragging
   targetOffset = 0;
   targetTranslateOffset = 0;
   targetDragging = false;
+  targetWasDragging = false;
   showTargetInfo = false;
 
   // bar dragging
   barOffset = 0;
   barTranslateOffset = 0;
   barDragging = false;
+  barWasDragging = false;
   showLeftBarInfo = false;
   showRightBarInfo = false;
 
@@ -82,12 +84,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   }
 
   ngOnInit() {
-    this.clipPathId = `${this.name}-plot-area`;
-    this.plotOptions.onChange.subscribe(() => { this.compute(); } );
-    if (this.drawOnInit) {
-      this.compute();
-    }
-    this.initialized = true;
+    this.plotOptions.onChange.subscribe(this.compute.bind(this));
+    this.compute();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -96,20 +94,12 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
         this.subscription.unsubscribe();
       }
       if (this.modelSet) {
-        let callback = () => { this.compute(); };
-        let ranges = this.modelSet.ranges;
-        this.subscription = this.modelSet.onCompute.subscribe(callback);
-        this.subscription.add(this.modelSet.onChange.subscribe(callback));
-        this.subscription.add(ranges.onChange.subscribe(callback));
-
-        if (this.initialized) {
-          this.compute();
-        }
-      }
-    } else if (changes.fixedWidth || changes.fixedHeight) {
-      if (this.initialized) {
+        let observable = Observable.merge(this.modelSet.onCompute, this.modelSet.onChange);
+        this.subscription = observable.debounceTime(10).subscribe(this.compute.bind(this));
         this.compute();
       }
+    } else if (changes.fixedWidth || changes.fixedHeight) {
+      this.compute();
     }
   }
 
@@ -141,6 +131,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
 
   getColor(index: number): string {
     return this.palette.getColor(index, this.plotOptions.paletteTheme);
+  }
+
+  trackByIndex(index: number, thing: any): any {
+    return index;
   }
 
   private compute(): void {
@@ -228,8 +222,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
 
     // reset dragging
     this.targetTranslateOffset = this.targetOffset = 0;
+    this.targetWasDragging = this.targetDragging;
     this.targetDragging = false;
     this.barTranslateOffset = this.barOffset = 0;
+    this.barWasDragging = this.barDragging;
     this.barDragging = false;
 
     this.needDraw = true;
@@ -240,12 +236,40 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       return;
     }
 
+    let t = d3.select(this.plotElement.nativeElement).transition();
+
     // axes (drawn by d3)
     let xAxis = d3.axisBottom(this.xScale).ticks(6);
-    d3.select(this.bottomAxisElement.nativeElement).
+    t.select(`#${this.name}-bottom-axis`).
       call(xAxis).
       attr("font-size", 15 * this.plotOptions.axisFontSize).
       attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
+
+    // alternate groups
+    this.groups.forEach((group, index) => {
+      let prefix = `#${this.name}-group-${index}`;
+      t.select(`${prefix}-dist`).attr('d', group.distPath);
+      t.select(`${prefix}-center`).attr('d', group.centerPath);
+      t.select(`${prefix}-left`).attr('d', group.leftPath);
+      t.select(`${prefix}-right`).attr('d', group.rightPath);
+      t.select(`${prefix}-target`).
+        attr('cx', this.xScale(group.target)).
+        attr('cy', this.yScale(0.5));
+    });
+
+    // main group
+    if (this.targetWasDragging || this.barWasDragging) {
+      // don't use animations if user was dragging things
+      t = d3.select(this.plotElement.nativeElement);
+    }
+    let prefix = `#${this.name}-main`;
+    t.select(`${prefix}-dist`).attr('d', this.mainGroup.distPath);
+    t.select(`${prefix}-center`).attr('d', this.mainGroup.centerPath);
+    t.select(`${prefix}-left`).attr('d', this.mainGroup.leftPath);
+    t.select(`${prefix}-right`).attr('d', this.mainGroup.rightPath);
+    t.select(`${prefix}-target`).
+      attr('cx', this.xScale(this.mainGroup.target)).
+      attr('cy', this.yScale(0.5));
 
     // make target point draggable
     let targetElt = this.targetElement.nativeElement;
@@ -278,10 +302,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     rightBar.call(rightBarDrag);
 
     this.needDraw = false;
-  }
-
-  clipPath(): string {
-    return `url(#${this.clipPathId})`;
   }
 
   ciWidth(): number {
@@ -360,10 +380,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
         break;
     }
 
-    this.mainGroup.centerPath = this.getPath([
+    let centerPath = this.getPath([
       { x: this.mainGroup.left + this.barOffset, y: 0.5 },
       { x: this.mainGroup.right - this.barOffset, y: 0.5 }
     ]);
+    d3.select(`#${this.name}-main-center`).attr('d', centerPath);
   }
 
   private dragBarEnd(which: CIBar): void {

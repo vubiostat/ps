@@ -6,7 +6,7 @@
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
   <ng-template [ngIf]="groups && modelSet">
     <defs>
-      <clipPath [id]="clipPathId">
+      <clipPath id="{{name}}-plot-area">
         <rect x="0" y="0" [attr.width]="innerWidth" [attr.height]="innerHeight" />
       </clipPath>
     </defs>
@@ -21,63 +21,54 @@
     </text>
 
     <!-- alternate groups -->
-    <g *ngFor="let group of groups; let i = index"
+    <g *ngFor="let group of groups; let i = index; trackBy: trackByIndex"
       [attr.transform]="translate(margin, margin)">
 
-      <path
-        [attr.clip-path]="clipPath()"
-        [attr.d]="group.distPath"
+      <path id="{{name}}-group-{{i}}-dist"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.fill]="getColor(groups.length - i)"
         stroke="none" opacity="0.5" />
 
-      <path
-        [attr.clip-path]="clipPath()"
-        [attr.d]="group.centerPath"
+      <path id="{{name}}-group-{{i}}-center"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.stroke]="getColor(groups.length - i)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         fill="none" />
 
-      <path
-        [attr.clip-path]="clipPath()"
-        [attr.d]="group.leftPath"
+      <path id="{{name}}-group-{{i}}-left"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.stroke]="getColor(groups.length - i)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         fill="none" />
 
-      <path
-        [attr.clip-path]="clipPath()"
-        [attr.d]="group.rightPath"
+      <path id="{{name}}-group-{{i}}-right"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.stroke]="getColor(groups.length - i)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         fill="none" />
 
-      <circle r="5"
-        [attr.cx]="xScale(group.target)"
-        [attr.cy]="yScale(0.5)"
-        [attr.clip-path]="clipPath()"
+      <circle id="{{name}}-group-{{i}}-target"
+        attr.clip-path="url(#{{name}}-plot-area)"
+        r="5"
         [attr.fill]="getColor(groups.length - i)" />
     </g>
 
     <!-- main group -->
     <g [attr.transform]="translate(margin + targetTranslateOffset, margin)">
-
-      <path
-        [attr.clip-path]="clipPath()"
-        [attr.d]="mainGroup.distPath"
+      <path id="{{name}}-main-dist"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.fill]="getColor(0)"
         stroke="none" [attr.opacity]="targetDragging ? 0.1 : 0.5" />
 
-      <path
-        [attr.clip-path]="clipPath()"
-        [attr.d]="mainGroup.centerPath"
+      <path id="{{name}}-main-center"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.stroke]="getColor(0)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         [attr.opacity]="targetDragging ? 0.1 : 0.9"
         fill="none" />
 
-      <path #leftBar class="bar"
-        [attr.clip-path]="clipPath()"
-        [attr.d]="mainGroup.leftPath"
+      <path #leftBar id="{{name}}-main-left" class="bar"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.stroke]="getColor(0)"
         [attr.stroke-width]="plotOptions.lineWidth * 4"
         [attr.opacity]="targetDragging ? 0.1 : 0.9"
@@ -93,9 +84,8 @@
         <text x="1em" y="-2.5em">95% CI: {{ciWidth() | round}}</text>
       </g>
 
-      <path #rightBar class="bar"
-        [attr.clip-path]="clipPath()"
-        [attr.d]="mainGroup.rightPath"
+      <path #rightBar id="{{name}}-main-right" class="bar"
+        attr.clip-path="url(#{{name}}-plot-area)"
         [attr.stroke]="getColor(0)"
         [attr.stroke-width]="plotOptions.lineWidth * 4"
         [attr.opacity]="targetDragging ? 0.1 : 0.9"
@@ -121,10 +111,9 @@
         </text>
       </g>
 
-      <circle #target class="target" r="5"
-        [attr.cx]="xScale(mainGroup.target)"
-        [attr.cy]="yScale(0.5)"
-        [attr.clip-path]="clipPath()"
+      <circle #target id="{{name}}-main-target" class="target"
+        attr.clip-path="url(#{{name}}-plot-area)"
+        r="5"
         [attr.fill]="getColor(0)"
         (mouseover)="toggleTargetInfo(true)"
         (mouseout)="toggleTargetInfo(false)" />
@@ -133,10 +122,10 @@
     <circle r="5"
       [attr.cx]="xScale(0)"
       [attr.cy]="yScale(0.5)"
-      [attr.clip-path]="clipPath()"
+      attr.clip-path="url(#{{name}}-plot-area)"
       [attr.transform]="translate(margin, margin)"
       fill="darkseagreen" />
 
-    <g #bottomAxis [attr.transform]="translate(margin, innerHeight + margin)"></g>
+    <g id="{{name}}-bottom-axis" [attr.transform]="translate(margin, innerHeight + margin)"></g>
   </ng-template>
 </svg>
