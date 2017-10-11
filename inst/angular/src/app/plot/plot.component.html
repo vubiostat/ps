@@ -32,83 +32,23 @@
       {{title}}
     </text>
 
-    <g *ngIf="paths.length > 0"
+    <g *ngFor="let path of paths; index as i; trackBy: trackPathBy"
       [attr.transform]="translate(margin, margin)">
       <path
-        id="{{name}}-path-0"
+        id="{{name}}-path-{{i}}"
         attr.clip-path="url(#{{name}}-plot-area)"
-        [attr.stroke]="palette.getColor(paths.length - 1, plotOptions.paletteTheme)"
+        [attr.stroke]="palette.getColor(paths.length - 1 - i, plotOptions.paletteTheme)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         [attr.stroke-dasharray]="plotOptions.dashArray()"
         [attr.stroke-linecap]="plotOptions.lineCap()"
-        [attr.opacity]="(paths.length - 1) == 0 ? 1 : 0.7"
-        fill="none" />
-    </g>
-
-    <g *ngIf="paths.length > 1"
-      [attr.transform]="translate(margin, margin)">
-      <path
-        id="{{name}}-path-1"
-        attr.clip-path="url(#{{name}}-plot-area)"
-        [attr.stroke]="palette.getColor(paths.length - 2, plotOptions.paletteTheme)"
-        [attr.stroke-width]="plotOptions.lineWidth * 3"
-        [attr.stroke-dasharray]="plotOptions.dashArray()"
-        [attr.stroke-linecap]="plotOptions.lineCap()"
-        [attr.opacity]="(paths.length - 1) == 1 ? 1 : 0.7"
-        fill="none" />
-    </g>
-
-    <g *ngIf="paths.length > 2"
-      [attr.transform]="translate(margin, margin)">
-      <path
-        id="{{name}}-path-2"
-        attr.clip-path="url(#{{name}}-plot-area)"
-        [attr.stroke]="palette.getColor(paths.length - 3, plotOptions.paletteTheme)"
-        [attr.stroke-width]="plotOptions.lineWidth * 3"
-        [attr.stroke-dasharray]="plotOptions.dashArray()"
-        [attr.stroke-linecap]="plotOptions.lineCap()"
-        [attr.opacity]="(paths.length - 1) == 2 ? 1 : 0.7"
-        fill="none" />
-    </g>
-
-    <g *ngIf="paths.length > 3"
-      [attr.transform]="translate(margin, margin)">
-      <path
-        id="{{name}}-path-3"
-        attr.clip-path="url(#{{name}}-plot-area)"
-        [attr.stroke]="palette.getColor(paths.length - 4, plotOptions.paletteTheme)"
-        [attr.stroke-width]="plotOptions.lineWidth * 3"
-        [attr.stroke-dasharray]="plotOptions.dashArray()"
-        [attr.stroke-linecap]="plotOptions.lineCap()"
-        [attr.opacity]="(paths.length - 1) == 3 ? 1 : 0.7"
-        fill="none" />
-    </g>
-
-    <g *ngIf="paths.length > 4"
-      [attr.transform]="translate(margin, margin)">
-      <path
-        id="{{name}}-path-4"
-        attr.clip-path="url(#{{name}}-plot-area)"
-        [attr.stroke]="palette.getColor(paths.length - 5, plotOptions.paletteTheme)"
-        [attr.stroke-width]="plotOptions.lineWidth * 3"
-        [attr.stroke-dasharray]="plotOptions.dashArray()"
-        [attr.stroke-linecap]="plotOptions.lineCap()"
-        [attr.opacity]="(paths.length - 1) == 4 ? 1 : 0.7"
+        [attr.opacity]="(paths.length - 1) == i ? 1 : 0.7"
         fill="none" />
     </g>
 
     <ng-template [ngIf]="!hideDropLines">
-      <g [attr.transform]="translate(margin, margin)">
-        <path id="{{name}}-drop-0"
-          attr.clip-path="url(#{{name}}-plot-area)"
-          stroke="red"
-          [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
-          stroke-dasharray="5, 5"
-          fill="none" />
-      </g>
-
-      <g [attr.transform]="translate(margin, margin)">
-        <path id="{{name}}-drop-1"
+      <g *ngFor="let path of dropPaths; index as i; trackBy: trackPathBy"
+        [attr.transform]="translate(margin, margin)">
+        <path id="{{name}}-drop-{{i}}"
           attr.clip-path="url(#{{name}}-plot-area)"
           stroke="red"
           [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"

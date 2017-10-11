@@ -58,8 +58,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   margin: number = 50;
   xScale: any;
   yScale: any;
-  paths: string[];
-  dropPaths: string[];
+  paths: string[] = [];
+  dropPaths: string[] = [];
   newDropPaths: string[];
   mainData: any[];
   targetPoint: Point;
@@ -165,6 +165,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     return "1em";
   }
 
+  trackPathBy(index: number, path: string): any {
+    return index;
+  }
+
   private dragTargetStart(): void {
     this.targetDragging = true;
   }
@@ -182,7 +186,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
     let svg = d3.select(this.plotElement.nativeElement);
     this.newTargetPoint = { x: data[this.x.name], y: data[this.y.name] }
-    console.log(this.newTargetPoint);
     svg.select(`circle.target`).
       attr("cx", this.xScale(this.newTargetPoint.x)).
       attr("cy", this.yScale(this.newTargetPoint.y));
@@ -314,12 +317,23 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
     // paths
     data.reverse(); // reverse data so main line is drawn on top
-    this.paths = data.map(subData => this.getPath(subData, this.x.name, this.y.name));
+    data.forEach((subData, index) => {
+      this.paths[index] = this.getPath(subData, this.x.name, this.y.name);
+    });
+    if (data.length < this.paths.length) {
+      this.paths.slice(data.length);
+    }
     this.mainData = data[data.length - 1].slice();
     this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
 
     // drop paths
-    this.dropPaths = this.getDropPaths();
+    let paths = this.getDropPaths();
+    paths.forEach((path, index) => {
+      this.dropPaths[index] = path;
+    });
+    if (paths.length < this.dropPaths.length) {
+      this.dropPaths.splice(paths.length)
+    }
 
     // target hover ranges
     let xTargetPos = this.xScale(this.targetPoint.x);
