@@ -31,7 +31,7 @@ enum CIBar {
 };
 
 @Component({
-  selector: 'app-bottom-plot',
+  selector: 't-test-bottom-plot',
   templateUrl: './bottom-plot.component.html',
   styleUrls: ['./bottom-plot.component.css'],
   encapsulation: ViewEncapsulation.None

@@ -26,7 +26,7 @@ interface Point {
 }
 
 @Component({
-  selector: 'app-plot',
+  selector: 't-test-plot',
   templateUrl: './plot.component.html',
   styleUrls: ['./plot.component.css'],
   encapsulation: ViewEncapsulation.None

@@ -8,7 +8,7 @@ import {
 
 import 'rxjs/add/operator/toPromise';
 
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 import { TTest, TTestRanges, TTestSet } from './t-test';
 
 @Injectable()

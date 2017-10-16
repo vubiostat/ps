@@ -10,7 +10,7 @@ import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 
 @Component({
-  selector: 'app-output-pane',
+  selector: 't-test-output-pane',
   templateUrl: './output-pane.component.html',
   styleUrls: ['./output-pane.component.css']
 })

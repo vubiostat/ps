@@ -7,11 +7,11 @@ import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 
 @Component({
-  selector: 'app-t-test',
-  templateUrl: './t-test.component.html',
-  styleUrls: ['./t-test.component.css']
+  selector: 't-test-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.css']
 })
-export class TTestComponent implements OnInit {
+export class FormComponent implements OnInit {
   @Input('model-set') modelSet: TTestSet;
 
   model: TTest;

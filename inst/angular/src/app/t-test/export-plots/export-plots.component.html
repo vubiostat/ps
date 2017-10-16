@@ -49,18 +49,18 @@
             </ng-template>
           </div>
           <div class="right">
-            <app-plot #topLeftPlot name="top-left-export"
+            <t-test-plot #topLeftPlot name="top-left-export"
               [model-set]="modelSet" [hover-disabled]="true"
               [disable-drag]="true"
               [hide-drop-lines]="!topLeftDropLines"
               [hide-target]="!topLeftTarget"
               [fixed-width]="topLeftWidth" [fixed-height]="topLeftHeight">
-            </app-plot>
+            </t-test-plot>
           </div>
-          <app-serialize-plot #topLeftSerializer
+          <t-test-serialize-plot #topLeftSerializer
             [plot]="topLeftPlot"
             [width]="topLeftWidth" [height]="topLeftHeight">
-          </app-serialize-plot>
+          </t-test-serialize-plot>
         </ng-template>
       </ngb-tab>
       <ngb-tab [title]="topRightTitle">
@@ -105,18 +105,18 @@
             </ng-template>
           </div>
           <div class="right">
-            <app-plot #topRightPlot name="top-right-export"
+            <t-test-plot #topRightPlot name="top-right-export"
               [model-set]="modelSet" [hover-disabled]="true"
               [disable-drag]="true"
               [hide-drop-lines]="!topRightDropLines"
               [hide-target]="!topRightTarget"
               [fixed-width]="topRightWidth" [fixed-height]="topRightHeight">
-            </app-plot>
+            </t-test-plot>
           </div>
-          <app-serialize-plot #topRightSerializer
+          <t-test-serialize-plot #topRightSerializer
             [plot]="topRightPlot"
             [width]="topRightWidth" [height]="topRightHeight">
-          </app-serialize-plot>
+          </t-test-serialize-plot>
         </ng-template>
       </ngb-tab>
       <ngb-tab [title]="bottomTitle">
@@ -147,16 +147,16 @@
             </ng-template>
           </div>
           <div class="right">
-            <app-bottom-plot #bottomPlot name="bottom-export"
+            <t-test-bottom-plot #bottomPlot name="bottom-export"
               [model-set]="modelSet"
               [disable-drag-target]="true" [disable-drag-ci]="true"
               [fixed-width]="bottomWidth" [fixed-height]="bottomHeight">
-            </app-bottom-plot>
+            </t-test-bottom-plot>
           </div>
-          <app-serialize-plot #bottomSerializer
+          <t-test-serialize-plot #bottomSerializer
             [plot]="bottomPlot"
             [width]="bottomWidth" [height]="bottomHeight">
-          </app-serialize-plot>
+          </t-test-serialize-plot>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>

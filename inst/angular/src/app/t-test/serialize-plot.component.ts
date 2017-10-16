@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { AbstractPlotComponent } from './abstract-plot.component';
 
 @Component({
-  selector: 'app-serialize-plot',
+  selector: 't-test-serialize-plot',
   template: '<canvas #canvas style="display: none"></canvas>'
 })
 export class SerializePlotComponent {

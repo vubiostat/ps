@@ -3,7 +3,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TTest } from '../t-test';
 
 @Component({
-  selector: 'app-start',
+  selector: 't-test-start',
   templateUrl: './start.component.html',
   styleUrls: ['./start.component.css']
 })

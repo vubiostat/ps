@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-help',
+  selector: 't-test-help',
   templateUrl: './help.component.html',
   styleUrls: ['./help.component.css']
 })

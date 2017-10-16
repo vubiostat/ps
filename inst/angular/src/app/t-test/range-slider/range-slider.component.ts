@@ -16,7 +16,7 @@ export class RangeSliderHelp {
 }
 
 @Component({
-  selector: 'app-range-slider',
+  selector: 't-test-range-slider',
   templateUrl: './range-slider.component.html',
   styleUrls: ['./range-slider.component.css'],
   providers: [

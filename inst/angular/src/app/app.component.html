@@ -1,5 +1,4 @@
-<div id="app" class="container-fluid d-flex flex-column h-100"
-  [class.block-selection]="blockSelection" (mouseup)="mouseup()">
+<div id="app" class="container-fluid d-flex flex-column h-100">
   <nav class="navbar d-flex flex-nowrap flex-row justify-content-between" style="flex: 0 0 auto">
     <div class="navbar-brand">
       <img src="assets/ps.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -24,68 +23,5 @@
     </ul>
   </nav>
 
-  <div id="main" class="row d-flex" style="flex: 1 0 auto">
-    <div class="col-4 d-flex flex-column justify-content-between">
-      <div id="sidebar" class="d-flex flex-row" style="flex: auto">
-        <div class="overview">
-          <button type="button" class="btn btn-secondary" (click)="toggleHelp('overview')">
-            Overview <i class="fa fa-question-circle"></i>
-          </button>
-        </div>
-        <ngb-tabset #tabsetChild (tabChange)="onTabChange($event)">
-          <ngb-tab title="Start" id="start">
-            <ng-template ngbTabContent>
-              <app-start [model]="newModel"
-                (onCalculate)="calculate()"
-                (onToggleHelp)="toggleHelp('start')">
-              </app-start>
-            </ng-template>
-          </ngb-tab>
-          <ngb-tab *ngFor="let modelSet of modelSets; let i = index"
-            title="Test {{i+1}}" id="test-{{i+1}}">
-            <ng-template ngbTabContent>
-              <app-t-test [model-set]="modelSet"></app-t-test>
-            </ng-template>
-          </ngb-tab>
-        </ngb-tabset>
-      </div>
-
-      <div id="footer" class="d-flex">
-        <img src="assets/vumc.jpg">
-        <div class="text">Department of Biostatistics</div>
-      </div>
-    </div>
-    <div id="right-panel" class="col-8">
-      <div class="plot-buttons" *ngIf="plotOptionsAvailable">
-        <button class="btn btn-secondary" (click)="togglePlotOptions()">
-          <i class="fa fa-cog"></i>
-        </button>
-        <button class="btn btn-secondary" (click)="save()">
-          <i class="fa fa-floppy-o"></i>
-        </button>
-        <button class="btn btn-secondary" (click)="toggleHoverBox()">
-          <i class="fa" [class.fa-cubes]="hoverBoxEnabled" [class.fa-cube]="!hoverBoxEnabled"></i>
-        </button>
-      </div>
-      <app-output-pane #outputPaneChild
-        [selected-model-set]="selectedModelSet"
-        [hover-disabled]="!hoverBoxEnabled">
-      </app-output-pane>
-    </div>
-  </div>
-  <app-draggable-dialog #helpDialog
-    [title]="helpTitles[helpTopic]"
-    start-x-offset="33%" start-y-offset="55px"
-    (drag-start)="childDragStarted()"
-    (drag-end)="childDragEnded()">
-    <app-help [topic]="helpTopic"></app-help>
-  </app-draggable-dialog>
-  <app-draggable-dialog #plotOptionsDialog
-    title="Plot options"
-    start-x-offset="5%" start-y-offset="55px"
-    (drag-start)="childDragStarted()"
-    (drag-end)="childDragEnded()">
-    <app-plot-options [selected-model-set]="selectedModelSet">
-    </app-plot-options>
-  </app-draggable-dialog>
+  <t-test-root></t-test-root>
 </div>

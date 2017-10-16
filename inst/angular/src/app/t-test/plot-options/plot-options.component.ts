@@ -7,7 +7,7 @@ import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { PlotOptionsService } from '../plot-options.service';
 
 @Component({
-  selector: 'app-plot-options',
+  selector: 't-test-plot-options',
   templateUrl: './plot-options.component.html',
   styleUrls: ['./plot-options.component.css']
 })

@@ -9,7 +9,7 @@ import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { SerializePlotComponent } from '../serialize-plot.component';
 
 @Component({
-  selector: 'app-export-plots',
+  selector: 't-test-export-plots',
   templateUrl: './export-plots.component.html',
   styleUrls: ['./export-plots.component.css']
 })

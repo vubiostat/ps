@@ -1,17 +1,17 @@
 <div class="plot" [class.without-text]="!showText">
-  <app-plot #topLeft name="top-left"
+  <t-test-plot #topLeft name="top-left"
     [model-set]="modelSet"
     [hover-disabled]="hoverDisabled">
-  </app-plot>
-  <app-plot #topRight name="top-right"
+  </t-test-plot>
+  <t-test-plot #topRight name="top-right"
     [model-set]="modelSet"
     [hover-disabled]="hoverDisabled">
-  </app-plot>
-  <app-bottom-plot #bottom name="bottom"
+  </t-test-plot>
+  <t-test-bottom-plot #bottom name="bottom"
     [model-set]="modelSet"
     [disable-drag-target]="model?.output == 'delta'"
     [disable-drag-ci]="model?.output == 'n'">
-  </app-bottom-plot>
+  </t-test-bottom-plot>
   <div class="show-text" *ngIf="modelSet && !showText">
     <button type="button" class="btn btn-secondary" (click)="toggleText(true)">
       <i class="fa fa-envelope-open-o" aria-hidden="true"></i>
