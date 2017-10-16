@@ -12,7 +12,7 @@ import { PaletteService } from './palette.service';
 
 import { StartComponent } from './start/start.component';
 import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range-slider/range-slider.component';
-import { TTestComponent } from './t-test/t-test.component';
+import { TTestComponent } from './t-test-form/t-test.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 import { HelpComponent } from './help/help.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component';
