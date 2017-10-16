@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -24,6 +25,10 @@ import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.co
 import { RoundPipe } from './round.pipe';
 import { CeilPipe } from './ceil.pipe';
 
+const routes: Routes = [
+  { path: 't-test', component: TTestComponent }
+];
+
 @NgModule({
   declarations: [
     TTestComponent,
@@ -47,9 +52,9 @@ import { CeilPipe } from './ceil.pipe';
     CommonModule,
     FormsModule,
     HttpModule,
-    NgbModule
+    NgbModule,
+    RouterModule.forChild(routes)
   ],
-  exports: [ TTestComponent ],
   providers: [
     TTestService,
     PlotOptionsService,
