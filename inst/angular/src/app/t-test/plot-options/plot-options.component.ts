@@ -1,6 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
-
-import { Observable } from 'rxjs/Observable';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
@@ -11,38 +9,34 @@ import { PlotOptionsService } from '../plot-options.service';
   templateUrl: './plot-options.component.html',
   styleUrls: ['./plot-options.component.css']
 })
-export class PlotOptionsComponent implements OnInit {
-  @Input('selected-model-set') selectedModelSet: Observable<TTestSet>;
-  modelSet: TTestSet;
+export class PlotOptionsComponent implements OnChanges {
+  @Input('model-set') modelSet: TTestSet;
   model: TTest;
   defaultRanges: TTestRanges;
   private subscription: Subscription;
 
   constructor(private plotOptions: PlotOptionsService) {}
 
-  ngOnInit() {
-    this.selectedModelSet.subscribe(modelSet => {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!('modelSet' in changes)) return;
+
+    if (this.modelSet) {
+      this.model = this.modelSet.getModel(0);
+      this.subscription = this.modelSet.onCompute.subscribe(this.setDefaultRanges.bind(this));
+      this.setDefaultRanges();
+    } else {
+      this.model = undefined;
       if (this.subscription) {
         this.subscription.unsubscribe();
         this.subscription = undefined;
       }
-      this.modelSet = modelSet;
-
-      if (modelSet) {
-        this.subscription = modelSet.onCompute.subscribe(() => {
-          this.setDefaultRanges();
-        });
-        this.model = modelSet.getModel(0);
-        this.setDefaultRanges();
-      }
-    });
+      this.defaultRanges = undefined;
+    }
   }
 
   reset(): void {
     this.plotOptions.setDefaults();
-    if (this.modelSet) {
-      this.modelSet.ranges.updateFromArrays(this.defaultRanges.attributes());
-    }
+    this.modelSet.ranges.updateFromArrays(this.defaultRanges.attributes());
   }
 
   roundFloor(n: number): number {

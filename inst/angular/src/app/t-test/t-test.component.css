@@ -7,11 +7,11 @@
 #t-test {
 }
 
-#main {
+#t-test-main {
   /*min-height: 85vh;*/
 }
 
-#sidebar {
+#t-test-sidebar {
   background-color: #e5e5e5;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -20,7 +20,7 @@
   position: relative;
 }
 
-#sidebar .overview {
+#t-test-sidebar .overview {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -42,46 +42,46 @@
   width: 2.4rem;
 }
 
-#sidebar /deep/ a.nav-link {
+#t-test-sidebar /deep/ a.nav-link {
   border-color: #bbb #bbb #888;
   background-color: #eee;
 }
 
-#sidebar /deep/ a.nav-link:hover {
+#t-test-sidebar /deep/ a.nav-link:hover {
   border-color: #888;
   background-color: #f5f5f5;
   color: #0275d8;
 }
 
-#sidebar /deep/ a.nav-link.active {
+#t-test-sidebar /deep/ a.nav-link.active {
   border-color: #888 #888 #fff;
   background-color: #fff;
 }
 
-#sidebar /deep/ a.nav-link.active:hover {
+#t-test-sidebar /deep/ a.nav-link.active:hover {
   color: #464a4c;
 }
 
-#sidebar /deep/ ngb-tabset {
+#t-test-sidebar /deep/ ngb-tabset {
   display: flex;
   flex-direction: column;
   flex: auto;
   /*width: 100%;*/
 }
 
-#sidebar /deep/ ul.nav-tabs {
+#t-test-sidebar /deep/ ul.nav-tabs {
   /*display: flex;*/
   flex: 0 0 auto;
   border-bottom: 1px solid #888;
 }
 
-#sidebar /deep/ .tab-content {
+#t-test-sidebar /deep/ .tab-content {
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
 }
 
-#sidebar /deep/ .tab-pane {
+#t-test-sidebar /deep/ .tab-pane {
   /*display: flex;*/
   /*flex-direction: column;*/
   flex: 1 0 auto;
@@ -92,20 +92,20 @@
   max-height: 73vh;
 }
 
-#sidebar /deep/ .tab-pane.active {
+#t-test-sidebar /deep/ .tab-pane.active {
   background: white;
 }
 
-#footer {
+#t-test-footer {
   margin: 20px 0;
   padding: 20px;
   text-align: center;
 }
-#footer img {
+#t-test-footer img {
   margin: auto;
   display: block;
 }
-#footer div.text {
+#t-test-footer div.text {
   margin-top: 10px;
 }
 

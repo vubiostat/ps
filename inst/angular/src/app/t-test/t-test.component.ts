@@ -1,8 +1,7 @@
-import { Component, ViewChild, HostListener, OnInit } from '@angular/core';
-import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { Component, ViewChild, HostListener, OnInit, AfterViewInit } from '@angular/core';
+import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/switch';
 
 import { TTest, TTestRanges, TTestData, TTestSet } from './t-test';
@@ -19,24 +18,22 @@ import { OutputPaneComponent } from './output-pane/output-pane.component'
 export class TTestComponent implements OnInit {
   newModel = new TTest();
   modelSets: TTestSet[] = [];
+  selectedModelSet: TTestSet;
 
   helpTitles = {
     'overview': 'PS Overview',
     'start': 'PS Start Tab'
   };
   helpTopic = 'overview';
-  plotOptionsAvailable = false;
   blockSelection = false;
   hoverBoxEnabled = true;
 
   @ViewChild('plotOptionsDialog') plotOptionsDialog: DraggableDialogComponent;
   @ViewChild('helpDialog') helpDialog: DraggableDialogComponent;
-  @ViewChild('tabsetChild') tabsetChild: NgbTabset;
-  @ViewChild('outputPaneChild') outputChild: OutputPaneComponent;
+  @ViewChild('tabset') tabset: NgbTabset;
+  @ViewChild('outputPane') outputPane: OutputPaneComponent;
 
-  selectedModelSet = new Subject<TTestSet>();
-
-  constructor(private ttestService: TTestService) {}
+  constructor(private service: TTestService) {}
 
   ngOnInit(): void {
     let model = new TTest({
@@ -63,27 +60,25 @@ export class TTestComponent implements OnInit {
   }
 
   save(): void {
-    this.outputChild.openSaveDialog();
+    this.outputPane.openSaveDialog();
   }
 
   calculate(): void {
     this.addModel(this.newModel);
   }
 
-  onTabChange(event: any): void {
+  onTabChange(event: NgbTabChangeEvent): void {
     let md = event.nextId.match(/\d+/);
     if (md) {
-      let index = md[0] - 1;
-      this.selectedModelSet.next(this.modelSets[index]);
-      this.plotOptionsAvailable = true;
+      let index = parseInt(md[0]) - 1;
+      this.selectedModelSet = this.modelSets[index];
     } else {
-      this.selectedModelSet.next(undefined);
-      this.plotOptionsAvailable = false;
+      this.selectedModelSet = undefined;
     }
   }
 
   addModel(model: TTest, select = true): void {
-    this.ttestService.create(model).
+    this.service.create(model).
       then(result => {
         let model = new TTest(result.model);
         let data = result.data as TTestData;
@@ -93,7 +88,7 @@ export class TTestComponent implements OnInit {
 
         if (select) {
           setTimeout(() => {
-            this.tabsetChild.select(`test-${this.modelSets.length}`);
+            this.tabset.select(`t-test-${this.modelSets.length}`);
           }, 1);
         }
       }).
@@ -114,6 +109,6 @@ export class TTestComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event): void {
-    this.outputChild.resize();
+    this.outputPane.resize();
   }
 }

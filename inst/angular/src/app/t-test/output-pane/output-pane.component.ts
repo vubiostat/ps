@@ -1,8 +1,5 @@
-import { Component, ViewChild, TemplateRef, Input, OnInit } from '@angular/core';
+import { Component, ViewChild, TemplateRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import * as d3 from 'd3';
-
-import { Observable } from 'rxjs/Observable';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { PlotComponent } from '../plot/plot.component';
@@ -14,10 +11,9 @@ import { ExportPlotsComponent } from '../export-plots/export-plots.component';
   templateUrl: './output-pane.component.html',
   styleUrls: ['./output-pane.component.css']
 })
-export class OutputPaneComponent implements OnInit {
-  @Input('selected-model-set') selectedModelSet: Observable<TTestSet>;
+export class OutputPaneComponent implements OnChanges {
+  @Input('model-set') modelSet: TTestSet;
   @Input('hover-disabled') hoverDisabled = false;
-  modelSet: TTestSet;
   model: TTest;
   showText = true;
 
@@ -28,15 +24,14 @@ export class OutputPaneComponent implements OnInit {
 
   constructor(private modalService: NgbModal) {}
 
-  ngOnInit(): void {
-    this.selectedModelSet.subscribe(modelSet => {
-      this.modelSet = modelSet;
-      if (this.modelSet) {
-        this.model = modelSet.getModel(0);
-      } else {
-        this.model = undefined;
-      }
-    });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!('modelSet' in changes)) return;
+
+    if (this.modelSet) {
+      this.model = this.modelSet.getModel(0);
+    } else {
+      this.model = undefined;
+    }
   }
 
   toggleText(value: boolean): void {

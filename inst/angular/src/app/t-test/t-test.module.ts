@@ -26,7 +26,7 @@ import { RoundPipe } from './round.pipe';
 import { CeilPipe } from './ceil.pipe';
 
 const routes: Routes = [
-  { path: 't-test', component: TTestComponent }
+  { path: 't-test', component: TTestComponent },
 ];
 
 @NgModule({
