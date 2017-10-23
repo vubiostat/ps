@@ -15,7 +15,7 @@ export class OutputPaneComponent implements OnChanges {
   @Input('model-set') modelSet: TTestSet;
   @Input('hover-disabled') hoverDisabled = false;
   model: TTest;
-  showText = true;
+  showFooter = true;
 
   @ViewChild('topLeft') topLeftPlot: PlotComponent;
   @ViewChild('topRight') topRightPlot: PlotComponent;
@@ -34,13 +34,9 @@ export class OutputPaneComponent implements OnChanges {
     }
   }
 
-  toggleText(value: boolean): void {
-    this.showText = value;
-    setTimeout(() => {
-      this.topLeftPlot.redraw();
-      this.topRightPlot.redraw();
-      this.bottomPlot.redraw();
-    }, 1);
+  toggleFooter(value: boolean): void {
+    this.showFooter = value;
+    setTimeout(this.resize.bind(this), 1);
   }
 
   openSaveDialog(): void {
@@ -60,5 +56,13 @@ export class OutputPaneComponent implements OnChanges {
     this.topLeftPlot.redraw();
     this.topRightPlot.redraw();
     this.bottomPlot.redraw();
+  }
+
+  describeChanges(changes: any): string {
+    let result = [];
+    for (var key in changes) {
+      result.push(`<span class="code">${key}</span> was changed to <span class="code">${changes[key]}</span>`);
+    }
+    return result.join("; ");
   }
 }

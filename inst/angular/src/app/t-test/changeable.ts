@@ -2,6 +2,7 @@ import { EventEmitter } from '@angular/core';
 
 export abstract class ChangeEmitter {
   protected changes: any = {};
+  changeHistory: any[] = [];
   prevChanges = {};
   protected noEmit = false;
   onChange = new EventEmitter();
@@ -12,6 +13,7 @@ export abstract class ChangeEmitter {
       event.changes = Object.assign({}, this.changes);
 
       this.prevChanges = Object.assign({}, this.changes);
+      this.changeHistory.push(this.changes);
       this.changes = {};
       this.onChange.emit(event);
     }
