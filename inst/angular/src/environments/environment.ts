@@ -6,6 +6,5 @@
 export const environment = {
   production: false,
   apiUrl: "http://localhost:7788",
-  stateless: true,
-  baseHref: "/"
+  stateless: true
 };
