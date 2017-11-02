@@ -65,31 +65,44 @@ paramTitles <- list(
 
 TTest <- setRefClass("TTest",
   fields = c("id", "alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
-             "output", "data"),
+             "deltaMode", "output", "data"),
 
   methods = list(
     initialize = function(params) {
-      id     <<- params$id
-      alpha  <<- params$alpha
-      power  <<- params$power
-      n      <<- params$n
-      delta  <<- params$delta
-      sigma  <<- params$sigma
-      ci     <<- params$ci
-      ciMode <<- params$ciMode
-      output <<- params$output
-      data   <<- NULL
+      id        <<- params$id
+      alpha     <<- params$alpha
+      power     <<- params$power
+      n         <<- params$n
+      delta     <<- params$delta
+      sigma     <<- params$sigma
+      ci        <<- params$ci
+      ciMode    <<- params$ciMode
+      deltaMode <<- params$deltaMode
+      output    <<- params$output
+      data      <<- NULL
 
       if (is.null(ciMode)) {
         ciMode <<- FALSE
+      }
+      if (is.null(deltaMode)) {
+        deltaMode <<- FALSE
       }
       update()
     },
     update = function() {
       data <<- list()
-      if (output == "n") {
-        n <<- calculateN(alpha, delta, sigma, power)
-        ci <<- calculateCI(sigma, n)
+      if (output == "n" || output == "nByCI") {
+        if (output == "n") {
+          n <<- calculateN(alpha, delta, sigma, power)
+          ci <<- calculateCI(sigma, n)
+        } else {
+          n <<- calculateNFromCI(sigma, ci)
+          if (deltaMode) {
+            power <<- calculatePower(alpha, delta, sigma, n)
+          } else {
+            delta <<- calculateDelta(alpha, sigma, n, power)
+          }
+        }
 
         # Calculate data for plots
         n2 <- seq(n * 0.25, n * 1.75, 0.1)
@@ -161,14 +174,15 @@ TTest <- setRefClass("TTest",
     },
     attributes = function() {
       model <- list(
-        alpha  = unbox(alpha),
-        power  = unbox(power),
-        n      = unbox(n),
-        delta  = unbox(delta),
-        sigma  = unbox(sigma),
-        ci     = unbox(ci),
-        ciMode = unbox(ciMode),
-        output = unbox(output)
+        alpha     = unbox(alpha),
+        power     = unbox(power),
+        n         = unbox(n),
+        delta     = unbox(delta),
+        sigma     = unbox(sigma),
+        ci        = unbox(ci),
+        ciMode    = unbox(ciMode),
+        deltaMode = unbox(deltaMode),
+        output    = unbox(output)
       )
       if (!inherits(id, "uninitializedField")) {
         model$id <- unbox(id)

@@ -205,7 +205,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     if (this.modelSet && this.x.name) {
       let model = this.modelSet.getModel(0);
       model.update({
-        [model.output]: this.newTargetPoint.y,
         [this.x.name]: this.newTargetPoint.x
       });
     }
@@ -238,6 +237,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     let plotData;
     switch (model.output) {
       case "n":
+      case "nByCI":
         if (this.name == "top-left" || this.name == "top-left-export") {
           this.x = {
             name: "power", range: ranges.power, target: model.power,

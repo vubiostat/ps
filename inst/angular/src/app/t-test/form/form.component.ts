@@ -120,13 +120,24 @@ export class FormComponent implements OnInit {
       });
       promise.then(() => this.modelSet.triggerCompute());
     } else {
-      if ('ci' in changes) {
-        // 95% confidence interval width was changed, so turn on "ciMode"
-        model.ciMode = true;
+      if (this.isOutput('nByCI')) {
+        if ('delta' in changes) {
+          // delta was changed, so turn on "deltaMode"
+          model.deltaMode = true;
 
-      } else if ('n' in changes) {
-        // Sample size was changed, so turn off "ciMode"
-        model.ciMode = false;
+        } else if ('power' in changes) {
+          // power was changed, so turn off "deltaMode"
+          model.deltaMode = false;
+        }
+      } else if (!this.isOutput('n')) {
+        if ('ci' in changes) {
+          // 95% confidence interval width was changed, so turn on "ciMode"
+          model.ciMode = true;
+
+        } else if ('n' in changes) {
+          // Sample size was changed, so turn off "ciMode"
+          model.ciMode = false;
+        }
       }
       this.updateModelSet(index);
     }

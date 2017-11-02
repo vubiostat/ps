@@ -26,7 +26,7 @@
   <ngb-tabset type="pills">
     <ngb-tab title="Interpretation">
       <ng-template ngbTabContent>
-        <ng-template [ngIf]="model.output == 'n'">
+        <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
           We are planning a study of a continuous response variable from matched
           pairs of study subjects. Prior data indicate that the difference in the
           response of matched pairs is normally distributed with standard deviation

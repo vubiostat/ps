@@ -15,6 +15,7 @@ export class TTest extends ChangeEmitter {
   @Changeable n: number;
   @Changeable ci: number;
   ciMode = false;
+  deltaMode = false;
 
   constructor(attribs?: any) {
     super();
@@ -56,6 +57,9 @@ export class TTest extends ChangeEmitter {
     if (attribs.ciMode !== undefined) {
       this.ciMode = attribs.ciMode;
     }
+    if (attribs.deltaMode !== undefined) {
+      this.deltaMode = attribs.deltaMode;
+    }
     this.noEmit = false;
 
     let changes = this.changes;
@@ -94,7 +98,7 @@ export class TTest extends ChangeEmitter {
     let result: any = {
       output: this.output, alpha: this.alpha, sigma: this.sigma,
       delta: this.delta, power: this.power, n: this.n, ci: this.ci,
-      ciMode: this.ciMode
+      ciMode: this.ciMode, deltaMode: this.deltaMode
     };
     if (this.id) {
       result.id = this.id;
@@ -313,6 +317,7 @@ export class TTestSet {
     let tertiary = data.tertiary;
     switch (model.output) {
       case "n":
+      case "nByCI":
         values  = [model.n * 0.5, model.n * 1.5].sort((a, b) => a - b);
         min     = Math.floor(values[0] * 100) / 100;
         max     = Math.ceil(values[1] * 100) / 100;

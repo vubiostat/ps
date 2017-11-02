@@ -18,6 +18,26 @@ export class StartComponent {
     this.onToggleHelp.emit();
   }
 
+  needDelta(): boolean {
+    return this.model.output !== 'delta' && this.model.output !== 'nByCI';
+  }
+
+  needPower(): boolean {
+    return this.model.output !== 'power' && this.model.output !== 'nByCI';
+  }
+
+  needPowerOrDelta(): boolean {
+    return this.model.output === 'nByCI';
+  }
+
+  needCI(): boolean {
+    return this.model.output === 'nByCI';
+  }
+
+  needNOrCI(): boolean {
+    return this.model.output !== 'n' && this.model.output !== 'nByCI';
+  }
+
   onSubmit(): void {
     this.onCalculate.emit();
   }
