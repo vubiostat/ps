@@ -35,12 +35,8 @@
           [ngbPopover]="alphaHelp" popoverTitle="Type I Error (&alpha;)"
           placement="right" triggers="hover" container="body"></i>
       </label>
-      <ng-template #alphaHelp>
-        The Type I error probability for a two sided test. This is the
-        probability that we will falsely reject the null hypothesis.
-      </ng-template>
       <input class="form-control" id="alpha"
-             type="number" step="0.01"
+             type="number" step="0.01" min="0.01" max="0.99"
              required
              [(ngModel)]="model.alpha" name="alpha">
     </div>
@@ -51,13 +47,8 @@
           [ngbPopover]="sigmaHelp" popoverTitle="Standard deviation (&sigma;)"
           placement="right" triggers="hover" container="body"></i>
       </label>
-      <ng-template #sigmaHelp>
-        For independent tests σ is the within group standard deviation. For
-        paired designs it is the standard deviation of difference in the
-        response of matched pairs.
-      </ng-template>
       <input class="form-control" id="sigma"
-             type="number" step="0.1"
+             type="number" step="0.1" min="0.1"
              required
              [(ngModel)]="model.sigma" name="sigma">
     </div>
@@ -75,17 +66,8 @@
           [ngbPopover]="powerHelp" popoverTitle="Power"
           placement="right" triggers="hover" container="body"></i>
       </label>
-      <ng-template #powerHelp>
-        For independent tests power is probability of correctly rejecting the
-        null hypothesis of equal population means given n experimental
-        patients, m control patients per experimental patient, a Type I error
-        probability α and a true difference in population means of δ. For
-        paired tests it is the probability of correctly rejecting the null
-        hypothesis of equal population means given n pairs of patients, a Type
-        I error probability α and a true difference in population means of δ.
-      </ng-template>
       <input class="form-control" id="power"
-             type="number" step="0.01"
+             type="number" step="0.01" min="0.01" max="0.99"
              required
              [(ngModel)]="model.power" name="power">
     </div>
@@ -112,20 +94,16 @@
           95% confidence interval width
         </label>
       </div>
-      <ng-template #nHelp>
-        For independent t-tests n is the number of experimental subjects. For
-        pair test n is the number of pairs.
-      </ng-template>
 
       <div class="form-group">
         <input *ngIf="!model.ciMode"
                class="form-control" id="n"
-               type="number"
+               type="number" min="1"
                required
                [(ngModel)]="model.n" name="n">
         <input *ngIf="model.ciMode"
                class="form-control" id="ci"
-               type="number"
+               type="number" min="1" step="0.1"
                required
                [(ngModel)]="model.ci" name="ci">
       </div>
@@ -138,6 +116,9 @@
                  name="deltaMode" id="deltaMode-false"
                  [(ngModel)]="model.deltaMode" [value]="false">
           Power
+          <i class="fa fa-info-circle" aria-hidden="true"
+            [ngbPopover]="powerHelp" popoverTitle="Power"
+            placement="right" triggers="hover" container="body"></i>
         </label>
         <label class="form-check-label">
           <input class="form-check-input" type="radio"
@@ -150,12 +131,12 @@
       <div class="form-group">
         <input *ngIf="!model.deltaMode"
                class="form-control" id="power"
-               type="number"
+               type="number" step="0.01" min="0.01" max="0.99"
                required
                [(ngModel)]="model.power" name="power">
         <input *ngIf="model.deltaMode"
                class="form-control" id="delta"
-               type="number"
+               type="number" step="0.1"
                required
                [(ngModel)]="model.delta" name="delta">
       </div>
@@ -167,3 +148,25 @@
     </button>
   </div>
 </form>
+<ng-template #alphaHelp>
+  The Type I error probability for a two sided test. This is the
+  probability that we will falsely reject the null hypothesis.
+</ng-template>
+<ng-template #sigmaHelp>
+  For independent tests σ is the within group standard deviation. For
+  paired designs it is the standard deviation of difference in the
+  response of matched pairs.
+</ng-template>
+<ng-template #powerHelp>
+  For independent tests power is probability of correctly rejecting the null
+  hypothesis of equal population means given n experimental patients, m control
+  patients per experimental patient, a Type I error probability α and a true
+  difference in population means of δ. For paired tests it is the probability
+  of correctly rejecting the null hypothesis of equal population means given n
+  pairs of patients, a Type I error probability α and a true difference in
+  population means of δ.
+</ng-template>
+<ng-template #nHelp>
+  For independent t-tests n is the number of experimental subjects. For
+  pair test n is the number of pairs.
+</ng-template>
