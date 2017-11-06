@@ -88,12 +88,8 @@
       <div class="grow-vert range-slider">
         <t-test-range-slider name="delta" label="Difference in population means (&delta;)"
           [min]="min.delta" [max]="max.delta" step="0.1"
-          [is-output]="model.output == 'delta'"
+          [is-output]="model.output == 'delta'" [help-tpl]="deltaHelp"
           [ngModel]="model.delta | round:1" (ngModelChange)="model.delta = $event">
-          <ng-template rsHelp>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
-            rutrum at ligula id, tempor tincidunt nunc.
-          </ng-template>
         </t-test-range-slider>
       </div>
       <div class="add-remove fa-fw" [style.color]="getColor(0)">
@@ -123,17 +119,8 @@
         <t-test-range-slider name="power" label="Power"
           [min]="min.power" [max]="max.power"
           [hard-min]="min.power" [hard-max]="max.power"
-          [is-output]="model.output == 'power'"
+          [is-output]="model.output == 'power'" [help-tpl]="powerHelp"
           [ngModel]="model.power | round" (ngModelChange)="model.power = $event">
-          <ng-template rsHelp>
-            For independent tests power is probability of correctly rejecting the
-            null hypothesis of equal population means given n experimental
-            patients, m control patients per experimental patient, a Type I error
-            probability α and a true difference in population means of δ. For
-            paired tests it is the probability of correctly rejecting the null
-            hypothesis of equal population means given n pairs of patients, a Type
-            I error probability α and a true difference in population means of δ.
-          </ng-template>
         </t-test-range-slider>
       </div>
       <div class="add-remove fa-fw" [style.color]="getColor(0)">
@@ -164,22 +151,14 @@
         <t-test-range-slider name="n" label="Sample size"
           [min]="min.n" [max]="max.n" step="1"
           [hard-min]="1"
-          [is-output]="model.output == 'n'"
+          [is-output]="model.output == 'n'" [help-tpl]="nHelp"
           [ngModel]="model.n | ceil" (ngModelChange)="model.n = $event">
-          <ng-template rsHelp>
-            For independent t-tests n is the number of experimental subjects. For
-            pair test n is the number of pairs.
-          </ng-template>
         </t-test-range-slider>
         <t-test-range-slider name="ci" label="95% confidence interval width"
-          [min]="min.ci" [max]="max.ci"
+          [min]="min.ci" [max]="max.ci" step="0.1"
           [hard-min]="1"
-          [is-output]="model.output == 'n'"
-          [ngModel]="model.ci | round" (ngModelChange)="model.ci = $event">
-          <ng-template rsHelp>
-            Specifying the 95% confidence interval width will automatically calculate
-            the sample size parameter.
-          </ng-template>
+          [is-output]="model.output == 'n'" [help-tpl]="ciHelp"
+          [ngModel]="model.ci | round:1" (ngModelChange)="model.ci = $event">
         </t-test-range-slider>
       </div>
       <div class="add-remove-center fa-fw" [style.color]="getColor(0)">
@@ -197,9 +176,9 @@
             [ngModel]="ex.n | ceil" (ngModelChange)="ex.n = $event">
           </t-test-range-slider>
           <t-test-range-slider name="ci-{{i+2}}" label="95% confidence interval width #{{i+2}}"
-            [min]="min.ci" [max]="max.ci"
+            [min]="min.ci" [max]="max.ci" step="0.1"
             [hard-min]="1"
-            [ngModel]="ex.ci | round" (ngModelChange)="ex.ci = $event">
+            [ngModel]="ex.ci | round:1" (ngModelChange)="ex.ci = $event">
           </t-test-range-slider>
         </div>
         <div class="add-remove-center fa-fw" [style.color]="getColor(i+1)">
@@ -214,12 +193,8 @@
     <div class="grow-horiz">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="ci" label="95% confidence interval width"
-          [min]="min.ci" [max]="max.ci"
-          [ngModel]="model.ci | round" (ngModelChange)="model.ci = $event">
-          <ng-template rsHelp>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
-            rutrum at ligula id, tempor tincidunt nunc.
-          </ng-template>
+          [min]="min.ci" [max]="max.ci" step="0.1" [help-tpl]="ciHelp"
+          [ngModel]="model.ci | round:1" (ngModelChange)="model.ci = $event">
         </t-test-range-slider>
       </div>
       <div class="add-remove fa-fw" [style.color]="getColor(0)">
@@ -232,9 +207,9 @@
       <div class="grow-horiz" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="ci-{{i+2}}" label="95% confidence interval width #{{i+2}}"
-            [min]="min.ci" [max]="max.ci"
+            [min]="min.ci" [max]="max.ci" step="0.1"
             [hard-min]="1"
-            [ngModel]="ex.ci | round" (ngModelChange)="ex.ci = $event">
+            [ngModel]="ex.ci | round:1" (ngModelChange)="ex.ci = $event">
           </t-test-range-slider>
         </div>
         <div class="add-remove fa-fw" [style.color]="getColor(i+1)">
@@ -248,14 +223,10 @@
     <div class="grow-horiz output">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="n" label="Sample size"
-          [min]="min.n" [max]="max.n"
-          [hard-min]="min.n" [hard-max]="max.n"
-          [is-output]="true"
+          [min]="min.n" [max]="max.n" step="1"
+          [hard-min]="1"
+          [is-output]="true" [help-tpl]="nHelp"
           [ngModel]="model.n | ceil" (ngModelChange)="model.n = $event">
-          <ng-template rsHelp>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
-            rutrum at ligula id, tempor tincidunt nunc.
-          </ng-template>
         </t-test-range-slider>
       </div>
       <div class="add-remove fa-fw">
@@ -265,28 +236,15 @@
     <div class="grow-horiz order-2">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="delta" label="Difference in population means (&delta;)"
-          [min]="min.delta" [max]="max.delta" step="0.1"
+          [min]="min.delta" [max]="max.delta" step="0.1" [help-tpl]="deltaHelp"
           [ngModel]="model.delta | round:1" (ngModelChange)="model.delta = $event">
-          <ng-template rsHelp>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
-            rutrum at ligula id, tempor tincidunt nunc.
-          </ng-template>
         </t-test-range-slider>
 
         <t-test-range-slider name="power" label="Power"
           [min]="min.power" [max]="max.power"
           [hard-min]="min.power" [hard-max]="max.power"
-          [is-output]="model.output == 'power'"
+          [is-output]="model.output == 'power'" [help-tpl]="powerHelp"
           [ngModel]="model.power | round" (ngModelChange)="model.power = $event">
-          <ng-template rsHelp>
-            For independent tests power is probability of correctly rejecting the
-            null hypothesis of equal population means given n experimental
-            patients, m control patients per experimental patient, a Type I error
-            probability α and a true difference in population means of δ. For
-            paired tests it is the probability of correctly rejecting the null
-            hypothesis of equal population means given n pairs of patients, a Type
-            I error probability α and a true difference in population means of δ.
-          </ng-template>
         </t-test-range-slider>
       </div>
       <div class="add-remove-center fa-fw" [style.color]="getColor(0)">
@@ -318,3 +276,24 @@
     </ng-template>
   </ng-template>
 </div>
+<ng-template #deltaHelp>
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim nunc,
+  rutrum at ligula id, tempor tincidunt nunc.
+</ng-template>
+<ng-template #powerHelp>
+  For independent tests power is probability of correctly rejecting the
+  null hypothesis of equal population means given n experimental
+  patients, m control patients per experimental patient, a Type I error
+  probability α and a true difference in population means of δ. For
+  paired tests it is the probability of correctly rejecting the null
+  hypothesis of equal population means given n pairs of patients, a Type
+  I error probability α and a true difference in population means of δ.
+</ng-template>
+<ng-template #nHelp>
+  For independent t-tests n is the number of experimental subjects. For
+  pair test n is the number of pairs.
+</ng-template>
+<ng-template #ciHelp>
+  Specifying the 95% confidence interval width will automatically calculate
+  the sample size parameter.
+</ng-template>

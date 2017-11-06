@@ -1,6 +1,6 @@
 <div class="slider-group">
   <ng-template [ngIf]="labelTpl" [ngIfElse]="standardLabel">
-    <ng-template [ngTemplateOutlet]="labelTpl?.templateRef"></ng-template>
+    <ng-template [ngTemplateOutlet]="labelTpl"></ng-template>
   </ng-template>
   <ng-template #standardLabel>
     <div class="label" *ngIf="label">
@@ -11,7 +11,7 @@
           [ngbPopover]="rsHelp" popoverTitle="{{label}}"
           placement="right" triggers="hover" container="body"></i>
         <ng-template #rsHelp>
-          <ng-template [ngTemplateOutlet]="helpTpl?.templateRef"></ng-template>
+          <ng-template [ngTemplateOutlet]="helpTpl"></ng-template>
         </ng-template>
       </ng-template>
     </div>

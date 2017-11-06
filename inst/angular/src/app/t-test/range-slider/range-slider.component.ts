@@ -1,4 +1,4 @@
-import { Component, Directive, Input, Output, ContentChild, ViewChild, TemplateRef, ElementRef, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
+import { Component, Directive, Input, Output, ContentChild, ViewChild, TemplateRef, ElementRef, EventEmitter, OnInit, OnChanges, SimpleChanges, AfterContentInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
@@ -27,7 +27,7 @@ export class RangeSliderHelp {
     }
   ]
 })
-export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAccessor {
+export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit, ControlValueAccessor {
   @Input() label: string;
   @Input() name: string;
   @Input() min: number;
@@ -36,19 +36,21 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
   @Input('hard-min') hardMin: number;
   @Input('hard-max') hardMax: number;
   @Input('is-output') isOutput = false;
+  @Input('help-tpl') helpTpl: TemplateRef<any>;
+  @Input('label-tpl') labelTpl: TemplateRef<any>;
   value: number;
   hasError = false;
   private changeCallback: any;
   private inputSubject: Subject<string> = new Subject();
   private dirty = false;
 
-  @ContentChild(RangeSliderLabel) labelTpl: RangeSliderLabel;
-  @ContentChild(RangeSliderHelp) helpTpl: RangeSliderHelp;
+  @ContentChild(RangeSliderLabel) rsLabelTpl: RangeSliderLabel;
+  @ContentChild(RangeSliderHelp) rsHelpTpl: RangeSliderHelp;
   @ViewChild("errorPopover") errorPopover: NgbPopover;
   @ViewChild("number") numberElement: ElementRef;
   @ViewChild("range") rangeElement: ElementRef;
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.inputSubject.
       debounceTime(400).
       filter(value => {
@@ -58,6 +60,15 @@ export class RangeSliderComponent implements OnInit, OnChanges, ControlValueAcce
       subscribe(value => {
         this.trySetValue(value);
       });
+  }
+
+  ngAfterContentInit(): void {
+    if (!this.helpTpl && this.rsHelpTpl) {
+      this.helpTpl = this.rsHelpTpl.templateRef;
+    }
+    if (!this.labelTpl && this.rsLabelTpl) {
+      this.labelTpl = this.rsLabelTpl.templateRef;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
