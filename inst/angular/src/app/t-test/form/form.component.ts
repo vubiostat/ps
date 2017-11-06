@@ -81,8 +81,6 @@ export class FormComponent implements OnInit {
 
   removeInput(index: number): void {
     this.modelSet.remove(index);
-    this.extraModels = this.modelSet.extraModels();
-
     if (this.modelSet.models.length == 1) {
       this.extraName = undefined;
     }
@@ -109,14 +107,28 @@ export class FormComponent implements OnInit {
     let changes = event.changes;
     let model = this.modelSet.getModel(index);
     if (index == 0 && 'output' in changes) {
-      // output was changed, which means each model needs to be updated before
-      // firing the compute event, or the plots will get confused
-      this.modelSet.setOutputQuietly(changes.output);
+      // Output was changed, which means each model needs to be updated before
+      // firing the compute event, or the plots will get confused.
+      // Additionally, extra models need to be removed if they no longer make
+      // sense.
+      let removeExtra = (
+        ((changes.output == "n" || changes.output == "nByCI") && this.extraName == "n") ||
+        (changes.output == "power" && this.extraName == "power") ||
+        (changes.output == "delta" && this.extraName == "delta")
+      );
+
       let promise = this.modelSet.reduceModels(Promise.resolve(), (promise, model, index) => {
-        return promise.then(() => this.ttestService.update(model)).
-          then(result => {
-            this.modelSet.update(index, result.model, result.data, {}, false);
-          });
+        if (index == 0 || !removeExtra) {
+          model.update({ output: changes.output }, false);
+
+          return promise.
+            then(() => this.ttestService.update(model)).
+            then(result => {
+              this.modelSet.update(index, result.model, result.data, {}, false);
+            });
+        } else {
+          return promise.then(() => this.removeInput(1));
+        }
       });
       promise.then(() => this.modelSet.triggerCompute());
     } else {

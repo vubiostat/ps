@@ -275,7 +275,12 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
-          plotData = this.modelSet.models.map(m => m.data.secondary.data);
+          plotData = [];
+          this.modelSet.models.forEach(m => {
+            if (m.data.secondary) {
+              plotData.push(m.data.secondary.data);
+            }
+          });
         }
         break;
       case "delta":
@@ -297,8 +302,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
         plotData = this.modelSet.models.map(m => m.data.primary.data);
         break;
     }
-    if (!this.x || !this.y) {
-      console.log("bad:", this.x, this.y);
+    if (!this.x || !this.y || plotData.length == 0) {
       return;
     }
 

@@ -286,11 +286,7 @@ export class TTestSet {
     this.onCompute.emit();
   }
 
-  setOutputQuietly(output: string) {
-    this.models.forEach(m => m.model.update({ output: output }, false));
-  }
-
-  remove(index: number) {
+  remove(index: number): void {
     if (index == 0) {
       throw new Error("can't remove first model");
     }
