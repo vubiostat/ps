@@ -328,12 +328,12 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
 
     let mouseX = d3.event.x - this.margin;
     let x = this.xScale.invert(mouseX);
-    if (x >= 0 && x < 1) {
-      x = 1;
-      mouseX = this.xScale(1);
-    } else if (x < 0 && x > -1) {
-      x = -1;
-      mouseX = this.xScale(-1);
+    if (x >= 0 && x < 0.1) {
+      x = 0.1;
+      mouseX = this.xScale(x);
+    } else if (x < 0 && x > -0.1) {
+      x = -0.1;
+      mouseX = this.xScale(x);
     }
 
     let targetX = this.xScale(this.mainGroup.target);

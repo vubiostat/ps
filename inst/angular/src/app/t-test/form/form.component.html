@@ -177,7 +177,7 @@
           </t-test-range-slider>
           <t-test-range-slider name="ci-{{i+2}}" label="95% confidence interval width #{{i+2}}"
             [min]="min.ci" [max]="max.ci" step="0.1"
-            [hard-min]="1"
+            [hard-min]="0.1"
             [ngModel]="ex.ci | round:1" (ngModelChange)="ex.ci = $event">
           </t-test-range-slider>
         </div>
@@ -208,7 +208,7 @@
         <div class="grow-vert range-slider">
           <t-test-range-slider name="ci-{{i+2}}" label="95% confidence interval width #{{i+2}}"
             [min]="min.ci" [max]="max.ci" step="0.1"
-            [hard-min]="1"
+            [hard-min]="0.1"
             [ngModel]="ex.ci | round:1" (ngModelChange)="ex.ci = $event">
           </t-test-range-slider>
         </div>

@@ -330,7 +330,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
     // paths
     plotData.reverse(); // plot lines in reverse for proper z-index
-    this.paths = plotData.map(d => this.getPath(d, this.x.name, this.y.name))
+    this.paths = plotData.map(d => {
+      let xName = this.x.name, xRange = this.x.range;
+      let yName = this.y.name, yRange = this.y.range;
+      return this.getPath(d, xName, yName, xRange, yRange);
+    })
 
     // drop paths
     this.dropPaths = this.getDropPaths();

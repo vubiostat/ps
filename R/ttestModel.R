@@ -38,7 +38,7 @@ calculatePSpace <- function(precision, sigma, delta, ...) {
   if (precision[2] > pSpaceRange[2]) {
     pSpaceRange[2] <- precision[2] + (precision[2] * 0.5)
   }
-  seq(pSpaceRange[1], pSpaceRange[2], 0.01)
+  seq(pSpaceRange[1], pSpaceRange[2], (pSpaceRange[2] - pSpaceRange[1]) / 200)
 }
 
 # Calculate sample distribution for precision vs. effect size graph
@@ -105,7 +105,9 @@ TTest <- setRefClass("TTest",
         }
 
         # Calculate data for plots
-        n2 <- seq(n * 0.25, n * 1.75, 0.1)
+        nDiff <- n * 3
+        nRange <- c(max(c(1, n - nDiff)), n + nDiff)
+        n2 <- seq(nRange[1], nRange[2], (nRange[2] - nRange[1]) / 200)
         if (!(n %in% n2)) {
           n2 <- sort(c(n2, n))
         }
@@ -138,7 +140,7 @@ TTest <- setRefClass("TTest",
         data$primary <<- list(data = data.frame(power = power2, n = n2))
 
         deltaRange <- calculateDeltaRange(sigma, delta)
-        delta2 <- seq(deltaRange[1], deltaRange[2], 0.01)
+        delta2 <- seq(deltaRange[1], deltaRange[2], (deltaRange[2] - deltaRange[1]) / 200)
         power3 <- calculatePower(alpha, delta2, sigma, n)
         data$secondary <<- list(data = data.frame(power = power3, delta = delta2))
 
@@ -151,7 +153,9 @@ TTest <- setRefClass("TTest",
         delta <<- calculateDelta(alpha, sigma, n, power)
 
         # Calculate data for plots
-        delta2 <- seq(delta * 0.25, delta * 1.75, 0.01)
+        deltaDiff <- delta * 2
+        deltaRange <- c(delta - deltaDiff, delta + deltaDiff)
+        delta2 <- seq(deltaRange[1], deltaRange[2], (deltaRange[2] - deltaRange[1]) / 200)
         if (!(delta %in% delta2)) {
           delta2 <- sort(c(delta2, delta))
         }
