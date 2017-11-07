@@ -18,8 +18,8 @@ calculateDelta <- function(alpha, sigma, n, power, ...) {
 # Calculate detectable alternative axis range
 calculateDeltaRange <- function(sigma, delta, ...) {
   mu.0 <- 0
-  lo <- mu.0 - max(2 * sigma, delta + sigma/2)
-  high <- mu.0 + max(2 * sigma, delta + sigma/2)
+  lo <- mu.0 - max(2 * sigma, abs(delta) + sigma/2)
+  high <- mu.0 + max(2 * sigma, abs(delta) + sigma/2)
   c(lo, high)
 }
 
@@ -27,18 +27,6 @@ calculateDeltaRange <- function(sigma, delta, ...) {
 calculatePrecision <- function(alpha, delta, sigma, n, ...) {
   moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
   c(delta - moe, delta + moe)
-}
-
-# Calculate parameter space
-calculatePSpace <- function(precision, sigma, delta, ...) {
-  pSpaceRange <- calculateDeltaRange(sigma, delta)
-  if (precision[1] < pSpaceRange[1]) {
-    pSpaceRange[1] <- precision[1] - (precision[1] * 0.5)
-  }
-  if (precision[2] > pSpaceRange[2]) {
-    pSpaceRange[2] <- precision[2] + (precision[2] * 0.5)
-  }
-  seq(pSpaceRange[1], pSpaceRange[2], (pSpaceRange[2] - pSpaceRange[1]) / 200)
 }
 
 # Calculate sample distribution for precision vs. effect size graph
@@ -167,7 +155,7 @@ TTest <- setRefClass("TTest",
 
       # Calculate data for bottom/tertiary graph
       precision <- calculatePrecision(alpha, delta, sigma, n)
-      pSpace <- calculatePSpace(precision, sigma, delta)
+      pSpace <- seq(precision[1], precision[2], (precision[2] - precision[1]) / 200)
       sampDist <- calculateSampDist(pSpace, delta, sigma, n)
 
       tertiary <- data.frame(pSpace = pSpace, sampDist = sampDist)
