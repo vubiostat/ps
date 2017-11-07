@@ -9,13 +9,17 @@ import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 @Component({
   selector: 't-test-output-pane',
   templateUrl: './output-pane.component.html',
-  styleUrls: ['./output-pane.component.css']
+  styleUrls: ['./output-pane.component.css'],
+  host: {
+    '(document:copy)': 'onCopy($event)'
+  }
 })
 export class OutputPaneComponent implements OnChanges {
   @Input('model-set') modelSet: TTestSet;
   @Input('hover-disabled') hoverDisabled = false;
   model: TTest;
   showFooter = true;
+  private copyMode: string;
 
   @ViewChild('topLeft') topLeftPlot: PlotComponent;
   @ViewChild('topRight') topRightPlot: PlotComponent;
@@ -64,5 +68,19 @@ export class OutputPaneComponent implements OnChanges {
       result.push(`<span class="code">${key}</span> was changed to <span class="code">${changes[key]}</span>`);
     }
     return result.join("; ");
+  }
+
+  copy(mode: string): void {
+    this.copyMode = mode;
+    document.execCommand('copy');
+  }
+
+  onCopy(event: any): void {
+    switch (this.copyMode) {
+      case 'interpretation':
+        event.clipboardData.setData('text/plain', this.model.interpretation());
+        event.preventDefault();
+        break;
+    }
   }
 }

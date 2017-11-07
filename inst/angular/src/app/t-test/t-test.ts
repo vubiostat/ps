@@ -94,6 +94,48 @@ export class TTest extends ChangeEmitter {
     this.update(attribs, emit);
   }
 
+  interpretation(): string {
+    let alpha = this.alpha.toFixed(2);
+    let sigma = this.sigma.toFixed(2);
+    let delta = this.delta.toFixed(2);
+    let n = Math.ceil(this.n);
+    let power = this.power.toFixed(2);
+    let result;
+    if (this.output == 'n' || this.output == 'nByCI') {
+      result = `
+        We are planning a study of a continuous response variable from matched
+        pairs of study subjects. Prior data indicate that the difference in the
+        response of matched pairs is normally distributed with standard
+        deviation ${sigma}. If the true difference in the mean response of
+        matched pairs is ${delta}, we will need to study ${n} pairs of subjects
+        to be able to reject the null hypothesis that this response difference
+        is zero with probability (power) ${power}. The Type I error probability
+        associated with this test of this null hypothesis is ${alpha}.
+      `;
+    } else if (this.output == 'power') {
+      result = `
+        We are planning a study with ${n} pairs of subjects. Prior data
+        indicate that the difference in the response of matched pairs is
+        normally distributed with standard deviation ${sigma}. If the true
+        difference in the mean response of matched pairs is ${delta}, we will
+        be able to reject the null hypothesis that this response difference is
+        zero with probability (power) ${power}. The Type I error probability
+        associated with this test of this null hypothesis is ${alpha}.
+      `;
+    } else if (this.output == 'delta') {
+      result = `
+        We are planning a study with ${n} pairs of subjects. Prior data
+        indicate that the difference in the response of matched pairs is
+        normally distributed with standard deviation ${sigma}. We will be able
+        to detect a true difference in the mean response of matched pairs of
+        -${delta} or ${delta} with probability (power) ${power}. The Type I
+        error probability associated with this test of the null hypothesis that
+        this response difference is zero is ${alpha}.
+      `;
+    }
+    return result.replace(/\s+/g, " ").trim();
+  }
+
   attributes(): any {
     let result: any = {
       output: this.output, alpha: this.alpha, sigma: this.sigma,

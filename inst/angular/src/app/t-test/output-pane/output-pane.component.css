@@ -127,8 +127,11 @@ div.show-footer {
   background-color: #d5d5d5;
 }
 
-.hide-footer {
+.footer-buttons {
   position: absolute;
   top: 0;
   right: 5px;
+}
+.footer-buttons i {
+  margin: 0 3px;
 }
