@@ -21,8 +21,12 @@
 </div>
 <div class="output-footer" *ngIf="modelSet && showFooter">
   <div class="footer-buttons">
-    <i class="fa fa-clipboard" (click)="copyFooter()" title="Copy to clipboard"></i>
-    <i class="fa fa-window-minimize" (click)="toggleFooter(false)" title="Hide footer"></i>
+    <button type="button" (click)="copyFooter()" title="Copy to clipboard">
+      <i class="fa fa-clipboard"></i>
+    </button>
+    <button type="button" (click)="toggleFooter(false)" title="Hide footer">
+      <i class="fa fa-window-minimize"></i>
+    </button>
   </div>
   <ngb-tabset #footerTabset type="pills">
     <ngb-tab id="t-test-interpretation" title="Interpretation">

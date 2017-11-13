@@ -129,7 +129,7 @@ div.show-footer {
 
 .footer-buttons {
   position: absolute;
-  top: 0;
+  top: 5px;
   right: 5px;
 }
 .footer-buttons i {

@@ -23,6 +23,10 @@
   border-left: 0;
 }
 
+.add-remove i, .add-remove-center i {
+  font-size: larger;
+}
+
 .output {
   order: 1;
 }
