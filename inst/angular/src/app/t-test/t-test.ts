@@ -274,6 +274,7 @@ export class TTestData {
 export class TTestSet {
   models: { model: TTest, data: TTestData }[] = [];
   ranges: TTestRanges;
+  extraName: string;
   onChange = new EventEmitter();
   onCompute = new EventEmitter();
 

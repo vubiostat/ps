@@ -30,7 +30,7 @@
         triggers="hover" container="body"></i>
     </div>
   </div>
-  <ng-template [ngIf]="extraName == 'alpha'">
+  <ng-template [ngIf]="modelSet.extraName == 'alpha'">
     <div class="grow-horiz" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="alpha-{{i+2}}" label="Type I Error (&alpha;) #{{i+2}}"
@@ -66,7 +66,7 @@
         triggers="hover" container="body"></i>
     </div>
   </div>
-  <ng-template [ngIf]="extraName == 'sigma'">
+  <ng-template [ngIf]="modelSet.extraName == 'sigma'">
     <div class="grow-horiz" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="sigma-{{i+2}}" label="Std. deviation #{{i+2}}"
@@ -98,7 +98,7 @@
           triggers="hover" container="body"></i>
       </div>
     </div>
-    <ng-template [ngIf]="extraName == 'delta'">
+    <ng-template [ngIf]="modelSet.extraName == 'delta'">
       <div class="grow-horiz" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="delta-{{i+2}}" label="Difference in population means (&delta;) #{{i+2}}"
@@ -129,7 +129,7 @@
           triggers="hover" container="body"></i>
       </div>
     </div>
-    <ng-template [ngIf]="extraName == 'power'">
+    <ng-template [ngIf]="modelSet.extraName == 'power'">
       <div class="grow-horiz" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="power-{{i+2}}" label="Power #{{i+2}}"
@@ -167,7 +167,7 @@
           triggers="hover" container="body"></i>
       </div>
     </div>
-    <ng-template [ngIf]="extraName == 'n'">
+    <ng-template [ngIf]="modelSet.extraName == 'n'">
       <div class="grow-horiz" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="n-{{i+2}}" label="Sample size #{{i+2}}"
@@ -203,7 +203,7 @@
           triggers="hover" container="body"></i>
       </div>
     </div>
-    <ng-template [ngIf]="extraName == 'ci'">
+    <ng-template [ngIf]="modelSet.extraName == 'ci'">
       <div class="grow-horiz" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="ci-{{i+2}}" label="95% confidence interval width #{{i+2}}"
@@ -253,7 +253,7 @@
           triggers="hover" container="body"></i>
       </div>
     </div>
-    <ng-template [ngIf]="extraName == 'power'">
+    <ng-template [ngIf]="modelSet.extraName == 'power'">
       <div class="grow-horiz order-2 alt" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="delta-{{i+2}}" label="Difference in population means #{{i+2}}"

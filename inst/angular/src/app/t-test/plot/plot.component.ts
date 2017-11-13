@@ -67,6 +67,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   mainData: any[];
   targetPoint: Point;
   newTargetPoint: Point;
+  extraTargets: Point[] = [];
   hoverX: number;
   hoverY: number;
   hoverPoint: Point;
@@ -168,7 +169,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     return "1em";
   }
 
-  trackPathBy(index: number, path: string): any {
+  trackByIndex(index: number, path: string): any {
     return index;
   }
 
@@ -232,6 +233,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     // setup
     this.lastX = this.x;
     this.lastY = this.y;
+    this.extraTargets = [];
     let model = this.modelSet.getModel(0);
     let ranges = this.modelSet.ranges;
     let plotData;
@@ -243,17 +245,36 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
+
+          if (this.modelSet.extraName == "power") {
+            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
+              let model2 = this.modelSet.getModel(i);
+              this.extraTargets.push({ x: model2.power, y: model2.n } as Point);
+            }
+            plotData = [this.modelSet.models[0].data.primary.data];
+          } else {
+            plotData = this.modelSet.models.map(m => m.data.primary.data);
+          }
         } else if (this.name == "top-right" || this.name == "top-right-export") {
           this.x = {
             name: "delta", range: ranges.delta, target: model.delta,
             title: "Detectable Alternative", sym: "δ"
           };
+
+          if (this.modelSet.extraName == "delta") {
+            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
+              let model2 = this.modelSet.getModel(i);
+              this.extraTargets.push({ x: model2.delta, y: model2.n } as Point);
+            }
+            plotData = [this.modelSet.models[0].data.primary.data];
+          } else {
+            plotData = this.modelSet.models.map(m => m.data.primary.data);
+          }
         }
         this.y = {
           name: "n", range: ranges.n, target: model.n,
           title: "Sample Size", sym: "n"
         };
-        plotData = this.modelSet.models.map(m => m.data.primary.data);
         break;
       case "power":
         if (this.name == "top-left" || this.name == "top-left-export") {
@@ -265,7 +286,16 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
-          plotData = this.modelSet.models.map(m => m.data.primary.data);
+
+          if (this.modelSet.extraName == "n") {
+            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
+              let model2 = this.modelSet.getModel(i);
+              this.extraTargets.push({ x: model2.n, y: model2.power } as Point);
+            }
+            plotData = [this.modelSet.models[0].data.primary.data];
+          } else {
+            plotData = this.modelSet.models.map(m => m.data.primary.data);
+          }
         } else if (this.name == "top-right" || this.name == "top-right-export") {
           this.x = {
             name: "delta", range: ranges.delta, target: model.delta,
@@ -275,12 +305,21 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
-          plotData = [];
-          this.modelSet.models.forEach(m => {
-            if (m.data.secondary) {
-              plotData.push(m.data.secondary.data);
+
+          if (this.modelSet.extraName == "delta") {
+            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
+              let model2 = this.modelSet.getModel(i);
+              this.extraTargets.push({ x: model2.delta, y: model2.power } as Point);
             }
-          });
+            plotData = [this.modelSet.models[0].data.secondary.data];
+          } else {
+            plotData = [];
+            this.modelSet.models.forEach(m => {
+              if (m.data.secondary) {
+                plotData.push(m.data.secondary.data);
+              }
+            });
+          }
         }
         break;
       case "delta":
@@ -289,17 +328,36 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
             name: "n", range: ranges.n, target: model.n,
             title: "Sample Size", sym: "n"
           };
+
+          if (this.modelSet.extraName == "n") {
+            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
+              let model2 = this.modelSet.getModel(i);
+              this.extraTargets.push({ x: model2.n, y: model2.delta } as Point);
+            }
+            plotData = [this.modelSet.models[0].data.primary.data];
+          } else {
+            plotData = this.modelSet.models.map(m => m.data.primary.data);
+          }
         } else if (this.name == "top-right" || this.name == "top-right-export") {
           this.x = {
             name: "power", range: ranges.power, target: model.power,
             title: "Power", sym: "1-β"
           };
+
+          if (this.modelSet.extraName == "power") {
+            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
+              let model2 = this.modelSet.getModel(i);
+              this.extraTargets.push({ x: model2.power, y: model2.delta } as Point);
+            }
+            plotData = [this.modelSet.models[0].data.primary.data];
+          } else {
+            plotData = this.modelSet.models.map(m => m.data.primary.data);
+          }
         }
         this.y = {
           name: "delta", range: ranges.delta, target: model.delta,
           title: "Detectable Alternative", sym: "δ"
         };
-        plotData = this.modelSet.models.map(m => m.data.primary.data);
         break;
     }
     if (!this.x || !this.y || plotData.length == 0) {
@@ -396,6 +454,13 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     }
     for (let i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
       t.select(`#${this.name}-drop-${i}`).attr("d", this.dropPaths[i]);
+    }
+
+    // extra targets
+    for (let i = 0, ilen = this.extraTargets.length; i < ilen; i++) {
+      t.select(`#${this.name}-extra-target-${i}`).
+        attr('cx', this.xScale(this.extraTargets[i].x)).
+        attr('cy', this.yScale(this.extraTargets[i].y));
     }
 
     // target

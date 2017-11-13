@@ -17,7 +17,6 @@ export class FormComponent implements OnInit {
   model: TTest;
   min: TTest;
   max: TTest;
-  extraName: string;
   extraModels: TTest[];
 
   constructor(
@@ -56,7 +55,7 @@ export class FormComponent implements OnInit {
 
   canAdd(name: string): boolean {
     return this.model.output !== name &&
-      (this.extraName === undefined || this.extraName === name);
+      (this.modelSet.extraName === undefined || this.modelSet.extraName === name);
   }
 
   getColor(index: number): string {
@@ -64,10 +63,10 @@ export class FormComponent implements OnInit {
   }
 
   addInput(name: any): void {
-    if (this.extraName && this.extraName != name) {
+    if (this.modelSet.extraName && this.modelSet.extraName != name) {
       throw new Error("extra attributes must be mutually exclusive");
     }
-    this.extraName = name;
+    this.modelSet.extraName = name;
 
     let model = this.model.clone();
     let index = this.modelSet.add(model, this.modelSet.getData(0));
@@ -82,7 +81,7 @@ export class FormComponent implements OnInit {
   removeInput(index: number): void {
     this.modelSet.remove(index);
     if (this.modelSet.models.length == 1) {
-      this.extraName = undefined;
+      this.modelSet.extraName = undefined;
     }
   }
 
@@ -105,21 +104,45 @@ export class FormComponent implements OnInit {
     }
 
     let changes = event.changes;
+    let which = Object.keys(changes)[0];
     let model = this.modelSet.getModel(index);
-    if (index == 0 && 'output' in changes) {
-      // Output was changed, which means each model needs to be updated before
-      // firing the compute event, or the plots will get confused.
-      // Additionally, extra models need to be removed if they no longer make
-      // sense.
-      let removeExtra = (
-        ((changes.output == "n" || changes.output == "nByCI") && this.extraName == "n") ||
-        (changes.output == "power" && this.extraName == "power") ||
-        (changes.output == "delta" && this.extraName == "delta")
+
+    // set mode if needed
+    if (!('output' in changes)) {
+      if (this.isOutput('nByCI')) {
+        if ('delta' in changes) {
+          // delta was changed, so turn on "deltaMode"
+          model.deltaMode = changes.deltaMode = true;
+          which = 'power';
+
+        } else if ('power' in changes) {
+          // power was changed, so turn off "deltaMode"
+          model.deltaMode = changes.deltaMode = false;
+        }
+      } else if (!this.isOutput('n')) {
+        if ('ci' in changes) {
+          // 95% confidence interval width was changed, so turn on "ciMode"
+          model.ciMode = changes.deltaMode = true;
+          which = 'n';
+
+        } else if ('n' in changes) {
+          // Sample size was changed, so turn off "ciMode"
+          model.ciMode = changes.deltaMode = false;
+        }
+      }
+    }
+
+    if (index == 0 && which !== this.modelSet.extraName) {
+      // update extra models with correct values or remove them if needed
+      let removeExtra = ('output' in changes) && (
+        ((changes.output == "n" || changes.output == "nByCI") && this.modelSet.extraName == "n") ||
+        (changes.output == "power" && this.modelSet.extraName == "power") ||
+        (changes.output == "delta" && this.modelSet.extraName == "delta")
       );
 
       let promise = this.modelSet.reduceModels(Promise.resolve(), (promise, model, index) => {
         if (index == 0 || !removeExtra) {
-          model.update({ output: changes.output }, false);
+          model.update(changes, false);
 
           return promise.
             then(() => this.ttestService.update(model)).
@@ -132,25 +155,6 @@ export class FormComponent implements OnInit {
       });
       promise.then(() => this.modelSet.triggerCompute());
     } else {
-      if (this.isOutput('nByCI')) {
-        if ('delta' in changes) {
-          // delta was changed, so turn on "deltaMode"
-          model.deltaMode = true;
-
-        } else if ('power' in changes) {
-          // power was changed, so turn off "deltaMode"
-          model.deltaMode = false;
-        }
-      } else if (!this.isOutput('n')) {
-        if ('ci' in changes) {
-          // 95% confidence interval width was changed, so turn on "ciMode"
-          model.ciMode = true;
-
-        } else if ('n' in changes) {
-          // Sample size was changed, so turn off "ciMode"
-          model.ciMode = false;
-        }
-      }
       this.updateModelSet(index);
     }
   }

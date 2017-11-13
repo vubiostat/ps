@@ -32,7 +32,7 @@
       {{title}}
     </text>
 
-    <g *ngFor="let path of paths; index as i; trackBy: trackPathBy"
+    <g *ngFor="let path of paths; index as i; trackBy: trackByIndex"
       [attr.transform]="translate(margin, margin)">
       <path
         id="{{name}}-path-{{i}}"
@@ -46,7 +46,7 @@
     </g>
 
     <ng-template [ngIf]="!hideDropLines">
-      <g *ngFor="let path of dropPaths; index as i; trackBy: trackPathBy"
+      <g *ngFor="let path of dropPaths; index as i; trackBy: trackByIndex"
         [attr.transform]="translate(margin, margin)">
         <path id="{{name}}-drop-{{i}}"
           attr.clip-path="url(#{{name}}-plot-area)"
@@ -56,6 +56,13 @@
           fill="none" />
       </g>
     </ng-template>
+
+    <g *ngFor="let extraTarget of extraTargets; index as i; trackBy: trackByIndex">
+      <circle id="{{name}}-extra-target-{{i}}" r="5"
+        [attr.transform]="translate(margin, margin)"
+        attr.clip-path="url(#{{name}}-target-area)"
+        [attr.fill]="palette.getColor(i + 1, plotOptions.paletteTheme)" />
+    </g>
 
     <g id="{{name}}-x-axis" [attr.transform]="translate(margin, innerHeight + margin)"></g>
     <g id="{{name}}-y-axis" [attr.transform]="translate(margin, margin)"></g>
