@@ -39,3 +39,12 @@
 .order-2 {
   order: 2;
 }
+
+.alt {
+  margin-top: 5px;
+}
+
+.alt .range-slider {
+  background-color: #ffff99;
+  border-radius: 0.5em;
+}

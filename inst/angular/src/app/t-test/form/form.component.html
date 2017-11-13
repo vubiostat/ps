@@ -233,7 +233,7 @@
       </div>
     </div>
 
-    <div class="grow-horiz order-2">
+    <div class="grow-horiz order-2 alt">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="delta" label="Difference in population means (&delta;)"
           [min]="min.delta" [max]="max.delta" step="0.1" [help-tpl]="deltaHelp"
@@ -254,8 +254,8 @@
       </div>
     </div>
     <ng-template [ngIf]="extraName == 'power'">
-      <div class="grow-horiz order-2" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
-        <div class="grow-vert">
+      <div class="grow-horiz order-2 alt" *ngFor="let ex of extraModels; let i = index; trackBy: trackByExtra">
+        <div class="grow-vert range-slider">
           <t-test-range-slider name="delta-{{i+2}}" label="Difference in population means #{{i+2}}"
             [min]="min.delta" [max]="max.delta" step="0.1"
             [ngModel]="ex.delta | round:1" (ngModelChange)="ex.delta = $event">
