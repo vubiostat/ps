@@ -14,15 +14,15 @@
   </t-test-bottom-plot>
   <div class="show-footer" *ngIf="modelSet && !showFooter">
     <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">
-      <i class="fa fa-envelope-open-o" aria-hidden="true"></i>
+      <i class="fa fa-envelope-open-o" aria-hidden="true" title="Show footer"></i>
       Interpretation / Log
     </button>
   </div>
 </div>
 <div class="output-footer" *ngIf="modelSet && showFooter">
   <div class="footer-buttons">
-    <i class="fa fa-clipboard" (click)="copyFooter()"></i>
-    <i class="fa fa-times-circle" (click)="toggleFooter(false)"></i>
+    <i class="fa fa-clipboard" (click)="copyFooter()" title="Copy to clipboard"></i>
+    <i class="fa fa-window-minimize" (click)="toggleFooter(false)" title="Hide footer"></i>
   </div>
   <ngb-tabset #footerTabset type="pills">
     <ngb-tab id="t-test-interpretation" title="Interpretation">

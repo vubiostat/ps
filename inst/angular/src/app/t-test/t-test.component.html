@@ -33,13 +33,13 @@
     </div>
     <div class="col-8">
       <div class="plot-buttons" *ngIf="selectedModelSet">
-        <button class="btn btn-secondary" (click)="togglePlotOptions()">
+        <button class="btn btn-secondary" (click)="togglePlotOptions()" title="Toggle plot options">
           <i class="fa fa-cog"></i>
         </button>
-        <button class="btn btn-secondary" (click)="save()">
+        <button class="btn btn-secondary" (click)="save()" title="Export plots">
           <i class="fa fa-floppy-o"></i>
         </button>
-        <button class="btn btn-secondary" (click)="toggleHoverBox()">
+        <button class="btn btn-secondary" (click)="toggleHoverBox()" title="Toggle hover box">
           <i class="fa" [class.fa-cubes]="hoverBoxEnabled" [class.fa-cube]="!hoverBoxEnabled"></i>
         </button>
       </div>
