@@ -1,5 +1,5 @@
 import { Component, ViewChild, TemplateRef, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
 import { TTest, TTestRanges, TTestSet } from '../t-test';
 import { PlotComponent } from '../plot/plot.component';
@@ -25,6 +25,7 @@ export class OutputPaneComponent implements OnChanges {
   @ViewChild('topRight') topRightPlot: PlotComponent;
   @ViewChild('bottom') bottomPlot: BottomPlotComponent;
   @ViewChild('saveDialog') saveDialog: TemplateRef<any>;
+  @ViewChild('footerTabset') footerTabset: NgbTabset;
 
   constructor(private modalService: NgbModal) {}
 
@@ -70,15 +71,24 @@ export class OutputPaneComponent implements OnChanges {
     return result.join("; ");
   }
 
-  copy(mode: string): void {
-    this.copyMode = mode;
+  copyFooter(): void {
     document.execCommand('copy');
   }
 
   onCopy(event: any): void {
-    switch (this.copyMode) {
-      case 'interpretation':
+    switch (this.footerTabset.activeId) {
+      case 't-test-interpretation':
         event.clipboardData.setData('text/plain', this.model.interpretation());
+        event.preventDefault();
+        break;
+      case 't-test-log':
+        if (!this.model.changeHistory || this.model.changeHistory.length == 0) {
+          break;
+        }
+        let text = this.model.changeHistory.
+          map(changes => Object.keys(changes).map(key => `${key} was changed to ${changes[key]}`).join('; ')).
+          join("\r\n");
+        event.clipboardData.setData('text/plain', text);
         event.preventDefault();
         break;
     }
