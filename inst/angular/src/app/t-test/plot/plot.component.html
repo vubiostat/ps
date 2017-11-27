@@ -45,66 +45,44 @@
         fill="none" />
     </g>
 
-    <ng-template [ngIf]="!hideDropLines">
-      <g *ngFor="let path of dropPaths; index as i; trackBy: trackByIndex"
-        [attr.transform]="translate(margin, margin)">
-        <path id="{{name}}-drop-{{i}}"
-          attr.clip-path="url(#{{name}}-plot-area)"
-          stroke="red"
-          [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
-          stroke-dasharray="5, 5"
-          fill="none" />
-      </g>
-    </ng-template>
-
-    <g *ngFor="let extraTarget of extraTargets; index as i; trackBy: trackByIndex">
-      <circle id="{{name}}-extra-target-{{i}}" r="5"
-        [attr.transform]="translate(margin, margin)"
-        attr.clip-path="url(#{{name}}-target-area)"
-        [attr.fill]="palette.getColor(i + 1, plotOptions.paletteTheme)" />
-    </g>
-
     <g id="{{name}}-x-axis" [attr.transform]="translate(margin, innerHeight + margin)"></g>
     <g id="{{name}}-y-axis" [attr.transform]="translate(margin, margin)"></g>
 
-    <g *ngIf="showHoverInfo"
-      [attr.transform]="translate(margin + hoverX, margin + hoverY)">
-      <circle r="4" fill="none" stroke="blue" />
-      <rect x="-3.5em" [attr.y]="hoverInfoY()" width="8em" height="2.5em"
-        stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
-      <text x="-2.5em" [attr.y]="hoverInfoY()">
-        <tspan dy="1em" text-anchor="right">{{x.sym}}:</tspan>
-        <tspan x="0em" text-anchor="left">{{hoverPoint.x}}</tspan>
-        <tspan x="-2.5em" dy="1em" text-anchor="right">{{y.sym}}:</tspan>
-        <tspan x="0em" text-anchor="left">{{hoverPoint.y}}</tspan>
-      </text>
-    </g>
+    <rect [attr.transform]="translate(margin, margin)"
+      [attr.width]="innerWidth" [attr.height]="innerHeight"
+      fill="none" pointer-events="all"
+      (mouseout)="hideHoverInfo()"
+      (mousemove)="hover($event)" />
 
     <ng-template [ngIf]="!hideTarget">
-      <rect [attr.transform]="translate(margin, margin)"
-        [attr.width]="innerWidth" [attr.height]="innerHeight"
-        fill="none" pointer-events="all"
-        (mouseout)="toggleHoverInfo(false)"
-        (mousemove)="hover($event)" />
-
-      <g *ngIf="showTargetInfo"
-        [attr.transform]="translate(margin + xScale(targetPoint.x), margin + yScale(targetPoint.y))">
-        <rect x="0" y="-3.5em" width="8em" height="2.5em"
-          stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
-        <text x="1em" y="-3.5em">
-          <tspan dy="1em" text-anchor="right">{{x.sym}}:</tspan>
-          <tspan x="3.5em" text-anchor="left">{{targetPoint.x}}</tspan>
-          <tspan x="1em" dy="1em" text-anchor="right">{{y.sym}}:</tspan>
-          <tspan x="3.5em" text-anchor="left">{{targetPoint.y}}</tspan>
-        </text>
+      <g *ngFor="let target of targets; index as targetIndex; trackBy: trackByIndex">
+        <ng-template [ngIf]="!hideDropLines">
+          <g *ngFor="let path of target.dropPaths; index as dropPathIndex; trackBy: trackByIndex"
+            [attr.transform]="translate(margin, margin)">
+            <path id="{{name}}-target-{{targetIndex}}-drop-{{dropPathIndex}}"
+              attr.clip-path="url(#{{name}}-plot-area)"
+              [attr.stroke]="palette.getColor(targets.length - targetIndex - 1, plotOptions.paletteTheme)"
+              [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
+              stroke-dasharray="5, 5"
+              fill="none" />
+          </g>
+        </ng-template>
+        <circle id="{{name}}-target-{{targetIndex}}" class="target" r="5"
+          [attr.transform]="translate(margin, margin)"
+          attr.clip-path="url(#{{name}}-target-area)"
+          [attr.fill]="palette.getColor(targets.length - targetIndex - 1, plotOptions.paletteTheme)"
+          (mousemove)="hover($event, target)" />
       </g>
-
-      <circle #target class="target" r="5"
-        [attr.transform]="translate(margin, margin)"
-        attr.clip-path="url(#{{name}}-target-area)"
-        fill="red"
-        (mouseover)="toggleTargetInfo(true)"
-        (mouseout)="toggleTargetInfo(false)" />
     </ng-template>
+
+    <g *ngIf="isHoverInfoActive()"
+      [attr.transform]="translate(margin + hoverX, margin + hoverY)">
+      <circle *ngIf="!isHoverInfoTarget()" r="4" fill="none" stroke="blue" />
+      <path id="{{name}}-hover-info"
+        stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
+      <text id="{{name}}-hover-coords" y="-2.5em" font-family="mono" text-anchor="middle">
+        <tspan style="white-space: pre">{{x.sym}}: {{hoverPoint.format('x')}}</tspan><tspan x="0" dy="1em" style="white-space: pre">{{y.sym}}: {{hoverPoint.format('y')}}</tspan>
+      </text>
+    </g>
   </ng-template>
 </svg>

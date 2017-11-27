@@ -18,11 +18,87 @@ interface Param {
   range: Range;
   title: string;
   sym: string;
+  dataKey: string;
 }
 
-interface Point {
-  x: number;
-  y: number;
+class Point {
+  constructor(public x: number, public y: number) {}
+
+  format(which: string): string {
+    let value = this[which];
+    if (typeof(value) != 'number') return '';
+
+    let xWidth = 0, yWidth = 0;
+    if (this.x != 0) {
+      xWidth = Math.ceil(Math.log10(Math.abs(this.x)));
+      if (this.x < 0) xWidth++;
+    }
+    if (this.y != 0) {
+      yWidth = Math.ceil(Math.log10(Math.abs(this.y)));
+      if (this.y < 0) yWidth++;
+    }
+    let width = Math.max(xWidth, yWidth) + 3;
+    let result = value.toFixed(2);
+    while (result.length < width) {
+      result = ' ' + result;
+    }
+    return result;
+  }
+}
+
+class Target {
+  dropPaths: string[] = [];
+  xRange: number[];
+  yRange: number[];
+
+  constructor(public point: Point, xScale: any, yScale: any) {
+    this.update(xScale, yScale);
+  }
+
+  update(xScale: any, yScale: any) {
+    this.dropPaths = [];
+
+    // calculate drop paths
+    let path = d3.line().
+      x((d, i) => xScale(d.x)).
+      y((d, i) => yScale(d.y));
+
+    let xData = [
+      { x: this.point.x, y: yScale.domain()[1] },
+      { x: this.point.x, y: this.point.y }
+    ];
+    this.dropPaths.push(path(xData));
+
+    let yData = [
+      { x: xScale.domain()[0], y: this.point.y },
+      { x: this.point.x, y: this.point.y }
+    ];
+    this.dropPaths.push(path(yData));
+
+    // calculate hover ranges
+    let x = xScale(this.point.x);
+    this.xRange = [x - 10, x + 10];
+
+    let y = yScale(this.point.y);
+    this.yRange = [y - 10, y + 10];
+  }
+
+  isClose(x: number, y: number): boolean {
+    return x > this.xRange[0] && x < this.xRange[1] &&
+      y > this.yRange[0] && y < this.yRange[1];
+  }
+}
+
+enum HoverInfo {
+  Disabled,
+  NonTarget,
+  Target
+}
+
+enum Draw {
+  No,
+  Yes,
+  Hover
 }
 
 @Component({
@@ -34,7 +110,6 @@ interface Point {
 export class PlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input('model-set') modelSet: TTestSet;
   @Input('hover-disabled') hoverDisabled = false;
-  @Input('draw-on-init') drawOnInit = true;
   @Input('hide-drop-lines') hideDropLines = false;
   @Input('hide-target') hideTarget = false;
   @Input('fixed-width') fixedWidth: number;
@@ -43,52 +118,38 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   @ViewChild('plot') plotElement: ElementRef;
   @ViewChild('unit') unitElement: ElementRef;
-  @ViewChild('target') targetElement: ElementRef;
-  @ViewChild('drop1') drop1Element: ElementRef;
-  @ViewChild('drop2') drop2Element: ElementRef;
 
   constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) { super(); }
-
-  lastX: Param;
-  lastY: Param;
-  x: Param;
-  y: Param;
 
   width: number;
   height: number;
   innerWidth: number;
   innerHeight: number;
   margin: number = 50;
+  x: Param;
+  y: Param;
   xScale: any;
   yScale: any;
+  plotData: any[];
   paths: string[];
-  dropPaths: string[] = [];
-  newDropPaths: string[];
   mainData: any[];
-  targetPoint: Point;
-  newTargetPoint: Point;
-  extraTargets: Point[] = [];
+  targets: Target[] = [];
+  xBisector: any;
   hoverX: number;
   hoverY: number;
   hoverPoint: Point;
-  xTargetRange: number[];
-  yTargetRange: number[];
-  xBisector: any;
+  hoverInfo = HoverInfo.Disabled;
+  lastDragEvent: any;
 
   targetDragging = false;
-  showTargetInfo = false;
-  showHoverInfo = false;
-  needDraw = false;
-  initialized = false;
+  needDraw = Draw.No;
 
   private subscription: Subscription;
 
   ngOnInit(): void {
-    this.plotOptions.onChange.subscribe(() => { this.compute(); });
-    if (this.drawOnInit) {
-      this.compute();
-    }
-    this.initialized = true;
+    let callback = this.setup.bind(this);
+    this.plotOptions.onChange.subscribe(callback);
+    callback();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -98,18 +159,13 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
         this.subscription.unsubscribe();
       }
       if (this.modelSet) {
-        let callback = () => { this.compute(); };
+        let callback = this.setup.bind(this);
         this.subscription = this.modelSet.onCompute.subscribe(callback);
         this.subscription.add(this.modelSet.onChange.subscribe(callback));
-
-        if (this.initialized) {
-          this.compute();
-        }
+        callback();
       }
     } else if (changes.fixedWidth || changes.fixedHeight) {
-      if (this.initialized) {
-        this.compute();
-      }
+      this.setup();
     }
   }
 
@@ -118,52 +174,39 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   }
 
   redraw(): void {
-    this.compute();
+    this.setup();
   }
 
-  toggleTargetInfo(value: boolean): void {
-    if (!this.targetDragging) {
-      this.showTargetInfo = value;
-    }
-  }
-
-  toggleHoverInfo(value: boolean): void {
-    this.showHoverInfo = value;
-  }
-
-  hover(event: any): void {
-    if (this.hoverDisabled) {
-      return;
-    }
-
+  hover(event: any, target?: Target): void {
     var dim = event.target.getBoundingClientRect();
     var x = event.clientX - dim.left;
     var y = event.clientY - dim.top;
 
-    if (x > this.xTargetRange[0] && x < this.xTargetRange[1] &&
-        y > this.yTargetRange[0] && y < this.yTargetRange[1]) {
-      // hide hover info if too close to the target point
-      this.showHoverInfo = false;
-      return;
+    this.hoverPoint = undefined;
+    this.hoverInfo = HoverInfo.Disabled;
+    if (target) {
+      this.hoverPoint = target.point;
+      this.hoverInfo = HoverInfo.Target;
+
+    } else if (!this.hoverDisabled) {
+      let index = this.xBisector(this.mainData, this.xScale.invert(x));
+      let data = this.mainData[index];
+      if (data) {
+        this.hoverPoint = new Point(data[this.x.name], data[this.y.name]);
+        this.hoverInfo = HoverInfo.NonTarget;
+      }
     }
 
-    let index = this.xBisector(this.mainData, this.xScale.invert(x));
-    let data = this.mainData[index];
-    if (data) {
-      this.hoverPoint = {
-        x: data[this.x.name],
-        y: data[this.y.name]
-      }
+    if (this.hoverPoint) {
       this.hoverX = this.xScale(this.hoverPoint.x);
       this.hoverY = this.yScale(this.hoverPoint.y);
-      this.showHoverInfo = true;
-    } else {
-      this.showHoverInfo = false;
+      this.needDraw = Draw.Hover;
     }
   }
 
   hoverInfoY(): string {
-    if (this.hoverY < this.yTargetRange[0]) {
+    let mainTarget = this.targets[this.targets.length - 1];
+    if (this.hoverY < mainTarget.yRange[0]) {
       return "-3.5em";
     }
     return "1em";
@@ -173,49 +216,19 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     return index;
   }
 
-  private dragTargetStart(): void {
-    this.targetDragging = true;
+  isHoverInfoActive(): boolean {
+    return this.hoverInfo != HoverInfo.Disabled;
   }
 
-  private dragTarget(event: any): void {
-    let x = this.xScale.invert(d3.event.x - this.margin);
-    if (x < this.x.range.min) {
-      x = this.x.range.min;
-    } else if (x > this.x.range.max) {
-      x = this.x.range.max;
-    }
-    let index = this.xBisector(this.mainData, x);
-    let data = this.mainData[index];
-    if (!data) return;
-
-    let svg = d3.select(this.plotElement.nativeElement);
-    this.newTargetPoint = { x: data[this.x.name], y: data[this.y.name] }
-    svg.select(`circle.target`).
-      attr("cx", this.xScale(this.newTargetPoint.x)).
-      attr("cy", this.yScale(this.newTargetPoint.y));
-
-    this.newDropPaths = this.getDropPaths();
-    svg.select(`#${this.name}-drop-0`).attr("d", this.newDropPaths[0]);
-    svg.select(`#${this.name}-drop-1`).attr("d", this.newDropPaths[1]);
+  isHoverInfoTarget(): boolean {
+    return this.hoverInfo == HoverInfo.Target;
   }
 
-  private dragTargetEnd(): void {
-    this.targetDragging = false;
-    this.showTargetInfo = false;
-
-    if (this.modelSet && this.x.name) {
-      let model = this.modelSet.getModel(0);
-      model.update({
-        [this.x.name]: this.newTargetPoint.x
-      });
-    }
+  hideHoverInfo(): void {
+    this.hoverInfo = HoverInfo.Disabled;
   }
 
-  private compute(): void {
-    if (!this.modelSet) {
-      return;
-    }
-
+  private setupDimensions(): void {
     // dimensions
     if (this.fixedWidth) {
       this.width = this.fixedWidth;
@@ -230,154 +243,135 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.innerWidth  = this.width  - (this.margin * 2);
     this.innerHeight = this.height - (this.margin * 2);
 
-    // setup
-    this.lastX = this.x;
-    this.lastY = this.y;
-    this.extraTargets = [];
-    let model = this.modelSet.getModel(0);
-    let ranges = this.modelSet.ranges;
-    let plotData;
-    switch (model.output) {
-      case "n":
-      case "nByCI":
-        if (this.name == "top-left" || this.name == "top-left-export") {
-          this.x = {
-            name: "power", range: ranges.power, target: model.power,
-            title: "Power", sym: "1-β"
-          };
-
-          if (this.modelSet.extraName == "power") {
-            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
-              let model2 = this.modelSet.getModel(i);
-              this.extraTargets.push({ x: model2.power, y: model2.n } as Point);
-            }
-            plotData = [this.modelSet.models[0].data.primary.data];
-          } else {
-            plotData = this.modelSet.models.map(m => m.data.primary.data);
-          }
-        } else if (this.name == "top-right" || this.name == "top-right-export") {
-          this.x = {
-            name: "delta", range: ranges.delta, target: model.delta,
-            title: "Detectable Alternative", sym: "δ"
-          };
-
-          if (this.modelSet.extraName == "delta") {
-            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
-              let model2 = this.modelSet.getModel(i);
-              this.extraTargets.push({ x: model2.delta, y: model2.n } as Point);
-            }
-            plotData = [this.modelSet.models[0].data.primary.data];
-          } else {
-            plotData = this.modelSet.models.map(m => m.data.primary.data);
-          }
-        }
-        this.y = {
-          name: "n", range: ranges.n, target: model.n,
-          title: "Sample Size", sym: "n"
-        };
-        break;
-      case "power":
-        if (this.name == "top-left" || this.name == "top-left-export") {
-          this.x = {
-            name: "n", range: ranges.n, target: model.n,
-            title: "Sample Size", sym: "n"
-          };
-          this.y = {
-            name: "power", range: ranges.power, target: model.power,
-            title: "Power", sym: "1-β"
-          };
-
-          if (this.modelSet.extraName == "n") {
-            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
-              let model2 = this.modelSet.getModel(i);
-              this.extraTargets.push({ x: model2.n, y: model2.power } as Point);
-            }
-            plotData = [this.modelSet.models[0].data.primary.data];
-          } else {
-            plotData = this.modelSet.models.map(m => m.data.primary.data);
-          }
-        } else if (this.name == "top-right" || this.name == "top-right-export") {
-          this.x = {
-            name: "delta", range: ranges.delta, target: model.delta,
-            title: "Detectable Alternative", sym: "δ"
-          };
-          this.y = {
-            name: "power", range: ranges.power, target: model.power,
-            title: "Power", sym: "1-β"
-          };
-
-          if (this.modelSet.extraName == "delta") {
-            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
-              let model2 = this.modelSet.getModel(i);
-              this.extraTargets.push({ x: model2.delta, y: model2.power } as Point);
-            }
-            plotData = [this.modelSet.models[0].data.secondary.data];
-          } else {
-            plotData = [];
-            this.modelSet.models.forEach(m => {
-              if (m.data.secondary) {
-                plotData.push(m.data.secondary.data);
-              }
-            });
-          }
-        }
-        break;
-      case "delta":
-        if (this.name == "top-left" || this.name == "top-left-export") {
-          this.x = {
-            name: "n", range: ranges.n, target: model.n,
-            title: "Sample Size", sym: "n"
-          };
-
-          if (this.modelSet.extraName == "n") {
-            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
-              let model2 = this.modelSet.getModel(i);
-              this.extraTargets.push({ x: model2.n, y: model2.delta } as Point);
-            }
-            plotData = [this.modelSet.models[0].data.primary.data];
-          } else {
-            plotData = this.modelSet.models.map(m => m.data.primary.data);
-          }
-        } else if (this.name == "top-right" || this.name == "top-right-export") {
-          this.x = {
-            name: "power", range: ranges.power, target: model.power,
-            title: "Power", sym: "1-β"
-          };
-
-          if (this.modelSet.extraName == "power") {
-            for (let i = 1, ilen = this.modelSet.models.length; i < ilen; i++) {
-              let model2 = this.modelSet.getModel(i);
-              this.extraTargets.push({ x: model2.power, y: model2.delta } as Point);
-            }
-            plotData = [this.modelSet.models[0].data.primary.data];
-          } else {
-            plotData = this.modelSet.models.map(m => m.data.primary.data);
-          }
-        }
-        this.y = {
-          name: "delta", range: ranges.delta, target: model.delta,
-          title: "Detectable Alternative", sym: "δ"
-        };
-        break;
-    }
-    if (!this.x || !this.y || plotData.length == 0) {
-      return;
-    }
-
-    this.title = `${this.y.title} vs. ${this.x.title}`;
-    this.targetPoint = { x: this.x.target, y: this.y.target };
-    this.newTargetPoint = undefined;
-
-    this.mainData = plotData[0].slice();
-    this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
-
     // margin
     let unitBox = this.unitElement.nativeElement.getBBox();
     if (unitBox && unitBox.width) {
       this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
     }
+  }
 
-    // scales
+  private setupParams(): boolean {
+    // Setup parameters. Dimensions should be setup by this point.
+    let model = this.modelSet.getModel(0);
+    let ranges = this.modelSet.ranges;
+    if (model.output == 'n' || model.output == 'nByCI') {
+      if (this.name == 'top-left' || this.name == 'top-left-export') {
+        // Power vs. Sample Size
+        this.x = {
+          name: 'power', range: ranges.power, target: model.power,
+          title: 'Power', sym: '1-β', dataKey: 'primary'
+        };
+
+      } else if (this.name == 'top-right' || this.name == 'top-right-export') {
+        // Detectable Alternative vs. Sample Size
+        this.x = {
+          name: 'delta', range: ranges.delta, target: model.delta,
+          title: 'Detectable Alternative', sym: 'δ', dataKey: 'primary'
+        };
+
+      } else {
+        return false;
+      }
+
+      this.y = {
+        name: 'n', range: ranges.n, target: model.n,
+        title: 'Sample Size', sym: 'n', dataKey: 'primary'
+      };
+    } else if (model.output == 'power') {
+      if (this.name == 'top-left' || this.name == 'top-left-export') {
+        // Sample Size vs. Power
+        this.x = {
+          name: 'n', range: ranges.n, target: model.n,
+          title: 'Sample Size', sym: 'n', dataKey: 'primary'
+        };
+        this.y = {
+          name: 'power', range: ranges.power, target: model.power,
+          title: 'Power', sym: '1-β', dataKey: 'primary'
+        };
+
+      } else if (this.name == 'top-right' || this.name == 'top-right-export') {
+        // Detectable Alternative vs. Power
+        this.x = {
+          name: 'delta', range: ranges.delta, target: model.delta,
+          title: 'Detectable Alternative', sym: 'δ', dataKey: 'secondary'
+        };
+        this.y = {
+          name: 'power', range: ranges.power, target: model.power,
+          title: 'Power', sym: '1-β', dataKey: 'secondary'
+        };
+
+      } else {
+        return false;
+      }
+    } else if (model.output == 'delta') {
+      if (this.name == 'top-left' || this.name == 'top-left-export') {
+        // Sample Size vs. Detectable Alternative
+        this.x = {
+          name: 'n', range: ranges.n, target: model.n,
+          title: 'Sample Size', sym: 'n', dataKey: 'primary'
+        };
+
+      } else if (this.name == 'top-right' || this.name == 'top-right-export') {
+        // Power vs. Detectable Alternative
+        this.x = {
+          name: 'power', range: ranges.power, target: model.power,
+          title: 'Power', sym: '1-β', dataKey: 'primary'
+        };
+
+      } else {
+        return false;
+      }
+
+      this.y = {
+        name: 'delta', range: ranges.delta, target: model.delta,
+        title: 'Detectable Alternative', sym: 'δ', dataKey: 'primary'
+      };
+    } else {
+      return false;
+    }
+
+    // format symbol to make widths identical
+    while (this.x.sym.length < this.y.sym.length) {
+      this.x.sym = ' ' + this.x.sym;
+    }
+    while (this.y.sym.length < this.x.sym.length) {
+      this.y.sym = ' ' + this.y.sym;
+    }
+
+    this.title = `${this.y.title} vs. ${this.x.title}`;
+    return true;
+  }
+
+  private setupPlotData(): boolean {
+    let dataKey = this.x.dataKey; // same as y.dataKey
+    if (this.modelSet.extraName == this.x.name) {
+      // Only draw first line, since the others are identical.
+      this.plotData = [this.modelSet.models[0].data[dataKey].data];
+    } else {
+      // Draw lines
+      this.plotData = this.modelSet.models.map(m => m.data[dataKey].data);
+    }
+
+    // When switching outputs, sometimes plot data is missing. This happens
+    // when the dataKey is different for a parameter than it was before.
+    this.plotData = this.plotData.filter(d => d !== null && d !== undefined);
+    if (this.plotData.length == 0) {
+      return false;
+    }
+
+    // Prepare main data for bisection during target point dragging.
+    this.mainData = this.plotData[0].slice();
+    this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
+    this.xBisector = d3.bisector(point => point[this.x.name]).left;
+
+    // Reverse array of data so that lines are drawn in reverse for z-index
+    // purposes.
+    this.plotData.reverse();
+
+    return true;
+  }
+
+  private setupScales(): void {
     this.xScale = d3.scaleLinear().
       domain(this.x.range.toArray()).
       range([0, this.innerWidth]);
@@ -385,49 +379,83 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.yScale = d3.scaleLinear().
       domain(this.y.range.toArray().reverse()).
       range([0, this.innerHeight]);
+  }
 
-    // paths
-    plotData.reverse(); // plot lines in reverse for proper z-index
-    this.paths = plotData.map(d => {
+  private setupTargets(): void {
+    this.targets = this.modelSet.mapModels(model => {
+      let point = new Point(model[this.x.name], model[this.y.name]);
+      let target = new Target(point, this.xScale, this.yScale);
+      return target;
+    });
+    this.targets.reverse();
+  }
+
+  private setupPaths(): void {
+    this.paths = this.plotData.map(d => {
       let xName = this.x.name, xRange = this.x.range;
       let yName = this.y.name, yRange = this.y.range;
       return this.getPath(d, xName, yName, xRange, yRange);
     })
-
-    // drop paths
-    this.dropPaths = this.getDropPaths();
-
-    // target hover ranges
-    let xTargetPos = this.xScale(this.targetPoint.x);
-    this.xTargetRange = [xTargetPos - 5, xTargetPos + 5];
-    let yTargetPos = this.yScale(this.targetPoint.y);
-    this.yTargetRange = [yTargetPos - 5, yTargetPos + 5];
-    this.xBisector = d3.bisector(point => point[this.x.name]).left;
-
-    this.needDraw = true;
   }
 
-  private getDropPaths(): string[] {
-    let point = this.newTargetPoint || this.targetPoint;
-    let data = [
-      [
-        { x: this.xScale.domain()[0], y: point.y },
-        { x: point.x, y: point.y }
-      ],
-      [
-        { x: point.x, y: this.yScale.domain()[1] },
-        { x: point.x, y: point.y }
-      ],
-    ];
-    return data.map(subData => this.getPath(subData, 'x', 'y'));
+  private setup(): void {
+    if (!this.modelSet) {
+      return;
+    }
+
+    this.setupDimensions();
+    if (!this.setupParams()) {
+      // setting up parameters failed
+      return;
+    }
+    if (!this.setupPlotData()) {
+      // setting up plot data failed
+      return;
+    }
+    this.setupScales();
+    this.setupTargets();
+    this.setupPaths();
+
+    if (this.lastDragEvent) {
+      this.hover(this.lastDragEvent);
+      this.lastDragEvent = undefined;
+    }
+
+    this.needDraw = Draw.Yes;
   }
 
   private draw(): void {
-    if (!this.needDraw) {
+    if (this.needDraw == Draw.No) {
       return;
     }
 
     let svg = d3.select(this.plotElement.nativeElement);
+
+    if (this.hoverInfo != HoverInfo.Disabled) {
+      // draw hover info box
+      let box = svg.select(`#${this.name}-hover-info`);
+      let coords = svg.select(`#${this.name}-hover-coords`);
+      if (box.size() > 0 && coords.size() > 0) {
+        let dim = coords.node().getBBox();
+        let left = dim.x - 5, right = dim.x + dim.width + 5;
+        let unit = dim.width / 16;
+        let lmid = left + (7 * unit) + 5, rmid = left + (9 * unit) + 5;
+        let mid = left + (8 * unit) + 5;
+        let top = dim.y - 5, bottom = dim.y + dim.height + 5;
+        box.attr("d", d3.line()([
+          [left, top], [right, top], [right, bottom],
+          [rmid, bottom], [mid, bottom + 5], [lmid, bottom],
+          [left, bottom], [left, top]
+        ]));
+      }
+    }
+
+    if (this.needDraw == Draw.Hover) {
+      // only need to draw hover box
+      this.needDraw = Draw.No;
+      return;
+    }
+
     let t = svg.transition();
 
     // axes (drawn by d3)
@@ -452,33 +480,76 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
         path.attrTween("d", this.pathTween(this.paths[i], 4))
       }
     }
-    for (let i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
-      t.select(`#${this.name}-drop-${i}`).attr("d", this.dropPaths[i]);
+
+    // targets
+    for (let i = 0, ilen = this.targets.length; i < ilen; i++) {
+      let targetId = `#${this.name}-target-${i}`;
+      let target = this.targets[i];
+      t.select(targetId).
+        attr('cx', this.xScale(target.point.x)).
+        attr('cy', this.yScale(target.point.y));
+
+      // drop paths
+      for (let j = 0, jlen = target.dropPaths.length; j < jlen; j++) {
+        t.select(`${targetId}-drop-${j}`).attr("d", target.dropPaths[j]);
+      }
+
+      // drag
+      if (!this.disableDrag && i == (ilen - 1)) {
+        let target = svg.select(targetId);
+        let drag = d3.drag().
+          on("start", this.dragTargetStart.bind(this)).
+          on("drag", this.dragTarget.bind(this)).
+          on("end", this.dragTargetEnd.bind(this));
+        target.call(drag);
+      }
     }
 
-    // extra targets
-    for (let i = 0, ilen = this.extraTargets.length; i < ilen; i++) {
-      t.select(`#${this.name}-extra-target-${i}`).
-        attr('cx', this.xScale(this.extraTargets[i].x)).
-        attr('cy', this.yScale(this.extraTargets[i].y));
+    this.needDraw = Draw.No;
+  }
+
+  private dragTargetStart(): void {
+    this.targetDragging = true;
+  }
+
+  private dragTarget(event: any): void {
+    let x = this.xScale.invert(d3.event.x - this.margin);
+    if (x < this.x.range.min) {
+      x = this.x.range.min;
+    } else if (x > this.x.range.max) {
+      x = this.x.range.max;
     }
+    let index = this.xBisector(this.mainData, x);
+    let data = this.mainData[index];
+    if (!data) return;
 
-    // target
-    t.select('circle.target').
-      attr("cx", this.xScale(this.targetPoint.x)).
-      attr("cy", this.yScale(this.targetPoint.y));
+    let svg = d3.select(this.plotElement.nativeElement);
+    let targetIndex = this.targets.length - 1;
+    let targetId = `#${this.name}-target-${targetIndex}`;
+    let target = this.targets[targetIndex];
+    target.point.x = data[this.x.name];
+    target.point.y = data[this.y.name];
+    target.update(this.xScale, this.yScale);
 
-    // make target point draggable
-    if (!this.disableDrag) {
-      let target = d3.select(this.targetElement.nativeElement);
-      let drag = d3.drag().
-        on("start", this.dragTargetStart.bind(this)).
-        on("drag", this.dragTarget.bind(this)).
-        on("end", this.dragTargetEnd.bind(this));
-      target.call(drag);
+    svg.select(targetId).
+      attr("cx", this.xScale(target.point.x)).
+      attr("cy", this.yScale(target.point.y));
+
+    for (let i = 0, ilen = target.dropPaths.length; i < ilen; i++) {
+      svg.select(`${targetId}-drop-${i}`).attr("d", target.dropPaths[i]);
     }
+  }
 
-    this.needDraw = false;
+  private dragTargetEnd(event: any): void {
+    this.targetDragging = false;
+
+    if (this.modelSet && this.x.name) {
+      let model = this.modelSet.getModel(0);
+      model.update({
+        [this.x.name]: this.targets[this.targets.length - 1].point.x
+      });
+      this.lastDragEvent = event;
+    }
   }
 
   // from https://bl.ocks.org/mbostock/3916621

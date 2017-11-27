@@ -349,6 +349,12 @@ export class TTestSet {
     }, initial);
   }
 
+  mapModels(callback: Function): any {
+    return this.models.map((m, i) => {
+      return callback(m.model, i);
+    });
+  }
+
   private calcRangeAttributes(model: TTest, data: TTestData, skip?: string): any {
     let n, power, delta, pSpace, indices, values, min, max;
     let deltaMax = 1.5 * model.sigma;
