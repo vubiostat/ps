@@ -604,8 +604,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   }
 
   private dragLegend(): void {
-    this.legendOffsetX = d3.event.x - this.margin - 15;
-    this.legendOffsetY = d3.event.y - this.margin - 15;
+    this.legendOffsetX += d3.event.dx;
+    this.legendOffsetY += d3.event.dy;
   }
 
   // from https://bl.ocks.org/mbostock/3916621
