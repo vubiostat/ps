@@ -205,7 +205,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   }
 
   hoverInfoY(): string {
-    let mainTarget = this.targets[this.targets.length - 1];
+    let mainTarget = this.targets[0];
     if (this.hoverY < mainTarget.yRange[0]) {
       return "-3.5em";
     }
@@ -226,6 +226,14 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   hideHoverInfo(): void {
     this.hoverInfo = HoverInfo.Disabled;
+  }
+
+  getColor(index: number): string {
+    return this.palette.getColor(index, this.plotOptions.paletteTheme);
+  }
+
+  invertIndex(invertedIndex: number, array: any[]): number {
+    return array.length - invertedIndex - 1;
   }
 
   private setupDimensions(): void {
@@ -364,10 +372,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
     this.xBisector = d3.bisector(point => point[this.x.name]).left;
 
-    // Reverse array of data so that lines are drawn in reverse for z-index
-    // purposes.
-    this.plotData.reverse();
-
     return true;
   }
 
@@ -387,7 +391,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       let target = new Target(point, this.xScale, this.yScale);
       return target;
     });
-    this.targets.reverse();
   }
 
   private setupPaths(): void {
@@ -495,13 +498,13 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       }
 
       // drag
-      if (!this.disableDrag && i == (ilen - 1)) {
+      if (!this.disableDrag && i == 0) {
         let target = svg.select(targetId);
-        let drag = d3.drag().
+        let targetDrag = d3.drag().
           on("start", this.dragTargetStart.bind(this)).
           on("drag", this.dragTarget.bind(this)).
           on("end", this.dragTargetEnd.bind(this));
-        target.call(drag);
+        target.call(targetDrag);
       }
     }
 
@@ -524,9 +527,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     if (!data) return;
 
     let svg = d3.select(this.plotElement.nativeElement);
-    let targetIndex = this.targets.length - 1;
-    let targetId = `#${this.name}-target-${targetIndex}`;
-    let target = this.targets[targetIndex];
+    let targetId = `#${this.name}-target-0`;
+    let target = this.targets[0];
     target.point.x = data[this.x.name];
     target.point.y = data[this.y.name];
     target.update(this.xScale, this.yScale);
@@ -546,7 +548,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     if (this.modelSet && this.x.name) {
       let model = this.modelSet.getModel(0);
       model.update({
-        [this.x.name]: this.targets[this.targets.length - 1].point.x
+        [this.x.name]: this.targets[0].point.x
       });
       this.lastDragEvent = event;
     }

@@ -32,16 +32,16 @@
       {{title}}
     </text>
 
-    <g *ngFor="let path of paths; index as i; trackBy: trackByIndex"
+    <g *ngFor="let path of paths | reverse; index as invIndex; trackBy: trackByIndex"
       [attr.transform]="translate(margin, margin)">
       <path
-        id="{{name}}-path-{{i}}"
+        id="{{name}}-path-{{invertIndex(invIndex, paths)}}"
         attr.clip-path="url(#{{name}}-plot-area)"
-        [attr.stroke]="palette.getColor(paths.length - 1 - i, plotOptions.paletteTheme)"
+        [attr.stroke]="getColor(invertIndex(invIndex, paths))"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         [attr.stroke-dasharray]="plotOptions.dashArray()"
         [attr.stroke-linecap]="plotOptions.lineCap()"
-        [attr.opacity]="(paths.length - 1) == i ? 1 : 0.7"
+        [attr.opacity]="invertIndex(i, paths) == 0 ? 1 : 0.7"
         fill="none" />
     </g>
 
@@ -55,22 +55,22 @@
       (mousemove)="hover($event)" />
 
     <ng-template [ngIf]="!hideTarget">
-      <g *ngFor="let target of targets; index as targetIndex; trackBy: trackByIndex">
+      <g *ngFor="let target of targets | reverse; index as invIndex; trackBy: trackByIndex">
         <ng-template [ngIf]="!hideDropLines">
-          <g *ngFor="let path of target.dropPaths; index as dropPathIndex; trackBy: trackByIndex"
+          <g *ngFor="let path of target.dropPaths; index as dpIndex; trackBy: trackByIndex"
             [attr.transform]="translate(margin, margin)">
-            <path id="{{name}}-target-{{targetIndex}}-drop-{{dropPathIndex}}"
+            <path id="{{name}}-target-{{invertIndex(invIndex, targets)}}-drop-{{dpIndex}}"
               attr.clip-path="url(#{{name}}-plot-area)"
-              [attr.stroke]="palette.getColor(targets.length - targetIndex - 1, plotOptions.paletteTheme)"
+              [attr.stroke]="getColor(invertIndex(invIndex, targets))"
               [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
               stroke-dasharray="5, 5"
               fill="none" />
           </g>
         </ng-template>
-        <circle id="{{name}}-target-{{targetIndex}}" class="target" r="5"
+        <circle id="{{name}}-target-{{invertIndex(invIndex, targets)}}" class="target" r="5"
           [attr.transform]="translate(margin, margin)"
           attr.clip-path="url(#{{name}}-target-area)"
-          [attr.fill]="palette.getColor(targets.length - targetIndex - 1, plotOptions.paletteTheme)"
+          [attr.fill]="getColor(invertIndex(invIndex, targets))"
           (mousemove)="hover($event, target)" />
       </g>
     </ng-template>
