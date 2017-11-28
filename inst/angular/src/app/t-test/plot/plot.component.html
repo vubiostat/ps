@@ -75,6 +75,21 @@
       </g>
     </ng-template>
 
+    <g id="{{name}}-legend" class="legend"
+       *ngIf="targets.length > 1"
+       [attr.transform]="translate(margin + 15 + legendOffsetX, margin + 15 + legendOffsetY)"
+       font-size="smaller">
+      <path id="{{name}}-legend-box" fill="white" stroke="black" />
+      <g id="{{name}}-legend-labels">
+        <g *ngFor="let target of targets; index as i; trackBy: trackByIndex"
+           [attr.transform]="translate(5, 20 * plotOptions.fontSize * i)">
+          <circle r="5" stroke="none"
+            [attr.fill]="getColor(i)" />
+          <text x="10" y="5">{{legendLabel(i)}}</text>
+        </g>
+      </g>
+    </g>
+
     <g *ngIf="isHoverInfoActive()"
       [attr.transform]="translate(margin + hoverX, margin + hoverY)">
       <circle *ngIf="!isHoverInfoTarget()" r="4" fill="none" stroke="blue" />

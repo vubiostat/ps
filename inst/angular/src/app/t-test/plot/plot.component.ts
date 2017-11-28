@@ -140,6 +140,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   hoverPoint: Point;
   hoverInfo = HoverInfo.Disabled;
   lastDragEvent: any;
+  legendOffsetX = 0;
+  legendOffsetY = 0;
 
   targetDragging = false;
   needDraw = Draw.No;
@@ -234,6 +236,33 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   invertIndex(invertedIndex: number, array: any[]): number {
     return array.length - invertedIndex - 1;
+  }
+
+  legendLabel(index: number): string {
+    switch (index) {
+      case 0:
+        return "Primary";
+      case 1:
+        return "Secondary";
+      case 2:
+        return "Tertiary";
+      case 3:
+        return "Quaternary";
+      case 4:
+        return "Quinary";
+      case 5:
+        return "Senary";
+      case 6:
+        return "Septenary";
+      case 7:
+        return "Octonary";
+      case 8:
+        return "Nonary";
+      case 9:
+        return "Denary";
+      default:
+        return `Line ${index + 1}`;
+    }
   }
 
   private setupDimensions(): void {
@@ -508,6 +537,26 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       }
     }
 
+    // legend box
+    if (this.targets.length > 1) {
+      let box = svg.select(`#${this.name}-legend-box`);
+      let labels = svg.select(`#${this.name}-legend-labels`);
+      if (box.size() > 0 && labels.size() > 0) {
+        let dim = labels.node().getBBox();
+        let left = dim.x - 5, right = dim.x + dim.width + 5;
+        let top = dim.y - 5, bottom = dim.y + dim.height + 5;
+        box.attr("d", d3.line()([
+          [left, top], [right, top], [right, bottom],
+          [left, bottom], [left, top]
+        ]));
+      }
+
+      let legend = svg.select(`#${this.name}-legend`);
+      let legendDrag = d3.drag().
+        on("drag", this.dragLegend.bind(this));
+      legend.call(legendDrag);
+    }
+
     this.needDraw = Draw.No;
   }
 
@@ -552,6 +601,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       });
       this.lastDragEvent = event;
     }
+  }
+
+  private dragLegend(): void {
+    this.legendOffsetX = d3.event.x - this.margin - 15;
+    this.legendOffsetY = d3.event.y - this.margin - 15;
   }
 
   // from https://bl.ocks.org/mbostock/3916621
