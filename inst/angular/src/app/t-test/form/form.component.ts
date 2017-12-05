@@ -17,7 +17,7 @@ export class FormComponent implements OnInit {
   model: TTest;
   min: TTest;
   max: TTest;
-  extraModels: TTest[];
+  models: TTest[];
 
   constructor(
     private plotOptions: PlotOptionsService,
@@ -27,7 +27,7 @@ export class FormComponent implements OnInit {
 
   ngOnInit(): void {
     this.model = this.modelSet.getModel(0);
-    this.extraModels = this.modelSet.extraModels();
+    this.models = this.modelSet.getModels();
     this.model.onChange.
       debounceTime(100).
       subscribe(event => {
@@ -59,7 +59,7 @@ export class FormComponent implements OnInit {
   }
 
   getColor(index: number): string {
-    return this.palette.getColor(index);
+    return this.palette.getColor(this.models.length - 1 - index);
   }
 
   addInput(name: any): void {
@@ -75,7 +75,7 @@ export class FormComponent implements OnInit {
       subscribe(event => {
         this.modelChanged(index, event);
       });
-    this.extraModels = this.modelSet.extraModels();
+    this.models = this.modelSet.getModels();
   }
 
   removeInput(index: number): void {
@@ -83,6 +83,7 @@ export class FormComponent implements OnInit {
     if (this.modelSet.models.length == 1) {
       this.modelSet.extraName = undefined;
     }
+    this.models = this.modelSet.getModels();
   }
 
   trackByExtra(index: number, item: number): number {

@@ -133,7 +133,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   plotData: any[];
   paths: string[];
   mainData: any[];
-  targets: Target[] = [];
+  mainTarget: Target;
   xBisector: any;
   hoverX: number;
   hoverY: number;
@@ -207,8 +207,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   }
 
   hoverInfoY(): string {
-    let mainTarget = this.targets[0];
-    if (this.hoverY < mainTarget.yRange[0]) {
+    if (this.hoverY < this.mainTarget.yRange[0]) {
       return "-3.5em";
     }
     return "1em";
@@ -230,7 +229,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     this.hoverInfo = HoverInfo.Disabled;
   }
 
-  getColor(index: number): string {
+  getPathColor(index: number, invert = true): string {
+    // NOTE: This is done backwards from common sense on purpose.
+    if (!invert) {
+      index = this.paths.length - index - 1;
+    }
     return this.palette.getColor(index, this.plotOptions.paletteTheme);
   }
 
@@ -263,6 +266,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       default:
         return `Line ${index + 1}`;
     }
+  }
+
+  getClipPath(which: string): string {
+    return `url(${this.name}-${which}-area)`;
   }
 
   private setupDimensions(): void {
@@ -414,12 +421,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       range([0, this.innerHeight]);
   }
 
-  private setupTargets(): void {
-    this.targets = this.modelSet.mapModels(model => {
-      let point = new Point(model[this.x.name], model[this.y.name]);
-      let target = new Target(point, this.xScale, this.yScale);
-      return target;
-    });
+  private setupTarget(): void {
+    let model = this.modelSet.getModel(0);
+    let point = new Point(model[this.x.name], model[this.y.name]);
+    this.mainTarget = new Target(point, this.xScale, this.yScale);
   }
 
   private setupPaths(): void {
@@ -445,7 +450,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       return;
     }
     this.setupScales();
-    this.setupTargets();
+    this.setupTarget();
     this.setupPaths();
 
     if (this.lastDragEvent) {
@@ -513,32 +518,29 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       }
     }
 
-    // targets
-    for (let i = 0, ilen = this.targets.length; i < ilen; i++) {
-      let targetId = `#${this.name}-target-${i}`;
-      let target = this.targets[i];
-      t.select(targetId).
-        attr('cx', this.xScale(target.point.x)).
-        attr('cy', this.yScale(target.point.y));
+    // target
+    let targetId = `#${this.name}-target`;
+    t.select(targetId).
+      attr('cx', this.xScale(this.mainTarget.point.x)).
+      attr('cy', this.yScale(this.mainTarget.point.y));
 
-      // drop paths
-      for (let j = 0, jlen = target.dropPaths.length; j < jlen; j++) {
-        t.select(`${targetId}-drop-${j}`).attr("d", target.dropPaths[j]);
-      }
+    // drop paths
+    for (let i = 0, ilen = this.mainTarget.dropPaths.length; i < ilen; i++) {
+      t.select(`${targetId}-drop-${i}`).attr("d", this.mainTarget.dropPaths[i]);
+    }
 
-      // drag
-      if (!this.disableDrag && i == 0) {
-        let target = svg.select(targetId);
-        let targetDrag = d3.drag().
-          on("start", this.dragTargetStart.bind(this)).
-          on("drag", this.dragTarget.bind(this)).
-          on("end", this.dragTargetEnd.bind(this));
-        target.call(targetDrag);
-      }
+    // drag
+    if (!this.disableDrag) {
+      let target = svg.select(targetId);
+      let targetDrag = d3.drag().
+        on("start", this.dragTargetStart.bind(this)).
+        on("drag", this.dragTarget.bind(this)).
+        on("end", this.dragTargetEnd.bind(this));
+      target.call(targetDrag);
     }
 
     // legend box
-    if (this.targets.length > 1) {
+    if (this.paths.length > 1) {
       let box = svg.select(`#${this.name}-legend-box`);
       let labels = svg.select(`#${this.name}-legend-labels`);
       if (box.size() > 0 && labels.size() > 0) {
@@ -576,18 +578,17 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     if (!data) return;
 
     let svg = d3.select(this.plotElement.nativeElement);
-    let targetId = `#${this.name}-target-0`;
-    let target = this.targets[0];
-    target.point.x = data[this.x.name];
-    target.point.y = data[this.y.name];
-    target.update(this.xScale, this.yScale);
+    let targetId = `#${this.name}-target`;
+    this.mainTarget.point.x = data[this.x.name];
+    this.mainTarget.point.y = data[this.y.name];
+    this.mainTarget.update(this.xScale, this.yScale);
 
     svg.select(targetId).
-      attr("cx", this.xScale(target.point.x)).
-      attr("cy", this.yScale(target.point.y));
+      attr("cx", this.xScale(this.mainTarget.point.x)).
+      attr("cy", this.yScale(this.mainTarget.point.y));
 
-    for (let i = 0, ilen = target.dropPaths.length; i < ilen; i++) {
-      svg.select(`${targetId}-drop-${i}`).attr("d", target.dropPaths[i]);
+    for (let i = 0, ilen = this.mainTarget.dropPaths.length; i < ilen; i++) {
+      svg.select(`${targetId}-drop-${i}`).attr("d", this.mainTarget.dropPaths[i]);
     }
   }
 
@@ -597,7 +598,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     if (this.modelSet && this.x.name) {
       let model = this.modelSet.getModel(0);
       model.update({
-        [this.x.name]: this.targets[0].point.x
+        [this.x.name]: this.mainTarget.point.x
       });
       this.lastDragEvent = event;
     }

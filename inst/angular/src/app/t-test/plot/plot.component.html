@@ -36,8 +36,8 @@
       [attr.transform]="translate(margin, margin)">
       <path
         id="{{name}}-path-{{invertIndex(invIndex, paths)}}"
-        attr.clip-path="url(#{{name}}-plot-area)"
-        [attr.stroke]="getColor(invertIndex(invIndex, paths))"
+        [attr.clip-path]="getClipPath('plot')"
+        [attr.stroke]="getPathColor(invIndex)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
         [attr.stroke-dasharray]="plotOptions.dashArray()"
         [attr.stroke-linecap]="plotOptions.lineCap()"
@@ -54,37 +54,35 @@
       (mouseout)="hideHoverInfo()"
       (mousemove)="hover($event)" />
 
-    <ng-template [ngIf]="!hideTarget">
-      <g *ngFor="let target of targets | reverse; index as invIndex; trackBy: trackByIndex">
-        <ng-template [ngIf]="!hideDropLines">
-          <g *ngFor="let path of target.dropPaths; index as dpIndex; trackBy: trackByIndex"
-            [attr.transform]="translate(margin, margin)">
-            <path id="{{name}}-target-{{invertIndex(invIndex, targets)}}-drop-{{dpIndex}}"
-              attr.clip-path="url(#{{name}}-plot-area)"
-              [attr.stroke]="getColor(invertIndex(invIndex, targets))"
-              [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
-              stroke-dasharray="5, 5"
-              fill="none" />
-          </g>
-        </ng-template>
-        <circle id="{{name}}-target-{{invertIndex(invIndex, targets)}}" class="target" r="5"
-          [attr.transform]="translate(margin, margin)"
-          attr.clip-path="url(#{{name}}-target-area)"
-          [attr.fill]="getColor(invertIndex(invIndex, targets))"
-          (mousemove)="hover($event, target)" />
-      </g>
-    </ng-template>
+    <g *ngIf="!hideTarget">
+      <ng-template [ngIf]="!hideDropLines">
+        <g *ngFor="let path of mainTarget.dropPaths; index as dpIndex; trackBy: trackByIndex"
+          [attr.transform]="translate(margin, margin)">
+          <path id="{{name}}-target-drop-{{dpIndex}}"
+            [attr.clip-path]="getClipPath('plot')"
+            stroke="red"
+            [attr.stroke-width]="plotOptions.lineWidth * 3 / 2"
+            stroke-dasharray="5, 5"
+            fill="none" />
+        </g>
+      </ng-template>
+      <circle id="{{name}}-target" class="target" r="5"
+        [attr.transform]="translate(margin, margin)"
+        [attr.clip-path]="getClipPath('target')"
+        fill="red"
+        (mousemove)="hover($event, mainTarget)" />
+    </g>
 
     <g id="{{name}}-legend" class="legend"
-       *ngIf="targets.length > 1"
+       *ngIf="paths.length > 1"
        [attr.transform]="translate(margin + 15 + legendOffsetX, margin + 15 + legendOffsetY)"
        font-size="smaller">
       <path id="{{name}}-legend-box" fill="white" stroke="black" />
       <g id="{{name}}-legend-labels">
-        <g *ngFor="let target of targets; index as i; trackBy: trackByIndex"
+        <g *ngFor="let path of paths; index as i; trackBy: trackByIndex"
            [attr.transform]="translate(5, 20 * plotOptions.fontSize * i)">
           <circle r="5" stroke="none"
-            [attr.fill]="getColor(i)" />
+            [attr.fill]="getPathColor(i)" />
           <text x="10" y="5">{{legendLabel(i)}}</text>
         </g>
       </g>

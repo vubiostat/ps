@@ -355,6 +355,10 @@ export class TTestSet {
     });
   }
 
+  getModels(): TTest[] {
+    return this.mapModels(m => m);
+  }
+
   private calcRangeAttributes(model: TTest, data: TTestData, skip?: string): any {
     let n, power, delta, pSpace, indices, values, min, max;
     let deltaMax = 1.5 * model.sigma;
