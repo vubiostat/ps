@@ -67,6 +67,12 @@
         <option value="dotted">Dotted</option>
       </select>
     </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="checkbox" [(ngModel)]="plotOptions.showLegendBox" />
+        Display legend background
+      </label>
+    </div>
   </fieldset>
   <fieldset>
     <legend *ngIf="model.output == 'n'">Sample Size</legend>

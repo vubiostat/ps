@@ -77,7 +77,9 @@
        *ngIf="paths.length > 1"
        [attr.transform]="translate(margin + 15 + legendOffsetX, margin + 15 + legendOffsetY)"
        font-size="smaller">
-      <path id="{{name}}-legend-box" fill="white" stroke="black" />
+      <path id="{{name}}-legend-box"
+            fill="white" [attr.fill-opacity]="plotOptions.showLegendBox ? 0.8 : 0"
+            stroke="black" [attr.stroke-opacity]="plotOptions.showLegendBox ? 1 : 0" />
       <g id="{{name}}-legend-labels">
         <g *ngFor="let path of paths; index as i; trackBy: trackByIndex"
            [attr.transform]="translate(5, 20 * plotOptions.fontSize * i)">

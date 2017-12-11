@@ -12,6 +12,7 @@ export class PlotOptionsService extends ChangeEmitter {
   @Changeable axisLineWidth: number;
   @Changeable paletteTheme: string;
   @Changeable lineStyle: string;
+  @Changeable showLegendBox: boolean;
 
   constructor() {
     super();
@@ -26,7 +27,8 @@ export class PlotOptionsService extends ChangeEmitter {
       lineWidth: 1,
       axisLineWidth: 1,
       paletteTheme: "plasma",
-      lineStyle: "solid"
+      lineStyle: "solid",
+      showLegendBox: true
     }, emit);
   }
 
@@ -40,7 +42,8 @@ export class PlotOptionsService extends ChangeEmitter {
       lineWidth: this.lineWidth,
       axisLineWidth: this.axisLineWidth,
       paletteTheme: this.paletteTheme,
-      lineStyle: this.lineStyle
+      lineStyle: this.lineStyle,
+      showLegendBox: this.showLegendBox
     });
   }
 
@@ -67,6 +70,9 @@ export class PlotOptionsService extends ChangeEmitter {
     }
     if ('lineStyle' in attribs) {
       this.lineStyle = attribs.lineStyle;
+    }
+    if ('showLegendBox' in attribs) {
+      this.showLegendBox = attribs.showLegendBox;
     }
     this.noEmit = false;
     if (emit) {
