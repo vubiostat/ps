@@ -13,6 +13,11 @@ export class PlotOptionsService extends ChangeEmitter {
   @Changeable paletteTheme: string;
   @Changeable lineStyle: string;
   @Changeable showLegendBox: boolean;
+  @Changeable legendLabel0: string;
+  @Changeable legendLabel1: string;
+  @Changeable legendLabel2: string;
+  @Changeable legendLabel3: string;
+  @Changeable legendLabel4: string;
 
   constructor() {
     super();
@@ -28,7 +33,12 @@ export class PlotOptionsService extends ChangeEmitter {
       axisLineWidth: 1,
       paletteTheme: "plasma",
       lineStyle: "solid",
-      showLegendBox: true
+      showLegendBox: true,
+      legendLabel0: "Primary",
+      legendLabel1: "Secondary",
+      legendLabel2: "Tertiary",
+      legendLabel3: "Quaternary",
+      legendLabel4: "Quinary",
     }, emit);
   }
 
@@ -43,7 +53,12 @@ export class PlotOptionsService extends ChangeEmitter {
       axisLineWidth: this.axisLineWidth,
       paletteTheme: this.paletteTheme,
       lineStyle: this.lineStyle,
-      showLegendBox: this.showLegendBox
+      showLegendBox: this.showLegendBox,
+      legendLabel0: this.legendLabel0,
+      legendLabel1: this.legendLabel1,
+      legendLabel2: this.legendLabel2,
+      legendLabel3: this.legendLabel3,
+      legendLabel4: this.legendLabel4,
     });
   }
 
@@ -74,6 +89,21 @@ export class PlotOptionsService extends ChangeEmitter {
     if ('showLegendBox' in attribs) {
       this.showLegendBox = attribs.showLegendBox;
     }
+    if ('legendLabel0' in attribs) {
+      this.legendLabel0 = attribs.legendLabel0;
+    }
+    if ('legendLabel1' in attribs) {
+      this.legendLabel1 = attribs.legendLabel1;
+    }
+    if ('legendLabel2' in attribs) {
+      this.legendLabel2 = attribs.legendLabel2;
+    }
+    if ('legendLabel3' in attribs) {
+      this.legendLabel3 = attribs.legendLabel3;
+    }
+    if ('legendLabel4' in attribs) {
+      this.legendLabel4 = attribs.legendLabel4;
+    }
     this.noEmit = false;
     if (emit) {
       this.emit();
@@ -98,5 +128,47 @@ export class PlotOptionsService extends ChangeEmitter {
       return "round";
     }
     return "";
+  }
+
+  legendLabel(index: number): string {
+    let result = this[`legendLabel${index}`];
+    if (!result) {
+      switch (index) {
+        case 0:
+          result = "Primary";
+          break;
+        case 1:
+          result = "Secondary";
+          break;
+        case 2:
+          result = "Tertiary";
+          break;
+        case 3:
+          result = "Quaternary";
+          break;
+        case 4:
+          result = "Quinary";
+          break;
+        case 5:
+          result = "Senary";
+          break;
+        case 6:
+          result = "Septenary";
+          break;
+        case 7:
+          result = "Octonary";
+          break;
+        case 8:
+          result = "Nonary";
+          break;
+        case 9:
+          result = "Denary";
+          break;
+        default:
+          result = `Line ${index + 1}`;
+          break;
+      }
+    }
+    return result;
   }
 }

@@ -242,30 +242,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   }
 
   legendLabel(index: number): string {
-    switch (index) {
-      case 0:
-        return "Primary";
-      case 1:
-        return "Secondary";
-      case 2:
-        return "Tertiary";
-      case 3:
-        return "Quaternary";
-      case 4:
-        return "Quinary";
-      case 5:
-        return "Senary";
-      case 6:
-        return "Septenary";
-      case 7:
-        return "Octonary";
-      case 8:
-        return "Nonary";
-      case 9:
-        return "Denary";
-      default:
-        return `Line ${index + 1}`;
-    }
+    return this.plotOptions.legendLabel(index);
   }
 
   getClipPath(which: string): string {
