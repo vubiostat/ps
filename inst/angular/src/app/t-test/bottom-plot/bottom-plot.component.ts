@@ -129,7 +129,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     }
   }
 
-  getColor(index: number): string {
+  getColor(index: number, invert = true): string {
+    if (invert) {
+      index = this.groups.length - index;
+    }
     return this.palette.getColor(index, this.plotOptions.paletteTheme);
   }
 
