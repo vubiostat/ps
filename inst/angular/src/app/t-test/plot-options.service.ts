@@ -33,7 +33,7 @@ export class PlotOptionsService extends ChangeEmitter {
       axisLineWidth: 1,
       paletteTheme: "plasma",
       lineStyle: "solid",
-      showLegendBox: true,
+      showLegendBox: false,
       legendLabel0: "Primary",
       legendLabel1: "Secondary",
       legendLabel2: "Tertiary",
