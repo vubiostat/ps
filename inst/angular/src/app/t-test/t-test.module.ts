@@ -25,6 +25,7 @@ import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.co
 import { RoundPipe } from './round.pipe';
 import { CeilPipe } from './ceil.pipe';
 import { ReversePipe } from './reverse.pipe';
+import { FormatFixedPipe } from './format-fixed.pipe';
 
 const routes: Routes = [
   { path: 't-test', component: TTestComponent },
@@ -49,6 +50,7 @@ const routes: Routes = [
     RoundPipe,
     CeilPipe,
     ReversePipe,
+    FormatFixedPipe,
   ],
   imports: [
     CommonModule,

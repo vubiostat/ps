@@ -68,6 +68,7 @@
         fill="none" />
 
       <path #leftBar id="{{name}}-main-left" class="bar"
+        [class.drag-disabled]="disableDragCI"
         attr.clip-path="url(#{{name}}-plot-area)"
         [attr.stroke]="getColor(0)"
         [attr.stroke-width]="plotOptions.lineWidth * 4"
@@ -78,13 +79,16 @@
         (mouseout)="toggleLeftBarInfo(false)" />
 
       <g *ngIf="showLeftBarInfo"
-        [attr.transform]="translate(xScale(mainGroup.left + barOffset) - (4 * unitLength), yScale(0.5))">
-        <rect x="0" y="-3.5em" width="8em" height="1.5em"
+        [attr.transform]="translate(xScale(mainGroup.left + barOffset), yScale(0.5))">
+        <path id="{{name}}-left-box"
           stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
-        <text x="1em" y="-2.5em">95% CI: {{ciWidth() | round}}</text>
+        <text id="{{name}}-left-coords" x="0" y="-3em" font-family="mono" text-anchor="middle">
+          <tspan style="white-space: pre">95% CI: {{ciWidth() | formatFixed:[mainGroup.left]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.left | formatFixed:[ciWidth()]}}</tspan>
+        </text>
       </g>
 
       <path #rightBar id="{{name}}-main-right" class="bar"
+        [class.drag-disabled]="disableDragCI"
         attr.clip-path="url(#{{name}}-plot-area)"
         [attr.stroke]="getColor(0)"
         [attr.stroke-width]="plotOptions.lineWidth * 4"
@@ -95,23 +99,25 @@
         (mouseout)="toggleRightBarInfo(false)" />
 
       <g *ngIf="showRightBarInfo"
-        [attr.transform]="translate(xScale(mainGroup.right - barOffset) - (4 * unitLength), yScale(0.5))">
-        <rect x="0" y="-3.5em" width="8em" height="1.5em"
+        [attr.transform]="translate(xScale(mainGroup.right - barOffset), yScale(0.5))">
+        <path id="{{name}}-right-box"
           stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
-        <text x="1em" y="-2.5em">95% CI: {{ciWidth() | round}}</text>
+        <text id="{{name}}-right-coords" x="0" y="-3em" font-family="mono" text-anchor="middle">
+          <tspan style="white-space: pre">95% CI: {{ciWidth() | formatFixed:[mainGroup.right]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.right | formatFixed:[ciWidth()]}}</tspan>
+        </text>
       </g>
 
       <g *ngIf="showTargetInfo"
         [attr.transform]="translate(xScale(mainGroup.target), yScale(0.5))">
-        <rect x="0" y="-3.5em" width="6em" height="1.5em"
-          stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
-        <text x="1em" y="-3.5em">
-          <tspan dy="1em" text-anchor="right">&delta;:</tspan>
-          <tspan x="2.5em" text-anchor="left">{{(mainGroup.target + targetOffset) | round}}</tspan>
+        <path id="{{name}}-target-box"
+          stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
+        <text id="{{name}}-target-coords" x="0" y="-1.5em" font-family="mono" text-anchor="middle">
+          <tspan style="white-space: pre">&delta;: {{mainGroup.target + targetOffset | formatFixed:[]}}</tspan>
         </text>
       </g>
 
       <circle #target id="{{name}}-main-target" class="target"
+        [class.drag-disabled]="disableDragTarget"
         attr.clip-path="url(#{{name}}-plot-area)"
         r="5"
         [attr.fill]="getColor(0)"

@@ -1,5 +1,5 @@
 import {
-  Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewChecked,
+  Component, Input, OnChanges, SimpleChanges, AfterViewChecked,
   ViewChild, ElementRef, ViewEncapsulation
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/debounceTime';
 
 import * as d3 from 'd3';
 
-import { AbstractPlotComponent } from '../abstract-plot.component';
+import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
 import { TTestSet } from '../t-test';
 import { Range } from '../range';
 import { PlotOptionsService } from '../plot-options.service';
@@ -36,31 +36,20 @@ enum CIBar {
   styleUrls: ['./bottom-plot.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class BottomPlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
+export class BottomPlotComponent extends AbstractPlotComponent implements OnChanges, AfterViewChecked {
   @Input('model-set') modelSet: TTestSet;
-  @Input('fixed-width') fixedWidth: number;
-  @Input('fixed-height') fixedHeight: number;
   @Input('disable-drag-target') disableDragTarget = false;
   @Input('disable-drag-ci') disableDragCI = false;
 
-  @ViewChild('unit') unitElement: ElementRef;
   @ViewChild('target') targetElement: ElementRef;
   @ViewChild('leftBar') leftBarElement: ElementRef;
   @ViewChild('rightBar') rightBarElement: ElementRef;
 
-  title = "Precision vs. Effect Size";
-  margin: number = 50;
-  width: number;
-  height: number;
-  innerWidth: number;
-  innerHeight: number;
-  unitLength: number;
-  xScale: any;
-  yScale: any;
   yScaleSD: any;
+  plotData: any[];
   mainGroup: Group;
   groups: Group[];
-  needDraw: boolean;
+  needDraw = Draw.No;
 
   // target dragging
   targetOffset = 0;
@@ -79,13 +68,12 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
 
   private subscription: Subscription;
 
-  constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) {
-    super();
-  }
-
-  ngOnInit() {
-    this.plotOptions.onChange.subscribe(this.compute.bind(this));
-    this.compute();
+  constructor(
+    public plotOptions: PlotOptionsService,
+    public palette: PaletteService
+  ) {
+    super(plotOptions, palette);
+    this.title = "Precision (95% Confidence Interval) vs. Effect Size";
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -95,11 +83,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       }
       if (this.modelSet) {
         let observable = Observable.merge(this.modelSet.onCompute, this.modelSet.onChange);
-        this.subscription = observable.debounceTime(10).subscribe(this.compute.bind(this));
-        this.compute();
+        this.subscription = observable.debounceTime(10).subscribe(this.setup.bind(this));
+        this.setup();
       }
     } else if (changes.fixedWidth || changes.fixedHeight) {
-      this.compute();
+      this.setup();
     }
   }
 
@@ -108,24 +96,33 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
   }
 
   redraw(): void {
-    this.compute();
+    this.setup();
   }
 
   toggleTargetInfo(value: boolean): void {
     if (!this.targetDragging && !this.barDragging) {
       this.showTargetInfo = value;
+      if (value) {
+        this.needDraw = Draw.Hover;
+      }
     }
   }
 
   toggleLeftBarInfo(value: boolean): void {
     if (!this.targetDragging && !this.barDragging) {
       this.showLeftBarInfo = value;
+      if (value) {
+        this.needDraw = Draw.Hover;
+      }
     }
   }
 
   toggleRightBarInfo(value: boolean): void {
     if (!this.targetDragging && !this.barDragging) {
       this.showRightBarInfo = value;
+      if (value) {
+        this.needDraw = Draw.Hover;
+      }
     }
   }
 
@@ -140,37 +137,26 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
     return index;
   }
 
-  private compute(): void {
+  protected setup(): void {
     if (!this.modelSet) {
       return;
     }
 
-    // margin
-    let unitBox = this.unitElement.nativeElement.getBBox();
-    if (unitBox && unitBox.width) {
-      this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
-      this.unitLength = unitBox.width;
-    }
+    this.setupDimensions();
+    this.setupPlotData();
+    this.setupScales();
+    this.setupGroups();
+    this.resetDragging();
 
-    // dimensions
-    if (this.fixedWidth) {
-      this.width = this.fixedWidth;
-    } else {
-      this.width = this.getDimension('width');
-    }
+    this.needDraw = Draw.Yes;
+  }
 
-    if (this.fixedHeight) {
-      this.height = this.fixedHeight;
-    } else {
-      this.height = this.getDimension('height');
-    }
-    this.innerWidth  = this.width  - (this.margin * 2);
-    this.innerHeight = this.height - (this.margin * 2);
+  private setupPlotData(): void {
+    this.plotData = this.modelSet.models.map(m => m.data.tertiary);
+  }
 
+  private setupScales(): void {
     let ranges = this.modelSet.ranges;
-    let data = this.modelSet.models.map(m => m.data.tertiary);
-
-    // compute scales
     this.xScale = d3.scaleLinear().
       domain(ranges.pSpace.toArray()).
       range([0, this.innerWidth]);
@@ -179,7 +165,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       domain([0, 0.8]).
       range([0, this.innerHeight]);
 
-    let sampDistExtent = data.reduce((arr, subData) => {
+    let sampDistExtent = this.plotData.reduce((arr, subData) => {
       let extent = d3.extent(subData.data, d => d.sampDist);
       return d3.extent(arr.concat(extent));
     }, []);
@@ -187,8 +173,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       domain(sampDistExtent.reverse()).
       range([0, this.yScale(0.5)]).
       clamp(true);
+  }
 
-    this.groups = data.reverse().map(subData => {
+  private setupGroups(): void {
+    this.groups = this.plotData.reverse().map(subData => {
       // main lines
       let leftLimit = subData.range[0];
       let leftPath = this.getPath([
@@ -222,20 +210,28 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       return result;
     });
     this.mainGroup = this.groups.pop();
+  }
 
-    // reset dragging
+  private resetDragging(): void {
     this.targetTranslateOffset = this.targetOffset = 0;
     this.targetWasDragging = this.targetDragging;
     this.targetDragging = false;
     this.barTranslateOffset = this.barOffset = 0;
     this.barWasDragging = this.barDragging;
     this.barDragging = false;
-
-    this.needDraw = true;
   }
 
   private draw(): void {
-    if (!this.needDraw) {
+    if (this.needDraw == Draw.No) {
+      return;
+    }
+
+    this.drawInfoBox('left');
+    this.drawInfoBox('right');
+    this.drawInfoBox('target');
+
+    if (this.needDraw == Draw.Hover) {
+      this.needDraw = Draw.No;
       return;
     }
 
@@ -304,7 +300,26 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnInit
       on("end", this.dragBarEnd.bind(this, CIBar.Right));
     rightBar.call(rightBarDrag);
 
-    this.needDraw = false;
+    this.needDraw = Draw.No;
+  }
+
+  private drawInfoBox(which: string): void {
+    let svg = d3.select(this.plotElement.nativeElement);
+    let box = svg.select(`#${this.name}-${which}-box`);
+    let coords = svg.select(`#${this.name}-${which}-coords`);
+    if (box.size() > 0 && coords.size() > 0) {
+      let dim = coords.node().getBBox();
+      let left = dim.x - 5, right = dim.x + dim.width + 5;
+      let unit = dim.width / 16;
+      let lmid = left + (7 * unit) + 5, rmid = left + (9 * unit) + 5;
+      let mid = left + (8 * unit) + 5;
+      let top = dim.y - 5, bottom = dim.y + dim.height + 5;
+      box.attr("d", d3.line()([
+        [left, top], [right, top], [right, bottom],
+        [rmid, bottom], [mid, bottom + 5], [lmid, bottom],
+        [left, bottom], [left, top]
+      ]));
+    }
   }
 
   ciWidth(): number {

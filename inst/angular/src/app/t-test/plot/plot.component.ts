@@ -1,11 +1,11 @@
 import {
-  Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewChecked,
+  Component, Input, OnChanges, SimpleChanges, AfterViewChecked,
   ViewChild, ElementRef, ViewEncapsulation
 } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
-import { AbstractPlotComponent } from '../abstract-plot.component';
+import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
 import { Range } from '../range';
 import { TTestSet } from '../t-test';
 import { PlotOptionsService } from '../plot-options.service';
@@ -21,29 +21,9 @@ interface Param {
   dataKey: string;
 }
 
-class Point {
-  constructor(public x: number, public y: number) {}
-
-  format(which: string): string {
-    let value = this[which];
-    if (typeof(value) != 'number') return '';
-
-    let xWidth = 0, yWidth = 0;
-    if (this.x != 0) {
-      xWidth = Math.ceil(Math.log10(Math.abs(this.x)));
-      if (this.x < 0) xWidth++;
-    }
-    if (this.y != 0) {
-      yWidth = Math.ceil(Math.log10(Math.abs(this.y)));
-      if (this.y < 0) yWidth++;
-    }
-    let width = Math.max(xWidth, yWidth) + 3;
-    let result = value.toFixed(2);
-    while (result.length < width) {
-      result = ' ' + result;
-    }
-    return result;
-  }
+interface Point {
+  x: number;
+  y: number;
 }
 
 class Target {
@@ -95,41 +75,28 @@ enum HoverInfo {
   Target
 }
 
-enum Draw {
-  No,
-  Yes,
-  Hover
-}
-
 @Component({
   selector: 't-test-plot',
   templateUrl: './plot.component.html',
   styleUrls: ['./plot.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class PlotComponent extends AbstractPlotComponent implements OnInit, OnChanges, AfterViewChecked {
+export class PlotComponent extends AbstractPlotComponent implements OnChanges, AfterViewChecked {
   @Input('model-set') modelSet: TTestSet;
   @Input('hover-disabled') hoverDisabled = false;
   @Input('hide-drop-lines') hideDropLines = false;
   @Input('hide-target') hideTarget = false;
-  @Input('fixed-width') fixedWidth: number;
-  @Input('fixed-height') fixedHeight: number;
   @Input('disable-drag') disableDrag = false;
 
-  @ViewChild('plot') plotElement: ElementRef;
-  @ViewChild('unit') unitElement: ElementRef;
+  constructor(
+    public plotOptions: PlotOptionsService,
+    public palette: PaletteService
+  ) {
+    super(plotOptions, palette);
+  }
 
-  constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) { super(); }
-
-  width: number;
-  height: number;
-  innerWidth: number;
-  innerHeight: number;
-  margin: number = 50;
   x: Param;
   y: Param;
-  xScale: any;
-  yScale: any;
   plotData: any[];
   paths: string[];
   mainData: any[];
@@ -147,12 +114,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
   needDraw = Draw.No;
 
   private subscription: Subscription;
-
-  ngOnInit(): void {
-    let callback = this.setup.bind(this);
-    this.plotOptions.onChange.subscribe(callback);
-    callback();
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.modelSet) {
@@ -194,7 +155,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
       let index = this.xBisector(this.mainData, this.xScale.invert(x));
       let data = this.mainData[index];
       if (data) {
-        this.hoverPoint = new Point(data[this.x.name], data[this.y.name]);
+        this.hoverPoint = { x: data[this.x.name], y: data[this.y.name] } as Point;
         this.hoverInfo = HoverInfo.NonTarget;
       }
     }
@@ -247,28 +208,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   getClipPath(which: string): string {
     return `url(${this.name}-${which}-area)`;
-  }
-
-  private setupDimensions(): void {
-    // dimensions
-    if (this.fixedWidth) {
-      this.width = this.fixedWidth;
-    } else {
-      this.width = this.getDimension('width');
-    }
-    if (this.fixedHeight) {
-      this.height = this.fixedHeight;
-    } else {
-      this.height = this.getDimension('height');
-    }
-    this.innerWidth  = this.width  - (this.margin * 2);
-    this.innerHeight = this.height - (this.margin * 2);
-
-    // margin
-    let unitBox = this.unitElement.nativeElement.getBBox();
-    if (unitBox && unitBox.width) {
-      this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
-    }
   }
 
   private setupParams(): boolean {
@@ -400,7 +339,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
 
   private setupTarget(): void {
     let model = this.modelSet.getModel(0);
-    let point = new Point(model[this.x.name], model[this.y.name]);
+    let point = { x: model[this.x.name], y: model[this.y.name] } as Point;
     this.mainTarget = new Target(point, this.xScale, this.yScale);
   }
 
@@ -412,7 +351,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnInit, OnCh
     })
   }
 
-  private setup(): void {
+  protected setup(): void {
     if (!this.modelSet) {
       return;
     }
