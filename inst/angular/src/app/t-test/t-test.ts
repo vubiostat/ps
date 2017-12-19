@@ -136,6 +136,10 @@ export class TTest extends ChangeEmitter {
     return result.replace(/\s+/g, " ").trim();
   }
 
+  ciPercentage(): number {
+    return Math.round((1 - this.alpha) * 100);
+  }
+
   attributes(): any {
     let result: any = {
       output: this.output, alpha: this.alpha, sigma: this.sigma,

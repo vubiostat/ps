@@ -16,13 +16,14 @@ import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 
 interface Group {
-  leftPath: string,
-  centerPath: string,
-  rightPath: string,
-  distPath: string,
-  left: number,
-  target: number
-  right: number
+  leftPath: string;
+  centerPath: string;
+  rightPath: string;
+  distPath: string;
+  left: number;
+  target: number;
+  right: number;
+  label: string;
 };
 
 enum CIBar {
@@ -73,7 +74,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     public palette: PaletteService
   ) {
     super(plotOptions, palette);
-    this.title = "Precision (95% Confidence Interval) vs. Effect Size";
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -142,6 +142,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       return;
     }
 
+    this.setupTitle();
     this.setupDimensions();
     this.setupPlotData();
     this.setupScales();
@@ -149,6 +150,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     this.resetDragging();
 
     this.needDraw = Draw.Yes;
+  }
+
+  private setupTitle(): void {
+    let model = this.modelSet.getModel(0);
+    this.title = `Precision (${model.ciPercentage()}% Confidence Interval) vs. Effect Size`;
   }
 
   private setupPlotData(): void {
@@ -176,7 +182,9 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   private setupGroups(): void {
-    this.groups = this.plotData.reverse().map(subData => {
+    this.groups = this.plotData.map((subData, i) => {
+      let model = this.modelSet.getModel(i);
+
       // main lines
       let leftLimit = subData.range[0];
       let leftPath = this.getPath([
@@ -205,10 +213,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
         distPath: distPath,
         left: leftLimit,
         target: subData.target,
-        right: rightLimit
+        right: rightLimit,
+        label: `${model.ciPercentage()}% CI`
       }
       return result;
-    });
+    }).reverse();
     this.mainGroup = this.groups.pop();
   }
 

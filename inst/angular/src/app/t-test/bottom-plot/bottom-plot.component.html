@@ -83,7 +83,7 @@
         <path id="{{name}}-left-box"
           stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
         <text id="{{name}}-left-coords" x="0" y="-3em" font-family="mono" text-anchor="middle">
-          <tspan style="white-space: pre">95% CI: {{ciWidth() | formatFixed:[mainGroup.left]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.left | formatFixed:[ciWidth()]}}</tspan>
+          <tspan style="white-space: pre">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.left]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.left | formatFixed:[ciWidth()]}}</tspan>
         </text>
       </g>
 
@@ -103,7 +103,7 @@
         <path id="{{name}}-right-box"
           stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
         <text id="{{name}}-right-coords" x="0" y="-3em" font-family="mono" text-anchor="middle">
-          <tspan style="white-space: pre">95% CI: {{ciWidth() | formatFixed:[mainGroup.right]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.right | formatFixed:[ciWidth()]}}</tspan>
+          <tspan style="white-space: pre">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.right]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.right | formatFixed:[ciWidth()]}}</tspan>
         </text>
       </g>
 
