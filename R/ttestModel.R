@@ -23,10 +23,9 @@ calculateDeltaRange <- function(sigma, delta, ...) {
   c(lo, high)
 }
 
-# Calculate precision end points
-calculatePrecision <- function(alpha, delta, sigma, n, ...) {
-  moe <- qnorm(1 - alpha/2) * sigma / sqrt(n)
-  c(delta - moe, delta + moe)
+# Calculate margin of error
+calculateMarginOfError <- function(alpha, delta, sigma, n, ...) {
+  qnorm(1 - alpha/2) * sigma / sqrt(n)
 }
 
 # Calculate sample distribution for precision vs. effect size graph
@@ -95,7 +94,7 @@ TTest <- setRefClass("TTest",
         # Calculate data for plots
         nDiff <- n * 3
         nRange <- c(max(c(1, n - nDiff)), n + nDiff)
-        n2 <- seq(nRange[1], nRange[2], (nRange[2] - nRange[1]) / 200)
+        n2 <- seq(nRange[1], nRange[2], length.out = 200)
         if (!(n %in% n2)) {
           n2 <- sort(c(n2, n))
         }
@@ -128,7 +127,7 @@ TTest <- setRefClass("TTest",
         data$primary <<- list(data = data.frame(power = power2, n = n2))
 
         deltaRange <- calculateDeltaRange(sigma, delta)
-        delta2 <- seq(deltaRange[1], deltaRange[2], (deltaRange[2] - deltaRange[1]) / 200)
+        delta2 <- seq(deltaRange[1], deltaRange[2], length.out = 200)
         power3 <- calculatePower(alpha, delta2, sigma, n)
         data$secondary <<- list(data = data.frame(power = power3, delta = delta2))
 
@@ -143,7 +142,7 @@ TTest <- setRefClass("TTest",
         # Calculate data for plots
         deltaDiff <- delta * 2
         deltaRange <- c(delta - deltaDiff, delta + deltaDiff)
-        delta2 <- seq(deltaRange[1], deltaRange[2], (deltaRange[2] - deltaRange[1]) / 200)
+        delta2 <- seq(deltaRange[1], deltaRange[2], length.out = 200)
         if (!(delta %in% delta2)) {
           delta2 <- sort(c(delta2, delta))
         }
@@ -154,8 +153,9 @@ TTest <- setRefClass("TTest",
       }
 
       # Calculate data for bottom/tertiary graph
-      precision <- calculatePrecision(alpha, delta, sigma, n)
-      pSpace <- seq(precision[1], precision[2], (precision[2] - precision[1]) / 200)
+      moe <- calculateMarginOfError(alpha, delta, sigma, n)
+      precision <- c(delta - moe, delta + moe)
+      pSpace <- seq(delta - (2 * moe), delta + (2 * moe), length.out = 200)
       sampDist <- calculateSampDist(pSpace, delta, sigma, n)
 
       tertiary <- data.frame(pSpace = pSpace, sampDist = sampDist)
