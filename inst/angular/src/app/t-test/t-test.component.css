@@ -105,8 +105,9 @@
   margin: auto;
   display: block;
 }
-#t-test-footer div.text {
-  margin-top: 10px;
+#t-test-footer div.build {
+  margin-top: 5px;
+  font-size: smaller;
 }
 
 .block-selection * {

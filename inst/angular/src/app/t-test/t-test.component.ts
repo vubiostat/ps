@@ -10,6 +10,10 @@ import { TTestService } from './t-test.service';
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component'
 import { OutputPaneComponent } from './output-pane/output-pane.component'
 
+// globals from webpack
+declare var __COMMITHASH__: string;
+declare var __BUILDTIMESTAMP__: string;
+
 @Component({
   selector: 't-test-root',
   templateUrl: './t-test.component.html',
@@ -19,6 +23,8 @@ export class TTestComponent implements OnInit {
   newModel = new TTest();
   modelSets: TTestSet[] = [];
   selectedModelSet: TTestSet;
+  commitHash = __COMMITHASH__.substr(0, 7);
+  buildTimestamp = __BUILDTIMESTAMP__;
 
   helpTitles = {
     'overview': 'PS Overview',

@@ -27,8 +27,11 @@
         </ngb-tabset>
       </div>
 
-      <div id="t-test-footer" class="d-flex">
+      <div id="t-test-footer" class="d-flex flex-column">
         <img src="assets/biostat.jpg">
+        <div class="build">
+          Build version: {{ commitHash }} ({{ buildTimestamp | date }})
+        </div>
       </div>
     </div>
     <div class="col-8">

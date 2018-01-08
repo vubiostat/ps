@@ -14,6 +14,9 @@ const { NoEmitOnErrorsPlugin, SourceMapDevToolPlugin, NamedModulesPlugin } = req
 const { NamedLazyChunksWebpackPlugin, BaseHrefWebpackPlugin } = require('@angular/cli/plugins/webpack');
 const { CommonsChunkPlugin } = require('webpack').optimize;
 const { AngularCompilerPlugin } = require('@ngtools/webpack');
+const { DefinePlugin } = require('webpack');
+const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const gitRevisionPlugin = new GitRevisionPlugin();
 
 const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);
@@ -486,6 +489,12 @@ module.exports = {
       "tsConfigPath": "src/tsconfig.app.json",
       "skipCodeGeneration": true,
       "compilerOptions": {}
+    }),
+    new DefinePlugin({
+      '__VERSION__': JSON.stringify(gitRevisionPlugin.version()),
+      '__COMMITHASH__': JSON.stringify(gitRevisionPlugin.commithash()),
+      '__BRANCH__': JSON.stringify(gitRevisionPlugin.branch()),
+      '__BUILDTIMESTAMP__': JSON.stringify((new Date()).toString())
     })
   ],
   "node": {

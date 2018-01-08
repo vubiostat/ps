@@ -65,6 +65,7 @@
     "url-loader": "^0.6.2",
     "circular-dependency-plugin": "^4.2.1",
     "copy-webpack-plugin": "^4.1.1",
-    "uglifyjs-webpack-plugin": "^1.1.5"
+    "uglifyjs-webpack-plugin": "^1.1.5",
+    "git-revision-webpack-plugin": "^2.5.1"
   }
 }
