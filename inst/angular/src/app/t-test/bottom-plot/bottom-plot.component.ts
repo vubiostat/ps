@@ -153,8 +153,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   private setupTitle(): void {
-    let model = this.modelSet.getModel(0);
-    this.title = `Precision (${model.ciPercentage()}% Confidence Interval) vs. Effect Size`;
+    //let model = this.modelSet.getModel(0);
+    this.title = `Precision (95% Confidence Interval) vs. Effect Size`;
   }
 
   private setupPlotData(): void {
@@ -214,7 +214,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
         left: leftLimit,
         target: subData.target,
         right: rightLimit,
-        label: `${model.ciPercentage()}% CI`
+        label: "95% CI"
       }
       return result;
     }).reverse();

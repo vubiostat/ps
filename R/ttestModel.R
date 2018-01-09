@@ -153,7 +153,8 @@ TTest <- setRefClass("TTest",
       }
 
       # Calculate data for bottom/tertiary graph
-      moe <- calculateMarginOfError(alpha, delta, sigma, n)
+      #moe <- calculateMarginOfError(alpha, delta, sigma, n)
+      moe <- ci / 2
       precision <- c(delta - moe, delta + moe)
       pSpace <- seq(delta - (2 * moe), delta + (2 * moe), length.out = 200)
       sampDist <- calculateSampDist(pSpace, delta, sigma, n)
