@@ -62,9 +62,7 @@ export abstract class AbstractPlotComponent implements OnInit {
       defined((d, i) => {
         let x = d[xName];
         let y = d[yName];
-        return typeof(x) === 'number' && typeof(y) == 'number' &&
-          (!xRange || (x >= xRange.min && x <= xRange.max)) &&
-          (!yRange || (y >= yRange.min && y <= yRange.max));
+        return typeof(x) === 'number' && typeof(y) == 'number';
       });
 
     return line(data);

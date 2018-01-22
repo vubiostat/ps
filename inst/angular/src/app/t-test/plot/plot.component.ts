@@ -147,7 +147,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   getClipPath(which: string): string {
-    return `url(${this.name}-${which}-area)`;
+    return `url(#${this.name}-${which}-area)`;
   }
 
   private setupParams(): boolean {
@@ -155,7 +155,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     let model = this.project.getModel(0);
     if (model.output == 'n' || model.output == 'nByCI') {
       if (this.name == 'top-left' || this.name == 'top-left-export') {
-        // Sample Size vs. Sample Size
+        // Sample Size vs. Power
         this.x = {
           name: 'power', range: this.project.powerRange, target: model.power,
           title: 'Power', sym: '1-β'
@@ -248,7 +248,18 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private setupPlotData(): boolean {
-    this.plotData = this.project.models.map(m => m[this.dataKey]);
+    if (this.dataKey == 'powerVsN') {
+      this.plotData = this.project.models.map(m => {
+        let data = m[this.dataKey];
+        let last = data[data.length - 1];
+        if (last.y >= 0.99 && last.x < this.x.range.max) {
+          data = data.concat({ x: this.x.range.max, y: 1 });
+        }
+        return data;
+      });
+    } else {
+      this.plotData = this.project.models.map(m => m[this.dataKey]);
+    }
 
     // Prepare main data for bisection during target point dragging.
     this.mainData = this.plotData[0].slice();
@@ -274,7 +285,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private setupPaths(): void {
-    this.paths = this.plotData.map(d => {
+    this.paths = this.plotData.map((d, i) => {
       return this.getPath(d, 'x', 'y', this.x.range, this.y.range);
     })
   }

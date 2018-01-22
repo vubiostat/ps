@@ -121,18 +121,12 @@ TTest <- setRefClass("TTest",
         power <<- calculatePower(alpha, delta, sigma, n)
 
         # Calculate data for plots
-        power2 <- seq(alpha + 0.01, 0.99, 0.01)
+        power2 <- seq(alpha + 0.001, 0.999, 0.001)
         if (power < 1 && !(power %in% power2)) {
           power2 <- sort(c(power2, power))
         }
 
         n2 <- calculateN(alpha, delta, sigma, power2)
-        if (max(n2) < n) {
-          n3 <- seq(ceiling(max(n2)), n)
-          power3 <- rep(1, length(n3))
-          power2 <- c(power2, power3)
-          n2 <- c(n2, n3)
-        }
         powerVsN <<- data.frame(y = power2, x = n2)
 
         deltaRange <- calculateDeltaRange(sigma, delta)
