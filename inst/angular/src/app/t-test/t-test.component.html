@@ -1,5 +1,5 @@
 <div id="t-test" class="d-flex flex-column h-100"
-  [class.block-selection]="blockSelection" (mouseup)="mouseup()">
+  [class.block-selection]="blockSelection" (mouseup)="onMouseUp()">
 
   <div id="t-test-main" class="row d-flex" style="flex: 1 0 auto">
     <div class="col-4 d-flex flex-column justify-content-between">
@@ -18,10 +18,11 @@
               </t-test-start>
             </ng-template>
           </ngb-tab>
-          <ngb-tab *ngFor="let modelSet of modelSets; let i = index"
+          <ngb-tab *ngFor="let project of projects; let i = index"
             title="Test {{i+1}}" id="t-test-{{i+1}}">
             <ng-template ngbTabContent>
-              <t-test-form [model-set]="modelSet"></t-test-form>
+              <t-test-project [project]="project" (modelChanged)="onModelChanged()">
+              </t-test-project>
             </ng-template>
           </ngb-tab>
         </ngb-tabset>
@@ -35,7 +36,7 @@
       </div>
     </div>
     <div class="col-8">
-      <div class="plot-buttons" *ngIf="selectedModelSet">
+      <div class="plot-buttons" *ngIf="selectedProject">
         <button class="btn btn-secondary" (click)="togglePlotOptions()" title="Toggle plot options">
           <i class="fa fa-cog"></i>
         </button>
@@ -47,24 +48,26 @@
         </button>
       </div>
       <t-test-output-pane #outputPane
-        [model-set]="selectedModelSet"
-        [hover-disabled]="!hoverBoxEnabled">
+        [project]="selectedProject"
+        [hover-disabled]="!hoverBoxEnabled"
+        (modelChanged)="onModelChanged()">
       </t-test-output-pane>
     </div>
   </div>
   <t-test-draggable-dialog #helpDialog
     [title]="helpTitles[helpTopic]"
     start-x-offset="33%" start-y-offset="55px"
-    (drag-start)="childDragStarted()"
-    (drag-end)="childDragEnded()">
+    (drag-start)="onChildDragStarted()"
+    (drag-end)="onChildDragEnded()">
     <t-test-help [topic]="helpTopic"></t-test-help>
   </t-test-draggable-dialog>
   <t-test-draggable-dialog #plotOptionsDialog
     title="Plot options"
     start-x-offset="5%" start-y-offset="55px"
-    (drag-start)="childDragStarted()"
-    (drag-end)="childDragEnded()">
-    <t-test-plot-options [model-set]="selectedModelSet">
+    (drag-start)="onChildDragStarted()"
+    (drag-end)="onChildDragEnded()">
+    <t-test-plot-options [project]="selectedProject"
+      (optionsChanged)="onPlotOptionsChanged()">
     </t-test-plot-options>
   </t-test-draggable-dialog>
 </div>

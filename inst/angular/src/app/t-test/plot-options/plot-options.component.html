@@ -1,10 +1,10 @@
-<div *ngIf="plotOptions && modelSet" class="content">
+<div *ngIf="plotOptions && project" class="content">
   <fieldset>
     <legend>Global</legend>
     <div class="form-group">
       <label for="plot-font-family">Font family</label>
       <select id="plot-font-family" class="form-control"
-        [(ngModel)]="plotOptions.fontFamily">
+        [ngModel]="plotOptions.fontFamily" (ngModelChange)="changeAttribute('fontFamily', $event)">
         <option value="">Default</option>
         <option value="serif">Serif</option>
         <option value="sans">Sans-serif</option>
@@ -16,7 +16,7 @@
     <div class="form-group">
       <label for="plot-palette-theme">Color palette</label>
       <select id="plot-palette-theme" class="form-control"
-        [(ngModel)]="plotOptions.paletteTheme">
+        [ngModel]="plotOptions.paletteTheme" (ngModelChange)="changeAttribute('paletteTheme', $event)">
         <option value="plasma">Plasma</option>
         <option value="viridis">Viridis</option>
         <option value="magma">Magma</option>
@@ -28,7 +28,7 @@
         <div class="input-group">
           <input id="plot-font-size" class="form-control"
             type="range" min="0.1" max="2" step="0.1"
-            [(ngModel)]="plotOptions.fontSize" />
+            [ngModel]="plotOptions.fontSize" (ngModelChange)="changeAttribute('fontSize', $event)" />
         </div>
       </div>
       <div class="col-sm-6">
@@ -36,7 +36,7 @@
         <div class="input-group">
           <input id="plot-axis-font-size" class="form-control"
             type="range" min="0.1" max="2" step="0.1"
-            [(ngModel)]="plotOptions.axisFontSize" />
+            [ngModel]="plotOptions.axisFontSize" (ngModelChange)="changeAttribute('axisFontSize', $event)" />
         </div>
       </div>
     </div>
@@ -46,7 +46,7 @@
         <div class="input-group">
           <input id="plot-line-width" class="form-control"
             type="range" min="0.1" max="2" step="0.1"
-            [(ngModel)]="plotOptions.lineWidth" />
+            [ngModel]="plotOptions.lineWidth" (ngModelChange)="changeAttribute('lineWidth', $event)" />
         </div>
       </div>
       <div class="col-sm-6">
@@ -54,14 +54,14 @@
         <div class="input-group">
           <input id="plot-axis-line-width" class="form-control"
             type="range" min="0.1" max="2" step="0.1"
-            [(ngModel)]="plotOptions.axisLineWidth" />
+            [ngModel]="plotOptions.axisLineWidth" (ngModelChange)="changeAttribute('axisLineWidth', $event)" />
         </div>
       </div>
     </div>
     <div class="form-group">
       <label for="plot-line-style">Line style</label>
       <select id="plot-line-style" class="form-control"
-        [(ngModel)]="plotOptions.lineStyle">
+        [ngModel]="plotOptions.lineStyle" (ngModelChange)="changeAttribute('lineStyle', $event)">
         <option value="solid">Solid</option>
         <option value="dashed">Dashed</option>
         <option value="dotted">Dotted</option>
@@ -69,7 +69,7 @@
     </div>
     <div class="form-check">
       <label class="form-check-label">
-        <input class="form-check-input" type="checkbox" [(ngModel)]="plotOptions.showLegendBox" />
+        <input class="form-check-input" type="checkbox" [ngModel]="plotOptions.showLegendBox" (ngModelChange)="changeAttribute('showLegendBox', $event)" />
         Display legend background
       </label>
     </div>
@@ -78,7 +78,7 @@
         <label for="plot-legend-label-1">Legend label #1</label>
       </div>
       <div class="col-sm-6">
-        <input id="plot-legend-label-1" class="form-control" type="text" [(ngModel)]="plotOptions.legendLabel0" />
+        <input id="plot-legend-label-1" class="form-control" type="text" [ngModel]="plotOptions.legendLabel0" (ngModelChange)="changeAttribute('legendLabel0', $event)" />
       </div>
     </div>
     <div class="form-group row">
@@ -86,7 +86,7 @@
         <label for="plot-legend-label-2">Legend label #2</label>
       </div>
       <div class="col-sm-6">
-        <input id="plot-legend-label-2" class="form-control" type="text" [(ngModel)]="plotOptions.legendLabel1" />
+        <input id="plot-legend-label-2" class="form-control" type="text" [ngModel]="plotOptions.legendLabel1" (ngModelChange)="changeAttribute('legendLabel1', $event)" />
       </div>
     </div>
     <div class="form-group row">
@@ -94,7 +94,7 @@
         <label for="plot-legend-label-3">Legend label #3</label>
       </div>
       <div class="col-sm-6">
-        <input id="plot-legend-label-3" class="form-control" type="text" [(ngModel)]="plotOptions.legendLabel2" />
+        <input id="plot-legend-label-3" class="form-control" type="text" [ngModel]="plotOptions.legendLabel2" (ngModelChange)="changeAttribute('legendLabel2', $event)" />
       </div>
     </div>
     <div class="form-group row">
@@ -102,7 +102,7 @@
         <label for="plot-legend-label-4">Legend label #4</label>
       </div>
       <div class="col-sm-6">
-        <input id="plot-legend-label-4" class="form-control" type="text" [(ngModel)]="plotOptions.legendLabel3" />
+        <input id="plot-legend-label-4" class="form-control" type="text" [ngModel]="plotOptions.legendLabel3" (ngModelChange)="changeAttribute('legendLabel3', $event)" />
       </div>
     </div>
     <div class="form-group row">
@@ -110,7 +110,7 @@
         <label for="plot-legend-label-5">Legend label #5</label>
       </div>
       <div class="col-sm-6">
-        <input id="plot-legend-label-5" class="form-control" type="text" [(ngModel)]="plotOptions.legendLabel4" />
+        <input id="plot-legend-label-5" class="form-control" type="text" [ngModel]="plotOptions.legendLabel4" (ngModelChange)="changeAttribute('legendLabel4', $event)" />
       </div>
     </div>
   </fieldset>
@@ -124,18 +124,21 @@
         <div class="input-group">
           <ng-template [ngIf]="model.output == 'n'">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
-              [(ngModel)]="modelSet.ranges.n.min" />
+              type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
+              [ngModel]="project.nRange.min | round"
+              (ngModelChange)="changeRange('n', 'min', $event)" />
           </ng-template>
           <ng-template [ngIf]="model.output == 'power'">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
-              [(ngModel)]="modelSet.ranges.power.min" />
+              type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
+              [ngModel]="project.powerRange.min | round"
+              (ngModelChange)="changeRange('power', 'min', $event)" />
           </ng-template>
           <ng-template [ngIf]="model.output == 'delta'">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
-              [(ngModel)]="modelSet.ranges.delta.min" />
+              type="number" step="0.01" [max]="(project.deltaRange.max - 0.01) | round"
+              [ngModel]="project.deltaRange.min | round"
+              (ngModelChange)="changeRange('delta', 'min', $event)" />
           </ng-template>
         </div>
       </div>
@@ -144,18 +147,21 @@
         <div class="input-group">
           <ng-template [ngIf]="model.output == 'n'">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
-              [(ngModel)]="modelSet.ranges.n.max" />
+              type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
+              [ngModel]="project.nRange.max | round"
+              (ngModelChange)="changeRange('n', 'max', $event)" />
           </ng-template>
           <ng-template [ngIf]="model.output == 'power'">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
-              [(ngModel)]="modelSet.ranges.power.max" />
+              type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
+              [ngModel]="project.powerRange.max | round"
+              (ngModelChange)="changeRange('power', 'max', $event)" />
           </ng-template>
           <ng-template [ngIf]="model.output == 'delta'">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min + 1)"
-              [(ngModel)]="modelSet.ranges.delta.max" />
+              type="number" step="0.01" [min]="(project.deltaRange.min + 0.01) | round"
+              [ngModel]="project.deltaRange.max | round"
+              (ngModelChange)="changeRange('delta', 'max', $event)" />
           </ng-template>
         </div>
       </div>
@@ -169,16 +175,18 @@
           <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
-              [(ngModel)]="modelSet.ranges.power.min" />
+              type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
+              [ngModel]="project.powerRange.min | round"
+              (ngModelChange)="changeRange('power', 'min', $event)" />
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
-              [(ngModel)]="modelSet.ranges.power.max" />
+              type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
+              [ngModel]="project.powerRange.max | round"
+              (ngModelChange)="changeRange('power', 'max', $event)" />
           </div>
         </div>
       </div>
@@ -190,16 +198,18 @@
           <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
-              [(ngModel)]="modelSet.ranges.n.min" />
+              type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
+              [ngModel]="project.nRange.min | round"
+              (ngModelChange)="changeRange('n', 'min', $event)" />
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
-              [(ngModel)]="modelSet.ranges.n.max" />
+              type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
+              [ngModel]="project.nRange.max | round"
+              (ngModelChange)="changeRange('n', 'max', $event)" />
           </div>
         </div>
       </div>
@@ -211,16 +221,18 @@
           <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.n.max - 1)"
-              [(ngModel)]="modelSet.ranges.n.min" />
+              type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
+              [ngModel]="project.nRange.min | round"
+              (ngModelChange)="changeRange('n', 'min', $event)" />
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.n.min + 1)"
-              [(ngModel)]="modelSet.ranges.n.max" />
+              type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
+              [ngModel]="project.nRange.max | round"
+              (ngModelChange)="changeRange('n', 'max', $event)" />
           </div>
         </div>
       </div>
@@ -234,16 +246,18 @@
           <label for="plot-top-right-x-min">X minimum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
-              [(ngModel)]="modelSet.ranges.delta.min" />
+              type="number" step="0.01" [max]="(project.deltaRange.max - 1) | round"
+              [ngModel]="project.deltaRange.min | round"
+              (ngModelChange)="changeRange('delta', 'min', $event)" />
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-right-x-max">X maximum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min - 1)"
-              [(ngModel)]="modelSet.ranges.delta.max" />
+              type="number" step="0.01" [min]="(project.deltaRange.min - 1) | round"
+              [ngModel]="project.deltaRange.max | round"
+              (ngModelChange)="changeRange('delta', 'max', $event)" />
           </div>
         </div>
       </div>
@@ -255,16 +269,18 @@
           <label for="plot-top-right-x-min">X minimum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.delta.max - 1)"
-              [(ngModel)]="modelSet.ranges.delta.min" />
+              type="number" step="0.01" [max]="(project.deltaRange.max - 1) | round"
+              [ngModel]="project.deltaRange.min | round"
+              (ngModelChange)="changeRange('delta', 'min', $event)" />
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-right-x-max">X maximum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.delta.min - 1)"
-              [(ngModel)]="modelSet.ranges.delta.max" />
+              type="number" step="0.01" [min]="(project.deltaRange.min - 1) | round"
+              [ngModel]="project.deltaRange.max | round"
+              (ngModelChange)="changeRange('delta', 'max', $event)" />
           </div>
         </div>
       </div>
@@ -276,16 +292,18 @@
           <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [max]="roundFloor(modelSet.ranges.power.max - 0.01)"
-              [(ngModel)]="modelSet.ranges.power.min" />
+              type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
+              [ngModel]="project.powerRange.min | round"
+              (ngModelChange)="changeRange('power', 'min', $event)" />
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
             <input class="form-control"
-              type="number" step="0.01" [min]="roundCeil(modelSet.ranges.power.min + 0.01)"
-              [(ngModel)]="modelSet.ranges.power.max" />
+              type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
+              [ngModel]="project.powerRange.max | round"
+              (ngModelChange)="changeRange('power', 'max', $event)" />
           </div>
         </div>
       </div>
@@ -298,16 +316,18 @@
         <label for="plot-bottom-x-min">X minimum</label>
         <div class="input-group">
           <input class="form-control"
-            type="number" step="0.01" [max]="roundFloor(modelSet.ranges.pSpace.max - 1)"
-            [(ngModel)]="modelSet.ranges.pSpace.min" />
+            type="number" step="0.01" [max]="(project.pSpaceRange.max - 1) | round"
+            [ngModel]="project.pSpaceRange.min | round"
+            (ngModelChange)="changeRange('pSpace', 'min', $event)" />
         </div>
       </div>
       <div class="col-sm">
         <label for="plot-bottom-x-max">X maximum</label>
         <div class="input-group">
           <input class="form-control"
-            type="number" step="0.01" [min]="roundCeil(modelSet.ranges.pSpace.min + 1)"
-            [(ngModel)]="modelSet.ranges.pSpace.max" />
+            type="number" step="0.01" [min]="(project.pSpaceRange.min + 1) | round"
+            [ngModel]="project.pSpaceRange.max | round"
+            (ngModelChange)="changeRange('pSpace', 'max', $event)" />
         </div>
       </div>
     </div>

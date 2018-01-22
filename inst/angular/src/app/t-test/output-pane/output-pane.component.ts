@@ -1,7 +1,8 @@
-import { Component, ViewChild, TemplateRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ViewChild, TemplateRef, Input, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
-import { TTest, TTestRanges, TTestSet } from '../t-test';
+import { Project } from '../project';
+import { TTest } from '../t-test';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
@@ -15,8 +16,9 @@ import { ExportPlotsComponent } from '../export-plots/export-plots.component';
   }
 })
 export class OutputPaneComponent implements OnChanges {
-  @Input('model-set') modelSet: TTestSet;
+  @Input('project') project: Project;
   @Input('hover-disabled') hoverDisabled = false;
+  @Output() modelChanged = new EventEmitter();
   model: TTest;
   showFooter = true;
   private copyMode: string;
@@ -30,10 +32,10 @@ export class OutputPaneComponent implements OnChanges {
   constructor(private modalService: NgbModal) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!('modelSet' in changes)) return;
+    if (!('project' in changes)) return;
 
-    if (this.modelSet) {
-      this.model = this.modelSet.getModel(0);
+    if (this.project) {
+      this.model = this.project.getModel(0);
     } else {
       this.model = undefined;
     }
@@ -46,7 +48,7 @@ export class OutputPaneComponent implements OnChanges {
 
   openSaveDialog(): void {
     const modalRef = this.modalService.open(ExportPlotsComponent, { windowClass: 'export-plots' });
-    modalRef.componentInstance.modelSet = this.modelSet;
+    modalRef.componentInstance.project = this.project;
   }
 
   round(n: number): number {
@@ -58,6 +60,10 @@ export class OutputPaneComponent implements OnChanges {
   }
 
   resize(): void {
+    this.redrawPlots();
+  }
+
+  redrawPlots(): void {
     this.topLeftPlot.redraw();
     this.topRightPlot.redraw();
     this.bottomPlot.redraw();
@@ -82,15 +88,16 @@ export class OutputPaneComponent implements OnChanges {
         event.preventDefault();
         break;
       case 't-test-log':
-        if (!this.model.changeHistory || this.model.changeHistory.length == 0) {
-          break;
-        }
-        let text = this.model.changeHistory.
-          map(changes => Object.keys(changes).map(key => `${key} was changed to ${changes[key]}`).join('; ')).
+        let text = this.project.changeHistory.
+          map(changes => this.project.describeChanges(changes, false)).
           join("\r\n");
         event.clipboardData.setData('text/plain', text);
         event.preventDefault();
         break;
     }
+  }
+
+  onModelChanged(): void {
+    this.modelChanged.emit();
   }
 }

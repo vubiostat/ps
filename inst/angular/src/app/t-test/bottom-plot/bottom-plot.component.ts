@@ -1,6 +1,6 @@
 import {
-  Component, Input, OnChanges, SimpleChanges, AfterViewChecked,
-  ViewChild, ElementRef, ViewEncapsulation
+  Component, Input, Output, OnChanges, SimpleChanges, AfterViewChecked,
+  ViewChild, ElementRef, ViewEncapsulation, EventEmitter
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -10,7 +10,7 @@ import 'rxjs/add/operator/debounceTime';
 import * as d3 from 'd3';
 
 import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
-import { TTestSet } from '../t-test';
+import { Project } from '../project';
 import { Range } from '../range';
 import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
@@ -38,9 +38,10 @@ enum CIBar {
   encapsulation: ViewEncapsulation.None
 })
 export class BottomPlotComponent extends AbstractPlotComponent implements OnChanges, AfterViewChecked {
-  @Input('model-set') modelSet: TTestSet;
+  @Input('project') project: Project;
   @Input('disable-drag-target') disableDragTarget = false;
   @Input('disable-drag-ci') disableDragCI = false;
+  @Output() modelChanged = new EventEmitter();
 
   @ViewChild('target') targetElement: ElementRef;
   @ViewChild('leftBar') leftBarElement: ElementRef;
@@ -67,8 +68,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   showLeftBarInfo = false;
   showRightBarInfo = false;
 
-  private subscription: Subscription;
-
   constructor(
     public plotOptions: PlotOptionsService,
     public palette: PaletteService
@@ -77,18 +76,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.modelSet) {
-      if (this.subscription) {
-        this.subscription.unsubscribe();
-      }
-      if (this.modelSet) {
-        let observable = Observable.merge(this.modelSet.onCompute, this.modelSet.onChange);
-        this.subscription = observable.debounceTime(10).subscribe(this.setup.bind(this));
-        this.setup();
-      }
-    } else if (changes.fixedWidth || changes.fixedHeight) {
-      this.setup();
-    }
+    this.setup();
   }
 
   ngAfterViewChecked(): void {
@@ -138,7 +126,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   protected setup(): void {
-    if (!this.modelSet) {
+    if (!this.project) {
       return;
     }
 
@@ -153,26 +141,25 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   private setupTitle(): void {
-    //let model = this.modelSet.getModel(0);
     this.title = `Precision (95% Confidence Interval) vs. Effect Size`;
   }
 
   private setupPlotData(): void {
-    this.plotData = this.modelSet.models.map(m => m.data.tertiary);
+    this.plotData = this.project.models.map(m => m.sampDist);
   }
 
   private setupScales(): void {
-    let ranges = this.modelSet.ranges;
+    let pSpaceRange = this.project.pSpaceRange;
     this.xScale = d3.scaleLinear().
-      domain(ranges.pSpace.toArray()).
+      domain(pSpaceRange.toArray()).
       range([0, this.innerWidth]);
 
     this.yScale = d3.scaleLinear().
       domain([0, 0.8]).
       range([0, this.innerHeight]);
 
-    let sampDistExtent = this.plotData.reduce((arr, subData) => {
-      let extent = d3.extent(subData.data, d => d.sampDist);
+    let sampDistExtent = this.plotData.reduce((arr, sampDist) => {
+      let extent = d3.extent(sampDist, d => d.y);
       return d3.extent(arr.concat(extent));
     }, []);
     this.yScaleSD = d3.scaleLinear().
@@ -182,17 +169,17 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   private setupGroups(): void {
-    this.groups = this.plotData.map((subData, i) => {
-      let model = this.modelSet.getModel(i);
+    this.groups = this.project.models.map((model, i) => {
+      let range = model.precisionRange;
 
       // main lines
-      let leftLimit = subData.range[0];
+      let leftLimit = range.min;
       let leftPath = this.getPath([
         { x: leftLimit, y: 0.35 },
         { x: leftLimit, y: 0.65 }
       ]);
 
-      let rightLimit = subData.range[1];
+      let rightLimit = range.max;
       let rightPath = this.getPath([
         { x: rightLimit, y: 0.35 },
         { x: rightLimit, y: 0.65 }
@@ -204,7 +191,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       ]);
 
       // sample distribution
-      let distPath = this.getArea(subData.data, 'pSpace', 'sampDist');
+      let distPath = this.getArea(this.plotData[i], 'x', 'y');
 
       let result = {
         leftPath: leftPath,
@@ -212,7 +199,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
         rightPath: rightPath,
         distPath: distPath,
         left: leftLimit,
-        target: subData.target,
+        target: model.delta,
         right: rightLimit,
         label: "95% CI"
       }
@@ -372,11 +359,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   private dragTargetEnd(): void {
     if (this.disableDragTarget) return;
 
-    if (this.modelSet) {
-      let modelChanges = {
-        delta: this.mainGroup.target + this.targetOffset
-      };
-      this.modelSet.getModel(0).update(modelChanges);
+    if (this.project) {
+      let newDelta = this.mainGroup.target + this.targetOffset;
+      this.project.updateModel(0, 'delta', newDelta).then(() => {
+        this.modelChanged.emit();
+      });
     }
     this.showTargetInfo = false;
   }
@@ -417,12 +404,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   private dragBarEnd(which: CIBar): void {
     if (this.disableDragCI) return;
 
-    if (this.modelSet) {
-      let modelChanges = {
-        ci: this.ciWidth(),
-        ciMode: true
-      };
-      this.modelSet.getModel(0).update(modelChanges);
+    if (this.project) {
+      let model = this.project.getModel(0);
+      this.project.updateModel(0, 'ci', this.ciWidth()).then(() => {
+        this.modelChanged.emit();
+      });
     }
     this.showLeftBarInfo = false;
     this.showRightBarInfo = false;

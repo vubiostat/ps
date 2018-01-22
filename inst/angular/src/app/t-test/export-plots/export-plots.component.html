@@ -50,7 +50,7 @@
           </div>
           <div class="right">
             <t-test-plot #topLeftPlot name="top-left-export"
-              [model-set]="modelSet" [hover-disabled]="true"
+              [project]="project" [hover-disabled]="true"
               [disable-drag]="true"
               [hide-drop-lines]="!topLeftDropLines"
               [hide-target]="!topLeftTarget"
@@ -106,7 +106,7 @@
           </div>
           <div class="right">
             <t-test-plot #topRightPlot name="top-right-export"
-              [model-set]="modelSet" [hover-disabled]="true"
+              [project]="project" [hover-disabled]="true"
               [disable-drag]="true"
               [hide-drop-lines]="!topRightDropLines"
               [hide-target]="!topRightTarget"
@@ -148,7 +148,7 @@
           </div>
           <div class="right">
             <t-test-bottom-plot #bottomPlot name="bottom-export"
-              [model-set]="modelSet"
+              [project]="project"
               [disable-drag-target]="true" [disable-drag-ci]="true"
               [fixed-width]="bottomWidth" [fixed-height]="bottomHeight">
             </t-test-bottom-plot>

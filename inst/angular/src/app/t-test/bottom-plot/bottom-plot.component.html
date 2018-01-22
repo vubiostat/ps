@@ -4,7 +4,7 @@
   [attr.class]="name" [attr.width]="fixedWidth" [attr.height]="fixedHeight">
 
   <rect #unit x="0" y="0" width="1em" height="1em" stroke="none" fill="none" />
-  <ng-template [ngIf]="groups && modelSet">
+  <ng-template [ngIf]="groups && project">
     <defs>
       <clipPath id="{{name}}-plot-area">
         <rect x="0" y="0" [attr.width]="innerWidth" [attr.height]="innerHeight" />

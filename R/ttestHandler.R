@@ -1,7 +1,7 @@
-TTestStatelessCalculateAction <- setRefClass("TTestStatelessCalculateAction",
+TTestCalculateAction <- setRefClass("TTestCalculateAction",
   methods = list(
     validate = function(params) {
-      validateModelParams(params)
+      validateParams(params)
     },
 
     run = function(params) {
@@ -10,18 +10,18 @@ TTestStatelessCalculateAction <- setRefClass("TTestStatelessCalculateAction",
         return(list(errors = errors))
       }
 
-      model <- TTest(params$model)
+      model <- TTest(params)
       model$attributes()
     }
   )
 )
 
-TTestStatelessHandler <- setRefClass("TTestStatelessHandler",
+TTestHandler <- setRefClass("TTestHandler",
   fields = c("app", "calcAction", "routes"),
   methods = list(
     initialize = function(app) {
       app <<- app
-      calcAction <<- TTestStatelessCalculateAction()
+      calcAction <<- TTestCalculateAction()
       routes <<- list(
         list(
           url = "/ttests/calc",

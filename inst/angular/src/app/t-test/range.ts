@@ -1,63 +1,20 @@
-import { ChangeEmitter, Changeable } from './changeable';
-
-export class Range extends ChangeEmitter {
-  @Changeable min: number;
-  @Changeable max: number;
-
-  static fromArray(arr: number[]) {
-    if (arr.length != 2) {
-      throw new Error("invalid array, must be of length 2");
-    }
-    if (arr[0] > arr[1]) {
-      throw new Error("invalid array, must be in order");
-    }
-    return new Range(arr[0], arr[1]);
-  }
-
-  static fromData(indices: number[], data: any[], propertyName: string) {
-    let minIndex = 0, maxIndex = data.length - 1;
-    if (indices[0] > minIndex) {
-      minIndex = indices[0];
-    }
-    if (indices[1] < maxIndex) {
-      maxIndex = indices[1];
-    }
-    let values = [
-      data[minIndex][propertyName],
-      data[maxIndex][propertyName]
-    ].sort((a, b) => a - b);
-    values[0] = Math.floor(values[0] * 100) / 100;
-    values[1] = Math.ceil(values[1] * 100) / 100;
-    return new Range(values[0], values[1]);
-  }
-
-  constructor(min: number, max: number) {
-    super();
-    this.noEmit = true;
-    this.min = min;
-    this.max = max;
-    this.noEmit = false;
-    this.changes = {};
-  }
-
-  toArray(): any {
-    return([ this.min, this.max ]);
-  }
-
-  findIndices(data: number[], propertyName: string): number[] {
-    let minIndex = -1, maxIndex = -1;
-    for (let i = 0; i < data.length; i++) {
-      if (data[i][propertyName] >= this.min) {
-        minIndex = i;
-        break
+export class Range {
+  static combine(ranges: Range[]): Range {
+    let range = new Range(ranges[0].min, ranges[0].max);
+    for (let i = 1; i < ranges.length; i++) {
+      if (ranges[i].min < range.min) {
+        range.min = ranges[i].min;
+      }
+      if (ranges[i].max > range.max) {
+        range.max = ranges[i].max;
       }
     }
-    for (let i = data.length - 1; i >= 0; i--) {
-      if (data[i][propertyName] <= this.max) {
-        maxIndex = i;
-        break;
-      }
-    }
-    return [minIndex, maxIndex];
+    return range;
+  }
+
+  constructor(public min: number, public max: number) {}
+
+  toArray(): number[] {
+    return [this.min, this.max];
   }
 }

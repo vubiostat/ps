@@ -32,7 +32,6 @@ export abstract class AbstractPlotComponent implements OnInit {
   constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) { }
 
   ngOnInit() {
-    this.plotOptions.onChange.subscribe(this.setup.bind(this));
     this.setup();
   }
 

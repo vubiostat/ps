@@ -51,22 +51,28 @@ paramTitles <- list(
 )
 
 TTest <- setRefClass("TTest",
-  fields = c("id", "alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
-             "deltaMode", "output", "data"),
+  fields = c("alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
+             "deltaMode", "output", "nVsPower", "nVsDelta", "powerVsN",
+             "powerVsDelta", "deltaVsPower", "deltaVsN", "sampDist"),
 
   methods = list(
     initialize = function(params) {
-      id        <<- params$id
-      alpha     <<- params$alpha
-      power     <<- params$power
-      n         <<- params$n
-      delta     <<- params$delta
-      sigma     <<- params$sigma
-      ci        <<- params$ci
-      ciMode    <<- params$ciMode
-      deltaMode <<- params$deltaMode
-      output    <<- params$output
-      data      <<- NULL
+      alpha        <<- params$alpha
+      power        <<- params$power
+      n            <<- params$n
+      delta        <<- params$delta
+      sigma        <<- params$sigma
+      ci           <<- params$ci
+      ciMode       <<- params$ciMode
+      deltaMode    <<- params$deltaMode
+      output       <<- params$output
+      nVsPower     <<- NULL
+      nVsDelta     <<- NULL
+      powerVsN     <<- NULL
+      powerVsDelta <<- NULL
+      deltaVsPower <<- NULL
+      deltaVsN     <<- NULL
+      sampDist     <<- NULL
 
       if (is.null(ciMode)) {
         ciMode <<- FALSE
@@ -74,10 +80,9 @@ TTest <- setRefClass("TTest",
       if (is.null(deltaMode)) {
         deltaMode <<- FALSE
       }
-      update()
+      calculate()
     },
-    update = function() {
-      data <<- list()
+    calculate = function() {
       if (output == "n" || output == "nByCI") {
         if (output == "n") {
           n <<- calculateN(alpha, delta, sigma, power)
@@ -101,7 +106,11 @@ TTest <- setRefClass("TTest",
 
         power2 <- calculatePower(alpha, delta, sigma, n2)
         delta2 <- calculateDelta(alpha, sigma, n2, power)
-        data$primary <<- list(data = data.frame(n = n2, power = power2, delta = delta2))
+        if (delta < 0) {
+          delta2 <- -delta2
+        }
+        nVsPower <<- data.frame(y = n2, x = power2)
+        nVsDelta <<- data.frame(y = n2, x = delta2)
 
       } else if (output == "power") {
         if (ciMode) {
@@ -124,12 +133,12 @@ TTest <- setRefClass("TTest",
           power2 <- c(power2, power3)
           n2 <- c(n2, n3)
         }
-        data$primary <<- list(data = data.frame(power = power2, n = n2))
+        powerVsN <<- data.frame(y = power2, x = n2)
 
         deltaRange <- calculateDeltaRange(sigma, delta)
         delta2 <- seq(deltaRange[1], deltaRange[2], length.out = 200)
         power3 <- calculatePower(alpha, delta2, sigma, n)
-        data$secondary <<- list(data = data.frame(power = power3, delta = delta2))
+        powerVsDelta <<- data.frame(y = power3, x = delta2)
 
       } else if (output == "delta") {
         if (ciMode) {
@@ -149,24 +158,19 @@ TTest <- setRefClass("TTest",
 
         n2 <- calculateN(alpha, delta2, sigma, power)
         power2 <- calculatePower(alpha, delta2, sigma, n)
-        data$primary <<- list(data = data.frame(delta = delta2, n = n2, power = power2))
+        deltaVsPower <<- data.frame(y = delta2, x = power2)
+        deltaVsN <<- data.frame(y = delta2, x = n2)
       }
 
       # Calculate data for bottom/tertiary graph
       #moe <- calculateMarginOfError(alpha, delta, sigma, n)
       moe <- ci / 2
-      precision <- c(delta - moe, delta + moe)
       pSpace <- seq(delta - (2 * moe), delta + (2 * moe), length.out = 200)
-      sampDist <- calculateSampDist(pSpace, delta, sigma, n)
-
-      tertiary <- data.frame(pSpace = pSpace, sampDist = sampDist)
-      data$tertiary <<- list(
-        data = tertiary[!is.na(tertiary$sampDist), ],
-        range = precision, target = unbox(delta)
-      )
+      sampDist <<- calculateSampDist(pSpace, delta, sigma, n)
+      sampDist <<- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
     },
     attributes = function() {
-      model <- list(
+      attribs <- list(
         alpha     = unbox(alpha),
         power     = unbox(power),
         n         = unbox(n),
@@ -177,10 +181,28 @@ TTest <- setRefClass("TTest",
         deltaMode = unbox(deltaMode),
         output    = unbox(output)
       )
-      if (!inherits(id, "uninitializedField")) {
-        model$id <- unbox(id)
+      if (!is.null(nVsPower)) {
+        attribs$nVsPower <- nVsPower
       }
-      return(list(model = model, data = data))
+      if (!is.null(nVsDelta)) {
+        attribs$nVsDelta <- nVsDelta
+      }
+      if (!is.null(powerVsN)) {
+        attribs$powerVsN <- powerVsN
+      }
+      if (!is.null(powerVsDelta)) {
+        attribs$powerVsDelta <- powerVsDelta
+      }
+      if (!is.null(deltaVsPower)) {
+        attribs$deltaVsPower <- deltaVsPower
+      }
+      if (!is.null(deltaVsN)) {
+        attribs$deltaVsN <- deltaVsN
+      }
+      if (!is.null(sampDist)) {
+        attribs$sampDist <- sampDist
+      }
+      attribs
     }
   )
 )

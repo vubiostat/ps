@@ -4,8 +4,9 @@ import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switch';
 
-import { TTest, TTestRanges, TTestData, TTestSet } from './t-test';
-import { TTestService } from './t-test.service';
+import { TTest } from './t-test';
+import { Project } from './project';
+import { ProjectFactoryService } from './project-factory.service';
 
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component'
 import { OutputPaneComponent } from './output-pane/output-pane.component'
@@ -21,8 +22,8 @@ declare var __BUILDTIMESTAMP__: string;
 })
 export class TTestComponent implements OnInit {
   newModel = new TTest();
-  modelSets: TTestSet[] = [];
-  selectedModelSet: TTestSet;
+  projects: Project[] = [];
+  selectedProject: Project;
   commitHash = __COMMITHASH__.substr(0, 7);
   buildTimestamp = __BUILDTIMESTAMP__;
 
@@ -39,13 +40,14 @@ export class TTestComponent implements OnInit {
   @ViewChild('tabset') tabset: NgbTabset;
   @ViewChild('outputPane') outputPane: OutputPaneComponent;
 
-  constructor(private service: TTestService) {}
+  constructor(private projectFactory: ProjectFactoryService) {}
 
   ngOnInit(): void {
+    /* Add example project */
     let model = new TTest({
       output: 'n', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32
     });
-    this.addModel(model, false);
+    this.createProject(model, false);
   }
 
   toggleHelp(topic: string): void {
@@ -70,46 +72,51 @@ export class TTestComponent implements OnInit {
   }
 
   calculate(): void {
-    this.addModel(this.newModel);
+    this.createProject(this.newModel);
   }
 
-  onTabChange(event: NgbTabChangeEvent): void {
-    let md = event.nextId.match(/\d+/);
-    if (md) {
-      let index = parseInt(md[0]) - 1;
-      this.selectedModelSet = this.modelSets[index];
-    } else {
-      this.selectedModelSet = undefined;
-    }
-  }
-
-  addModel(model: TTest, select = true): void {
-    this.service.create(model).
+  createProject(model: TTest, select = true): void {
+    let project = this.projectFactory.create();
+    project.addModel(model).
       then(result => {
-        let model = new TTest(result.model);
-        let data = result.data as TTestData;
-        let modelSet = new TTestSet();
-        modelSet.add(model, data);
-        this.modelSets.push(modelSet);
+        this.projects.push(project);
 
         if (select) {
           setTimeout(() => {
-            this.tabset.select(`t-test-${this.modelSets.length}`);
+            this.tabset.select(`t-test-${this.projects.length}`);
           }, 1);
         }
       }).
       catch(err => console.error(err));
   }
 
-  mouseup(): void {
+  onTabChange(event: NgbTabChangeEvent): void {
+    let md = event.nextId.match(/\d+/);
+    if (md) {
+      let index = parseInt(md[0]) - 1;
+      this.selectedProject = this.projects[index];
+    } else {
+      this.selectedProject = undefined;
+    }
+  }
+
+  onModelChanged(): void {
+    this.outputPane.redrawPlots();
+  }
+
+  onPlotOptionsChanged(): void {
+    this.outputPane.redrawPlots();
+  }
+
+  onMouseUp(): void {
     this.plotOptionsDialog.stopDragging();
   }
 
-  childDragStarted(): void {
+  onChildDragStarted(): void {
     this.blockSelection = true;
   }
 
-  childDragEnded(): void {
+  onChildDragEnded(): void {
     this.blockSelection = false;
   }
 

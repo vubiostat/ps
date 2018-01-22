@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: "/ps-backend",
-  stateless: true
+  apiUrl: "/ps-backend"
 };

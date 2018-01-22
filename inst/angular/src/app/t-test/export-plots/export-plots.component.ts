@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as JSZip from 'jszip';
 
-import { TTestSet } from '../t-test';
+import { Project } from '../project';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { SerializePlotComponent } from '../serialize-plot.component';
@@ -14,7 +14,7 @@ import { SerializePlotComponent } from '../serialize-plot.component';
   styleUrls: ['./export-plots.component.css']
 })
 export class ExportPlotsComponent implements OnInit {
-  @Input('model-set') modelSet: TTestSet;
+  @Input('project') project: Project;
 
   includeTopLeft = true;
   topLeftTitle: string;
@@ -48,7 +48,7 @@ export class ExportPlotsComponent implements OnInit {
   constructor(private activeModal: NgbActiveModal) {}
 
   ngOnInit(): void {
-    switch (this.modelSet.getModel(0).output) {
+    switch (this.project.getModel(0).output) {
       case "n":
         this.topLeftTitle = "Sample Size vs. Power";
         this.topRightTitle = "Sample Size vs. Detectable Alternative";

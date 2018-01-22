@@ -99,13 +99,11 @@ StandaloneHandler <- setRefClass("StandaloneHandler",
   )
 )
 
-runPS <- function(mode = c("standalone", "backend"), host = "127.0.0.1", port = 7788, corsHost = host, corsPort = 4200, kind = c("stateless", "stateful"), launch.browser = mode == "standalone" && interactive()) {
-  kind <- match.arg(kind)
+runPS <- function(mode = c("standalone", "backend"), host = "127.0.0.1", port = 7788, corsHost = host, corsPort = 4200, launch.browser = mode == "standalone" && interactive()) {
   mode <- match.arg(mode)
 
   app <- NotFoundHandler()
-  backendHandler <- if (kind == "stateful") TTestStatefulHandler else TTestStatelessHandler
-  backendApp <- backendHandler(app)
+  backendApp <- TTestHandler(app)
 
   if (mode == "standalone") {
     corsHost <- host

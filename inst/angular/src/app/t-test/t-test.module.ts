@@ -8,11 +8,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TTestService } from './t-test.service';
 import { PlotOptionsService } from './plot-options.service';
 import { PaletteService } from './palette.service';
+import { ProjectFactoryService } from './project-factory.service';
 
 import { TTestComponent } from './t-test.component';
 import { StartComponent } from './start/start.component';
 import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range-slider/range-slider.component';
-import { FormComponent } from './form/form.component';
+import { ProjectComponent } from './project/project.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 import { HelpComponent } from './help/help.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component';
@@ -38,7 +39,7 @@ const routes: Routes = [
     RangeSliderComponent,
     RangeSliderLabel,
     RangeSliderHelp,
-    FormComponent,
+    ProjectComponent,
     OutputPaneComponent,
     HelpComponent,
     PlotOptionsComponent,
@@ -62,7 +63,8 @@ const routes: Routes = [
   providers: [
     TTestService,
     PlotOptionsService,
-    PaletteService
+    PaletteService,
+    ProjectFactoryService
   ],
   entryComponents: [
     ExportPlotsComponent

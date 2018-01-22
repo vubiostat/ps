@@ -1,25 +1,28 @@
 <div class="plot" [class.without-footer]="!showFooter">
   <t-test-plot #topLeft name="top-left"
-    [model-set]="modelSet"
-    [hover-disabled]="hoverDisabled">
+    [project]="project"
+    [hover-disabled]="hoverDisabled"
+    (modelChanged)="onModelChanged()">
   </t-test-plot>
   <t-test-plot #topRight name="top-right"
-    [model-set]="modelSet"
-    [hover-disabled]="hoverDisabled">
+    [project]="project"
+    [hover-disabled]="hoverDisabled"
+    (modelChanged)="onModelChanged()">
   </t-test-plot>
   <t-test-bottom-plot #bottom name="bottom"
-    [model-set]="modelSet"
+    [project]="project"
     [disable-drag-target]="model?.output == 'delta'"
-    [disable-drag-ci]="model?.output == 'n'">
+    [disable-drag-ci]="model?.output == 'n'"
+    (modelChanged)="onModelChanged()">
   </t-test-bottom-plot>
-  <div class="show-footer" *ngIf="modelSet && !showFooter">
+  <div class="show-footer" *ngIf="project && !showFooter">
     <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">
       <i class="fa fa-envelope-open-o" aria-hidden="true" title="Show footer"></i>
       Interpretation / Log
     </button>
   </div>
 </div>
-<div class="output-footer" *ngIf="modelSet && showFooter">
+<div class="output-footer" *ngIf="project && showFooter">
   <div class="footer-buttons">
     <button type="button" (click)="copyFooter()" title="Copy to clipboard">
       <i class="fa fa-clipboard"></i>
@@ -31,18 +34,18 @@
   <ngb-tabset #footerTabset type="pills">
     <ngb-tab id="t-test-interpretation" title="Interpretation">
       <ng-template ngbTabContent>
-        {{model.interpretation()}}
+        {{model?.interpretation()}}
       </ng-template>
     </ngb-tab>
     <ngb-tab id="t-test-log" title="Log">
       <ng-template ngbTabContent>
-        <ng-template [ngIf]="model.changeHistory.length == 0" [ngIfElse]="changeHistory">
+        <ng-template [ngIf]="!project" [ngIfElse]="changeHistory">
           There have been no changes yet.
         </ng-template>
         <ng-template #changeHistory>
           <ul class="log">
-            <li *ngFor="let changes of model.changeHistory"
-              [innerHTML]="describeChanges(changes)">
+            <li *ngFor="let changes of project.changeHistory"
+              [innerHTML]="project.describeChanges(changes)">
             </li>
           </ul>
         </ng-template>

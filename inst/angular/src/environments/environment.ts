@@ -5,6 +5,5 @@
 
 export const environment = {
   production: false,
-  apiUrl: "http://localhost:7788",
-  stateless: true
+  apiUrl: "http://localhost:7788"
 };

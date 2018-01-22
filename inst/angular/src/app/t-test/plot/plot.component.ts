@@ -1,13 +1,14 @@
 import {
-  Component, Input, OnChanges, SimpleChanges, AfterViewChecked,
-  ViewChild, ElementRef, ViewEncapsulation
+  Component, Input, Output, OnChanges, SimpleChanges, AfterViewChecked,
+  ViewChild, ElementRef, ViewEncapsulation, EventEmitter
 } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
 import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
 import { Range } from '../range';
-import { TTestSet } from '../t-test';
+import { Point } from '../point';
+import { Project } from '../project';
 import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 import { SerializePlotComponent } from '../serialize-plot.component';
@@ -18,55 +19,6 @@ interface Param {
   range: Range;
   title: string;
   sym: string;
-  dataKey: string;
-}
-
-interface Point {
-  x: number;
-  y: number;
-}
-
-class Target {
-  dropPaths: string[] = [];
-  xRange: number[];
-  yRange: number[];
-
-  constructor(public point: Point, xScale: any, yScale: any) {
-    this.update(xScale, yScale);
-  }
-
-  update(xScale: any, yScale: any) {
-    this.dropPaths = [];
-
-    // calculate drop paths
-    let path = d3.line().
-      x((d, i) => xScale(d.x)).
-      y((d, i) => yScale(d.y));
-
-    let xData = [
-      { x: this.point.x, y: yScale.domain()[1] },
-      { x: this.point.x, y: this.point.y }
-    ];
-    this.dropPaths.push(path(xData));
-
-    let yData = [
-      { x: xScale.domain()[0], y: this.point.y },
-      { x: this.point.x, y: this.point.y }
-    ];
-    this.dropPaths.push(path(yData));
-
-    // calculate hover ranges
-    let x = xScale(this.point.x);
-    this.xRange = [x - 10, x + 10];
-
-    let y = yScale(this.point.y);
-    this.yRange = [y - 10, y + 10];
-  }
-
-  isClose(x: number, y: number): boolean {
-    return x > this.xRange[0] && x < this.xRange[1] &&
-      y > this.yRange[0] && y < this.yRange[1];
-  }
 }
 
 enum HoverInfo {
@@ -82,11 +34,13 @@ enum HoverInfo {
   encapsulation: ViewEncapsulation.None
 })
 export class PlotComponent extends AbstractPlotComponent implements OnChanges, AfterViewChecked {
-  @Input('model-set') modelSet: TTestSet;
+  @Input('project') project: Project;
   @Input('hover-disabled') hoverDisabled = false;
   @Input('hide-drop-lines') hideDropLines = false;
   @Input('hide-target') hideTarget = false;
   @Input('disable-drag') disableDrag = false;
+  @Output() modelChanged = new EventEmitter();
+  dataKey: string;
 
   constructor(
     public plotOptions: PlotOptionsService,
@@ -99,8 +53,9 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   y: Param;
   plotData: any[];
   paths: string[];
+  dropPaths: string[];
   mainData: any[];
-  mainTarget: Target;
+  target: Point;
   xBisector: any;
   hoverX: number;
   hoverY: number;
@@ -113,23 +68,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   targetDragging = false;
   needDraw = Draw.No;
 
-  private subscription: Subscription;
-
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.modelSet) {
-      // model set changed
-      if (this.subscription) {
-        this.subscription.unsubscribe();
-      }
-      if (this.modelSet) {
-        let callback = this.setup.bind(this);
-        this.subscription = this.modelSet.onCompute.subscribe(callback);
-        this.subscription.add(this.modelSet.onChange.subscribe(callback));
-        callback();
-      }
-    } else if (changes.fixedWidth || changes.fixedHeight) {
-      this.setup();
-    }
+    this.setup();
   }
 
   ngAfterViewChecked(): void {
@@ -140,7 +80,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.setup();
   }
 
-  hover(event: any, target?: Target): void {
+  hover(event: any, target?: Point): void {
     var dim = event.target.getBoundingClientRect();
     var x = event.clientX - dim.left;
     var y = event.clientY - dim.top;
@@ -148,14 +88,14 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.hoverPoint = undefined;
     this.hoverInfo = HoverInfo.Disabled;
     if (target) {
-      this.hoverPoint = target.point;
+      this.hoverPoint = target;
       this.hoverInfo = HoverInfo.Target;
 
     } else if (!this.hoverDisabled) {
       let index = this.xBisector(this.mainData, this.xScale.invert(x));
-      let data = this.mainData[index];
-      if (data) {
-        this.hoverPoint = { x: data[this.x.name], y: data[this.y.name] } as Point;
+      let point = this.mainData[index];
+      if (point) {
+        this.hoverPoint = point;
         this.hoverInfo = HoverInfo.NonTarget;
       }
     }
@@ -168,7 +108,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   hoverInfoY(): string {
-    if (this.hoverY < this.mainTarget.yRange[0]) {
+    if (this.hoverY < this.target.y) {
       return "-3.5em";
     }
     return "1em";
@@ -212,79 +152,84 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
   private setupParams(): boolean {
     // Setup parameters. Dimensions should be setup by this point.
-    let model = this.modelSet.getModel(0);
-    let ranges = this.modelSet.ranges;
+    let model = this.project.getModel(0);
     if (model.output == 'n' || model.output == 'nByCI') {
       if (this.name == 'top-left' || this.name == 'top-left-export') {
-        // Power vs. Sample Size
+        // Sample Size vs. Sample Size
         this.x = {
-          name: 'power', range: ranges.power, target: model.power,
-          title: 'Power', sym: '1-β', dataKey: 'primary'
+          name: 'power', range: this.project.powerRange, target: model.power,
+          title: 'Power', sym: '1-β'
         };
+        this.dataKey = 'nVsPower';
 
       } else if (this.name == 'top-right' || this.name == 'top-right-export') {
-        // Detectable Alternative vs. Sample Size
+        // Sample Size vs. Detectable Alternative
         this.x = {
-          name: 'delta', range: ranges.delta, target: model.delta,
-          title: 'Detectable Alternative', sym: 'δ', dataKey: 'primary'
+          name: 'delta', range: this.project.deltaRange, target: model.delta,
+          title: 'Detectable Alternative', sym: 'δ'
         };
+        this.dataKey = 'nVsDelta';
 
       } else {
         return false;
       }
 
       this.y = {
-        name: 'n', range: ranges.n, target: model.n,
-        title: 'Sample Size', sym: 'n', dataKey: 'primary'
+        name: 'n', range: this.project.nRange, target: model.n,
+        title: 'Sample Size', sym: 'n'
       };
     } else if (model.output == 'power') {
       if (this.name == 'top-left' || this.name == 'top-left-export') {
-        // Sample Size vs. Power
+        // Power vs. Sample Size
         this.x = {
-          name: 'n', range: ranges.n, target: model.n,
-          title: 'Sample Size', sym: 'n', dataKey: 'primary'
+          name: 'n', range: this.project.nRange, target: model.n,
+          title: 'Sample Size', sym: 'n'
         };
         this.y = {
-          name: 'power', range: ranges.power, target: model.power,
-          title: 'Power', sym: '1-β', dataKey: 'primary'
+          name: 'power', range: this.project.powerRange, target: model.power,
+          title: 'Power', sym: '1-β'
         };
+        this.dataKey = 'powerVsN';
 
       } else if (this.name == 'top-right' || this.name == 'top-right-export') {
-        // Detectable Alternative vs. Power
+        // Power vs. Detectable Alternative
         this.x = {
-          name: 'delta', range: ranges.delta, target: model.delta,
-          title: 'Detectable Alternative', sym: 'δ', dataKey: 'secondary'
+          name: 'delta', range: this.project.deltaRange, target: model.delta,
+          title: 'Detectable Alternative', sym: 'δ'
         };
         this.y = {
-          name: 'power', range: ranges.power, target: model.power,
-          title: 'Power', sym: '1-β', dataKey: 'secondary'
+          name: 'power', range: this.project.powerRange, target: model.power,
+          title: 'Power', sym: '1-β'
         };
+        this.dataKey = 'powerVsDelta';
 
       } else {
         return false;
       }
     } else if (model.output == 'delta') {
       if (this.name == 'top-left' || this.name == 'top-left-export') {
-        // Sample Size vs. Detectable Alternative
+        // Detectable Alternative vs. Sample Size
         this.x = {
-          name: 'n', range: ranges.n, target: model.n,
-          title: 'Sample Size', sym: 'n', dataKey: 'primary'
+          name: 'n', range: this.project.nRange, target: model.n,
+          title: 'Sample Size', sym: 'n'
         };
+        this.dataKey = 'deltaVsN';
 
       } else if (this.name == 'top-right' || this.name == 'top-right-export') {
-        // Power vs. Detectable Alternative
+        // Detectable Alternative vs. Power
         this.x = {
-          name: 'power', range: ranges.power, target: model.power,
-          title: 'Power', sym: '1-β', dataKey: 'primary'
+          name: 'power', range: this.project.powerRange, target: model.power,
+          title: 'Power', sym: '1-β'
         };
+        this.dataKey = 'deltaVsPower';
 
       } else {
         return false;
       }
 
       this.y = {
-        name: 'delta', range: ranges.delta, target: model.delta,
-        title: 'Detectable Alternative', sym: 'δ', dataKey: 'primary'
+        name: 'delta', range: this.project.deltaRange, target: model.delta,
+        title: 'Detectable Alternative', sym: 'δ'
       };
     } else {
       return false;
@@ -303,26 +248,12 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private setupPlotData(): boolean {
-    let dataKey = this.x.dataKey; // same as y.dataKey
-    if (this.modelSet.extraName == this.x.name) {
-      // Only draw first line, since the others are identical.
-      this.plotData = [this.modelSet.models[0].data[dataKey].data];
-    } else {
-      // Draw lines
-      this.plotData = this.modelSet.models.map(m => m.data[dataKey].data);
-    }
-
-    // When switching outputs, sometimes plot data is missing. This happens
-    // when the dataKey is different for a parameter than it was before.
-    this.plotData = this.plotData.filter(d => d !== null && d !== undefined);
-    if (this.plotData.length == 0) {
-      return false;
-    }
+    this.plotData = this.project.models.map(m => m[this.dataKey]);
 
     // Prepare main data for bisection during target point dragging.
     this.mainData = this.plotData[0].slice();
-    this.mainData.sort((a, b) => a[this.x.name] - b[this.x.name]);
-    this.xBisector = d3.bisector(point => point[this.x.name]).left;
+    this.mainData.sort((a, b) => a.x - b.x);
+    this.xBisector = d3.bisector(point => point.x).left;
 
     return true;
   }
@@ -338,21 +269,37 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private setupTarget(): void {
-    let model = this.modelSet.getModel(0);
-    let point = { x: model[this.x.name], y: model[this.y.name] } as Point;
-    this.mainTarget = new Target(point, this.xScale, this.yScale);
+    let model = this.project.getModel(0);
+    this.target = { x: this.x.target, y: this.y.target } as Point;
   }
 
   private setupPaths(): void {
     this.paths = this.plotData.map(d => {
-      let xName = this.x.name, xRange = this.x.range;
-      let yName = this.y.name, yRange = this.y.range;
-      return this.getPath(d, xName, yName, xRange, yRange);
+      return this.getPath(d, 'x', 'y', this.x.range, this.y.range);
     })
   }
 
+  private setupDropPaths(): void {
+    this.dropPaths = [];
+    let path = d3.line().
+      x((d, i) => this.xScale(d.x)).
+      y((d, i) => this.yScale(d.y));
+
+    let xData = [
+      { x: this.target.x, y: this.yScale.domain()[1] },
+      { x: this.target.x, y: this.target.y }
+    ];
+    this.dropPaths.push(path(xData));
+
+    let yData = [
+      { x: this.xScale.domain()[0], y: this.target.y },
+      { x: this.target.x, y: this.target.y }
+    ];
+    this.dropPaths.push(path(yData));
+  }
+
   protected setup(): void {
-    if (!this.modelSet) {
+    if (!this.project) {
       return;
     }
 
@@ -368,6 +315,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.setupScales();
     this.setupTarget();
     this.setupPaths();
+    this.setupDropPaths();
 
     if (this.lastDragEvent) {
       this.hover(this.lastDragEvent);
@@ -437,12 +385,12 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     // target
     let targetId = `#${this.name}-target`;
     t.select(targetId).
-      attr('cx', this.xScale(this.mainTarget.point.x)).
-      attr('cy', this.yScale(this.mainTarget.point.y));
+      attr('cx', this.xScale(this.target.x)).
+      attr('cy', this.yScale(this.target.y));
 
     // drop paths
-    for (let i = 0, ilen = this.mainTarget.dropPaths.length; i < ilen; i++) {
-      t.select(`${targetId}-drop-${i}`).attr("d", this.mainTarget.dropPaths[i]);
+    for (let i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
+      t.select(`${targetId}-drop-${i}`).attr("d", this.dropPaths[i]);
     }
 
     // drag
@@ -490,33 +438,31 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
       x = this.x.range.max;
     }
     let index = this.xBisector(this.mainData, x);
-    let data = this.mainData[index];
-    if (!data) return;
+    let point = this.mainData[index];
+    if (!point) return;
 
     let svg = d3.select(this.plotElement.nativeElement);
     let targetId = `#${this.name}-target`;
-    this.mainTarget.point.x = data[this.x.name];
-    this.mainTarget.point.y = data[this.y.name];
-    this.mainTarget.update(this.xScale, this.yScale);
+    this.target = point;
+    this.setupDropPaths();
 
     svg.select(targetId).
-      attr("cx", this.xScale(this.mainTarget.point.x)).
-      attr("cy", this.yScale(this.mainTarget.point.y));
+      attr("cx", this.xScale(this.target.x)).
+      attr("cy", this.yScale(this.target.y));
 
-    for (let i = 0, ilen = this.mainTarget.dropPaths.length; i < ilen; i++) {
-      svg.select(`${targetId}-drop-${i}`).attr("d", this.mainTarget.dropPaths[i]);
+    for (let i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
+      svg.select(`${targetId}-drop-${i}`).attr("d", this.dropPaths[i]);
     }
   }
 
   private dragTargetEnd(event: any): void {
     this.targetDragging = false;
 
-    if (this.modelSet && this.x.name) {
-      let model = this.modelSet.getModel(0);
-      model.update({
-        [this.x.name]: this.mainTarget.point.x
-      });
+    if (this.project && this.x.name) {
       this.lastDragEvent = event;
+      this.project.updateModel(0, this.x.name, this.target.x).then(() => {
+        this.modelChanged.emit();
+      })
     }
   }
 
