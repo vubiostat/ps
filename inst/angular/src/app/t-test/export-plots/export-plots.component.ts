@@ -50,6 +50,7 @@ export class ExportPlotsComponent implements OnInit {
   ngOnInit(): void {
     switch (this.project.getModel(0).output) {
       case "n":
+      case "nByCI":
         this.topLeftTitle = "Sample Size vs. Power";
         this.topRightTitle = "Sample Size vs. Detectable Alternative";
         break;
