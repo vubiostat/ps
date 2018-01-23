@@ -39,6 +39,7 @@ export class StartComponent {
   }
 
   onSubmit(): void {
+    this.model.powerMode = !this.model.deltaMode;
     this.onCalculate.emit();
   }
 }

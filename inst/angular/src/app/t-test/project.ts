@@ -57,11 +57,15 @@ export class Project {
         if (key === 'delta') {
           // delta was changed, so turn on "deltaMode"
           model.deltaMode = true;
+          model.powerMode = false;
           which = 'power';
-
         } else if (key === 'power') {
           // power was changed, so turn off "deltaMode"
           model.deltaMode = false;
+          model.powerMode = true;
+        } else {
+          model.deltaMode = false;
+          model.powerMode = false;
         }
       } else if (this.models[0].output !== 'n') {
         if (key === 'ci') {
@@ -87,7 +91,9 @@ export class Project {
     return models.reduce((promise, model) => {
       return promise.then(() => this.ttestService.calculate(model)).
         then(result => {
+          console.log('before:', model.params());
           Object.assign(model, result);
+          console.log('after:', model.params());
           model.calculateRanges();
         });
     }, Promise.resolve()).then(() => {

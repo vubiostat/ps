@@ -52,8 +52,9 @@ paramTitles <- list(
 
 TTest <- setRefClass("TTest",
   fields = c("alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
-             "deltaMode", "output", "nVsPower", "nVsDelta", "powerVsN",
-             "powerVsDelta", "deltaVsPower", "deltaVsN", "sampDist"),
+             "deltaMode", "powerMode", "output", "nVsPower", "nVsDelta",
+             "powerVsN", "powerVsDelta", "deltaVsPower", "deltaVsN",
+             "sampDist"),
 
   methods = list(
     initialize = function(params) {
@@ -65,6 +66,7 @@ TTest <- setRefClass("TTest",
       ci           <<- params$ci
       ciMode       <<- params$ciMode
       deltaMode    <<- params$deltaMode
+      powerMode    <<- params$powerMode
       output       <<- params$output
       nVsPower     <<- NULL
       nVsDelta     <<- NULL
@@ -80,6 +82,9 @@ TTest <- setRefClass("TTest",
       if (is.null(deltaMode)) {
         deltaMode <<- FALSE
       }
+      if (is.null(powerMode)) {
+        powerMode <<- FALSE
+      }
       calculate()
     },
     calculate = function() {
@@ -91,7 +96,7 @@ TTest <- setRefClass("TTest",
           n <<- calculateNFromCI(sigma, ci)
           if (deltaMode) {
             power <<- calculatePower(alpha, delta, sigma, n)
-          } else {
+          } else if (powerMode) {
             delta <<- calculateDelta(alpha, sigma, n, power)
           }
         }

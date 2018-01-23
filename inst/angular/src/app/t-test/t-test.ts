@@ -12,6 +12,7 @@ export class TTest {
   ci?: number;
   ciMode = false;
   deltaMode = false;
+  powerMode = false;
 
   // ranges
   nRange?: Range;
@@ -138,7 +139,7 @@ export class TTest {
     let result: any = {
       output: this.output, alpha: this.alpha, sigma: this.sigma,
       delta: this.delta, power: this.power, n: this.n, ci: this.ci,
-      ciMode: this.ciMode, deltaMode: this.deltaMode
+      ciMode: this.ciMode, deltaMode: this.deltaMode, powerMode: this.powerMode
     };
     return result;
   }
