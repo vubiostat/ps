@@ -32,7 +32,7 @@
     </div>
   </div>
   <ng-template [ngIf]="project.extraName == 'alpha'">
-    <div class="grow-horiz" *ngFor="let ex of project.models.slice(1); let i = index; trackBy: trackByExtra">
+    <div class="grow-horiz" *ngFor="let ex of project.models.slice(1).reverse(); let i = index; trackBy: trackByExtra">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="alpha-{{i+2}}" label="Type I Error (&alpha;) #{{i+2}}"
           [min]="min.alpha" [max]="max.alpha"
@@ -69,7 +69,7 @@
     </div>
   </div>
   <ng-template [ngIf]="project.extraName == 'sigma'">
-    <div class="grow-horiz" *ngFor="let ex of project.models.slice(1); let i = index; trackBy: trackByExtra">
+    <div class="grow-horiz" *ngFor="let ex of project.models.slice(1).reverse(); let i = index; trackBy: trackByExtra">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="sigma-{{i+2}}" label="Std. deviation #{{i+2}}"
           [min]="min.sigma" [max]="max.sigma" step="0.1"
@@ -102,7 +102,7 @@
       </div>
     </div>
     <ng-template [ngIf]="project.extraName == 'delta'">
-      <div class="grow-horiz" *ngFor="let ex of project.models.slice(1); let i = index; trackBy: trackByExtra">
+      <div class="grow-horiz" *ngFor="let ex of project.models.slice(1).reverse(); let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="delta-{{i+2}}" label="Difference in population means (&delta;) #{{i+2}}"
             [min]="min.delta" [max]="max.delta" step="0.1"
@@ -134,7 +134,7 @@
       </div>
     </div>
     <ng-template [ngIf]="project.extraName == 'power'">
-      <div class="grow-horiz" *ngFor="let ex of project.models.slice(1); let i = index; trackBy: trackByExtra">
+      <div class="grow-horiz" *ngFor="let ex of project.models.slice(1).reverse(); let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="power-{{i+2}}" label="Power #{{i+2}}"
             [min]="min.power" [max]="max.power"
@@ -174,7 +174,7 @@
       </div>
     </div>
     <ng-template [ngIf]="project.extraName == 'n'">
-      <div class="grow-horiz" *ngFor="let ex of project.models.slice(1); let i = index; trackBy: trackByExtra">
+      <div class="grow-horiz" *ngFor="let ex of project.models.slice(1).reverse(); let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="n-{{i+2}}" label="Sample size #{{i+2}}"
             [min]="min.n" [max]="max.n" step="1"
@@ -211,7 +211,7 @@
       </div>
     </div>
     <ng-template [ngIf]="project.extraName == 'ci'">
-      <div class="grow-horiz" *ngFor="let ex of project.models.slice(1); let i = index; trackBy: trackByExtra">
+      <div class="grow-horiz" *ngFor="let ex of project.models.slice(1).reverse(); let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="ci-{{i+2}}" label="95% confidence interval width #{{i+2}}"
             [min]="min.ci" [max]="max.ci" step="0.1"
@@ -263,7 +263,7 @@
       </div>
     </div>
     <ng-template [ngIf]="project.extraName == 'power'">
-      <div class="grow-horiz order-2 alt" *ngFor="let ex of project.models.slice(1); let i = index; trackBy: trackByExtra">
+      <div class="grow-horiz order-2 alt" *ngFor="let ex of project.models.slice(1).reverse(); let i = index; trackBy: trackByExtra">
         <div class="grow-vert range-slider">
           <t-test-range-slider name="delta-{{i+2}}" label="Difference in population means #{{i+2}}"
             [min]="min.delta" [max]="max.delta" step="0.1"
