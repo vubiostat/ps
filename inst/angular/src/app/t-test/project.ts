@@ -33,6 +33,7 @@ export class Project {
     let model = this.models[index];
 
     let which = key;
+    let changes = { [key]: value };
     if (key === 'output') {
       if (((value == "n" || value == "nByCI") && this.extraName == "n") ||
           (value == "power" && this.extraName == "power") ||
@@ -47,35 +48,30 @@ export class Project {
         // changing output is a special case because the calculated values are going
         // to be different for extra models, so these need to be fixed before recalculating
         for (let i = 1, ilen = this.models.length; i < ilen; i++) {
-          let extraValue = this.models[i][this.extraName];
-          Object.assign(this.models[i], this.models[0]);
-          this.models[i][this.extraName] = extraValue;
+          let params = this.models[0].params();
+          params[this.extraName] = this.models[i][this.extraName];
+          Object.assign(this.models[i], params);
         }
       }
     } else {
       if (this.models[0].output === 'nByCI') {
         if (key === 'delta') {
           // delta was changed, so turn on "deltaMode"
-          model.deltaMode = true;
-          model.powerMode = false;
+          changes.deltaMode = true;
           which = 'power';
         } else if (key === 'power') {
           // power was changed, so turn off "deltaMode"
-          model.deltaMode = false;
-          model.powerMode = true;
-        } else {
-          model.deltaMode = false;
-          model.powerMode = false;
+          changes.deltaMode = false;
         }
       } else if (this.models[0].output !== 'n') {
         if (key === 'ci') {
           // 95% confidence interval width was changed, so turn on "ciMode"
-          model.ciMode = true;
+          changes.ciMode = true;
           which = 'n';
 
         } else if (key === 'n') {
           // Sample size was changed, so turn off "ciMode"
-          model.ciMode = false;
+          changes.ciMode = false;
         }
       }
     }
@@ -87,7 +83,7 @@ export class Project {
       models = this.models;
     }
 
-    models.forEach(m => { m[key] = value; });
+    models.forEach(m => { Object.assign(m, changes); });
     return models.reduce((promise, model) => {
       return promise.then(() => this.ttestService.calculate(model)).
         then(result => {

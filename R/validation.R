@@ -3,7 +3,7 @@ validateParams <- function(params) {
 
   keys <- names(params)
   expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "ci",
-                    "ciMode", "deltaMode", "powerMode", "output", "design")
+                    "ciMode", "deltaMode", "output", "design")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {
@@ -65,28 +65,13 @@ validateParams <- function(params) {
       }
     }
 
-  deltaMode <-
-    if ("deltaMode" %in% keys) {
-      if (!is.logical(params$deltaMode)) {
-        errors$deltaMode <- "must be logical"
-        FALSE
-      } else {
-        params$deltaMode
-      }
+  deltaMode <- FALSE
+  if ("deltaMode" %in% keys) {
+    if (!is.logical(params$deltaMode)) {
+      errors$deltaMode <- "must be logical"
+    } else {
+      deltaMode <- params$deltaMode
     }
-
-  powerMode <-
-    if ("powerMode" %in% keys) {
-      if (!is.logical(params$powerMode)) {
-        errors$powerMode <- "must be logical"
-        FALSE
-      } else {
-        params$powerMode
-      }
-    }
-
-  if (powerMode && deltaMode) {
-    errors$powerMode <- "is not allowed if deltaMode is on"
   }
 
   if (!("output" %in% keys)) {
