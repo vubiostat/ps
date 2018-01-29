@@ -22,19 +22,29 @@ export class PlotOptionsService {
     Object.assign(this, new PlotOptionsService());
   }
 
-  dashArray(): string {
-    switch (this.lineStyle) {
+  dashArray(style?: string): string {
+    if (!style || style == "any") {
+      style = this.lineStyle;
+    }
+    switch (style) {
       case "solid":
         return "";
-      case "dashed":
+      case "short-dash":
         return "5,5";
-      case "dotted":
+      case "medium-dash":
+        return "10,10";
+      case "long-dash":
+        return "15,15";
+      case "dot":
         return "1,5";
     }
   }
 
-  lineCap(): string {
-    if (this.lineStyle == "dotted") {
+  lineCap(style?: string): string {
+    if (!style || style == "any") {
+      style = this.lineStyle;
+    }
+    if (style == "dot") {
       return "round";
     }
     return "";

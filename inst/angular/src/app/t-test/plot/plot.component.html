@@ -39,8 +39,8 @@
         [attr.clip-path]="getClipPath('plot')"
         [attr.stroke]="getPathColor(invIndex)"
         [attr.stroke-width]="plotOptions.lineWidth * 3"
-        [attr.stroke-dasharray]="plotOptions.dashArray()"
-        [attr.stroke-linecap]="plotOptions.lineCap()"
+        [attr.stroke-dasharray]="getDashArray(invIndex)"
+        [attr.stroke-linecap]="getLineCap(invIndex)"
         [attr.opacity]="invertIndex(i, paths) == 0 ? 1 : 0.7"
         fill="none" />
     </g>
@@ -83,9 +83,14 @@
       <g id="{{name}}-legend-labels">
         <g *ngFor="let path of paths; index as i; trackBy: trackByIndex"
            [attr.transform]="translate(5, 20 * plotOptions.fontSize * i)">
-          <circle r="5" stroke="none"
-            [attr.fill]="getPathColor(i)" />
-          <text x="10" y="5">{{legendLabel(i)}}</text>
+          <path
+            d="m0,0 l45,0"
+            [attr.stroke]="getPathColor(i)"
+            [attr.stroke-width]="plotOptions.lineWidth * 3"
+            [attr.stroke-dasharray]="getDashArray(i)"
+            [attr.stroke-linecap]="getLineCap(i)"
+            fill="none" />
+          <text x="50" y="5">{{legendLabel(i)}}</text>
         </g>
       </g>
     </g>

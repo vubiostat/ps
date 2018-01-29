@@ -21,6 +21,7 @@
         <option value="plasma">Plasma</option>
         <option value="viridis">Viridis</option>
         <option value="magma">Magma</option>
+        <option value="pattern">Pattern</option>
       </select>
     </div>
     <div class="row">
@@ -64,8 +65,10 @@
       <select id="plot-line-style" class="form-control"
         [ngModel]="plotOptions.lineStyle" (ngModelChange)="changeAttribute('lineStyle', $event)">
         <option value="solid">Solid</option>
-        <option value="dashed">Dashed</option>
-        <option value="dotted">Dotted</option>
+        <option value="short-dash">Short Dash</option>
+        <option value="medium-dash">Medium Dash</option>
+        <option value="long-dash">Long Dash</option>
+        <option value="dot">Dotted</option>
       </select>
     </div>
     <div class="form-check">

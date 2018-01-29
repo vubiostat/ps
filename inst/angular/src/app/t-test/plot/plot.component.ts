@@ -138,6 +138,24 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     return this.palette.getColor(index, this.plotOptions.paletteTheme);
   }
 
+  getDashArray(index: number, invert = true): string {
+    // NOTE: This is done backwards from common sense on purpose.
+    if (!invert) {
+      index = this.paths.length - index - 1;
+    }
+    let pattern = this.palette.getPattern(index, this.plotOptions.paletteTheme);
+    return this.plotOptions.dashArray(pattern);
+  }
+
+  getLineCap(index: number, invert = true): string {
+    // NOTE: This is done backwards from common sense on purpose.
+    if (!invert) {
+      index = this.paths.length - index - 1;
+    }
+    let pattern = this.palette.getPattern(index, this.plotOptions.paletteTheme);
+    return this.plotOptions.lineCap(pattern);
+  }
+
   invertIndex(invertedIndex: number, array: any[]): number {
     return array.length - invertedIndex - 1;
   }
