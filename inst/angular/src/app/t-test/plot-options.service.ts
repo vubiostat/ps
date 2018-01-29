@@ -9,7 +9,7 @@ export class PlotOptionsService {
   axisFontSize = 1;
   lineWidth = 1;
   axisLineWidth = 1;
-  paletteTheme = "plasma";
+  paletteTheme = "typical";
   lineStyle = "solid";
   showLegendBox = false;
   legendLabel0 = "Primary";

@@ -17,6 +17,7 @@
       <label for="plot-palette-theme">Color palette</label>
       <select id="plot-palette-theme" class="form-control"
         [ngModel]="plotOptions.paletteTheme" (ngModelChange)="changeAttribute('paletteTheme', $event)">
+        <option value="typical">Default</option>
         <option value="plasma">Plasma</option>
         <option value="viridis">Viridis</option>
         <option value="magma">Magma</option>
