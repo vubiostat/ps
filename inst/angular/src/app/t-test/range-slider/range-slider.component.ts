@@ -38,6 +38,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
   @Input('is-output') isOutput = false;
   @Input('help-tpl') helpTpl: TemplateRef<any>;
   @Input('label-tpl') labelTpl: TemplateRef<any>;
+  @Input('show-dot') showDot = false;
   value: number;
   hasError = false;
   private changeCallback: any;

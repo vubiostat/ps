@@ -15,6 +15,7 @@
   <div class="grow-horiz">
     <div class="grow-vert range-slider">
       <t-test-range-slider name="alpha" label="Type I Error (&alpha;)"
+        [show-dot]="project.extraName == 'alpha'"
         [min]="min.alpha" [max]="max.alpha"
         [hard-min]="min.alpha" [hard-max]="max.alpha"
         [ngModel]="model.alpha | round" (ngModelChange)="changeModel(0, 'alpha', $event)">
@@ -50,6 +51,7 @@
   <div class="grow-horiz">
     <div class="grow-vert range-slider">
       <t-test-range-slider name="sigma" label="Std. deviation (&sigma;)"
+        [show-dot]="project.extraName == 'sigma'"
         [min]="min.sigma" [max]="max.sigma" step="0.1"
         [hard-min]="1"
         [ngModel]="model.sigma | round:1" (ngModelChange)="changeModel(0, 'sigma', $event)">
@@ -87,6 +89,7 @@
     <div class="grow-horiz" [class.output]="isOutput('delta')">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="delta" label="Difference in population means (&delta;)"
+          [show-dot]="project.extraName == 'delta'"
           [min]="min.delta" [max]="max.delta" step="0.1"
           [is-output]="model.output == 'delta'" [help-tpl]="deltaHelp"
           [ngModel]="model.delta | round:1" (ngModelChange)="changeModel(0, 'delta', $event)">
@@ -117,6 +120,7 @@
     <div class="grow-horiz" [class.output]="isOutput('power')">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="power" label="Power"
+          [show-dot]="project.extraName == 'power'"
           [min]="min.power" [max]="max.power"
           [hard-min]="min.power" [hard-max]="max.power"
           [is-output]="model.output == 'power'" [help-tpl]="powerHelp"
@@ -149,12 +153,14 @@
     <div class="grow-horiz" [class.output]="isOutput('n')">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="n" label="Sample size"
+          [show-dot]="project.extraName == 'n'"
           [min]="min.n" [max]="max.n" step="1"
           [hard-min]="1"
           [is-output]="model.output == 'n'" [help-tpl]="nHelp"
           [ngModel]="model.n | ceil" (ngModelChange)="changeModel(0, 'n', $event)">
         </t-test-range-slider>
         <t-test-range-slider name="ci" label="95% confidence interval width"
+          [show-dot]="project.extraName == 'n'"
           [min]="min.ci" [max]="max.ci" step="0.1"
           [hard-min]="1"
           [is-output]="model.output == 'n'" [help-tpl]="ciHelp"
@@ -193,6 +199,7 @@
     <div class="grow-horiz">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="ci" label="95% confidence interval width"
+          [show-dot]="project.extraName == 'ci'"
           [min]="min.ci" [max]="max.ci" step="0.1" [help-tpl]="ciHelp"
           [ngModel]="model.ci | round:1" (ngModelChange)="changeModel(0, 'ci', $event)">
         </t-test-range-slider>
@@ -236,11 +243,13 @@
     <div class="grow-horiz order-2 alt">
       <div class="grow-vert range-slider">
         <t-test-range-slider name="delta" label="Difference in population means (&delta;)"
+          [show-dot]="project.extraName == 'power'"
           [min]="min.delta" [max]="max.delta" step="0.1" [help-tpl]="deltaHelp"
           [ngModel]="model.delta | round:1" (ngModelChange)="changeModel(0, 'delta', $event)">
         </t-test-range-slider>
 
         <t-test-range-slider name="power" label="Power"
+          [show-dot]="project.extraName == 'power'"
           [min]="min.power" [max]="max.power"
           [hard-min]="min.power" [hard-max]="max.power"
           [is-output]="model.output == 'power'" [help-tpl]="powerHelp"
@@ -248,7 +257,7 @@
         </t-test-range-slider>
       </div>
       <div class="add-remove-center fa-fw" [style.color]="getColor(0)">
-        <i *ngIf="canAdd('n')" class="fa fa-plus-circle" (click)="addInput('power')"
+        <i *ngIf="canAdd('power')" class="fa fa-plus-circle" (click)="addInput('power')"
           ngbPopover="Click to add line to plot for alternate value of &quot;n&quot; or 95% confidence interval width"
           triggers="hover" container="body"></i>
       </div>

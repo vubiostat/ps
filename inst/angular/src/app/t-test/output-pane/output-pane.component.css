@@ -134,3 +134,7 @@ div.show-footer {
 .footer-buttons i {
   margin: 0 3px;
 }
+
+.dot {
+  color: red;
+}

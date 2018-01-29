@@ -32,7 +32,8 @@
     </button>
   </div>
   <ngb-tabset #footerTabset type="pills">
-    <ngb-tab id="t-test-interpretation" title="Interpretation">
+    <ngb-tab id="t-test-interpretation">
+      <ng-template ngbTabTitle><i *ngIf="project.extraName" class="fa fa-circle dot"></i> Interpretation</ng-template>
       <ng-template ngbTabContent>
         {{model?.interpretation()}}
       </ng-template>
