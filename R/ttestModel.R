@@ -121,7 +121,10 @@ TTest <- setRefClass("TTest",
         power <<- calculatePower(alpha, delta, sigma, n)
 
         # Calculate data for plots
-        power2 <- seq(alpha + 0.001, 0.999, 0.001)
+        power2 <- c(
+          seq(alpha + 0.01, 0.95, length.out = 180),
+          seq(0.951, 0.999, length.out = 20)
+        )
         if (power < 1 && !(power %in% power2)) {
           power2 <- sort(c(power2, power))
         }

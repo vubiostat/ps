@@ -248,18 +248,29 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private setupPlotData(): boolean {
+    /*
     if (this.dataKey == 'powerVsN') {
       this.plotData = this.project.models.map(m => {
         let data = m[this.dataKey];
-        let last = data[data.length - 1];
-        if (last.y >= 0.99 && last.x < this.x.range.max) {
-          data = data.concat({ x: this.x.range.max, y: 1 });
+        let last, lastIndex;
+        for (let i = data.length - 1; i >= 0; i--) {
+          if (data[i].y <= this.y.range.max && data[i].x <= this.x.range.max) {
+            last = data[i];
+            lastIndex = i;
+            break;
+          }
+        }
+        if (last.x < this.x.range.max) {
+          // insert points to smooth
+          data.splice(lastIndex, 0, { x: this.x.range.max, y: this.y.range.max });
         }
         return data;
       });
     } else {
       this.plotData = this.project.models.map(m => m[this.dataKey]);
     }
+    */
+    this.plotData = this.project.models.map(m => m[this.dataKey]);
 
     // Prepare main data for bisection during target point dragging.
     this.mainData = this.plotData[0].slice();
