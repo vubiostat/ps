@@ -54,7 +54,9 @@
               [disable-drag]="true"
               [hide-drop-lines]="!topLeftDropLines"
               [hide-target]="!topLeftTarget"
-              [fixed-width]="topLeftWidth" [fixed-height]="topLeftHeight">
+              [fixed-width]="topLeftWidth" [fixed-height]="topLeftHeight"
+              [legend-x-offset]="topLeftLegendXOffset"
+              [legend-y-offset]="topLeftLegendYOffset">
             </t-test-plot>
           </div>
           <t-test-serialize-plot #topLeftSerializer
@@ -110,7 +112,9 @@
               [disable-drag]="true"
               [hide-drop-lines]="!topRightDropLines"
               [hide-target]="!topRightTarget"
-              [fixed-width]="topRightWidth" [fixed-height]="topRightHeight">
+              [fixed-width]="topRightWidth" [fixed-height]="topRightHeight"
+              [legend-x-offset]="topRightLegendXOffset"
+              [legend-y-offset]="topRightLegendYOffset">
             </t-test-plot>
           </div>
           <t-test-serialize-plot #topRightSerializer

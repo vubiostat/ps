@@ -48,7 +48,12 @@ export class OutputPaneComponent implements OnChanges {
 
   openSaveDialog(): void {
     const modalRef = this.modalService.open(ExportPlotsComponent, { windowClass: 'export-plots' });
-    modalRef.componentInstance.project = this.project;
+    let component = modalRef.componentInstance;
+    component.project = this.project;
+    component.topLeftLegendXOffset = this.topLeftPlot.legendXOffset;
+    component.topLeftLegendYOffset = this.topLeftPlot.legendYOffset;
+    component.topRightLegendXOffset = this.topRightPlot.legendXOffset;
+    component.topRightLegendYOffset = this.topRightPlot.legendYOffset;
   }
 
   round(n: number): number {

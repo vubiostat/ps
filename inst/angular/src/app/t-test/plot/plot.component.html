@@ -75,7 +75,7 @@
 
     <g id="{{name}}-legend" class="legend"
        *ngIf="paths.length > 1"
-       [attr.transform]="translate(margin + 15 + legendOffsetX, margin + 15 + legendOffsetY)"
+       [attr.transform]="translate(margin + 15 + legendXOffset, margin + 15 + legendYOffset)"
        font-size="smaller">
       <path id="{{name}}-legend-box"
             fill="white" [attr.fill-opacity]="plotOptions.showLegendBox ? 0.8 : 0"

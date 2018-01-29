@@ -39,6 +39,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   @Input('hide-drop-lines') hideDropLines = false;
   @Input('hide-target') hideTarget = false;
   @Input('disable-drag') disableDrag = false;
+  @Input('legend-x-offset') legendXOffset = 0;
+  @Input('legend-y-offset') legendYOffset = 0;
   @Output() modelChanged = new EventEmitter();
   dataKey: string;
 
@@ -62,8 +64,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   hoverPoint: Point;
   hoverInfo = HoverInfo.Disabled;
   lastDragEvent: any;
-  legendOffsetX = 0;
-  legendOffsetY = 0;
 
   targetDragging = false;
   needDraw = Draw.No;
@@ -489,8 +489,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private dragLegend(): void {
-    this.legendOffsetX += d3.event.dx;
-    this.legendOffsetY += d3.event.dy;
+    this.legendXOffset += d3.event.dx;
+    this.legendYOffset += d3.event.dy;
   }
 
   // from https://bl.ocks.org/mbostock/3916621

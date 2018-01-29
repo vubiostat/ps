@@ -15,6 +15,10 @@ import { SerializePlotComponent } from '../serialize-plot.component';
 })
 export class ExportPlotsComponent implements OnInit {
   @Input('project') project: Project;
+  @Input('top-left-legend-x-offset') topLeftLegendXOffset: number;
+  @Input('top-left-legend-y-offset') topLeftLegendYOffset: number;
+  @Input('top-right-legend-x-offset') topRightLegendXOffset: number;
+  @Input('top-right-legend-y-offset') topRightLegendYOffset: number;
 
   includeTopLeft = true;
   topLeftTitle: string;
@@ -48,6 +52,10 @@ export class ExportPlotsComponent implements OnInit {
   constructor(private activeModal: NgbActiveModal) {}
 
   ngOnInit(): void {
+    console.log('top left legend x offset', this.topLeftLegendXOffset);
+    console.log('top left legend y offset', this.topLeftLegendYOffset);
+    console.log('top right legend x offset', this.topRightLegendXOffset);
+    console.log('top right legend y offset', this.topRightLegendYOffset);
     switch (this.project.getModel(0).output) {
       case "n":
       case "nByCI":
