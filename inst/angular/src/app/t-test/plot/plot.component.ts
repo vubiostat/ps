@@ -168,6 +168,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     return `url(#${this.name}-${which}-area)`;
   }
 
+  resetLegend(): void {
+    this.legendXOffset = 0;
+    this.legendYOffset = 0;
+  }
+
   private setupParams(): boolean {
     // Setup parameters. Dimensions should be setup by this point.
     let model = this.project.getModel(0);

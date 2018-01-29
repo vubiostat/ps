@@ -76,7 +76,7 @@
     <g id="{{name}}-legend" class="legend"
        *ngIf="paths.length > 1"
        [attr.transform]="translate(margin + 15 + legendXOffset, margin + 15 + legendYOffset)"
-       font-size="smaller">
+       font-size="smaller" (dblclick)="resetLegend()">
       <path id="{{name}}-legend-box"
             fill="white" [attr.fill-opacity]="plotOptions.showLegendBox ? 0.8 : 0"
             stroke="black" [attr.stroke-opacity]="plotOptions.showLegendBox ? 1 : 0" />
