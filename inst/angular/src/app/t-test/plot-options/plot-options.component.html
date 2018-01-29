@@ -115,14 +115,14 @@
     </div>
   </fieldset>
   <fieldset>
-    <legend *ngIf="model.output == 'n'">Sample Size</legend>
+    <legend *ngIf="model.output == 'n' || model.output == 'nByCI'">Sample Size</legend>
     <legend *ngIf="model.output == 'power'">Power</legend>
     <legend *ngIf="model.output == 'delta'">Detectable Alternative</legend>
     <div class="row">
       <div class="col-sm">
         <label for="plot-top-y-min">Minimum</label>
         <div class="input-group">
-          <ng-template [ngIf]="model.output == 'n'">
+          <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
             <input class="form-control"
               type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
               [ngModel]="project.nRange.min | round"
@@ -145,7 +145,7 @@
       <div class="col-sm">
         <label for="plot-top-y-max">Maximum</label>
         <div class="input-group">
-          <ng-template [ngIf]="model.output == 'n'">
+          <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
             <input class="form-control"
               type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
               [ngModel]="project.nRange.max | round"
@@ -168,7 +168,7 @@
     </div>
   </fieldset>
   <fieldset>
-    <ng-template [ngIf]="model.output == 'n'">
+    <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
       <legend>Sample Size vs. Power</legend>
       <div class="row">
         <div class="col-sm">
@@ -239,7 +239,7 @@
     </ng-template>
   </fieldset>
   <fieldset>
-    <ng-template [ngIf]="model.output == 'n'">
+    <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
       <legend>Sample Size vs. Detectable Alternative</legend>
       <div class="row">
         <div class="col-sm">
