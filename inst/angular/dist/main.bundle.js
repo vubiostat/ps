@@ -375,7 +375,7 @@ var BottomPlotComponent = (function (_super) {
     };
     BottomPlotComponent.prototype.setupDimensions = function () {
         // margin
-        this.topMargin = this.plotOptions.getFontSize() + 10;
+        this.topMargin = this.plotOptions.getFontSize() + 20;
         this.bottomMargin = 10 + this.plotOptions.getFontSize() +
             this.plotOptions.getAxisLineWidth() +
             (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
@@ -421,7 +421,7 @@ var BottomPlotComponent = (function (_super) {
             domain(pSpaceRange.toArray()).
             range([0, this.innerWidth]);
         this.yScale = __WEBPACK_IMPORTED_MODULE_3_d3__["j" /* scaleLinear */]().
-            domain([0, 0.8]).
+            domain([0, 0.7]).
             range([0, this.innerHeight]);
         var sampDistExtent = this.plotData.reduce(function (arr, sampDist) {
             var extent = __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* extent */](sampDist, function (d) { return d.y; });
@@ -439,13 +439,13 @@ var BottomPlotComponent = (function (_super) {
             // main lines
             var leftLimit = range.min;
             var leftPath = _this.getPath([
-                { x: leftLimit, y: 0.35 },
-                { x: leftLimit, y: 0.65 }
+                { x: leftLimit, y: 0.40 },
+                { x: leftLimit, y: 0.60 }
             ]);
             var rightLimit = range.max;
             var rightPath = _this.getPath([
-                { x: rightLimit, y: 0.35 },
-                { x: rightLimit, y: 0.65 }
+                { x: rightLimit, y: 0.40 },
+                { x: rightLimit, y: 0.60 }
             ]);
             var centerPath = _this.getPath([
                 { x: leftLimit, y: 0.5 },
@@ -489,7 +489,7 @@ var BottomPlotComponent = (function (_super) {
         }
         var t = __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* select */](this.plotElement.nativeElement).transition();
         // axes (drawn by d3)
-        var xAxis = __WEBPACK_IMPORTED_MODULE_3_d3__["b" /* axisBottom */](this.xScale).ticks(6);
+        var xAxis = __WEBPACK_IMPORTED_MODULE_3_d3__["b" /* axisBottom */](this.xScale).ticks(Math.floor(this.innerWidth / 75));
         t.select("#" + this.name + "-bottom-axis").
             call(xAxis).
             attr("font-size", 15 * this.plotOptions.axisFontSize).
@@ -891,7 +891,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/export-plots/export-plots.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Export graphs</h4>\n  <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"cancel()\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n<div class=\"modal-body grow-vert h-100\">\n  <div class=\"d-flex flex-column h-100\">\n    <ngb-tabset [destroyOnHide]=\"false\">\n      <ngb-tab [title]=\"topLeftTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopLeft\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopLeft\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftTarget\">\n                    Show target\n                </label>\n              </div>\n              <div class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftWidth\">\n                </label>\n              </div>\n              <div class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topLeftPlot name=\"top-left-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topLeftDropLines\"\n              [hide-target]=\"!topLeftTarget\"\n              [fixed-width]=\"topLeftWidth\" [fixed-height]=\"topLeftHeight\"\n              [legend-x-offset]=\"topLeftLegendXOffset\"\n              [legend-y-offset]=\"topLeftLegendYOffset\">\n            </t-test-plot>\n          </div>\n          <t-test-serialize-plot #topLeftSerializer\n            [plot]=\"topLeftPlot\"\n            [width]=\"topLeftWidth\" [height]=\"topLeftHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"topRightTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopRight\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopRight\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightTarget\">\n                    Show target\n                </label>\n              </div>\n              <div class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightWidth\">\n                </label>\n              </div>\n              <div class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topRightPlot name=\"top-right-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topRightDropLines\"\n              [hide-target]=\"!topRightTarget\"\n              [fixed-width]=\"topRightWidth\" [fixed-height]=\"topRightHeight\"\n              [legend-x-offset]=\"topRightLegendXOffset\"\n              [legend-y-offset]=\"topRightLegendYOffset\">\n            </t-test-plot>\n          </div>\n          <t-test-serialize-plot #topRightSerializer\n            [plot]=\"topRightPlot\"\n            [width]=\"topRightWidth\" [height]=\"topRightHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"bottomTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeBottom\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeBottom\">\n              <div class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomWidth\">\n                </label>\n              </div>\n              <div class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-bottom-plot #bottomPlot name=\"bottom-export\"\n              [project]=\"project\"\n              [disable-drag-target]=\"true\" [disable-drag-ci]=\"true\"\n              [fixed-width]=\"bottomWidth\" [fixed-height]=\"bottomHeight\">\n            </t-test-bottom-plot>\n          </div>\n          <t-test-serialize-plot #bottomSerializer\n            [plot]=\"bottomPlot\"\n            [width]=\"bottomWidth\" [height]=\"bottomHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n    </ngb-tabset>\n  </div>\n</div>\n<div class=\"modal-footer\">\n  <div class=\"d-flex-inline flex-row\">\n    <div class=\"form-inline\">\n      <label for=\"export-image-format\" class=\"mr-sm-2\">Image format:</label>\n      <select id=\"export-image-format\" class=\"form-control\" [(ngModel)]=\"imageFormat\">\n        <option value=\"svg\">SVG</option>\n        <option value=\"png\">PNG</option>\n      </select>\n    </div>\n  </div>\n  <p>\n    The graphs you have chosen will be packaged in a ZIP file.\n    <a #downloadLink style=\"display: none\"></a>\n  </p>\n  <div class=\"d-flex flex-row align-items-center\">\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"save()\"\n      [disabled]=\"!includeTopLeft && !includeTopRight && !includeBottom\">\n      <i class=\"fa fa-floppy-o\"></i> Save\n    </button>\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"cancel()\">\n      <i class=\"fa fa-circle-x\"></i> Close\n    </button>\n  </div>\n</div>\n"
+module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Export graphs</h4>\n  <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"cancel()\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n<div class=\"modal-body grow-vert h-100\">\n  <div class=\"d-flex flex-column h-100\">\n    <ngb-tabset [destroyOnHide]=\"false\">\n      <ngb-tab [title]=\"topLeftTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopLeft\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopLeft\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topLeftDim\"\n                  [(ngModel)]=\"topLeftDim\" (ngModelChange)=\"setDim('topLeft', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topLeftPlot name=\"top-left-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topLeftDropLines\"\n              [hide-target]=\"!topLeftTarget\"\n              [fixed-width]=\"topLeftWidth\" [fixed-height]=\"topLeftHeight\"\n              [legend-x-offset]=\"topLeftLegendXOffset\"\n              [legend-y-offset]=\"topLeftLegendYOffset\">\n            </t-test-plot>\n          </div>\n          <t-test-serialize-plot #topLeftSerializer\n            [plot]=\"topLeftPlot\"\n            [width]=\"topLeftWidth\" [height]=\"topLeftHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"topRightTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopRight\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopRight\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topRightDim\"\n                  [(ngModel)]=\"topRightDim\" (ngModelChange)=\"setDim('topRight', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topRightPlot name=\"top-right-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topRightDropLines\"\n              [hide-target]=\"!topRightTarget\"\n              [fixed-width]=\"topRightWidth\" [fixed-height]=\"topRightHeight\"\n              [legend-x-offset]=\"topRightLegendXOffset\"\n              [legend-y-offset]=\"topRightLegendYOffset\">\n            </t-test-plot>\n          </div>\n          <t-test-serialize-plot #topRightSerializer\n            [plot]=\"topRightPlot\"\n            [width]=\"topRightWidth\" [height]=\"topRightHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"bottomTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeBottom\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeBottom\">\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"bottomDim\"\n                  [(ngModel)]=\"bottomDim\" (ngModelChange)=\"setDim('bottom', $event)\">\n                  <option value=\"640x160\">640 by 160</option>\n                  <option value=\"800x200\">800 by 200</option>\n                  <option value=\"1024x256\">1024 by 256</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-bottom-plot #bottomPlot name=\"bottom-export\"\n              [project]=\"project\"\n              [disable-drag-target]=\"true\" [disable-drag-ci]=\"true\"\n              [fixed-width]=\"bottomWidth\" [fixed-height]=\"bottomHeight\">\n            </t-test-bottom-plot>\n          </div>\n          <t-test-serialize-plot #bottomSerializer\n            [plot]=\"bottomPlot\"\n            [width]=\"bottomWidth\" [height]=\"bottomHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n    </ngb-tabset>\n  </div>\n</div>\n<div class=\"modal-footer\">\n  <div class=\"d-flex-inline flex-row\">\n    <div class=\"form-inline\">\n      <label for=\"export-image-format\" class=\"mr-sm-2\">Image format:</label>\n      <select id=\"export-image-format\" class=\"form-control\" [(ngModel)]=\"imageFormat\">\n        <option value=\"png\">PNG</option>\n        <option value=\"svg\">SVG</option>\n      </select>\n    </div>\n  </div>\n  <p>\n    The graphs you have chosen will be packaged in a ZIP file.\n    <a #downloadLink style=\"display: none\"></a>\n  </p>\n  <div class=\"d-flex flex-row align-items-center\">\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"save()\"\n      [disabled]=\"!includeTopLeft && !includeTopRight && !includeBottom\">\n      <i class=\"fa fa-floppy-o\"></i> Save\n    </button>\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"cancel()\">\n      <i class=\"fa fa-circle-x\"></i> Close\n    </button>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -928,26 +928,25 @@ var ExportPlotsComponent = (function () {
     function ExportPlotsComponent(activeModal) {
         this.activeModal = activeModal;
         this.includeTopLeft = true;
+        this.topLeftDim = "640x480";
         this.topLeftWidth = 640;
         this.topLeftHeight = 480;
         this.topLeftDropLines = true;
         this.topLeftTarget = true;
         this.includeTopRight = true;
+        this.topRightDim = "640x480";
         this.topRightWidth = 640;
         this.topRightHeight = 480;
         this.topRightDropLines = true;
         this.topRightTarget = true;
         this.includeBottom = true;
         this.bottomTitle = "Precision vs. Effect Size";
+        this.bottomDim = "640x160";
         this.bottomWidth = 640;
-        this.bottomHeight = 200;
-        this.imageFormat = "svg";
+        this.bottomHeight = 160;
+        this.imageFormat = "png";
     }
     ExportPlotsComponent.prototype.ngOnInit = function () {
-        console.log('top left legend x offset', this.topLeftLegendXOffset);
-        console.log('top left legend y offset', this.topLeftLegendYOffset);
-        console.log('top right legend x offset', this.topRightLegendXOffset);
-        console.log('top right legend y offset', this.topRightLegendYOffset);
         switch (this.project.getModel(0).output) {
             case "n":
             case "nByCI":
@@ -962,6 +961,13 @@ var ExportPlotsComponent = (function () {
                 this.topLeftTitle = "Detectable Alternative vs. Sample Size";
                 this.topRightTitle = "Detectable Alternative vs. Power";
                 break;
+        }
+    };
+    ExportPlotsComponent.prototype.setDim = function (which, value) {
+        if (value != 'other') {
+            var arr = value.split("x");
+            this[which + "Width"] = parseInt(arr[0]);
+            this[which + "Height"] = parseInt(arr[1]);
         }
     };
     ExportPlotsComponent.prototype.save = function () {
@@ -1271,9 +1277,13 @@ var OutputPaneComponent = (function () {
         this.redrawPlots();
     };
     OutputPaneComponent.prototype.redrawPlots = function () {
-        this.topLeftPlot.redraw();
-        this.topRightPlot.redraw();
-        this.bottomPlot.redraw();
+        var _this = this;
+        // Set a timeout here to let the UI resize if needed
+        setTimeout(function () {
+            _this.topLeftPlot.redraw();
+            _this.topRightPlot.redraw();
+            _this.bottomPlot.redraw();
+        }, 1);
     };
     OutputPaneComponent.prototype.describeChanges = function (changes) {
         var result = [];
@@ -2060,12 +2070,12 @@ var PlotComponent = (function (_super) {
         }
         var t = svg.transition();
         // axes (drawn by d3)
-        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* axisBottom */](this.xScale).ticks(Math.floor(this.width / 75));
+        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* axisBottom */](this.xScale).ticks(Math.floor(this.innerWidth / 75));
         t.select("#" + this.name + "-x-axis").
             call(xAxis).
             attr("font-size", this.plotOptions.getAxisFontSize() + "px").
             attr("stroke-width", this.plotOptions.getAxisLineWidth());
-        var yAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["c" /* axisLeft */](this.yScale).ticks(Math.floor(this.height / 75));
+        var yAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["c" /* axisLeft */](this.yScale).ticks(Math.floor(this.innerHeight / 75));
         t.select("#" + this.name + "-y-axis").
             call(yAxis).
             attr("font-size", this.plotOptions.getAxisFontSize() + "px").
@@ -3137,7 +3147,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, ":host {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n}\n\n#t-test {\n}\n\n#t-test-main {\n  /*min-height: 85vh;*/\n}\n\n#t-test-sidebar {\n  background-color: #e5e5e5;\n  border: 1px solid #ccc;\n  border-radius: 5px;\n  padding: 10px;\n  /*margin: 10px;*/\n  position: relative;\n}\n\n#t-test-sidebar .overview {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n}\n\n.plot-buttons {\n  position: absolute;\n  top: 0;\n  left: 0;\n  font-size: large;\n  z-index: 99;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 auto;\n          flex: 0 0 auto;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n}\n.plot-buttons button {\n  padding: 0.4rem 0;\n  margin: 0.2rem 0;\n  width: 2.4rem;\n}\n\n#t-test-sidebar /deep/ a.nav-link {\n  border-color: #bbb #bbb #888;\n  background-color: #eee;\n}\n\n#t-test-sidebar /deep/ a.nav-link:hover {\n  border-color: #888;\n  background-color: #f5f5f5;\n  color: #0275d8;\n}\n\n#t-test-sidebar /deep/ a.nav-link.active {\n  border-color: #888 #888 #fff;\n  background-color: #fff;\n}\n\n#t-test-sidebar /deep/ a.nav-link.active:hover {\n  color: #464a4c;\n}\n\n#t-test-sidebar /deep/ ngb-tabset {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n  /*width: 100%;*/\n}\n\n#t-test-sidebar /deep/ ul.nav-tabs {\n  /*display: flex;*/\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 auto;\n          flex: 0 0 auto;\n  border-bottom: 1px solid #888;\n}\n\n#t-test-sidebar /deep/ .tab-content {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1 0 auto;\n          flex: 1 0 auto;\n}\n\n#t-test-sidebar /deep/ .tab-pane {\n  /*display: flex;*/\n  /*flex-direction: column;*/\n  -webkit-box-flex: 1;\n      -ms-flex: 1 0 auto;\n          flex: 1 0 auto;\n  padding: 10px;\n  border: 1px solid #888;\n  border-top: 0;\n  overflow: auto;\n  max-height: 73vh;\n}\n\n#t-test-sidebar /deep/ .tab-pane.active {\n  background: white;\n}\n\n#t-test-footer {\n  margin: 20px 0;\n  padding: 20px;\n  text-align: center;\n}\n#t-test-footer img {\n  margin: auto;\n  display: block;\n}\n#t-test-footer div.build {\n  margin-top: 5px;\n  font-size: smaller;\n}\n\n.block-selection * {\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n", ""]);
+exports.push([module.i, ":host {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n}\n\n#t-test {\n}\n\n#t-test-main {\n  /*min-height: 85vh;*/\n}\n\n#t-test-sidebar {\n  background-color: #e5e5e5;\n  border: 1px solid #ccc;\n  border-radius: 5px;\n  padding: 10px;\n  /*margin: 10px;*/\n  position: relative;\n}\n\n#t-test-sidebar .overview {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n}\n\n.plot-buttons {\n  position: absolute;\n  top: 0;\n  left: 0;\n  font-size: large;\n  z-index: 99;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 auto;\n          flex: 0 0 auto;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n}\n.plot-buttons button {\n  padding: 0.4rem 0;\n  margin: 0.2rem 0;\n  width: 2.4rem;\n}\n\n#t-test-sidebar /deep/ a.nav-link {\n  border-color: #bbb #bbb #888;\n  background-color: #eee;\n}\n\n#t-test-sidebar /deep/ a.nav-link:hover {\n  border-color: #888;\n  background-color: #f5f5f5;\n  color: #0275d8;\n}\n\n#t-test-sidebar /deep/ a.nav-link.active {\n  border-color: #888 #888 #fff;\n  background-color: #fff;\n}\n\n#t-test-sidebar /deep/ a.nav-link.active:hover {\n  color: #464a4c;\n}\n\n#t-test-sidebar /deep/ ngb-tabset {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n  /*width: 100%;*/\n}\n\n#t-test-sidebar /deep/ ul.nav-tabs {\n  /*display: flex;*/\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 auto;\n          flex: 0 0 auto;\n  border-bottom: 1px solid #888;\n}\n\n#t-test-sidebar /deep/ .tab-content {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1 0 auto;\n          flex: 1 0 auto;\n}\n\n#t-test-sidebar /deep/ .tab-pane {\n  /*display: flex;*/\n  /*flex-direction: column;*/\n  -webkit-box-flex: 1;\n      -ms-flex: 1 0 auto;\n          flex: 1 0 auto;\n  padding: 10px;\n  border: 1px solid #888;\n  border-top: 0;\n  overflow: auto;\n  max-height: 70vh;\n}\n\n#t-test-sidebar /deep/ .tab-pane.active {\n  background: white;\n}\n\n#t-test-footer {\n  margin: 20px 0;\n  padding: 20px;\n  text-align: center;\n}\n#t-test-footer img {\n  margin: auto;\n  display: block;\n}\n#t-test-footer div.build {\n  margin-top: 5px;\n  font-size: smaller;\n}\n\n.block-selection * {\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n", ""]);
 
 // exports
 
@@ -3187,8 +3197,8 @@ var TTestComponent = (function () {
         this.projectFactory = projectFactory;
         this.newModel = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]();
         this.projects = [];
-        this.commitHash = "8b043f3e5aec08b13e804500dd7e8d7888ef5be8".substr(0, 7);
-        this.buildTimestamp = "Tue Jan 30 2018 13:54:14 GMT-0600 (CST)";
+        this.commitHash = "9d029d2e16fe6b3cdfd720cdcadc44d397d4330f".substr(0, 7);
+        this.buildTimestamp = "Tue Jan 30 2018 16:21:45 GMT-0600 (CST)";
         this.helpTitles = {
             'overview': 'PS Overview',
             'start': 'PS Start Tab'
