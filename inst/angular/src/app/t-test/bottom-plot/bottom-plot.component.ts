@@ -132,7 +132,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
 
   private setupDimensions(): void {
     // margin
-    this.topMargin = this.plotOptions.getFontSize() + 10;
+    this.topMargin = this.plotOptions.getFontSize() + 20;
     this.bottomMargin = 10 + this.plotOptions.getFontSize() +
       this.plotOptions.getAxisLineWidth() +         // x axis line width
       (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
@@ -184,7 +184,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       range([0, this.innerWidth]);
 
     this.yScale = d3.scaleLinear().
-      domain([0, 0.8]).
+      domain([0, 0.7]).
       range([0, this.innerHeight]);
 
     let sampDistExtent = this.plotData.reduce((arr, sampDist) => {
@@ -204,14 +204,14 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       // main lines
       let leftLimit = range.min;
       let leftPath = this.getPath([
-        { x: leftLimit, y: 0.35 },
-        { x: leftLimit, y: 0.65 }
+        { x: leftLimit, y: 0.40 },
+        { x: leftLimit, y: 0.60 }
       ]);
 
       let rightLimit = range.max;
       let rightPath = this.getPath([
-        { x: rightLimit, y: 0.35 },
-        { x: rightLimit, y: 0.65 }
+        { x: rightLimit, y: 0.40 },
+        { x: rightLimit, y: 0.60 }
       ]);
 
       let centerPath = this.getPath([
@@ -263,7 +263,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     let t = d3.select(this.plotElement.nativeElement).transition();
 
     // axes (drawn by d3)
-    let xAxis = d3.axisBottom(this.xScale).ticks(6);
+    let xAxis = d3.axisBottom(this.xScale).ticks(Math.floor(this.innerWidth / 75));
     t.select(`#${this.name}-bottom-axis`).
       call(xAxis).
       attr("font-size", 15 * this.plotOptions.axisFontSize).

@@ -22,6 +22,7 @@ export class ExportPlotsComponent implements OnInit {
 
   includeTopLeft = true;
   topLeftTitle: string;
+  topLeftDim: string = "640x480";
   topLeftWidth = 640;
   topLeftHeight = 480;
   topLeftDropLines = true;
@@ -29,6 +30,7 @@ export class ExportPlotsComponent implements OnInit {
 
   includeTopRight = true;
   topRightTitle: string;
+  topRightDim: string = "640x480";
   topRightWidth = 640;
   topRightHeight = 480;
   topRightDropLines = true;
@@ -36,10 +38,11 @@ export class ExportPlotsComponent implements OnInit {
 
   includeBottom = true;
   bottomTitle = "Precision vs. Effect Size";
+  bottomDim: string = "640x160";
   bottomWidth = 640;
-  bottomHeight = 200;
+  bottomHeight = 160;
 
-  imageFormat = "svg";
+  imageFormat = "png";
 
   @ViewChild('topLeftPlot') topLeftPlot: PlotComponent;
   @ViewChild('topRightPlot') topRightPlot: PlotComponent;
@@ -52,10 +55,6 @@ export class ExportPlotsComponent implements OnInit {
   constructor(private activeModal: NgbActiveModal) {}
 
   ngOnInit(): void {
-    console.log('top left legend x offset', this.topLeftLegendXOffset);
-    console.log('top left legend y offset', this.topLeftLegendYOffset);
-    console.log('top right legend x offset', this.topRightLegendXOffset);
-    console.log('top right legend y offset', this.topRightLegendYOffset);
     switch (this.project.getModel(0).output) {
       case "n":
       case "nByCI":
@@ -70,6 +69,14 @@ export class ExportPlotsComponent implements OnInit {
         this.topLeftTitle = "Detectable Alternative vs. Sample Size";
         this.topRightTitle = "Detectable Alternative vs. Power";
         break;
+    }
+  }
+
+  setDim(which: string, value: string): void {
+    if (value != 'other') {
+      let arr = value.split("x");
+      this[`${which}Width`] = parseInt(arr[0]);
+      this[`${which}Height`] = parseInt(arr[1]);
     }
   }
 

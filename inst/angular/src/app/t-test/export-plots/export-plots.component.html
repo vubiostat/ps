@@ -32,14 +32,24 @@
                     Show target
                 </label>
               </div>
-              <div class="form-group">
+              <label>
+                Dimensions
+                <select class="form-control" name="topLeftDim"
+                  [(ngModel)]="topLeftDim" (ngModelChange)="setDim('topLeft', $event)">
+                  <option value="640x480">640 by 480</option>
+                  <option value="800x600">800 by 600</option>
+                  <option value="1024x768">1024 by 768</option>
+                  <option value="other">Custom</option>
+                </select>
+              </label>
+              <div *ngIf="topLeftDim == 'other'" class="form-group">
                 <label>
                   Width
                   <input class="form-control" type="number"
                     [(ngModel)]="topLeftWidth">
                 </label>
               </div>
-              <div class="form-group">
+              <div *ngIf="topLeftDim == 'other'" class="form-group">
                 <label>
                   Height
                   <input class="form-control" type="number"
@@ -90,14 +100,24 @@
                     Show target
                 </label>
               </div>
-              <div class="form-group">
+              <label>
+                Dimensions
+                <select class="form-control" name="topRightDim"
+                  [(ngModel)]="topRightDim" (ngModelChange)="setDim('topRight', $event)">
+                  <option value="640x480">640 by 480</option>
+                  <option value="800x600">800 by 600</option>
+                  <option value="1024x768">1024 by 768</option>
+                  <option value="other">Custom</option>
+                </select>
+              </label>
+              <div *ngIf="topRightDim == 'other'" class="form-group">
                 <label>
                   Width
                   <input class="form-control" type="number"
                     [(ngModel)]="topRightWidth">
                 </label>
               </div>
-              <div class="form-group">
+              <div *ngIf="topRightDim == 'other'" class="form-group">
                 <label>
                   Height
                   <input class="form-control" type="number"
@@ -134,14 +154,24 @@
               </label>
             </div>
             <ng-template [ngIf]="includeBottom">
-              <div class="form-group">
+              <label>
+                Dimensions
+                <select class="form-control" name="bottomDim"
+                  [(ngModel)]="bottomDim" (ngModelChange)="setDim('bottom', $event)">
+                  <option value="640x160">640 by 160</option>
+                  <option value="800x200">800 by 200</option>
+                  <option value="1024x256">1024 by 256</option>
+                  <option value="other">Custom</option>
+                </select>
+              </label>
+              <div *ngIf="bottomDim == 'other'" class="form-group">
                 <label>
                   Width
                   <input class="form-control" type="number"
                     [(ngModel)]="bottomWidth">
                 </label>
               </div>
-              <div class="form-group">
+              <div *ngIf="bottomDim == 'other'" class="form-group">
                 <label>
                   Height
                   <input class="form-control" type="number"
@@ -171,8 +201,8 @@
     <div class="form-inline">
       <label for="export-image-format" class="mr-sm-2">Image format:</label>
       <select id="export-image-format" class="form-control" [(ngModel)]="imageFormat">
-        <option value="svg">SVG</option>
         <option value="png">PNG</option>
+        <option value="svg">SVG</option>
       </select>
     </div>
   </div>

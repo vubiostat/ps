@@ -440,13 +440,13 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     let t = svg.transition();
 
     // axes (drawn by d3)
-    let xAxis = d3.axisBottom(this.xScale).ticks(Math.floor(this.width / 75));
+    let xAxis = d3.axisBottom(this.xScale).ticks(Math.floor(this.innerWidth / 75));
     t.select(`#${this.name}-x-axis`).
       call(xAxis).
       attr("font-size", `${this.plotOptions.getAxisFontSize()}px`).
       attr("stroke-width", this.plotOptions.getAxisLineWidth());
 
-    let yAxis = d3.axisLeft(this.yScale).ticks(Math.floor(this.height / 75));
+    let yAxis = d3.axisLeft(this.yScale).ticks(Math.floor(this.innerHeight / 75));
     t.select(`#${this.name}-y-axis`).
       call(yAxis).
       attr("font-size", `${this.plotOptions.getAxisFontSize()}px`).
