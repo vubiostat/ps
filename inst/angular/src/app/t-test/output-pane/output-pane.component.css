@@ -33,13 +33,13 @@ div.show-footer {
 }
 .plot /deep/ svg.bottom {
   position: absolute;
-  top: 70%;
-  height: 30%;
+  top: 72%;
+  height: 28%;
   width: 100%;
 }
 .plot.without-footer /deep/ svg.bottom {
-  top: 68%;
-  height: 28%;
+  top: 70%;
+  height: 26%;
 }
 
 .output-footer {

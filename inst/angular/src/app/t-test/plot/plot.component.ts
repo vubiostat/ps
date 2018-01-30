@@ -51,6 +51,12 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     super(plotOptions, palette);
   }
 
+  leftMargin: number = 50;
+  rightMargin: number = 50;
+  topMargin: number = 50;
+  bottomMargin: number = 50;
+  yAxisWidth: number = 10;
+  xAxisHeight: number = 10;
   x: Param;
   y: Param;
   plotData: any[];
@@ -171,6 +177,35 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   resetLegend(): void {
     this.legendXOffset = 0;
     this.legendYOffset = 0;
+  }
+
+  private setupDimensions(): void {
+    // margin
+    this.yAxisWidth = 10 +
+      this.plotOptions.getAxisLineWidth() +   // y axis line width
+      this.plotOptions.getAxisFontSize() + 9; // y axis tick (font + tick)
+    this.xAxisHeight = 10 +
+      this.plotOptions.getAxisLineWidth() +         // x axis line width
+      (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
+
+    this.leftMargin = this.plotOptions.getFontSize() + this.yAxisWidth;
+    this.rightMargin = 10;
+    this.topMargin = this.plotOptions.getFontSize() + 10;
+    this.bottomMargin = this.plotOptions.getFontSize() + this.xAxisHeight;
+
+    // dimensions
+    if (this.fixedWidth) {
+      this.width = this.fixedWidth;
+    } else {
+      this.width = this.getDimension('width');
+    }
+    if (this.fixedHeight) {
+      this.height = this.fixedHeight;
+    } else {
+      this.height = this.getDimension('height');
+    }
+    this.innerWidth  = this.width  - this.leftMargin - this.rightMargin;
+    this.innerHeight = this.height - this.topMargin - this.bottomMargin;
   }
 
   private setupParams(): boolean {
@@ -408,14 +443,14 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     let xAxis = d3.axisBottom(this.xScale).ticks(Math.floor(this.width / 75));
     t.select(`#${this.name}-x-axis`).
       call(xAxis).
-      attr("font-size", 15 * this.plotOptions.axisFontSize).
-      attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
+      attr("font-size", `${this.plotOptions.getAxisFontSize()}px`).
+      attr("stroke-width", this.plotOptions.getAxisLineWidth());
 
     let yAxis = d3.axisLeft(this.yScale).ticks(Math.floor(this.height / 75));
     t.select(`#${this.name}-y-axis`).
       call(yAxis).
-      attr("font-size", 15 * this.plotOptions.axisFontSize).
-      attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
+      attr("font-size", `${this.plotOptions.getAxisFontSize()}px`).
+      attr("stroke-width", this.plotOptions.getAxisLineWidth());
 
     // paths
     for (let i = 0, ilen = this.paths.length; i < ilen; i++) {
@@ -476,7 +511,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private dragTarget(event: any): void {
-    let x = this.xScale.invert(d3.event.x - this.margin);
+    let x = this.xScale.invert(d3.event.x - this.leftMargin);
     if (x < this.x.range.min) {
       x = this.x.range.min;
     } else if (x > this.x.range.max) {

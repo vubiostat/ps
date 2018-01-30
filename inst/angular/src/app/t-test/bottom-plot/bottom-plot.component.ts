@@ -47,6 +47,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   @ViewChild('leftBar') leftBarElement: ElementRef;
   @ViewChild('rightBar') rightBarElement: ElementRef;
 
+  leftMargin: number = 10;
+  rightMargin: number = 10;
+  topMargin: number = 50;
+  bottomMargin: number = 50;
+
   yScaleSD: any;
   plotData: any[];
   mainGroup: Group;
@@ -123,6 +128,30 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
 
   trackByIndex(index: number, thing: any): any {
     return index;
+  }
+
+  private setupDimensions(): void {
+    // margin
+    this.topMargin = this.plotOptions.getFontSize() + 10;
+    this.bottomMargin = 10 + this.plotOptions.getFontSize() +
+      this.plotOptions.getAxisLineWidth() +         // x axis line width
+      (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
+    this.leftMargin = 10;
+    this.rightMargin = 10;
+
+    // dimensions
+    if (this.fixedWidth) {
+      this.width = this.fixedWidth;
+    } else {
+      this.width = this.getDimension('width');
+    }
+    if (this.fixedHeight) {
+      this.height = this.fixedHeight;
+    } else {
+      this.height = this.getDimension('height');
+    }
+    this.innerWidth  = this.width  - this.leftMargin - this.rightMargin;
+    this.innerHeight = this.height - this.topMargin - this.bottomMargin;
   }
 
   protected setup(): void {
@@ -340,7 +369,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   private dragTarget(event: any): void {
     if (this.disableDragTarget) return;
 
-    let mouseX = d3.event.x - this.margin;
+    let mouseX = d3.event.x - this.leftMargin;
     let x = this.xScale.invert(mouseX);
     if (x >= 0 && x < 0.1) {
       x = 0.1;
@@ -377,7 +406,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   private dragBar(which: CIBar, event: any): void {
     if (this.disableDragCI) return;
 
-    let mouseX = d3.event.x - this.margin;
+    let mouseX = d3.event.x - this.leftMargin;
     let x = this.xScale.invert(mouseX);
 
     switch (which) {

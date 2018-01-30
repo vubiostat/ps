@@ -22,6 +22,30 @@ export class PlotOptionsService {
     Object.assign(this, new PlotOptionsService());
   }
 
+  getFontFamily(): string {
+    if (this.fontFamily == '') {
+      return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+    } else {
+      return this.fontFamily;
+    }
+  }
+
+  getFontSize(): number {
+    return this.fontSize * 18;
+  }
+
+  getAxisFontSize(): number {
+    return this.axisFontSize * 15;
+  }
+
+  getAxisLineWidth(): number {
+    return this.axisLineWidth * 1.5;
+  }
+
+  getLineWidth(): number {
+    return this.lineWidth * 3;
+  }
+
   dashArray(style?: string): string {
     if (!style || style == "any") {
       style = this.lineStyle;

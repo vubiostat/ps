@@ -72,35 +72,4 @@ export abstract class AbstractPlotComponent implements OnInit {
 
   protected setup(): void {
   }
-
-  protected setupDimensions(): void {
-    // margin
-    if (this.unitElement) {
-      let unitBox = this.unitElement.nativeElement.getBBox();
-      if (unitBox && unitBox.width) {
-        this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
-        this.unitLength = unitBox.width;
-      }
-    }
-
-    // dimensions
-    if (this.fixedWidth) {
-      this.width = this.fixedWidth;
-    } else {
-      this.width = this.getDimension('width');
-    }
-    if (this.fixedHeight) {
-      this.height = this.fixedHeight;
-    } else {
-      this.height = this.getDimension('height');
-    }
-    this.innerWidth  = this.width  - (this.margin * 2);
-    this.innerHeight = this.height - (this.margin * 2);
-
-    // margin
-    let unitBox = this.unitElement.nativeElement.getBBox();
-    if (unitBox && unitBox.width) {
-      this.margin = unitBox.width * 2 + (20 * this.plotOptions.axisFontSize);
-    }
-  }
 }
