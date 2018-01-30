@@ -526,4 +526,5 @@ function makeConfig(name) {
 module.exports = [
   makeConfig('default'),
   makeConfig('demo'),
+  makeConfig('prod')
 ];
