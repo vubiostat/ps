@@ -69,9 +69,12 @@ export class OutputPaneComponent implements OnChanges {
   }
 
   redrawPlots(): void {
-    this.topLeftPlot.redraw();
-    this.topRightPlot.redraw();
-    this.bottomPlot.redraw();
+    // Set a timeout here to let the UI resize if needed
+    setTimeout(() => {
+      this.topLeftPlot.redraw();
+      this.topRightPlot.redraw();
+      this.bottomPlot.redraw();
+    }, 1);
   }
 
   describeChanges(changes: any): string {
