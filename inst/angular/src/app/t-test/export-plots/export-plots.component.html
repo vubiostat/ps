@@ -69,10 +69,6 @@
               [legend-y-offset]="topLeftLegendYOffset">
             </t-test-plot>
           </div>
-          <t-test-serialize-plot #topLeftSerializer
-            [plot]="topLeftPlot"
-            [width]="topLeftWidth" [height]="topLeftHeight">
-          </t-test-serialize-plot>
         </ng-template>
       </ngb-tab>
       <ngb-tab [title]="topRightTitle">
@@ -137,10 +133,6 @@
               [legend-y-offset]="topRightLegendYOffset">
             </t-test-plot>
           </div>
-          <t-test-serialize-plot #topRightSerializer
-            [plot]="topRightPlot"
-            [width]="topRightWidth" [height]="topRightHeight">
-          </t-test-serialize-plot>
         </ng-template>
       </ngb-tab>
       <ngb-tab [title]="bottomTitle">
@@ -187,10 +179,6 @@
               [fixed-width]="bottomWidth" [fixed-height]="bottomHeight">
             </t-test-bottom-plot>
           </div>
-          <t-test-serialize-plot #bottomSerializer
-            [plot]="bottomPlot"
-            [width]="bottomWidth" [height]="bottomHeight">
-          </t-test-serialize-plot>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
@@ -201,8 +189,7 @@
     <div class="form-inline">
       <label for="export-image-format" class="mr-sm-2">Image format:</label>
       <select id="export-image-format" class="form-control" [(ngModel)]="imageFormat">
-        <option value="png">PNG</option>
-        <option value="svg">SVG</option>
+        <option *ngFor="let format of imageFormats">{{format}}</option>
       </select>
     </div>
   </div>

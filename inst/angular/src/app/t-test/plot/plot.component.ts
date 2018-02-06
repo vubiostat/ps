@@ -11,7 +11,6 @@ import { Point } from '../point';
 import { Project } from '../project';
 import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
-import { SerializePlotComponent } from '../serialize-plot.component';
 
 interface Param {
   name: string;

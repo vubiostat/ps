@@ -103,14 +103,13 @@ runPS <- function(mode = c("standalone", "backend"), host = "127.0.0.1", port = 
   mode <- match.arg(mode)
 
   app <- NotFoundHandler()
-  backendApp <- TTestHandler(app)
+  app <- ExportHandler(app)
+  app <- TTestHandler(app)
 
   if (mode == "standalone") {
     corsHost <- host
     corsPort <- port
     app <- StandaloneHandler(backendApp)
-  } else {
-    app <- backendApp
   }
 
   app <- OptionsHandler(app)

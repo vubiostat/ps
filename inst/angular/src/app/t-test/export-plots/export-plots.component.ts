@@ -1,12 +1,12 @@
 import { Component, Input, ViewChild, ElementRef, OnInit} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import * as JSZip from 'jszip';
 
 import { Project } from '../project';
+import { AbstractPlotComponent } from '../abstract-plot.component';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
-import { SerializePlotComponent } from '../serialize-plot.component';
+import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../export.service'
 
 @Component({
   selector: 't-test-export-plots',
@@ -42,19 +42,24 @@ export class ExportPlotsComponent implements OnInit {
   bottomWidth = 640;
   bottomHeight = 160;
 
-  imageFormat = "png";
+  imageFormats: string[] = [];
+  imageFormat = "PNG";
 
   @ViewChild('topLeftPlot') topLeftPlot: PlotComponent;
   @ViewChild('topRightPlot') topRightPlot: PlotComponent;
   @ViewChild('bottomPlot') bottomPlot: BottomPlotComponent;
-  @ViewChild('topLeftSerializer') topLeftSerializer: SerializePlotComponent;
-  @ViewChild('topRightSerializer') topRightSerializer: SerializePlotComponent;
-  @ViewChild('bottomSerializer') bottomSerializer: SerializePlotComponent;
   @ViewChild('downloadLink') downloadLink: ElementRef;
 
-  constructor(private activeModal: NgbActiveModal) {}
+  constructor(
+    private activeModal: NgbActiveModal,
+    private exportService: ExportService
+  ) {}
 
   ngOnInit(): void {
+    this.exportService.formats().then(response => {
+      this.imageFormats = response.formats;
+    });
+
     switch (this.project.getModel(0).output) {
       case "n":
       case "nByCI":
@@ -80,51 +85,54 @@ export class ExportPlotsComponent implements OnInit {
     }
   }
 
+  serializePlot(plot: AbstractPlotComponent): string {
+    let serializer = new XMLSerializer();
+    return serializer.serializeToString(plot.plotElement.nativeElement);
+  }
+
   save(): void {
-    let serializers = [];
-    if (this.includeTopLeft)  serializers.push(this.topLeftSerializer);
-    if (this.includeTopRight) serializers.push(this.topRightSerializer);
-    if (this.includeBottom)   serializers.push(this.bottomSerializer);
+    let plots: PlotInfo[] = [];
+    if (this.includeTopLeft) {
+      plots.push({
+        name: this.topLeftTitle,
+        width: this.topLeftWidth,
+        height: this.topLeftHeight,
+        svg: this.serializePlot(this.topLeftPlot)
+      } as PlotInfo);
+    }
+    if (this.includeTopRight) {
+      plots.push({
+        name: this.topRightTitle,
+        width: this.topRightWidth,
+        height: this.topRightHeight,
+        svg: this.serializePlot(this.topRightPlot)
+      } as PlotInfo);
+    }
+    if (this.includeBottom) {
+      plots.push({
+        name: this.bottomTitle,
+        width: this.bottomWidth,
+        height: this.bottomHeight,
+        svg: this.serializePlot(this.bottomPlot)
+      } as PlotInfo);
+    }
 
-    let date = new Date();
-    let month = date.getMonth() + 1;
-    let monthStr = month < 10 ? `0${month}` : month.toString();
-    let day = date.getDate();
-    let dayStr = day < 10 ? `0${day}` : day.toString();
-    let dateStr = `${date.getFullYear()}-${monthStr}-${dayStr}`;
+    this.exportService.plots(this.imageFormat, plots).then(response => {
+      let data = atob(response.data);
+      var buf = new ArrayBuffer(data.length);
+      var arr = new Uint8Array(buf);
+      for (var i = 0; i < data.length; i++) {
+        arr[i] = data.charCodeAt(i);
+      }
 
-    let zip = new JSZip();
-    let dir = zip.folder(`ps-plots-${dateStr}`);
-    let promise = Promise.resolve();
-    serializers.forEach((serializer, i) => {
-      promise = promise.then(() => {
-        let result;
-        if (this.imageFormat == 'svg') {
-          let xml = serializer.serializeAsXML();
-          var blob = new Blob([xml], { type: "image/svg+xml" });
-          result = Promise.resolve(blob);
-        } else {
-          result = serializer.serialize();
-        }
-        return result.then(
-          blob => {
-            dir.file(`${serializer.plotTitle()}.${this.imageFormat}`, blob);
-          },
-          err => console.error(err)
-        );
-      });
-    });
-
-    promise.then(() => {
-      zip.generateAsync({ type: 'blob' }).then(content => {
-        let url = URL.createObjectURL(content);
-        let elt = this.downloadLink.nativeElement;
-        elt.href = url;
-        elt.download = `ps-plots-${dateStr}.zip`;
-        elt.click();
-        URL.revokeObjectURL(url);
-        this.activeModal.close();
-      });
+      let blob = new Blob([buf], { type: 'application/zip' })
+      let url = URL.createObjectURL(blob);
+      let elt = this.downloadLink.nativeElement;
+      elt.href = url;
+      elt.download = response.filename;
+      elt.click();
+      URL.revokeObjectURL(url);
+      this.activeModal.close();
     });
   }
 

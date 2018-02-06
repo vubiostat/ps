@@ -9,6 +9,7 @@ import { TTestService } from './t-test.service';
 import { PlotOptionsService } from './plot-options.service';
 import { PaletteService } from './palette.service';
 import { ProjectFactoryService } from './project-factory.service';
+import { ExportService } from './export.service';
 
 import { TTestComponent } from './t-test.component';
 import { StartComponent } from './start/start.component';
@@ -19,7 +20,6 @@ import { HelpComponent } from './help/help.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component';
 import { PlotComponent } from './plot/plot.component';
 import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
-import { SerializePlotComponent } from './serialize-plot.component';
 import { ExportPlotsComponent } from './export-plots/export-plots.component';
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
 
@@ -45,7 +45,6 @@ const routes: Routes = [
     PlotOptionsComponent,
     PlotComponent,
     BottomPlotComponent,
-    SerializePlotComponent,
     ExportPlotsComponent,
     DraggableDialogComponent,
     RoundPipe,
@@ -64,7 +63,8 @@ const routes: Routes = [
     TTestService,
     PlotOptionsService,
     PaletteService,
-    ProjectFactoryService
+    ProjectFactoryService,
+    ExportService
   ],
   entryComponents: [
     ExportPlotsComponent
