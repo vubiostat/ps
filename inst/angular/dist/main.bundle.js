@@ -891,7 +891,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/export-plots/export-plots.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Export graphs</h4>\n  <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"cancel()\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n<div class=\"modal-body grow-vert h-100\">\n  <div class=\"d-flex flex-column h-100\">\n    <ngb-tabset [destroyOnHide]=\"false\">\n      <ngb-tab [title]=\"topLeftTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopLeft\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopLeft\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topLeftDim\"\n                  [(ngModel)]=\"topLeftDim\" (ngModelChange)=\"setDim('topLeft', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topLeftPlot name=\"top-left-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topLeftDropLines\"\n              [hide-target]=\"!topLeftTarget\"\n              [fixed-width]=\"topLeftWidth\" [fixed-height]=\"topLeftHeight\"\n              [legend-x-offset]=\"topLeftLegendXOffset\"\n              [legend-y-offset]=\"topLeftLegendYOffset\">\n            </t-test-plot>\n          </div>\n          <t-test-serialize-plot #topLeftSerializer\n            [plot]=\"topLeftPlot\"\n            [width]=\"topLeftWidth\" [height]=\"topLeftHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"topRightTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopRight\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopRight\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topRightDim\"\n                  [(ngModel)]=\"topRightDim\" (ngModelChange)=\"setDim('topRight', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topRightPlot name=\"top-right-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topRightDropLines\"\n              [hide-target]=\"!topRightTarget\"\n              [fixed-width]=\"topRightWidth\" [fixed-height]=\"topRightHeight\"\n              [legend-x-offset]=\"topRightLegendXOffset\"\n              [legend-y-offset]=\"topRightLegendYOffset\">\n            </t-test-plot>\n          </div>\n          <t-test-serialize-plot #topRightSerializer\n            [plot]=\"topRightPlot\"\n            [width]=\"topRightWidth\" [height]=\"topRightHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"bottomTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeBottom\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeBottom\">\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"bottomDim\"\n                  [(ngModel)]=\"bottomDim\" (ngModelChange)=\"setDim('bottom', $event)\">\n                  <option value=\"640x160\">640 by 160</option>\n                  <option value=\"800x200\">800 by 200</option>\n                  <option value=\"1024x256\">1024 by 256</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-bottom-plot #bottomPlot name=\"bottom-export\"\n              [project]=\"project\"\n              [disable-drag-target]=\"true\" [disable-drag-ci]=\"true\"\n              [fixed-width]=\"bottomWidth\" [fixed-height]=\"bottomHeight\">\n            </t-test-bottom-plot>\n          </div>\n          <t-test-serialize-plot #bottomSerializer\n            [plot]=\"bottomPlot\"\n            [width]=\"bottomWidth\" [height]=\"bottomHeight\">\n          </t-test-serialize-plot>\n        </ng-template>\n      </ngb-tab>\n    </ngb-tabset>\n  </div>\n</div>\n<div class=\"modal-footer\">\n  <div class=\"d-flex-inline flex-row\">\n    <div class=\"form-inline\">\n      <label for=\"export-image-format\" class=\"mr-sm-2\">Image format:</label>\n      <select id=\"export-image-format\" class=\"form-control\" [(ngModel)]=\"imageFormat\">\n        <option value=\"png\">PNG</option>\n        <option value=\"svg\">SVG</option>\n      </select>\n    </div>\n  </div>\n  <p>\n    The graphs you have chosen will be packaged in a ZIP file.\n    <a #downloadLink style=\"display: none\"></a>\n  </p>\n  <div class=\"d-flex flex-row align-items-center\">\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"save()\"\n      [disabled]=\"!includeTopLeft && !includeTopRight && !includeBottom\">\n      <i class=\"fa fa-floppy-o\"></i> Save\n    </button>\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"cancel()\">\n      <i class=\"fa fa-circle-x\"></i> Close\n    </button>\n  </div>\n</div>\n"
+module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Export graphs</h4>\n  <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"cancel()\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n<div class=\"modal-body grow-vert h-100\">\n  <div class=\"d-flex flex-column h-100\">\n    <ngb-tabset [destroyOnHide]=\"false\">\n      <ngb-tab [title]=\"topLeftTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopLeft\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopLeft\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topLeftDim\"\n                  [(ngModel)]=\"topLeftDim\" (ngModelChange)=\"setDim('topLeft', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topLeftPlot name=\"top-left-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topLeftDropLines\"\n              [hide-target]=\"!topLeftTarget\"\n              [fixed-width]=\"topLeftWidth\" [fixed-height]=\"topLeftHeight\"\n              [legend-x-offset]=\"topLeftLegendXOffset\"\n              [legend-y-offset]=\"topLeftLegendYOffset\">\n            </t-test-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"topRightTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopRight\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopRight\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topRightDim\"\n                  [(ngModel)]=\"topRightDim\" (ngModelChange)=\"setDim('topRight', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topRightPlot name=\"top-right-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topRightDropLines\"\n              [hide-target]=\"!topRightTarget\"\n              [fixed-width]=\"topRightWidth\" [fixed-height]=\"topRightHeight\"\n              [legend-x-offset]=\"topRightLegendXOffset\"\n              [legend-y-offset]=\"topRightLegendYOffset\">\n            </t-test-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"bottomTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeBottom\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeBottom\">\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"bottomDim\"\n                  [(ngModel)]=\"bottomDim\" (ngModelChange)=\"setDim('bottom', $event)\">\n                  <option value=\"640x160\">640 by 160</option>\n                  <option value=\"800x200\">800 by 200</option>\n                  <option value=\"1024x256\">1024 by 256</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-bottom-plot #bottomPlot name=\"bottom-export\"\n              [project]=\"project\"\n              [disable-drag-target]=\"true\" [disable-drag-ci]=\"true\"\n              [fixed-width]=\"bottomWidth\" [fixed-height]=\"bottomHeight\">\n            </t-test-bottom-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n    </ngb-tabset>\n  </div>\n</div>\n<div class=\"modal-footer\">\n  <div class=\"d-flex-inline flex-row\">\n    <div class=\"form-inline\">\n      <label for=\"export-image-format\" class=\"mr-sm-2\">Image format:</label>\n      <select id=\"export-image-format\" class=\"form-control\" [(ngModel)]=\"imageFormat\">\n        <option *ngFor=\"let format of imageFormats\">{{format}}</option>\n      </select>\n    </div>\n  </div>\n  <p>\n    The graphs you have chosen will be packaged in a ZIP file.\n    <a #downloadLink style=\"display: none\"></a>\n  </p>\n  <div class=\"d-flex flex-row align-items-center\">\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"save()\"\n      [disabled]=\"!includeTopLeft && !includeTopRight && !includeBottom\">\n      <i class=\"fa fa-floppy-o\"></i> Save\n    </button>\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"cancel()\">\n      <i class=\"fa fa-circle-x\"></i> Close\n    </button>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -902,12 +902,10 @@ module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Expo
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ExportPlotsComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__ = __webpack_require__("./node_modules/@ng-bootstrap/ng-bootstrap/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jszip__ = __webpack_require__("./node_modules/jszip/lib/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jszip___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jszip__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__project__ = __webpack_require__("./src/app/t-test/project.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plot_plot_component__ = __webpack_require__("./src/app/t-test/plot/plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__bottom_plot_bottom_plot_component__ = __webpack_require__("./src/app/t-test/bottom-plot/bottom-plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__serialize_plot_component__ = __webpack_require__("./src/app/t-test/serialize-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__project__ = __webpack_require__("./src/app/t-test/project.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__ = __webpack_require__("./src/app/t-test/plot/plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__bottom_plot_bottom_plot_component__ = __webpack_require__("./src/app/t-test/bottom-plot/bottom-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__export_service__ = __webpack_require__("./src/app/t-test/export.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -923,10 +921,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var ExportPlotsComponent = (function () {
-    function ExportPlotsComponent(activeModal) {
+    function ExportPlotsComponent(activeModal, exportService) {
         this.activeModal = activeModal;
+        this.exportService = exportService;
         this.includeTopLeft = true;
         this.topLeftDim = "640x480";
         this.topLeftWidth = 640;
@@ -944,9 +942,14 @@ var ExportPlotsComponent = (function () {
         this.bottomDim = "640x160";
         this.bottomWidth = 640;
         this.bottomHeight = 160;
-        this.imageFormat = "png";
+        this.imageFormats = [];
+        this.imageFormat = "PNG";
     }
     ExportPlotsComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.exportService.formats().then(function (response) {
+            _this.imageFormats = response.formats;
+        });
         switch (this.project.getModel(0).output) {
             case "n":
             case "nByCI":
@@ -970,50 +973,52 @@ var ExportPlotsComponent = (function () {
             this[which + "Height"] = parseInt(arr[1]);
         }
     };
+    ExportPlotsComponent.prototype.serializePlot = function (plot) {
+        var serializer = new XMLSerializer();
+        return serializer.serializeToString(plot.plotElement.nativeElement);
+    };
     ExportPlotsComponent.prototype.save = function () {
         var _this = this;
-        var serializers = [];
-        if (this.includeTopLeft)
-            serializers.push(this.topLeftSerializer);
-        if (this.includeTopRight)
-            serializers.push(this.topRightSerializer);
-        if (this.includeBottom)
-            serializers.push(this.bottomSerializer);
-        var date = new Date();
-        var month = date.getMonth() + 1;
-        var monthStr = month < 10 ? "0" + month : month.toString();
-        var day = date.getDate();
-        var dayStr = day < 10 ? "0" + day : day.toString();
-        var dateStr = date.getFullYear() + "-" + monthStr + "-" + dayStr;
-        var zip = new __WEBPACK_IMPORTED_MODULE_2_jszip__();
-        var dir = zip.folder("ps-plots-" + dateStr);
-        var promise = Promise.resolve();
-        serializers.forEach(function (serializer, i) {
-            promise = promise.then(function () {
-                var result;
-                if (_this.imageFormat == 'svg') {
-                    var xml = serializer.serializeAsXML();
-                    var blob = new Blob([xml], { type: "image/svg+xml" });
-                    result = Promise.resolve(blob);
-                }
-                else {
-                    result = serializer.serialize();
-                }
-                return result.then(function (blob) {
-                    dir.file(serializer.plotTitle() + "." + _this.imageFormat, blob);
-                }, function (err) { return console.error(err); });
+        var plots = [];
+        if (this.includeTopLeft) {
+            plots.push({
+                name: this.topLeftTitle,
+                width: this.topLeftWidth,
+                height: this.topLeftHeight,
+                svg: this.serializePlot(this.topLeftPlot)
             });
-        });
-        promise.then(function () {
-            zip.generateAsync({ type: 'blob' }).then(function (content) {
-                var url = URL.createObjectURL(content);
-                var elt = _this.downloadLink.nativeElement;
-                elt.href = url;
-                elt.download = "ps-plots-" + dateStr + ".zip";
-                elt.click();
-                URL.revokeObjectURL(url);
-                _this.activeModal.close();
+        }
+        if (this.includeTopRight) {
+            plots.push({
+                name: this.topRightTitle,
+                width: this.topRightWidth,
+                height: this.topRightHeight,
+                svg: this.serializePlot(this.topRightPlot)
             });
+        }
+        if (this.includeBottom) {
+            plots.push({
+                name: this.bottomTitle,
+                width: this.bottomWidth,
+                height: this.bottomHeight,
+                svg: this.serializePlot(this.bottomPlot)
+            });
+        }
+        this.exportService.plots(this.imageFormat, plots).then(function (response) {
+            var data = atob(response.data);
+            var buf = new ArrayBuffer(data.length);
+            var arr = new Uint8Array(buf);
+            for (var i = 0; i < data.length; i++) {
+                arr[i] = data.charCodeAt(i);
+            }
+            var blob = new Blob([buf], { type: 'application/zip' });
+            var url = URL.createObjectURL(blob);
+            var elt = _this.downloadLink.nativeElement;
+            elt.href = url;
+            elt.download = response.filename;
+            elt.click();
+            URL.revokeObjectURL(url);
+            _this.activeModal.close();
         });
     };
     ExportPlotsComponent.prototype.cancel = function () {
@@ -1021,7 +1026,7 @@ var ExportPlotsComponent = (function () {
     };
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('project'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_3__project__["a" /* Project */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__project__["a" /* Project */])
     ], ExportPlotsComponent.prototype, "project", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('top-left-legend-x-offset'),
@@ -1041,28 +1046,16 @@ var ExportPlotsComponent = (function () {
     ], ExportPlotsComponent.prototype, "topRightLegendYOffset", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('topLeftPlot'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_4__plot_plot_component__["a" /* PlotComponent */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__["a" /* PlotComponent */])
     ], ExportPlotsComponent.prototype, "topLeftPlot", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('topRightPlot'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_4__plot_plot_component__["a" /* PlotComponent */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__["a" /* PlotComponent */])
     ], ExportPlotsComponent.prototype, "topRightPlot", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('bottomPlot'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_5__bottom_plot_bottom_plot_component__["a" /* BottomPlotComponent */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_4__bottom_plot_bottom_plot_component__["a" /* BottomPlotComponent */])
     ], ExportPlotsComponent.prototype, "bottomPlot", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('topLeftSerializer'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_6__serialize_plot_component__["a" /* SerializePlotComponent */])
-    ], ExportPlotsComponent.prototype, "topLeftSerializer", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('topRightSerializer'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_6__serialize_plot_component__["a" /* SerializePlotComponent */])
-    ], ExportPlotsComponent.prototype, "topRightSerializer", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('bottomSerializer'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_6__serialize_plot_component__["a" /* SerializePlotComponent */])
-    ], ExportPlotsComponent.prototype, "bottomSerializer", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('downloadLink'),
         __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */])
@@ -1073,9 +1066,76 @@ var ExportPlotsComponent = (function () {
             template: __webpack_require__("./src/app/t-test/export-plots/export-plots.component.html"),
             styles: [__webpack_require__("./src/app/t-test/export-plots/export-plots.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["a" /* NgbActiveModal */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__ng_bootstrap_ng_bootstrap__["a" /* NgbActiveModal */],
+            __WEBPACK_IMPORTED_MODULE_5__export_service__["a" /* ExportService */]])
     ], ExportPlotsComponent);
     return ExportPlotsComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/t-test/export.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ExportService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("./node_modules/@angular/http/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_toPromise__ = __webpack_require__("./node_modules/rxjs/_esm5/add/operator/toPromise.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_toPromise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_toPromise__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var ExportService = (function () {
+    function ExportService(http) {
+        this.http = http;
+        this.apiUrl = __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].apiUrl + "/export";
+    }
+    ExportService.prototype.formats = function () {
+        var url = this.apiUrl + "/formats";
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Headers */]();
+        headers.append('Content-Type', 'application/json');
+        var options = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* RequestOptions */]({ headers: headers });
+        return this.http.
+            get(url, options).
+            toPromise().
+            then(function (response) { return response.json(); }).
+            catch(this.handleError);
+    };
+    ExportService.prototype.plots = function (format, plots) {
+        var url = this.apiUrl + "/plots";
+        var params = { format: format, plots: plots };
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Headers */]();
+        headers.append('Content-Type', 'application/json');
+        var options = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* RequestOptions */]({ headers: headers });
+        return this.http.
+            post(url, JSON.stringify(params), options).
+            toPromise().
+            then(function (response) { return response.json(); }).
+            catch(this.handleError);
+    };
+    ExportService.prototype.handleError = function (error) {
+        console.error('An error occurred', error); // for demo purposes only
+        return Promise.reject(error.message || error);
+    };
+    ExportService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["B" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]])
+    ], ExportService);
+    return ExportService;
 }());
 
 
@@ -2966,83 +3026,6 @@ var RoundPipe = (function () {
 
 /***/ }),
 
-/***/ "./src/app/t-test/serialize-plot.component.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SerializePlotComponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__abstract_plot_component__ = __webpack_require__("./src/app/t-test/abstract-plot.component.ts");
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-var SerializePlotComponent = (function () {
-    function SerializePlotComponent() {
-    }
-    SerializePlotComponent.prototype.plotTitle = function () {
-        return this.plot.title;
-    };
-    SerializePlotComponent.prototype.serializeAsXML = function () {
-        var serializer = new XMLSerializer();
-        return serializer.serializeToString(this.plot.plotElement.nativeElement);
-    };
-    SerializePlotComponent.prototype.serialize = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var data = _this.serializeAsXML();
-            var canvas = _this.canvasElement.nativeElement;
-            canvas.width = _this.width;
-            canvas.height = _this.height;
-            var context = canvas.getContext("2d");
-            var image = new Image(_this.width, _this.height);
-            image.addEventListener('load', function () {
-                context.clearRect(0, 0, _this.width, _this.height);
-                context.drawImage(image, 0, 0, _this.width, _this.height);
-                canvas.toBlob(function (blob) {
-                    resolve(blob);
-                });
-            });
-            var src = 'data:image/svg+xml;base64,' + btoa(data);
-            image.src = src;
-        });
-    };
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('plot'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1__abstract_plot_component__["a" /* AbstractPlotComponent */])
-    ], SerializePlotComponent.prototype, "plot", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])(),
-        __metadata("design:type", Number)
-    ], SerializePlotComponent.prototype, "width", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])(),
-        __metadata("design:type", Number)
-    ], SerializePlotComponent.prototype, "height", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* ViewChild */])('canvas'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ElementRef */])
-    ], SerializePlotComponent.prototype, "canvasElement", void 0);
-    SerializePlotComponent = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 't-test-serialize-plot',
-            template: '<canvas #canvas style="display: none"></canvas>'
-        })
-    ], SerializePlotComponent);
-    return SerializePlotComponent;
-}());
-
-
-
-/***/ }),
-
 /***/ "./src/app/t-test/start/start.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3197,8 +3180,8 @@ var TTestComponent = (function () {
         this.projectFactory = projectFactory;
         this.newModel = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]();
         this.projects = [];
-        this.commitHash = "9d029d2e16fe6b3cdfd720cdcadc44d397d4330f".substr(0, 7);
-        this.buildTimestamp = "Tue Jan 30 2018 16:21:45 GMT-0600 (CST)";
+        this.commitHash = "996afe5a253002cc5c90e9250835af4f8d8aa746".substr(0, 7);
+        this.buildTimestamp = "Tue Feb 06 2018 14:25:07 GMT-0600 (CST)";
         this.helpTitles = {
             'overview': 'PS Overview',
             'start': 'PS Start Tab'
@@ -3330,16 +3313,16 @@ var TTestComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__plot_options_service__ = __webpack_require__("./src/app/t-test/plot-options.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__palette_service__ = __webpack_require__("./src/app/t-test/palette.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__project_factory_service__ = __webpack_require__("./src/app/t-test/project-factory.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__t_test_component__ = __webpack_require__("./src/app/t-test/t-test.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__start_start_component__ = __webpack_require__("./src/app/t-test/start/start.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__range_slider_range_slider_component__ = __webpack_require__("./src/app/t-test/range-slider/range-slider.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__project_project_component__ = __webpack_require__("./src/app/t-test/project/project.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__output_pane_output_pane_component__ = __webpack_require__("./src/app/t-test/output-pane/output-pane.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__help_help_component__ = __webpack_require__("./src/app/t-test/help/help.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__plot_options_plot_options_component__ = __webpack_require__("./src/app/t-test/plot-options/plot-options.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__plot_plot_component__ = __webpack_require__("./src/app/t-test/plot/plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__bottom_plot_bottom_plot_component__ = __webpack_require__("./src/app/t-test/bottom-plot/bottom-plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__serialize_plot_component__ = __webpack_require__("./src/app/t-test/serialize-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__export_service__ = __webpack_require__("./src/app/t-test/export.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__t_test_component__ = __webpack_require__("./src/app/t-test/t-test.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__start_start_component__ = __webpack_require__("./src/app/t-test/start/start.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__range_slider_range_slider_component__ = __webpack_require__("./src/app/t-test/range-slider/range-slider.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__project_project_component__ = __webpack_require__("./src/app/t-test/project/project.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__output_pane_output_pane_component__ = __webpack_require__("./src/app/t-test/output-pane/output-pane.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__help_help_component__ = __webpack_require__("./src/app/t-test/help/help.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__plot_options_plot_options_component__ = __webpack_require__("./src/app/t-test/plot-options/plot-options.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__plot_plot_component__ = __webpack_require__("./src/app/t-test/plot/plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__bottom_plot_bottom_plot_component__ = __webpack_require__("./src/app/t-test/bottom-plot/bottom-plot.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__export_plots_export_plots_component__ = __webpack_require__("./src/app/t-test/export-plots/export-plots.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__draggable_dialog_draggable_dialog_component__ = __webpack_require__("./src/app/t-test/draggable-dialog/draggable-dialog.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__round_pipe__ = __webpack_require__("./src/app/t-test/round.pipe.ts");
@@ -3379,7 +3362,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 var routes = [
-    { path: 't-test', component: __WEBPACK_IMPORTED_MODULE_10__t_test_component__["a" /* TTestComponent */] },
+    { path: 't-test', component: __WEBPACK_IMPORTED_MODULE_11__t_test_component__["a" /* TTestComponent */] },
 ];
 var TTestModule = (function () {
     function TTestModule() {
@@ -3387,18 +3370,17 @@ var TTestModule = (function () {
     TTestModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["J" /* NgModule */])({
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_10__t_test_component__["a" /* TTestComponent */],
-                __WEBPACK_IMPORTED_MODULE_11__start_start_component__["a" /* StartComponent */],
-                __WEBPACK_IMPORTED_MODULE_12__range_slider_range_slider_component__["a" /* RangeSliderComponent */],
-                __WEBPACK_IMPORTED_MODULE_12__range_slider_range_slider_component__["c" /* RangeSliderLabel */],
-                __WEBPACK_IMPORTED_MODULE_12__range_slider_range_slider_component__["b" /* RangeSliderHelp */],
-                __WEBPACK_IMPORTED_MODULE_13__project_project_component__["a" /* ProjectComponent */],
-                __WEBPACK_IMPORTED_MODULE_14__output_pane_output_pane_component__["a" /* OutputPaneComponent */],
-                __WEBPACK_IMPORTED_MODULE_15__help_help_component__["a" /* HelpComponent */],
-                __WEBPACK_IMPORTED_MODULE_16__plot_options_plot_options_component__["a" /* PlotOptionsComponent */],
-                __WEBPACK_IMPORTED_MODULE_17__plot_plot_component__["a" /* PlotComponent */],
-                __WEBPACK_IMPORTED_MODULE_18__bottom_plot_bottom_plot_component__["a" /* BottomPlotComponent */],
-                __WEBPACK_IMPORTED_MODULE_19__serialize_plot_component__["a" /* SerializePlotComponent */],
+                __WEBPACK_IMPORTED_MODULE_11__t_test_component__["a" /* TTestComponent */],
+                __WEBPACK_IMPORTED_MODULE_12__start_start_component__["a" /* StartComponent */],
+                __WEBPACK_IMPORTED_MODULE_13__range_slider_range_slider_component__["a" /* RangeSliderComponent */],
+                __WEBPACK_IMPORTED_MODULE_13__range_slider_range_slider_component__["c" /* RangeSliderLabel */],
+                __WEBPACK_IMPORTED_MODULE_13__range_slider_range_slider_component__["b" /* RangeSliderHelp */],
+                __WEBPACK_IMPORTED_MODULE_14__project_project_component__["a" /* ProjectComponent */],
+                __WEBPACK_IMPORTED_MODULE_15__output_pane_output_pane_component__["a" /* OutputPaneComponent */],
+                __WEBPACK_IMPORTED_MODULE_16__help_help_component__["a" /* HelpComponent */],
+                __WEBPACK_IMPORTED_MODULE_17__plot_options_plot_options_component__["a" /* PlotOptionsComponent */],
+                __WEBPACK_IMPORTED_MODULE_18__plot_plot_component__["a" /* PlotComponent */],
+                __WEBPACK_IMPORTED_MODULE_19__bottom_plot_bottom_plot_component__["a" /* BottomPlotComponent */],
                 __WEBPACK_IMPORTED_MODULE_20__export_plots_export_plots_component__["a" /* ExportPlotsComponent */],
                 __WEBPACK_IMPORTED_MODULE_21__draggable_dialog_draggable_dialog_component__["a" /* DraggableDialogComponent */],
                 __WEBPACK_IMPORTED_MODULE_22__round_pipe__["a" /* RoundPipe */],
@@ -3417,7 +3399,8 @@ var TTestModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_6__t_test_service__["a" /* TTestService */],
                 __WEBPACK_IMPORTED_MODULE_7__plot_options_service__["a" /* PlotOptionsService */],
                 __WEBPACK_IMPORTED_MODULE_8__palette_service__["a" /* PaletteService */],
-                __WEBPACK_IMPORTED_MODULE_9__project_factory_service__["a" /* ProjectFactoryService */]
+                __WEBPACK_IMPORTED_MODULE_9__project_factory_service__["a" /* ProjectFactoryService */],
+                __WEBPACK_IMPORTED_MODULE_10__export_service__["a" /* ExportService */]
             ],
             entryComponents: [
                 __WEBPACK_IMPORTED_MODULE_20__export_plots_export_plots_component__["a" /* ExportPlotsComponent */]
@@ -3644,13 +3627,6 @@ Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* pl
 
 module.exports = __webpack_require__("./src/main.ts");
 
-
-/***/ }),
-
-/***/ 1:
-/***/ (function(module, exports) {
-
-/* (ignored) */
 
 /***/ })
 
