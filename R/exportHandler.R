@@ -4,7 +4,7 @@ getImageFormats <- function() {
   # check if inkscape is installed
   inkscapePath <- getOption("inkscape.path", "/usr/bin/inkscape")
   if (file.exists(inkscapePath)) {
-    formats <- c(formats, "WMF")
+    formats <- c(formats, "WMF", "EMF")
   }
 
   formats
@@ -90,13 +90,14 @@ PlotsAction <- setRefClass("PlotsAction",
       for (i in 1:length(params$plots)) {
         plot <- params$plots[[i]]
 
-        if (format == "WMF") {
+        if (format == "WMF" || format == "EMF") {
           infile <- file.path(tmpdir, paste0(plot$name, ".svg"))
           cat(plot$svg, file = infile)
 
-          outfile <- file.path(rootdir, paste0(plot$name, ".wmf"))
+          outfile <- file.path(rootdir, paste0(plot$name, ".", tolower(format)))
           inkscapePath <- getOption("inkscape.path", "/usr/bin/inkscape")
-          code <- system2(inkscapePath, c("-z", shQuote(infile), "-m", shQuote(outfile)))
+          opt <- switch(format, WMF = "-m", EMF = "-M")
+          code <- system2(inkscapePath, c("-z", shQuote(infile), opt, shQuote(outfile)))
           if (code != 0) {
             errors$conversion <- paste("conversion", i, "failed with error code", code)
             break
