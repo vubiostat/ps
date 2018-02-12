@@ -184,10 +184,12 @@ var AbstractPlotComponent = (function () {
         }
         return "translate(" + x + ", " + y + ")";
     };
-    AbstractPlotComponent.prototype.getPath = function (data, xName, yName, xRange, yRange) {
+    AbstractPlotComponent.prototype.getPath = function (data, xName, yName) {
         var _this = this;
         if (xName === void 0) { xName = "x"; }
         if (yName === void 0) { yName = "y"; }
+        var xScaleRange = this.xScale.domain().sort(function (a, b) { return a - b; });
+        var yScaleRange = this.yScale.domain().sort(function (a, b) { return a - b; });
         var line = __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* line */]().
             x(function (d, i) { return _this.xScale(d[xName]); }).
             y(function (d, i) { return _this.yScale(d[yName]); }).
@@ -195,8 +197,8 @@ var AbstractPlotComponent = (function () {
             var x = d[xName];
             var y = d[yName];
             return typeof (x) === 'number' && typeof (y) == 'number' &&
-                ((!xRange || (x >= xRange.min && x <= xRange.max)) ||
-                    (!yRange || (y >= yRange.min && y <= yRange.max)));
+                x >= xScaleRange[0] && x <= xScaleRange[1] &&
+                y >= yScaleRange[0] && y <= yScaleRange[1];
         });
         return line(data);
     };
@@ -250,7 +252,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/bottom-plot/bottom-plot.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 18).toString() + 'px'\"\n  [attr.class]=\"name\" [attr.width]=\"fixedWidth\" [attr.height]=\"fixedHeight\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"groups && project\">\n    <defs>\n      <clipPath id=\"{{name}}-plot-area\">\n        <rect x=\"0\" y=\"0\" [attr.width]=\"innerWidth\" [attr.height]=\"innerHeight\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"innerWidth / 2 + leftMargin\"\n      [attr.y]=\"height - 5\">\n      Parameter Space\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"innerWidth / 2 + leftMargin\"\n      [attr.y]=\"(plotOptions.getFontSize() / 2) + 8\">\n      {{title}}\n    </text>\n\n    <!-- alternate groups -->\n    <g *ngFor=\"let group of groups; let i = index; trackBy: trackByIndex\"\n      [attr.transform]=\"translate(leftMargin, topMargin)\">\n\n      <path id=\"{{name}}-group-{{i}}-dist\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.fill]=\"getColor(groups.length - i)\"\n        stroke=\"none\" opacity=\"0.5\" />\n\n      <path id=\"{{name}}-group-{{i}}-center\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <path id=\"{{name}}-group-{{i}}-left\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <path id=\"{{name}}-group-{{i}}-right\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <circle id=\"{{name}}-group-{{i}}-target\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        r=\"5\"\n        [attr.fill]=\"getColor(groups.length - i)\" />\n    </g>\n\n    <!-- main group -->\n    <g [attr.transform]=\"translate(leftMargin + targetTranslateOffset, topMargin)\">\n      <path id=\"{{name}}-main-dist\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.fill]=\"getColor(0)\"\n        stroke=\"none\" [attr.opacity]=\"targetDragging ? 0.1 : 0.5\" />\n\n      <path id=\"{{name}}-main-center\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        fill=\"none\" />\n\n      <path #leftBar id=\"{{name}}-main-left\" class=\"bar\"\n        [class.drag-disabled]=\"disableDragCI\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 4\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        [attr.transform]=\"translate(barTranslateOffset, 0)\"\n        fill=\"none\"\n        (mouseover)=\"toggleLeftBarInfo(true)\"\n        (mouseout)=\"toggleLeftBarInfo(false)\" />\n\n      <g *ngIf=\"showLeftBarInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.left + barOffset), yScale(0.5))\">\n        <path id=\"{{name}}-left-box\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text id=\"{{name}}-left-coords\" x=\"0\" y=\"-3em\" font-family=\"mono\" text-anchor=\"middle\">\n          <tspan style=\"white-space: pre\">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.left]}}</tspan><tspan x=\"0\" dy=\"1em\" style=\"white-space: pre\">Bound:  {{mainGroup.left | formatFixed:[ciWidth()]}}</tspan>\n        </text>\n      </g>\n\n      <path #rightBar id=\"{{name}}-main-right\" class=\"bar\"\n        [class.drag-disabled]=\"disableDragCI\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 4\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        [attr.transform]=\"translate(-barTranslateOffset, 0)\"\n        fill=\"none\"\n        (mouseover)=\"toggleRightBarInfo(true)\"\n        (mouseout)=\"toggleRightBarInfo(false)\" />\n\n      <g *ngIf=\"showRightBarInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.right - barOffset), yScale(0.5))\">\n        <path id=\"{{name}}-right-box\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text id=\"{{name}}-right-coords\" x=\"0\" y=\"-3em\" font-family=\"mono\" text-anchor=\"middle\">\n          <tspan style=\"white-space: pre\">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.right]}}</tspan><tspan x=\"0\" dy=\"1em\" style=\"white-space: pre\">Bound:  {{mainGroup.right | formatFixed:[ciWidth()]}}</tspan>\n        </text>\n      </g>\n\n      <g *ngIf=\"showTargetInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.target), yScale(0.5))\">\n        <path id=\"{{name}}-target-box\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text id=\"{{name}}-target-coords\" x=\"0\" y=\"-1.5em\" font-family=\"mono\" text-anchor=\"middle\">\n          <tspan style=\"white-space: pre\">&delta;: {{mainGroup.target + targetOffset | formatFixed:[]}}</tspan>\n        </text>\n      </g>\n\n      <circle #target id=\"{{name}}-main-target\" class=\"target\"\n        [class.drag-disabled]=\"disableDragTarget\"\n        attr.clip-path=\"url(#{{name}}-plot-area)\"\n        r=\"5\"\n        [attr.fill]=\"getColor(0)\"\n        (mouseover)=\"toggleTargetInfo(true)\"\n        (mouseout)=\"toggleTargetInfo(false)\" />\n    </g>\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(0)\"\n      [attr.cy]=\"yScale(0.5)\"\n      attr.clip-path=\"url(#{{name}}-plot-area)\"\n      [attr.transform]=\"translate(leftMargin, topMargin)\"\n      fill=\"darkseagreen\" />\n\n    <g id=\"{{name}}-bottom-axis\" [attr.transform]=\"translate(leftMargin, innerHeight + topMargin)\"></g>\n  </ng-template>\n</svg>\n"
+module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily\"\n  [style.fontSize]=\"(plotOptions.fontSize * 18).toString() + 'px'\"\n  [attr.class]=\"name\" [attr.width]=\"fixedWidth\" [attr.height]=\"fixedHeight\"\n  [attr.viewBox]=\"viewBox\">\n\n  <rect #unit x=\"0\" y=\"0\" width=\"1em\" height=\"1em\" stroke=\"none\" fill=\"none\" />\n  <ng-template [ngIf]=\"groups && project\">\n    <text text-anchor=\"middle\"\n      [attr.x]=\"innerWidth / 2 + leftMargin\"\n      [attr.y]=\"height - 5\">\n      Parameter Space\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"innerWidth / 2 + leftMargin\"\n      [attr.y]=\"(plotOptions.getFontSize() / 2) + 8\">\n      {{title}}\n    </text>\n\n    <!-- alternate groups -->\n    <g *ngFor=\"let group of groups; let i = index; trackBy: trackByIndex\"\n      [attr.transform]=\"translate(leftMargin, topMargin)\">\n\n      <path id=\"{{name}}-group-{{i}}-dist\"\n        [attr.fill]=\"getColor(groups.length - i)\"\n        stroke=\"none\" opacity=\"0.5\" />\n\n      <path id=\"{{name}}-group-{{i}}-center\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <path id=\"{{name}}-group-{{i}}-left\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <path id=\"{{name}}-group-{{i}}-right\"\n        [attr.stroke]=\"getColor(groups.length - i)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        fill=\"none\" />\n\n      <circle id=\"{{name}}-group-{{i}}-target\"\n        r=\"5\"\n        [attr.fill]=\"getColor(groups.length - i)\" />\n    </g>\n\n    <!-- main group -->\n    <g [attr.transform]=\"translate(leftMargin + targetTranslateOffset, topMargin)\">\n      <path id=\"{{name}}-main-dist\"\n        [attr.fill]=\"getColor(0)\"\n        stroke=\"none\" [attr.opacity]=\"targetDragging ? 0.1 : 0.5\" />\n\n      <path id=\"{{name}}-main-center\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 3\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        fill=\"none\" />\n\n      <path #leftBar id=\"{{name}}-main-left\" class=\"bar\"\n        [class.drag-disabled]=\"disableDragCI\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 4\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        [attr.transform]=\"translate(barTranslateOffset, 0)\"\n        fill=\"none\"\n        (mouseover)=\"toggleLeftBarInfo(true)\"\n        (mouseout)=\"toggleLeftBarInfo(false)\" />\n\n      <g *ngIf=\"showLeftBarInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.left + barOffset), yScale(0.5))\">\n        <path id=\"{{name}}-left-box\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text id=\"{{name}}-left-coords\" x=\"0\" y=\"-3em\" font-family=\"monospace\" text-anchor=\"middle\">\n          <tspan style=\"white-space: pre\">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.left]}}</tspan><tspan x=\"0\" dy=\"1em\" style=\"white-space: pre\">Bound:  {{mainGroup.left | formatFixed:[ciWidth()]}}</tspan>\n        </text>\n      </g>\n\n      <path #rightBar id=\"{{name}}-main-right\" class=\"bar\"\n        [class.drag-disabled]=\"disableDragCI\"\n        [attr.stroke]=\"getColor(0)\"\n        [attr.stroke-width]=\"plotOptions.lineWidth * 4\"\n        [attr.opacity]=\"targetDragging ? 0.1 : 0.9\"\n        [attr.transform]=\"translate(-barTranslateOffset, 0)\"\n        fill=\"none\"\n        (mouseover)=\"toggleRightBarInfo(true)\"\n        (mouseout)=\"toggleRightBarInfo(false)\" />\n\n      <g *ngIf=\"showRightBarInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.right - barOffset), yScale(0.5))\">\n        <path id=\"{{name}}-right-box\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text id=\"{{name}}-right-coords\" x=\"0\" y=\"-3em\" font-family=\"mono\" text-anchor=\"middle\">\n          <tspan style=\"white-space: pre\">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.right]}}</tspan><tspan x=\"0\" dy=\"1em\" style=\"white-space: pre\">Bound:  {{mainGroup.right | formatFixed:[ciWidth()]}}</tspan>\n        </text>\n      </g>\n\n      <g *ngIf=\"showTargetInfo\"\n        [attr.transform]=\"translate(xScale(mainGroup.target), yScale(0.5))\">\n        <path id=\"{{name}}-target-box\"\n          stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.9\" />\n        <text id=\"{{name}}-target-coords\" x=\"0\" y=\"-1.5em\" font-family=\"mono\" text-anchor=\"middle\">\n          <tspan style=\"white-space: pre\">&delta;: {{mainGroup.target + targetOffset | formatFixed:[]}}</tspan>\n        </text>\n      </g>\n\n      <circle #target id=\"{{name}}-main-target\" class=\"target\"\n        [class.drag-disabled]=\"disableDragTarget\"\n        r=\"5\"\n        [attr.fill]=\"getColor(0)\"\n        (mouseover)=\"toggleTargetInfo(true)\"\n        (mouseout)=\"toggleTargetInfo(false)\" />\n    </g>\n\n    <circle r=\"5\"\n      [attr.cx]=\"xScale(0)\"\n      [attr.cy]=\"yScale(0.5)\"\n      [attr.transform]=\"translate(leftMargin, topMargin)\"\n      fill=\"darkseagreen\" />\n\n    <g id=\"{{name}}-bottom-axis\" [attr.transform]=\"translate(leftMargin, innerHeight + topMargin)\"></g>\n  </ng-template>\n</svg>\n"
 
 /***/ }),
 
@@ -314,6 +316,7 @@ var BottomPlotComponent = (function (_super) {
         _this.rightMargin = 10;
         _this.topMargin = 50;
         _this.bottomMargin = 50;
+        _this.viewBox = "0 0 0 0";
         _this.needDraw = __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].No;
         // target dragging
         _this.targetOffset = 0;
@@ -394,6 +397,7 @@ var BottomPlotComponent = (function (_super) {
         else {
             this.height = this.getDimension('height');
         }
+        this.viewBox = "0 0 " + this.width + " " + this.height;
         this.innerWidth = this.width - this.leftMargin - this.rightMargin;
         this.innerHeight = this.height - this.topMargin - this.bottomMargin;
     };
@@ -1728,7 +1732,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/plot/plot.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.getFontFamily()\"\n  style.fontSize=\"{{plotOptions.getFontSize()}}px\"\n  [attr.class]=\"name\" [attr.width]=\"fixedWidth\" [attr.height]=\"fixedHeight\">\n\n  <ng-template [ngIf]=\"x && y && project\">\n    <defs>\n      <clipPath id=\"{{name}}-plot-area\">\n        <rect x=\"0\" [attr.y]=\"-plotOptions.getLineWidth()\"\n          [attr.width]=\"innerWidth\"\n          [attr.height]=\"innerHeight + plotOptions.getLineWidth()\" />\n      </clipPath>\n      <clipPath id=\"{{name}}-target-area\">\n        <rect x=\"-5\" [attr.y]=\"-5\"\n          [attr.width]=\"innerWidth + 10\"\n          [attr.height]=\"innerHeight + 10\" />\n      </clipPath>\n    </defs>\n\n    <text text-anchor=\"middle\"\n      [attr.x]=\"innerWidth / 2 + leftMargin\"\n      [attr.y]=\"height\">\n      {{x.title}}\n    </text>\n    <text text-anchor=\"middle\"\n      [attr.x]=\"-(innerHeight / 2 + topMargin)\"\n      [attr.y]=\"(plotOptions.getFontSize() / 2) + 8\"\n      transform=\"rotate(-90)\">\n      {{y.title}}\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"innerWidth / 2 + leftMargin\"\n      [attr.y]=\"(plotOptions.getFontSize() / 2) + 8\">\n      {{title}}\n    </text>\n\n    <g *ngFor=\"let path of paths | reverse; index as invIndex; trackBy: trackByIndex\"\n      [attr.transform]=\"translate(leftMargin, topMargin)\">\n      <path\n        id=\"{{name}}-path-{{invertIndex(invIndex, paths)}}\"\n        [attr.clip-path]=\"getClipPath('plot')\"\n        [attr.stroke]=\"getPathColor(invIndex)\"\n        [attr.stroke-width]=\"plotOptions.getLineWidth()\"\n        [attr.stroke-dasharray]=\"getDashArray(invIndex)\"\n        [attr.stroke-linecap]=\"getLineCap(invIndex)\"\n        [attr.opacity]=\"invertIndex(i, paths) == 0 ? 1 : 0.7\"\n        fill=\"none\" />\n    </g>\n\n    <g id=\"{{name}}-x-axis\"\n      [attr.transform]=\"translate(leftMargin, innerHeight + topMargin)\"></g>\n    <g id=\"{{name}}-y-axis\"\n      [attr.transform]=\"translate(leftMargin, topMargin)\"></g>\n\n    <rect [attr.transform]=\"translate(leftMargin, topMargin)\"\n      [attr.width]=\"innerWidth\" [attr.height]=\"innerHeight\"\n      fill=\"none\" pointer-events=\"all\"\n      (mouseout)=\"hideHoverInfo()\"\n      (mousemove)=\"hover($event)\" />\n\n    <g *ngIf=\"!hideTarget\">\n      <ng-template [ngIf]=\"!hideDropLines\">\n        <g *ngFor=\"let path of dropPaths; index as dpIndex; trackBy: trackByIndex\"\n          [attr.transform]=\"translate(leftMargin, topMargin)\">\n          <path id=\"{{name}}-target-drop-{{dpIndex}}\"\n            [attr.clip-path]=\"getClipPath('plot')\"\n            stroke=\"red\"\n            [attr.stroke-width]=\"plotOptions.getLineWidth() / 2\"\n            stroke-dasharray=\"5, 5\"\n            fill=\"none\" />\n        </g>\n      </ng-template>\n      <circle id=\"{{name}}-target\" class=\"target\" r=\"5\"\n        [attr.transform]=\"translate(leftMargin, topMargin)\"\n        [attr.clip-path]=\"getClipPath('target')\"\n        fill=\"red\"\n        (mousemove)=\"hover($event, target)\" />\n    </g>\n\n    <g id=\"{{name}}-legend\" class=\"legend\"\n       *ngIf=\"paths.length > 1\"\n       [attr.transform]=\"translate(leftMargin + 15 + legendXOffset, topMargin + 15 + legendYOffset)\"\n       font-size=\"smaller\" (dblclick)=\"resetLegend()\">\n      <path id=\"{{name}}-legend-box\"\n            fill=\"white\" [attr.fill-opacity]=\"plotOptions.showLegendBox ? 0.8 : 0\"\n            stroke=\"black\" [attr.stroke-opacity]=\"plotOptions.showLegendBox ? 1 : 0\" />\n      <g id=\"{{name}}-legend-labels\">\n        <g *ngFor=\"let path of paths; index as i; trackBy: trackByIndex\"\n           [attr.transform]=\"translate(5, 20 * plotOptions.fontSize * i)\">\n          <path\n            d=\"m0,0 l45,0\"\n            [attr.stroke]=\"getPathColor(i)\"\n            [attr.stroke-width]=\"plotOptions.getLineWidth()\"\n            [attr.stroke-dasharray]=\"getDashArray(i)\"\n            [attr.stroke-linecap]=\"getLineCap(i)\"\n            fill=\"none\" />\n          <text x=\"50\" y=\"5\">{{legendLabel(i)}}</text>\n        </g>\n      </g>\n    </g>\n\n    <g *ngIf=\"isHoverInfoActive()\"\n      [attr.transform]=\"translate(leftMargin + hoverX, topMargin + hoverY)\">\n      <circle *ngIf=\"!isHoverInfoTarget()\" r=\"4\" fill=\"none\" stroke=\"blue\" />\n      <path id=\"{{name}}-hover-info\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text id=\"{{name}}-hover-coords\" y=\"-2.5em\" font-family=\"mono\" text-anchor=\"middle\">\n        <tspan style=\"white-space: pre\">{{x.sym}}: {{hoverPoint.x | formatFixed:[hoverPoint.y]}}</tspan><tspan x=\"0\" dy=\"1em\" style=\"white-space: pre\">{{y.sym}}: {{hoverPoint.y | formatFixed:[hoverPoint.x]}}</tspan>\n      </text>\n    </g>\n  </ng-template>\n</svg>\n"
+module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.getFontFamily()\"\n  style.fontSize=\"{{plotOptions.getFontSize()}}px\"\n  [attr.class]=\"name\" [attr.width]=\"fixedWidth\" [attr.height]=\"fixedHeight\"\n  [attr.viewBox]=\"viewBox\">\n\n  <ng-template [ngIf]=\"x && y && project\">\n    <text text-anchor=\"middle\"\n      [attr.x]=\"innerWidth / 2 + leftMargin\"\n      [attr.y]=\"height - (plotOptions.getFontSize() / 2)\">\n      {{x.title}}\n    </text>\n    <text text-anchor=\"middle\"\n      [attr.x]=\"-(innerHeight / 2 + topMargin)\"\n      [attr.y]=\"plotOptions.getFontSize()\"\n      transform=\"rotate(-90)\">\n      {{y.title}}\n    </text>\n    <text text-anchor=\"middle\" font-weight=\"bold\"\n      [attr.x]=\"innerWidth / 2 + leftMargin\"\n      [attr.y]=\"plotOptions.getFontSize()\">\n      {{title}}\n    </text>\n\n    <g *ngFor=\"let path of paths | reverse; index as invIndex; trackBy: trackByIndex\"\n      [attr.transform]=\"translate(leftMargin, topMargin)\">\n      <path\n        id=\"{{name}}-path-{{invertIndex(invIndex, paths)}}\"\n        [attr.stroke]=\"getPathColor(invIndex)\"\n        [attr.stroke-width]=\"plotOptions.getLineWidth()\"\n        [attr.stroke-dasharray]=\"getDashArray(invIndex)\"\n        [attr.stroke-linecap]=\"getLineCap(invIndex)\"\n        [attr.opacity]=\"invertIndex(i, paths) == 0 ? 1 : 0.7\"\n        fill=\"none\" />\n    </g>\n\n    <g id=\"{{name}}-x-axis\"\n      [attr.transform]=\"translate(leftMargin, innerHeight + topMargin)\"></g>\n    <g id=\"{{name}}-y-axis\"\n      [attr.transform]=\"translate(leftMargin, topMargin)\"></g>\n\n    <rect [attr.transform]=\"translate(leftMargin, topMargin)\"\n      [attr.width]=\"innerWidth\" [attr.height]=\"innerHeight\"\n      fill=\"none\" pointer-events=\"all\"\n      (mouseout)=\"hideHoverInfo()\"\n      (mousemove)=\"hover($event)\" />\n\n    <g *ngIf=\"!hideTarget\">\n      <ng-template [ngIf]=\"!hideDropLines\">\n        <g *ngFor=\"let path of dropPaths; index as dpIndex; trackBy: trackByIndex\"\n          [attr.transform]=\"translate(leftMargin, topMargin)\">\n          <path id=\"{{name}}-target-drop-{{dpIndex}}\"\n            stroke=\"red\"\n            [attr.stroke-width]=\"plotOptions.getLineWidth() / 2\"\n            stroke-dasharray=\"5, 5\"\n            fill=\"none\" />\n        </g>\n      </ng-template>\n      <circle id=\"{{name}}-target\" class=\"target\" r=\"5\"\n        [attr.transform]=\"translate(leftMargin, topMargin)\"\n        fill=\"red\"\n        (mousemove)=\"hover($event, target)\" />\n    </g>\n\n    <g id=\"{{name}}-legend\" class=\"legend\"\n       *ngIf=\"paths.length > 1\"\n       [attr.transform]=\"translate(leftMargin + 15 + legendXOffset, topMargin + 15 + legendYOffset)\"\n       font-size=\"smaller\" (dblclick)=\"resetLegend()\">\n      <path id=\"{{name}}-legend-box\"\n            fill=\"white\" [attr.fill-opacity]=\"plotOptions.showLegendBox ? 0.8 : 0\"\n            stroke=\"black\" [attr.stroke-opacity]=\"plotOptions.showLegendBox ? 1 : 0\" />\n      <g id=\"{{name}}-legend-labels\">\n        <g *ngFor=\"let path of paths; index as i; trackBy: trackByIndex\"\n           [attr.transform]=\"translate(5, 20 * plotOptions.fontSize * i)\">\n          <path\n            d=\"m0,0 l45,0\"\n            [attr.stroke]=\"getPathColor(i)\"\n            [attr.stroke-width]=\"plotOptions.getLineWidth()\"\n            [attr.stroke-dasharray]=\"getDashArray(i)\"\n            [attr.stroke-linecap]=\"getLineCap(i)\"\n            fill=\"none\" />\n          <text x=\"50\" y=\"5\">{{legendLabel(i)}}</text>\n        </g>\n      </g>\n    </g>\n\n    <g *ngIf=\"isHoverInfoActive()\"\n      [attr.transform]=\"translate(leftMargin + hoverX, topMargin + hoverY)\">\n      <circle *ngIf=\"!isHoverInfoTarget()\" r=\"4\" fill=\"none\" stroke=\"blue\" />\n      <path id=\"{{name}}-hover-info\"\n        stroke=\"black\" stroke-width=\"1\" fill=\"white\" fill-opacity=\"0.8\" />\n      <text id=\"{{name}}-hover-coords\" y=\"-2.5em\" font-family=\"monospace\" text-anchor=\"middle\">\n        <tspan style=\"white-space: pre\">{{x.sym}}: {{hoverPoint.x | formatFixed:[hoverPoint.y]}}</tspan><tspan x=\"0\" dy=\"1em\" style=\"white-space: pre\">{{y.sym}}: {{hoverPoint.y | formatFixed:[hoverPoint.x]}}</tspan>\n      </text>\n    </g>\n  </ng-template>\n</svg>\n"
 
 /***/ }),
 
@@ -1793,6 +1797,7 @@ var PlotComponent = (function (_super) {
         _this.bottomMargin = 50;
         _this.yAxisWidth = 10;
         _this.xAxisHeight = 10;
+        _this.viewBox = "0 0 0 0";
         _this.hoverInfo = HoverInfo.Disabled;
         _this.targetDragging = false;
         _this.needDraw = __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["b" /* Draw */].No;
@@ -1881,9 +1886,6 @@ var PlotComponent = (function (_super) {
     PlotComponent.prototype.legendLabel = function (index) {
         return this.plotOptions.legendLabel(index);
     };
-    PlotComponent.prototype.getClipPath = function (which) {
-        return "url(#" + this.name + "-" + which + "-area)";
-    };
     PlotComponent.prototype.resetLegend = function () {
         this.legendXOffset = 0;
         this.legendYOffset = 0;
@@ -1896,10 +1898,10 @@ var PlotComponent = (function (_super) {
         this.xAxisHeight = 10 +
             this.plotOptions.getAxisLineWidth() +
             (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
-        this.leftMargin = this.plotOptions.getFontSize() + this.yAxisWidth;
+        this.leftMargin = this.plotOptions.getFontSize() + this.yAxisWidth + 10;
         this.rightMargin = 10;
         this.topMargin = this.plotOptions.getFontSize() + 10;
-        this.bottomMargin = this.plotOptions.getFontSize() + this.xAxisHeight;
+        this.bottomMargin = this.plotOptions.getFontSize() + this.xAxisHeight + 10;
         // dimensions
         if (this.fixedWidth) {
             this.width = this.fixedWidth;
@@ -1913,6 +1915,7 @@ var PlotComponent = (function (_super) {
         else {
             this.height = this.getDimension('height');
         }
+        this.viewBox = "0 0 " + this.width + " " + this.height;
         this.innerWidth = this.width - this.leftMargin - this.rightMargin;
         this.innerHeight = this.height - this.topMargin - this.bottomMargin;
     };
@@ -2013,28 +2016,6 @@ var PlotComponent = (function (_super) {
     };
     PlotComponent.prototype.setupPlotData = function () {
         var _this = this;
-        /*
-        if (this.dataKey == 'powerVsN') {
-          this.plotData = this.project.models.map(m => {
-            let data = m[this.dataKey];
-            let last, lastIndex;
-            for (let i = data.length - 1; i >= 0; i--) {
-              if (data[i].y <= this.y.range.max && data[i].x <= this.x.range.max) {
-                last = data[i];
-                lastIndex = i;
-                break;
-              }
-            }
-            if (last.x < this.x.range.max) {
-              // insert points to smooth
-              data.splice(lastIndex, 0, { x: this.x.range.max, y: this.y.range.max });
-            }
-            return data;
-          });
-        } else {
-          this.plotData = this.project.models.map(m => m[this.dataKey]);
-        }
-        */
         this.plotData = this.project.models.map(function (m) { return m[_this.dataKey]; });
         // Prepare main data for bisection during target point dragging.
         this.mainData = this.plotData[0].slice();
@@ -2057,7 +2038,7 @@ var PlotComponent = (function (_super) {
     PlotComponent.prototype.setupPaths = function () {
         var _this = this;
         this.paths = this.plotData.map(function (d, i) {
-            return _this.getPath(d, 'x', 'y', _this.x.range, _this.y.range);
+            return _this.getPath(d, 'x', 'y');
         });
     };
     PlotComponent.prototype.setupDropPaths = function () {
@@ -2422,9 +2403,7 @@ var Project = (function () {
         return models.reduce(function (promise, model) {
             return promise.then(function () { return _this.ttestService.calculate(model); }).
                 then(function (result) {
-                console.log('before:', model.params());
                 Object.assign(model, result);
-                console.log('after:', model.params());
                 model.calculateRanges();
             });
         }, Promise.resolve()).then(function () {
@@ -3180,8 +3159,8 @@ var TTestComponent = (function () {
         this.projectFactory = projectFactory;
         this.newModel = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]();
         this.projects = [];
-        this.commitHash = "996afe5a253002cc5c90e9250835af4f8d8aa746".substr(0, 7);
-        this.buildTimestamp = "Tue Feb 06 2018 14:25:07 GMT-0600 (CST)";
+        this.commitHash = "07b7c4c940bafe1573418f6c5bd897084bd06a45".substr(0, 7);
+        this.buildTimestamp = "Mon Feb 12 2018 13:51:45 GMT-0600 (CST)";
         this.helpTitles = {
             'overview': 'PS Overview',
             'start': 'PS Start Tab'
