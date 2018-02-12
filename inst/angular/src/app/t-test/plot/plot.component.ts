@@ -41,7 +41,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   @Input('legend-x-offset') legendXOffset = 0;
   @Input('legend-y-offset') legendYOffset = 0;
   @Output() modelChanged = new EventEmitter();
-  dataKey: string;
 
   constructor(
     public plotOptions: PlotOptionsService,
@@ -56,8 +55,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   bottomMargin: number = 50;
   yAxisWidth: number = 10;
   xAxisHeight: number = 10;
+  viewBox = "0 0 0 0";
   x: Param;
   y: Param;
+  dataKey: string;
   plotData: any[];
   paths: string[];
   dropPaths: string[];
@@ -183,10 +184,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
       this.plotOptions.getAxisLineWidth() +         // x axis line width
       (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
 
-    this.leftMargin = this.plotOptions.getFontSize() + this.yAxisWidth;
+    this.leftMargin = this.plotOptions.getFontSize() + this.yAxisWidth + 10;
     this.rightMargin = 10;
     this.topMargin = this.plotOptions.getFontSize() + 10;
-    this.bottomMargin = this.plotOptions.getFontSize() + this.xAxisHeight;
+    this.bottomMargin = this.plotOptions.getFontSize() + this.xAxisHeight + 10;
 
     // dimensions
     if (this.fixedWidth) {
@@ -199,6 +200,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     } else {
       this.height = this.getDimension('height');
     }
+    this.viewBox = `0 0 ${this.width} ${this.height}`;
     this.innerWidth  = this.width  - this.leftMargin - this.rightMargin;
     this.innerHeight = this.height - this.topMargin - this.bottomMargin;
   }
@@ -301,28 +303,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private setupPlotData(): boolean {
-    /*
-    if (this.dataKey == 'powerVsN') {
-      this.plotData = this.project.models.map(m => {
-        let data = m[this.dataKey];
-        let last, lastIndex;
-        for (let i = data.length - 1; i >= 0; i--) {
-          if (data[i].y <= this.y.range.max && data[i].x <= this.x.range.max) {
-            last = data[i];
-            lastIndex = i;
-            break;
-          }
-        }
-        if (last.x < this.x.range.max) {
-          // insert points to smooth
-          data.splice(lastIndex, 0, { x: this.x.range.max, y: this.y.range.max });
-        }
-        return data;
-      });
-    } else {
-      this.plotData = this.project.models.map(m => m[this.dataKey]);
-    }
-    */
     this.plotData = this.project.models.map(m => m[this.dataKey]);
 
     // Prepare main data for bisection during target point dragging.

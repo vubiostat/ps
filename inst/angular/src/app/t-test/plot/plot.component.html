@@ -1,23 +1,24 @@
 <svg #plot
   [style.fontFamily]="plotOptions.getFontFamily()"
   style.fontSize="{{plotOptions.getFontSize()}}px"
-  [attr.class]="name" [attr.width]="fixedWidth" [attr.height]="fixedHeight">
+  [attr.class]="name" [attr.width]="fixedWidth" [attr.height]="fixedHeight"
+  [attr.viewBox]="viewBox">
 
   <ng-template [ngIf]="x && y && project">
     <text text-anchor="middle"
       [attr.x]="innerWidth / 2 + leftMargin"
-      [attr.y]="height">
+      [attr.y]="height - (plotOptions.getFontSize() / 2)">
       {{x.title}}
     </text>
     <text text-anchor="middle"
       [attr.x]="-(innerHeight / 2 + topMargin)"
-      [attr.y]="(plotOptions.getFontSize() / 2) + 8"
+      [attr.y]="plotOptions.getFontSize()"
       transform="rotate(-90)">
       {{y.title}}
     </text>
     <text text-anchor="middle" font-weight="bold"
       [attr.x]="innerWidth / 2 + leftMargin"
-      [attr.y]="(plotOptions.getFontSize() / 2) + 8">
+      [attr.y]="plotOptions.getFontSize()">
       {{title}}
     </text>
 
