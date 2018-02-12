@@ -354,7 +354,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
   private setupPaths(): void {
     this.paths = this.plotData.map((d, i) => {
-      return this.getPath(d, 'x', 'y', this.x.range, this.y.range);
+      return this.getPath(d, 'x', 'y');
     })
   }
 
