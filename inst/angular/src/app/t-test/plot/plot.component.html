@@ -4,19 +4,6 @@
   [attr.class]="name" [attr.width]="fixedWidth" [attr.height]="fixedHeight">
 
   <ng-template [ngIf]="x && y && project">
-    <defs>
-      <clipPath id="{{name}}-plot-area">
-        <rect x="0" [attr.y]="-plotOptions.getLineWidth()"
-          [attr.width]="innerWidth"
-          [attr.height]="innerHeight + plotOptions.getLineWidth()" />
-      </clipPath>
-      <clipPath id="{{name}}-target-area">
-        <rect x="-5" [attr.y]="-5"
-          [attr.width]="innerWidth + 10"
-          [attr.height]="innerHeight + 10" />
-      </clipPath>
-    </defs>
-
     <text text-anchor="middle"
       [attr.x]="innerWidth / 2 + leftMargin"
       [attr.y]="height">
@@ -38,7 +25,6 @@
       [attr.transform]="translate(leftMargin, topMargin)">
       <path
         id="{{name}}-path-{{invertIndex(invIndex, paths)}}"
-        [attr.clip-path]="getClipPath('plot')"
         [attr.stroke]="getPathColor(invIndex)"
         [attr.stroke-width]="plotOptions.getLineWidth()"
         [attr.stroke-dasharray]="getDashArray(invIndex)"
@@ -63,7 +49,6 @@
         <g *ngFor="let path of dropPaths; index as dpIndex; trackBy: trackByIndex"
           [attr.transform]="translate(leftMargin, topMargin)">
           <path id="{{name}}-target-drop-{{dpIndex}}"
-            [attr.clip-path]="getClipPath('plot')"
             stroke="red"
             [attr.stroke-width]="plotOptions.getLineWidth() / 2"
             stroke-dasharray="5, 5"
@@ -72,7 +57,6 @@
       </ng-template>
       <circle id="{{name}}-target" class="target" r="5"
         [attr.transform]="translate(leftMargin, topMargin)"
-        [attr.clip-path]="getClipPath('target')"
         fill="red"
         (mousemove)="hover($event, target)" />
     </g>

@@ -169,10 +169,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     return this.plotOptions.legendLabel(index);
   }
 
-  getClipPath(which: string): string {
-    return `url(#${this.name}-${which}-area)`;
-  }
-
   resetLegend(): void {
     this.legendXOffset = 0;
     this.legendYOffset = 0;
