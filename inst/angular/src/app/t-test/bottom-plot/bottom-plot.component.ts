@@ -51,6 +51,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   rightMargin: number = 10;
   topMargin: number = 50;
   bottomMargin: number = 50;
+  viewBox: string = "0 0 0 0";
 
   yScaleSD: any;
   plotData: any[];
@@ -150,6 +151,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     } else {
       this.height = this.getDimension('height');
     }
+    this.viewBox = `0 0 ${this.width} ${this.height}`;
     this.innerWidth  = this.width  - this.leftMargin - this.rightMargin;
     this.innerHeight = this.height - this.topMargin - this.bottomMargin;
   }
