@@ -88,7 +88,7 @@
       <circle *ngIf="!isHoverInfoTarget()" r="4" fill="none" stroke="blue" />
       <path id="{{name}}-hover-info"
         stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
-      <text id="{{name}}-hover-coords" y="-2.5em" font-family="mono" text-anchor="middle">
+      <text id="{{name}}-hover-coords" y="-2.5em" font-family="monospace" text-anchor="middle">
         <tspan style="white-space: pre">{{x.sym}}: {{hoverPoint.x | formatFixed:[hoverPoint.y]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">{{y.sym}}: {{hoverPoint.y | formatFixed:[hoverPoint.x]}}</tspan>
       </text>
     </g>

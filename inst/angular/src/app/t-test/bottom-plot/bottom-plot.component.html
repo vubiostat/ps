@@ -70,7 +70,7 @@
         [attr.transform]="translate(xScale(mainGroup.left + barOffset), yScale(0.5))">
         <path id="{{name}}-left-box"
           stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
-        <text id="{{name}}-left-coords" x="0" y="-3em" font-family="mono" text-anchor="middle">
+        <text id="{{name}}-left-coords" x="0" y="-3em" font-family="monospace" text-anchor="middle">
           <tspan style="white-space: pre">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.left]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.left | formatFixed:[ciWidth()]}}</tspan>
         </text>
       </g>
