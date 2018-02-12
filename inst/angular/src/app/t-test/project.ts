@@ -87,9 +87,7 @@ export class Project {
     return models.reduce((promise, model) => {
       return promise.then(() => this.ttestService.calculate(model)).
         then(result => {
-          console.log('before:', model.params());
           Object.assign(model, result);
-          console.log('after:', model.params());
           model.calculateRanges();
         });
     }, Promise.resolve()).then(() => {
