@@ -56,8 +56,8 @@ export abstract class AbstractPlotComponent implements OnInit {
   }
 
   protected getPath(data: any[], xName = "x", yName = "y"): string {
-    let xScaleRange = this.xScale.domain().sort();
-    let yScaleRange = this.yScale.domain().sort();
+    let xScaleRange = this.xScale.domain().sort((a, b) => a - b);
+    let yScaleRange = this.yScale.domain().sort((a, b) => a - b);
     let line = d3.line().
       x((d, i) => this.xScale(d[xName])).
       y((d, i) => this.yScale(d[yName])).
@@ -65,8 +65,8 @@ export abstract class AbstractPlotComponent implements OnInit {
         let x = d[xName];
         let y = d[yName];
         return typeof(x) === 'number' && typeof(y) == 'number' &&
-          ((x >= xScaleRange[0] && x <= xScaleRange[1]) &&
-           (y >= yScaleRange[0] && y <= yScaleRange[1]));
+          x >= xScaleRange[0] && x <= xScaleRange[1] &&
+          y >= yScaleRange[0] && y <= yScaleRange[1];
       });
 
     return line(data);
