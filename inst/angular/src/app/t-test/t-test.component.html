@@ -9,25 +9,21 @@
             Overview <i class="fa fa-question-circle"></i>
           </button>
         </div>
-        <ngb-tabset #tabset (tabChange)="onTabChange($event)" type="sidebar">
+        <ngb-tabset #tabset (tabChange)="onTabChange($event)">
           <ngb-tab title="Start" id="t-test-start">
             <ng-template ngbTabContent>
-              <div class="sidebar-tab-content">
-                <t-test-start [model]="newModel"
-                  (onCalculate)="calculate()"
-                  (onToggleHelp)="toggleHelp('start')">
-                </t-test-start>
-              </div>
+              <t-test-start [model]="newModel"
+                (onCalculate)="calculate()"
+                (onToggleHelp)="toggleHelp('start')">
+              </t-test-start>
             </ng-template>
           </ngb-tab>
           <ngb-tab *ngFor="let project of projects; let i = index"
             title="Test {{i+1}}" id="t-test-{{i+1}}">
             <ng-template ngbTabContent>
-              <div class="sidebar-tab-content">
-                <t-test-project name="{{i}}" [project]="project"
-                  (projectChanged)="onProjectChanged()">
-                </t-test-project>
-              </div>
+              <t-test-project name="{{i}}" [project]="project"
+                (projectChanged)="onProjectChanged()">
+              </t-test-project>
             </ng-template>
           </ngb-tab>
         </ngb-tabset>
