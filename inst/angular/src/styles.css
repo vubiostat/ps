@@ -151,3 +151,33 @@ ngb-modal-window.export-plots .modal-content {
   padding: 2px;
   background-color: #d5d5d5;
 }
+
+/* Add non-encapsulated styles for plots */
+#t-test-output-pane-plots svg.top-left {
+  position: absolute;
+  left: 0;
+  width: 50%;
+  height: 70%;
+}
+#t-test-output-pane-plots.without-footer svg.top-left {
+  height: 68%;
+}
+#t-test-output-pane-plots svg.top-right {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: 70%;
+}
+#t-test-output-pane-plots.without-footer svg.top-right {
+  height: 68%;
+}
+#t-test-output-pane-plots svg.bottom {
+  position: absolute;
+  top: 72%;
+  height: 28%;
+  width: 100%;
+}
+#t-test-output-pane-plots.without-footer svg.bottom {
+  top: 70%;
+  height: 26%;
+}

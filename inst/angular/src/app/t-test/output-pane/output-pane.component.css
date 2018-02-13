@@ -13,35 +13,6 @@ div.show-footer {
   bottom: 5px;
 }
 
-.plot /deep/ svg.top-left {
-  position: absolute;
-  left: 0;
-  width: 50%;
-  height: 70%;
-}
-.plot.without-footer /deep/ svg.top-left {
-  height: 68%;
-}
-.plot /deep/ svg.top-right {
-  position: absolute;
-  right: 0;
-  width: 50%;
-  height: 70%;
-}
-.plot.without-footer /deep/ svg.top-right {
-  height: 68%;
-}
-.plot /deep/ svg.bottom {
-  position: absolute;
-  top: 72%;
-  height: 28%;
-  width: 100%;
-}
-.plot.without-footer /deep/ svg.bottom {
-  top: 70%;
-  height: 26%;
-}
-
 .output-footer {
   position: relative;
   background-color: #e5e5e5;
