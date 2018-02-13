@@ -33,7 +33,7 @@ ngb-modal-window.export-plots .modal-content {
 }
 
 /* Add non-encapsulated styles for ngb-tabsets */
-#t-test-sidebar ngb-tabset {
+#t-test-sidebar > ngb-tabset {
   display: flex;
   flex-direction: column;
   flex: auto;
@@ -55,7 +55,7 @@ ngb-modal-window.export-plots .modal-content {
 }
 
 
-#t-test-sidebar ngb-tabset > ul.nav > li.nav-item > a.nav-link,
+#t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link {
   border-color: #bbb #bbb #888;
   background-color: #eee;
@@ -67,14 +67,14 @@ ngb-modal-window.export-plots .modal-content {
   color: white;
 }
 
-#t-test-sidebar ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
+#t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover {
   border-color: #888;
   background-color: #f5f5f5;
   color: #0275d8;
 }
 
-#t-test-sidebar ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
+#t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
   border-color: #888 #888 #fff;
   background-color: #fff;
@@ -85,19 +85,19 @@ ngb-modal-window.export-plots .modal-content {
   border-color: #007bff;
 }
 
-#t-test-sidebar ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
+#t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover {
   color: #464a4c;
 }
 
-#t-test-sidebar ngb-tabset > ul.nav,
+#t-test-sidebar > ngb-tabset > ul.nav,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav {
   /*display: flex;*/
   flex: 0 0 auto;
   border-bottom: 1px solid #888;
 }
 
-#t-test-sidebar ngb-tabset > .tab-content {
+#t-test-sidebar > ngb-tabset > .tab-content {
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
@@ -109,7 +109,7 @@ ngb-modal-window.export-plots .modal-content {
   flex: 1;
 }
 
-#t-test-sidebar ngb-tabset > .tab-content > .tab-pane {
+#t-test-sidebar > ngb-tabset > .tab-content > .tab-pane {
   /*display: flex;*/
   /*flex-direction: column;*/
   flex: 1 0 auto;
@@ -120,7 +120,7 @@ ngb-modal-window.export-plots .modal-content {
   max-height: 70vh;
 }
 
-#t-test-export-plots-modal-body ngbtabset > .tab-content > .tab-pane {
+#t-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane {
   border: 1px solid #888;
   border-top: 0;
   overflow: auto;
@@ -133,7 +133,7 @@ ngb-modal-window.export-plots .modal-content {
   height: 10vh;
 }
 
-#t-test-sidebar ngb-tabset > .tab-content > .tab-pane.active {
+#t-test-sidebar > ngb-tabset > .tab-content > .tab-pane.active {
   background: white;
 }
 
