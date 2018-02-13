@@ -27,6 +27,7 @@ import { RoundPipe } from './round.pipe';
 import { CeilPipe } from './ceil.pipe';
 import { ReversePipe } from './reverse.pipe';
 import { FormatFixedPipe } from './format-fixed.pipe';
+import { ProjectModelComponent } from './project-model/project-model.component';
 
 const routes: Routes = [
   { path: 't-test', component: TTestComponent },
@@ -51,6 +52,7 @@ const routes: Routes = [
     CeilPipe,
     ReversePipe,
     FormatFixedPipe,
+    ProjectModelComponent,
   ],
   imports: [
     CommonModule,

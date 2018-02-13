@@ -42,58 +42,18 @@
   width: 2.4rem;
 }
 
-#t-test-sidebar /deep/ a.nav-link {
-  border-color: #bbb #bbb #888;
-  background-color: #eee;
-}
-
-#t-test-sidebar /deep/ a.nav-link:hover {
-  border-color: #888;
-  background-color: #f5f5f5;
-  color: #0275d8;
-}
-
-#t-test-sidebar /deep/ a.nav-link.active {
-  border-color: #888 #888 #fff;
-  background-color: #fff;
-}
-
-#t-test-sidebar /deep/ a.nav-link.active:hover {
-  color: #464a4c;
-}
-
-#t-test-sidebar /deep/ ngb-tabset {
+#t-test-sidebar ngb-tabset {
   display: flex;
   flex-direction: column;
   flex: auto;
   /*width: 100%;*/
 }
 
-#t-test-sidebar /deep/ ul.nav-tabs {
-  /*display: flex;*/
-  flex: 0 0 auto;
-  border-bottom: 1px solid #888;
-}
-
-#t-test-sidebar /deep/ .tab-content {
+#t-test-sidebar t-test-start,
+#t-test-sidebar t-test-project {
   display: flex;
   flex-direction: column;
-  flex: 1 0 auto;
-}
-
-#t-test-sidebar /deep/ .tab-pane {
-  /*display: flex;*/
-  /*flex-direction: column;*/
-  flex: 1 0 auto;
-  padding: 10px;
-  border: 1px solid #888;
-  border-top: 0;
-  overflow: auto;
-  max-height: 70vh;
-}
-
-#t-test-sidebar /deep/ .tab-pane.active {
-  background: white;
+  flex: auto;
 }
 
 #t-test-footer {

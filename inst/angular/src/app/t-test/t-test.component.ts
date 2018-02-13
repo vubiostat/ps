@@ -100,6 +100,10 @@ export class TTestComponent implements OnInit {
     }
   }
 
+  onProjectChanged(): void {
+    this.outputPane.redrawPlots();
+  }
+
   onModelChanged(): void {
     this.outputPane.redrawPlots();
   }

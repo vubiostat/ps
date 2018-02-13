@@ -14,6 +14,13 @@ export class Project {
 
   constructor(private ttestService: TTestService) {}
 
+  getOutput(): string {
+    if (this.models.length > 0) {
+      return this.models[0].output;
+    }
+    return '';
+  }
+
   addModel(model: TTest): Promise<any> {
     return this.ttestService.calculate(model).
       then(result => {
@@ -34,27 +41,8 @@ export class Project {
 
     let which = key;
     let changes = { [key]: value };
-    if (key === 'output') {
-      if (((value == "n" || value == "nByCI") && this.extraName == "n") ||
-          (value == "power" && this.extraName == "power") ||
-          (value == "delta" && this.extraName == "delta")) {
-
-        // remove extra models that no longer make sense
-        for (var i = this.models.length - 1; i > 0; i--) {
-          this.removeModel(i);
-        }
-        this.extraName = undefined;
-      } else {
-        // changing output is a special case because the calculated values are going
-        // to be different for extra models, so these need to be fixed before recalculating
-        for (let i = 1, ilen = this.models.length; i < ilen; i++) {
-          let params = this.models[0].params();
-          params[this.extraName] = this.models[i][this.extraName];
-          Object.assign(this.models[i], params);
-        }
-      }
-    } else {
-      if (this.models[0].output === 'nByCI') {
+    if (key !== 'output') {
+      if (model.output === 'nByCI') {
         if (key === 'delta') {
           // delta was changed, so turn on "deltaMode"
           changes.deltaMode = true;
@@ -77,9 +65,7 @@ export class Project {
     }
 
     let models = [model];
-    if (index == 0 && which !== this.extraName) {
-      // if the 'main' model was changed and the key is not the 'extra' key,
-      // update all of the secondary models as well as the main model
+    if (key === "output") {
       models = this.models;
     }
 
