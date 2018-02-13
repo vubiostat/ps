@@ -46,10 +46,25 @@ ngb-modal-window.export-plots .modal-content {
   flex: 1;
 }
 
+#t-test-output-pane-footer ngb-tabset > ul.nav {
+  padding: 5px;
+}
+
+#t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item {
+  margin-right: 5px;
+}
+
+
 #t-test-sidebar ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link {
   border-color: #bbb #bbb #888;
   background-color: #eee;
+}
+
+#t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link {
+  border-color: #868e96;
+  background-color: #868e96;
+  color: white;
 }
 
 #t-test-sidebar ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
@@ -63,6 +78,11 @@ ngb-modal-window.export-plots .modal-content {
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
   border-color: #888 #888 #fff;
   background-color: #fff;
+}
+
+#t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
 #t-test-sidebar ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
@@ -107,6 +127,12 @@ ngb-modal-window.export-plots .modal-content {
   max-height: 73vh;
 }
 
+#t-test-output-pane-footer ngb-tabset > .tab-content > .tab-pane {
+  padding: 10px;
+  overflow: auto;
+  height: 10vh;
+}
+
 #t-test-sidebar ngb-tabset > .tab-content > .tab-pane.active {
   background: white;
 }
@@ -116,4 +142,12 @@ ngb-modal-window.export-plots .modal-content {
   flex-direction: row;
   flex: 1;
   background: white;
+}
+
+#t-test-output-pane-footer ngb-tabset > span.code {
+  display: inline-block;
+  font-family: monospace;
+  border: 1px solid #e0e0e0;
+  padding: 2px;
+  background-color: #d5d5d5;
 }
