@@ -2,6 +2,8 @@ import { Range } from './range';
 import { Point } from './point';
 
 export class TTest {
+  name: string;
+
   // params
   output: string;
   alpha: number;

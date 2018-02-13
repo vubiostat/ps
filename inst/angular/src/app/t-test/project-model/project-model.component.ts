@@ -14,6 +14,7 @@ export class ProjectModelComponent implements OnInit {
   @Input() project: Project;
   @Input() index: number;
   @Output() modelChanged = new EventEmitter();
+  @Output() remove = new EventEmitter();
 
   model: TTest;
   min: TTest;
@@ -42,6 +43,10 @@ export class ProjectModelComponent implements OnInit {
     this.calculateSliderRange('sigma');
 
     this.color = this.palette.getColor(this.index, this.plotOptions.paletteTheme);
+  }
+
+  private onRemoveButtonClicked(): void {
+    this.remove.emit();
   }
 
   private isOutput(name: string): boolean {

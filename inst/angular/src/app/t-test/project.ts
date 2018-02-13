@@ -4,7 +4,7 @@ import { TTestService } from './t-test.service';
 
 export class Project {
   models: TTest[] = [];
-  extraName: string;
+  selectedIndex: number = 0;
   changeHistory: any[] = [];
 
   nRange?: Range;
@@ -25,6 +25,7 @@ export class Project {
     return this.ttestService.calculate(model).
       then(result => {
         let model = new TTest(result);
+        model.name = this.getModelName(this.models.length);
         model.calculateRanges();
         this.models.push(model);
         this.calculateRanges();
@@ -148,5 +149,31 @@ export class Project {
       }
     }
     return `{ ${result.join(', ')} }`;
+  }
+
+  private getModelName(index: number): string {
+    switch (index) {
+      case 0:
+        return "Primary";
+      case 1:
+        return "Secondary";
+      case 2:
+        return "Tertiary";
+      case 3:
+        return "Quaternary";
+      case 4:
+        return "Quinary";
+      case 5:
+        return "Senary";
+      case 6:
+        return "Septenary";
+      case 7:
+        return "Octonary";
+      case 8:
+        return "Nonary";
+      case 9:
+        return "Denary";
+    }
+    return `Line ${index + 1}`;
   }
 }

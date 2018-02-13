@@ -35,7 +35,7 @@ export class OutputPaneComponent implements OnChanges {
     if (!('project' in changes)) return;
 
     if (this.project) {
-      this.model = this.project.getModel(0);
+      this.model = this.project.getModel(this.project.selectedIndex);
     } else {
       this.model = undefined;
     }

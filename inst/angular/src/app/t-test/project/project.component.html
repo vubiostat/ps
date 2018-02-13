@@ -1,29 +1,35 @@
 <div class="grow-vert">
-  <div class="form-group">
-    <label>
-      Output
-      <select class="form-control" name="output"
+  <div class="form-inline justify-content-between mb-2">
+    <div class="form-group">
+      <label for="t-test-project-{{name}}-output" class="mr-2">Output:</label>
+      <select id="t-test-project-{{name}}-output" class="form-control" name="output"
         [ngModel]="project.getOutput()" (ngModelChange)="changeOutput($event)">
         <option value="n">Sample size by Power</option>
         <option value="nByCI">Sample size by 95% CI</option>
         <option value="power">Power</option>
         <option value="delta">Detectable alternative</option>
       </select>
-    </label>
+    </div>
 
-    <ngb-tabset #tabset type="pills" (tabChange)="onTabChange($event)">
-      <ngb-tab *ngFor="let model of project.models; index as i"
-        id="t-test-project-{{name}}-model-{{i}}" [title]="i + 1">
-        <ng-template ngbTabContent>
-          <t-test-project-model [project]="project" [index]="i"
-            (modelChanged)="onModelChanged()">
-          </t-test-project-model>
-        </ng-template>
-      </ngb-tab>
-      <ngb-tab id="t-test-project-{{name}}-add-model">
-        <ng-template ngbTabTitle><i class="fa fa-plus-circle"></i></ng-template>
-        <ng-template ngbTabContent></ng-template>
-      </ngb-tab>
-    </ngb-tabset>
+    <button type="button" class="btn btn-primary" (click)="addModel()">
+      <i class="fa fa-plus-circle"></i> Add line
+    </button>
+  </div>
+
+  <ul *ngIf="project.models.length > 1" class="nav nav-tabs mt-2">
+    <li *ngFor="let model of project.models; index as i; trackBy: trackByIndex" class="nav-item">
+      <a class="nav-link nav-model-link" [class.active]="i == project.selectedIndex"
+        (click)="selectModel(i)">
+        {{i + 1}} <i class="fa fa-circle" [style.color]="getColor(i)"></i>
+      </a>
+    </li>
+  </ul>
+
+  <div *ngFor="let model of project.models; index as i" class="project-model"
+    [class.active]="i == project.selectedIndex"
+    [class.tab]="project.models.length > 1">
+    <t-test-project-model [project]="project" [index]="i"
+      (modelChanged)="onModelChanged()" (remove)="onModelRemove(i)">
+    </t-test-project-model>
   </div>
 </div>

@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
+import { PlotOptionsService } from '../plot-options.service';
+import { PaletteService } from '../palette.service';
 import { Project } from '../project';
 import { TTest } from '../t-test';
 
@@ -17,8 +19,13 @@ export class ProjectComponent implements OnInit {
 
   @ViewChild('tabset') tabset: NgbTabset;
 
+  constructor(
+    private plotOptions: PlotOptionsService,
+    private palette: PaletteService
+  ) { }
+
   ngOnInit(): void {
-    this.activeModel = this.project.getModel(0);
+    this.selectedModel = this.project.getModel(this.project.selectedIndex);
   }
 
   changeOutput(value: string): void {
@@ -27,30 +34,28 @@ export class ProjectComponent implements OnInit {
     });
   }
 
-  onTabChange(event: NgbTabChangeEvent): void {
-    if (event.nextId === `t-test-project-${this.name}-add-model`) {
-      this.addModel();
-      event.preventDefault();
-    } else {
-      let md = event.nextId.match(/-model-(\d+)$/);
-      if (md && md[1]) {
-        this.activeModel = this.project.getModel(parseInt(md[1]));
-      }
-    }
+  selectModel(index: number): void {
+    this.project.selectedIndex = index;
+    this.selectedModel = this.project.getModel(index);
   }
 
   addModel(): void {
-    let model = this.activeModel.shallowClone();
+    let model = this.selectedModel.shallowClone();
     this.project.addModel(model).then(() => {
+      this.project.selectedIndex = this.project.models.length - 1;
       this.projectChanged.emit();
-      setTimeout(() => {
-        this.tabset.select(`t-test-project-${this.name}-model-${this.project.models.length - 1}`);
-      }, 1);
     });
+  }
+
+  onModelRemove(index: number): void {
+    this.removeModel(index);
   }
 
   removeModel(index: number): void {
     this.project.removeModel(index);
+    if (this.project.selectedIndex >= this.project.models.length) {
+      this.project.selectedIndex--;
+    }
     this.projectChanged.emit();
   }
 
@@ -58,7 +63,11 @@ export class ProjectComponent implements OnInit {
     this.projectChanged.emit();
   }
 
-  trackByExtra(index: number, item: number): number {
+  trackByIndex(index: number, item: number): number {
     return index;
+  }
+
+  getColor(index: number): string {
+    return this.palette.getColor(index, this.plotOptions.paletteTheme);
   }
 }

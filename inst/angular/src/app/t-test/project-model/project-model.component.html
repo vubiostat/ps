@@ -1,3 +1,16 @@
+<div *ngIf="project.models.length > 1" class="form-inline justify-content-between mb-2">
+  <div class="form-group">
+    <label for="t-test-project-{{name}}-model-{{index}}-name" class="mr-2">Name:</label>
+    <input id="t-test-project-{{name}}-model-{{index}}-name" class="form-control"
+      name="name" type="text" [(ngModel)]="model.name" />
+  </div>
+
+  <button type="button" class="btn btn-secondary"
+    (click)="onRemoveButtonClicked()">
+    <i class="fa fa-minus-circle"></i> Remove
+  </button>
+</div>
+
 <div class="grow-horiz">
   <div class="grow-vert range-slider">
     <t-test-range-slider name="alpha" label="Type I Error (&alpha;)"

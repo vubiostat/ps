@@ -6,3 +6,38 @@
   padding: 0.3rem 0.3rem;
 }
 
+ul.nav {
+  border-bottom: 0;
+  z-index: 123;
+}
+
+ul.nav li.nav-item {
+  margin-bottom: -1px;
+}
+
+ul.nav li.nav-item a.nav-link {
+  cursor: pointer;
+  background-color: #ddd;
+  border-color: #bbb #bbb #aaa;
+}
+
+ul.nav li.nav-item a.nav-link.active {
+  border-color: #aaa #aaa #f6f6f6;
+  background-color: #f6f6f6;
+}
+
+.project-model {
+  display: none;
+}
+
+.project-model.active {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.project-model.tab {
+  padding: 1rem 0.5rem 0 0.5rem;
+  border: 1px solid #aaa;
+  background-color: #f6f6f6;
+}
