@@ -16,14 +16,20 @@ import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 
 interface Group {
+  id: string;
   leftPath: string;
   centerPath: string;
   rightPath: string;
   distPath: string;
   left: number;
+  originalTarget: number;
   target: number;
   right: number;
   label: string;
+  color: string;
+  fillOpacity: number;
+  strokeOpacity: number;
+  primary: boolean;
 };
 
 enum CIBar {
@@ -43,10 +49,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   @Input('disable-drag-ci') disableDragCI = false;
   @Output() modelChanged = new EventEmitter();
 
-  @ViewChild('target') targetElement: ElementRef;
-  @ViewChild('leftBar') leftBarElement: ElementRef;
-  @ViewChild('rightBar') rightBarElement: ElementRef;
-
   leftMargin: number = 10;
   rightMargin: number = 10;
   topMargin: number = 50;
@@ -60,17 +62,11 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   needDraw = Draw.No;
 
   // target dragging
-  targetOffset = 0;
-  targetTranslateOffset = 0;
   targetDragging = false;
-  targetWasDragging = false;
   showTargetInfo = false;
 
   // bar dragging
-  barOffset = 0;
-  barTranslateOffset = 0;
   barDragging = false;
-  barWasDragging = false;
   showLeftBarInfo = false;
   showRightBarInfo = false;
 
@@ -120,15 +116,12 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     }
   }
 
-  getColor(index: number, invert = true): string {
-    if (invert) {
-      index = this.groups.length - index;
-    }
+  getColor(index: number): string {
     return this.palette.getColor(index, this.plotOptions.paletteTheme);
   }
 
-  trackByIndex(index: number, thing: any): any {
-    return index;
+  trackByGroupId(index: number, group: Group): any {
+    return group.id;
   }
 
   private setupDimensions(): void {
@@ -225,26 +218,36 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       let distPath = this.getArea(this.plotData[i], 'x', 'y');
 
       let result = {
+        id: `${this.name}-group-${i}`,
         leftPath: leftPath,
         centerPath: centerPath,
         rightPath: rightPath,
         distPath: distPath,
         left: leftLimit,
+        originalTarget: model.delta,
         target: model.delta,
         right: rightLimit,
-        label: "95% CI"
-      }
+        label: "95% CI",
+        color: this.getColor(i),
+        fillOpacity: 0.5,
+        strokeOpacity: 0.9,
+        primary: this.project.selectedIndex == i
+      } as Group;
       return result;
-    }).reverse();
-    this.mainGroup = this.groups.pop();
+    });
+
+    // order group in reverse so that they are drawn properly, put the selected
+    // group at the end
+    this.groups.sort((a, b) => {
+      if (a.primary) return 1;
+      if (b.primary) return -1;
+      return b - a;
+    });
+    this.mainGroup = this.groups[this.groups.length - 1];
   }
 
   private resetDragging(): void {
-    this.targetTranslateOffset = this.targetOffset = 0;
-    this.targetWasDragging = this.targetDragging;
     this.targetDragging = false;
-    this.barTranslateOffset = this.barOffset = 0;
-    this.barWasDragging = this.barDragging;
     this.barDragging = false;
   }
 
@@ -262,7 +265,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       return;
     }
 
-    let t = d3.select(this.plotElement.nativeElement).transition();
+    let svg = d3.select(this.plotElement.nativeElement);
+    let t = svg.transition();
 
     // axes (drawn by d3)
     let xAxis = d3.axisBottom(this.xScale).ticks(Math.floor(this.innerWidth / 75));
@@ -273,55 +277,39 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
 
     // alternate groups
     this.groups.forEach((group, index) => {
-      let prefix = `#${this.name}-group-${index}`;
-      t.select(`${prefix}-dist`).attr('d', group.distPath);
-      t.select(`${prefix}-center`).attr('d', group.centerPath);
-      t.select(`${prefix}-left`).attr('d', group.leftPath);
-      t.select(`${prefix}-right`).attr('d', group.rightPath);
-      t.select(`${prefix}-target`).
+      let id = `#${group.id}`;
+      t.select(id).attr('transform', this.translate(this.leftMargin, this.topMargin));
+      t.select(`${id}-dist`).attr('d', group.distPath);
+      t.select(`${id}-center`).attr('d', group.centerPath);
+      t.select(`${id}-left`).attr('d', group.leftPath);
+      t.select(`${id}-right`).attr('d', group.rightPath);
+      t.select(`${id}-target`).
         attr('cx', this.xScale(group.target)).
         attr('cy', this.yScale(0.5));
     });
 
-    // main group
-    if (this.targetWasDragging || this.barWasDragging) {
-      // don't use animations if user was dragging things
-      t = d3.select(this.plotElement.nativeElement);
-    }
-    let prefix = `#${this.name}-main`;
-    t.select(`${prefix}-dist`).attr('d', this.mainGroup.distPath);
-    t.select(`${prefix}-center`).attr('d', this.mainGroup.centerPath);
-    t.select(`${prefix}-left`).attr('d', this.mainGroup.leftPath);
-    t.select(`${prefix}-right`).attr('d', this.mainGroup.rightPath);
-    t.select(`${prefix}-target`).
-      attr('cx', this.xScale(this.mainGroup.target)).
-      attr('cy', this.yScale(0.5));
-
     // make target point draggable
-    let targetElt = this.targetElement.nativeElement;
-    let target = d3.select(targetElt);
+    let target = d3.select(`#${this.mainGroup.id}-target`);
     let targetDrag = d3.drag().
-      container(targetElt.parentNode.parentNode).
+      container(target.node().parentNode.parentNode).
       on("start", this.dragTargetStart.bind(this)).
       on("drag", this.dragTarget.bind(this)).
       on("end", this.dragTargetEnd.bind(this));
     target.call(targetDrag);
 
     // make left bar draggable
-    let leftBarElt = this.leftBarElement.nativeElement;
-    let leftBar = d3.select(leftBarElt);
+    let leftBar = d3.select(`#${this.mainGroup.id}-left`);
     let leftBarDrag = d3.drag().
-      container(leftBarElt.parentNode.parentNode).
+      container(leftBar.node().parentNode.parentNode).
       on("start", this.dragBarStart.bind(this, CIBar.Left)).
       on("drag", this.dragBar.bind(this, CIBar.Left)).
       on("end", this.dragBarEnd.bind(this, CIBar.Left));
     leftBar.call(leftBarDrag);
 
     // make right bar draggable
-    let rightBarElt = this.rightBarElement.nativeElement;
-    let rightBar = d3.select(rightBarElt);
+    let rightBar = d3.select(`#${this.mainGroup.id}-right`);
     let rightBarDrag = d3.drag().
-      container(rightBarElt.parentNode.parentNode).
+      container(rightBar.node().parentNode.parentNode).
       on("start", this.dragBarStart.bind(this, CIBar.Right)).
       on("drag", this.dragBar.bind(this, CIBar.Right)).
       on("end", this.dragBarEnd.bind(this, CIBar.Right));
@@ -350,7 +338,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   ciWidth(): number {
-    return Math.abs((this.mainGroup.right - this.barOffset) - (this.mainGroup.left + this.barOffset));
+    return Math.abs(this.mainGroup.right - this.mainGroup.left);
   }
 
   private getArea(points: any[], xName: string, yName: string): string {
@@ -366,6 +354,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     if (this.disableDragTarget) return;
 
     this.targetDragging = true;
+    this.mainGroup.fillOpacity = 0.1;
+    this.mainGroup.strokeOpacity = 0.1;
   }
 
   private dragTarget(event: any): void {
@@ -381,18 +371,18 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       mouseX = this.xScale(x);
     }
 
-    let targetX = this.xScale(this.mainGroup.target);
-    this.targetTranslateOffset = mouseX - targetX;
-
-    this.targetOffset = x - this.mainGroup.target;
+    let offset = mouseX - this.xScale(this.mainGroup.originalTarget);
+    let g = d3.select(`#${this.mainGroup.id}`).
+      attr('transform', this.translate(this.leftMargin + offset, this.topMargin));
+    this.mainGroup.target = x;
   }
 
   private dragTargetEnd(): void {
     if (this.disableDragTarget) return;
 
     if (this.project) {
-      let newDelta = this.mainGroup.target + this.targetOffset;
-      this.project.updateModel(0, 'delta', newDelta).then(() => {
+      let newDelta = this.mainGroup.target;
+      this.project.updateModel(this.project.selectedIndex, 'delta', newDelta).then(() => {
         this.modelChanged.emit();
       });
     }
@@ -411,33 +401,48 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     let mouseX = d3.event.x - this.leftMargin;
     let x = this.xScale.invert(mouseX);
 
+    let diff = 0;
     switch (which) {
       case CIBar.Left:
         let leftBarX = this.xScale(this.mainGroup.left);
-        this.barTranslateOffset = mouseX - leftBarX;
-        this.barOffset = x - this.mainGroup.left;
+        diff = x - this.mainGroup.left;
         break;
 
       case CIBar.Right:
         let rightBarX = this.xScale(this.mainGroup.right);
-        this.barTranslateOffset = rightBarX - mouseX;
-        this.barOffset = this.mainGroup.right - x;
+        diff = this.mainGroup.right - x;
         break;
     }
+    this.mainGroup.left += diff;
+    this.mainGroup.right -= diff;
+
+    // redraw lines
+    let leftPath = this.getPath([
+      { x: this.mainGroup.left, y: 0.40 },
+      { x: this.mainGroup.left, y: 0.60 }
+    ]);
+
+    let rightPath = this.getPath([
+      { x: this.mainGroup.right, y: 0.40 },
+      { x: this.mainGroup.right, y: 0.60 }
+    ]);
 
     let centerPath = this.getPath([
-      { x: this.mainGroup.left + this.barOffset, y: 0.5 },
-      { x: this.mainGroup.right - this.barOffset, y: 0.5 }
+      { x: this.mainGroup.left, y: 0.5 },
+      { x: this.mainGroup.right, y: 0.5 }
     ]);
-    d3.select(`#${this.name}-main-center`).attr('d', centerPath);
+
+    let svg = d3.select(this.plotElement.nativeElement);
+    svg.select(`#${this.mainGroup.id}-left`).attr('d', leftPath);
+    svg.select(`#${this.mainGroup.id}-right`).attr('d', rightPath);
+    svg.select(`#${this.mainGroup.id}-center`).attr('d', centerPath);
   }
 
   private dragBarEnd(which: CIBar): void {
     if (this.disableDragCI) return;
 
     if (this.project) {
-      let model = this.project.getModel(0);
-      this.project.updateModel(0, 'ci', this.ciWidth()).then(() => {
+      this.project.updateModel(this.project.selectedIndex, 'ci', this.ciWidth()).then(() => {
         this.modelChanged.emit();
       });
     }

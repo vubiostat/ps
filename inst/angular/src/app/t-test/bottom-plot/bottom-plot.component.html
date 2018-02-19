@@ -17,106 +17,73 @@
       {{title}}
     </text>
 
-    <!-- alternate groups -->
-    <g *ngFor="let group of groups; let i = index; trackBy: trackByIndex"
-      [attr.transform]="translate(leftMargin, topMargin)">
-
-      <path id="{{name}}-group-{{i}}-dist"
-        [attr.fill]="getColor(groups.length - i)"
-        stroke="none" opacity="0.5" />
-
-      <path id="{{name}}-group-{{i}}-center"
-        [attr.stroke]="getColor(groups.length - i)"
-        [attr.stroke-width]="plotOptions.lineWidth * 3"
-        fill="none" />
-
-      <path id="{{name}}-group-{{i}}-left"
-        [attr.stroke]="getColor(groups.length - i)"
-        [attr.stroke-width]="plotOptions.lineWidth * 3"
-        fill="none" />
-
-      <path id="{{name}}-group-{{i}}-right"
-        [attr.stroke]="getColor(groups.length - i)"
-        [attr.stroke-width]="plotOptions.lineWidth * 3"
-        fill="none" />
-
-      <circle id="{{name}}-group-{{i}}-target"
-        r="5"
-        [attr.fill]="getColor(groups.length - i)" />
-    </g>
-
-    <!-- main group -->
-    <g [attr.transform]="translate(leftMargin + targetTranslateOffset, topMargin)">
-      <path id="{{name}}-main-dist"
-        [attr.fill]="getColor(0)"
-        stroke="none" [attr.opacity]="targetDragging ? 0.1 : 0.5" />
-
-      <path id="{{name}}-main-center"
-        [attr.stroke]="getColor(0)"
-        [attr.stroke-width]="plotOptions.lineWidth * 3"
-        [attr.opacity]="targetDragging ? 0.1 : 0.9"
-        fill="none" />
-
-      <path #leftBar id="{{name}}-main-left" class="bar"
-        [class.drag-disabled]="disableDragCI"
-        [attr.stroke]="getColor(0)"
-        [attr.stroke-width]="plotOptions.lineWidth * 4"
-        [attr.opacity]="targetDragging ? 0.1 : 0.9"
-        [attr.transform]="translate(barTranslateOffset, 0)"
-        fill="none"
-        (mouseover)="toggleLeftBarInfo(true)"
-        (mouseout)="toggleLeftBarInfo(false)" />
-
-      <g *ngIf="showLeftBarInfo"
-        [attr.transform]="translate(xScale(mainGroup.left + barOffset), yScale(0.5))">
-        <path id="{{name}}-left-box"
-          stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
-        <text id="{{name}}-left-coords" x="0" y="-3em" font-family="monospace" text-anchor="middle">
-          <tspan style="white-space: pre">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.left]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.left | formatFixed:[ciWidth()]}}</tspan>
-        </text>
-      </g>
-
-      <path #rightBar id="{{name}}-main-right" class="bar"
-        [class.drag-disabled]="disableDragCI"
-        [attr.stroke]="getColor(0)"
-        [attr.stroke-width]="plotOptions.lineWidth * 4"
-        [attr.opacity]="targetDragging ? 0.1 : 0.9"
-        [attr.transform]="translate(-barTranslateOffset, 0)"
-        fill="none"
-        (mouseover)="toggleRightBarInfo(true)"
-        (mouseout)="toggleRightBarInfo(false)" />
-
-      <g *ngIf="showRightBarInfo"
-        [attr.transform]="translate(xScale(mainGroup.right - barOffset), yScale(0.5))">
-        <path id="{{name}}-right-box"
-          stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
-        <text id="{{name}}-right-coords" x="0" y="-3em" font-family="mono" text-anchor="middle">
-          <tspan style="white-space: pre">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.right]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.right | formatFixed:[ciWidth()]}}</tspan>
-        </text>
-      </g>
-
-      <g *ngIf="showTargetInfo"
-        [attr.transform]="translate(xScale(mainGroup.target), yScale(0.5))">
-        <path id="{{name}}-target-box"
-          stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
-        <text id="{{name}}-target-coords" x="0" y="-1.5em" font-family="mono" text-anchor="middle">
-          <tspan style="white-space: pre">&delta;: {{mainGroup.target + targetOffset | formatFixed:[]}}</tspan>
-        </text>
-      </g>
-
-      <circle #target id="{{name}}-main-target" class="target"
-        [class.drag-disabled]="disableDragTarget"
-        r="5"
-        [attr.fill]="getColor(0)"
-        (mouseover)="toggleTargetInfo(true)"
-        (mouseout)="toggleTargetInfo(false)" />
-    </g>
-
-    <circle r="5"
-      [attr.cx]="xScale(0)"
-      [attr.cy]="yScale(0.5)"
+    <circle r="5" [attr.cx]="xScale(0)" [attr.cy]="yScale(0.5)"
       [attr.transform]="translate(leftMargin, topMargin)"
       fill="darkseagreen" />
+
+    <g *ngFor="let group of groups; let i = index; trackBy: trackByGroupId"
+      [id]="group.id">
+
+      <path id="{{group.id}}-dist"
+        [attr.fill]="group.color"
+        [attr.fill-opacity]="group.fillOpacity"
+        stroke="none" />
+
+      <path id="{{group.id}}-center"
+        [attr.stroke]="group.color"
+        [attr.stroke-width]="plotOptions.lineWidth * 3"
+        fill="none" />
+
+      <path id="{{group.id}}-left"
+        [class.draggable]="group.primary && !disableDragCI"
+        [attr.stroke]="group.color"
+        [attr.stroke-width]="plotOptions.lineWidth * 3"
+        fill="none"
+        (mouseover)="group.primary ? toggleLeftBarInfo(true) : null"
+        (mouseout)="group.primary ? toggleLeftBarInfo(false) : null" />
+
+      <path id="{{group.id}}-right"
+        [class.draggable]="group.primary && !disableDragCI"
+        [attr.stroke]="group.color"
+        [attr.stroke-width]="plotOptions.lineWidth * 3"
+        fill="none"
+        (mouseover)="group.primary ? toggleRightBarInfo(true) : null"
+        (mouseout)="group.primary ? toggleRightBarInfo(false) : null" />
+
+      <circle id="{{group.id}}-target"
+        [class.draggable]="group.primary && !disableDragTarget"
+        r="5"
+        [attr.fill]="group.color"
+        (mouseover)="group.primary ? toggleTargetInfo(true) : null"
+        (mouseout)="group.primary ? toggleTargetInfo(false) : null" />
+    </g>
+
+    <g *ngIf="showLeftBarInfo"
+      [attr.transform]="translate(leftMargin + xScale(mainGroup.left), topMargin + yScale(0.5))">
+      <path id="{{name}}-left-box"
+        stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
+      <text id="{{name}}-left-coords" x="0" y="-3em" font-family="monospace" text-anchor="middle">
+        <tspan style="white-space: pre">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.left]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.left | formatFixed:[ciWidth()]}}</tspan>
+      </text>
+    </g>
+
+    <g *ngIf="showRightBarInfo"
+      [attr.transform]="translate(leftMargin + xScale(mainGroup.right), topMargin + yScale(0.5))">
+      <path id="{{name}}-right-box"
+        stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
+      <text id="{{name}}-right-coords" x="0" y="-3em" font-family="monospace" text-anchor="middle">
+        <tspan style="white-space: pre">{{mainGroup.label}}: {{ciWidth() | formatFixed:[mainGroup.right]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">Bound:  {{mainGroup.right | formatFixed:[ciWidth()]}}</tspan>
+      </text>
+    </g>
+
+    <g *ngIf="showTargetInfo"
+      [attr.transform]="translate(leftMargin + xScale(mainGroup.target), topMargin + yScale(0.5))">
+      <path id="{{name}}-target-box"
+        stroke="black" stroke-width="1" fill="white" fill-opacity="0.9" />
+      <text id="{{name}}-target-coords" x="0" y="-1.5em" font-family="mono" text-anchor="middle">
+        <tspan style="white-space: pre">&delta;: {{mainGroup.target | formatFixed:[]}}</tspan>
+      </text>
+    </g>
 
     <g id="{{name}}-bottom-axis" [attr.transform]="translate(leftMargin, innerHeight + topMargin)"></g>
   </ng-template>

@@ -1,7 +1,3 @@
-.target, .bar {
+.draggable {
   cursor: grab;
-}
-
-.drag-disabled {
-  cursor: auto;
 }
