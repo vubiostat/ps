@@ -37,6 +37,7 @@ export class ProjectComponent implements OnInit {
   selectModel(index: number): void {
     this.project.selectedIndex = index;
     this.selectedModel = this.project.getModel(index);
+    this.projectChanged.emit();
   }
 
   addModel(): void {
