@@ -20,6 +20,16 @@ interface Param {
   sym: string;
 }
 
+interface Path {
+  id: string;
+  path: string;
+  color: string;
+  dashArray: string;
+  lineCap: string;
+  opacity: number;
+  primary: boolean;
+}
+
 enum HoverInfo {
   Disabled,
   NonTarget,
@@ -60,7 +70,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   y: Param;
   dataKey: string;
   plotData: any[];
-  paths: string[];
+  paths: Path[];
   dropPaths: string[];
   mainData: any[];
   target: Point;
@@ -120,8 +130,12 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     return "1em";
   }
 
-  trackByIndex(index: number, path: string): any {
+  trackByIndex(index: number, path: Path): any {
     return index;
+  }
+
+  trackById(index: number, path: Path): any {
+    return path.id;
   }
 
   isHoverInfoActive(): boolean {
@@ -136,38 +150,18 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.hoverInfo = HoverInfo.Disabled;
   }
 
-  getPathColor(index: number, invert = true): string {
-    // NOTE: This is done backwards from common sense on purpose.
-    if (!invert) {
-      index = this.paths.length - index - 1;
-    }
+  getPathColor(index: number): string {
     return this.palette.getColor(index, this.plotOptions.paletteTheme);
   }
 
-  getDashArray(index: number, invert = true): string {
-    // NOTE: This is done backwards from common sense on purpose.
-    if (!invert) {
-      index = this.paths.length - index - 1;
-    }
+  getDashArray(index: number): string {
     let pattern = this.palette.getPattern(index, this.plotOptions.paletteTheme);
     return this.plotOptions.dashArray(pattern);
   }
 
-  getLineCap(index: number, invert = true): string {
-    // NOTE: This is done backwards from common sense on purpose.
-    if (!invert) {
-      index = this.paths.length - index - 1;
-    }
+  getLineCap(index: number): string {
     let pattern = this.palette.getPattern(index, this.plotOptions.paletteTheme);
     return this.plotOptions.lineCap(pattern);
-  }
-
-  invertIndex(invertedIndex: number, array: any[]): number {
-    return array.length - invertedIndex - 1;
-  }
-
-  legendLabel(index: number): string {
-    return this.plotOptions.legendLabel(index);
   }
 
   resetLegend(): void {
@@ -207,7 +201,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
   private setupParams(): boolean {
     // Setup parameters. Dimensions should be setup by this point.
-    let model = this.project.getModel(0);
+    let model = this.project.getModel(this.project.selectedIndex);
     if (model.output == 'n' || model.output == 'nByCI') {
       if (this.name == 'top-left' || this.name == 'top-left-export') {
         // Sample Size vs. Power
@@ -306,7 +300,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.plotData = this.project.models.map(m => m[this.dataKey]);
 
     // Prepare main data for bisection during target point dragging.
-    this.mainData = this.plotData[0].slice();
+    this.mainData = this.plotData[this.project.selectedIndex].slice();
     this.mainData.sort((a, b) => a.x - b.x);
     this.xBisector = d3.bisector(point => point.x).left;
 
@@ -324,14 +318,32 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private setupTarget(): void {
-    let model = this.project.getModel(0);
+    let model = this.project.getModel(this.project.selectedIndex);
     this.target = { x: this.x.target, y: this.y.target } as Point;
   }
 
   private setupPaths(): void {
     this.paths = this.plotData.map((d, i) => {
-      return this.getPath(d, 'x', 'y');
-    })
+      let id = `${this.name}-path-${i}`
+      let path = this.getPath(d, 'x', 'y');
+      let color = this.getPathColor(i);
+      let dashArray = this.getDashArray(i);
+      let lineCap = this.getLineCap(i);
+      let primary = this.project.selectedIndex == i;
+      let result = {
+        id: id, path: path, color: color, dashArray: dashArray, lineCap: lineCap,
+        opacity: primary ? 1 : 0.7, primary: primary
+      } as Path;
+      return result;
+    });
+
+    // order paths in reverse so that they are drawn properly, put the selected
+    // line at the end
+    this.paths.sort((a, b) => {
+      if (a.primary) return 1;
+      if (b.primary) return -1;
+      return b - a;
+    });
   }
 
   private setupDropPaths(): void {
@@ -429,11 +441,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
     // paths
     for (let i = 0, ilen = this.paths.length; i < ilen; i++) {
-      let path = t.select(`#${this.name}-path-${i}`);
+      let path = t.select(`#${this.paths[i].id}`);
       if (!path.attr("d")) {
-        path.attr("d", this.paths[i]);
+        path.attr("d", this.paths[i].path);
       } else {
-        path.attrTween("d", this.pathTween(this.paths[i], 4))
+        path.attrTween("d", this.pathTween(this.paths[i].path, 4))
       }
     }
 
@@ -515,9 +527,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
     if (this.project && this.x.name) {
       this.lastDragEvent = event;
-      this.project.updateModel(0, this.x.name, this.target.x).then(() => {
-        this.modelChanged.emit();
-      })
+      this.project.updateModel(this.project.selectedIndex, this.x.name, this.target.x).
+        then(() => {
+          this.modelChanged.emit();
+        });
     }
   }
 

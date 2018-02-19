@@ -22,15 +22,15 @@
       {{title}}
     </text>
 
-    <g *ngFor="let path of paths | reverse; index as invIndex; trackBy: trackByIndex"
+    <g *ngFor="let path of paths; trackBy: trackById"
       [attr.transform]="translate(leftMargin, topMargin)">
       <path
-        id="{{name}}-path-{{invertIndex(invIndex, paths)}}"
-        [attr.stroke]="getPathColor(invIndex)"
+        [attr.id]="path.id"
+        [attr.stroke]="path.color"
         [attr.stroke-width]="plotOptions.getLineWidth()"
-        [attr.stroke-dasharray]="getDashArray(invIndex)"
-        [attr.stroke-linecap]="getLineCap(invIndex)"
-        [attr.opacity]="invertIndex(i, paths) == 0 ? 1 : 0.7"
+        [attr.stroke-dasharray]="path.dashArray"
+        [attr.stroke-linecap]="path.lineCap"
+        [attr.stroke-opacity]="path.opacity"
         fill="none" />
     </g>
 
