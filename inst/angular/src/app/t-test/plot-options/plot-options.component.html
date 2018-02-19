@@ -77,46 +77,6 @@
         Display legend background
       </label>
     </div>
-    <div class="form-group row">
-      <div class="col-sm-6">
-        <label for="plot-legend-label-1">Legend label #1</label>
-      </div>
-      <div class="col-sm-6">
-        <input id="plot-legend-label-1" class="form-control" type="text" [ngModel]="plotOptions.legendLabel0" (ngModelChange)="changeAttribute('legendLabel0', $event)" />
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-sm-6">
-        <label for="plot-legend-label-2">Legend label #2</label>
-      </div>
-      <div class="col-sm-6">
-        <input id="plot-legend-label-2" class="form-control" type="text" [ngModel]="plotOptions.legendLabel1" (ngModelChange)="changeAttribute('legendLabel1', $event)" />
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-sm-6">
-        <label for="plot-legend-label-3">Legend label #3</label>
-      </div>
-      <div class="col-sm-6">
-        <input id="plot-legend-label-3" class="form-control" type="text" [ngModel]="plotOptions.legendLabel2" (ngModelChange)="changeAttribute('legendLabel2', $event)" />
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-sm-6">
-        <label for="plot-legend-label-4">Legend label #4</label>
-      </div>
-      <div class="col-sm-6">
-        <input id="plot-legend-label-4" class="form-control" type="text" [ngModel]="plotOptions.legendLabel3" (ngModelChange)="changeAttribute('legendLabel3', $event)" />
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-sm-6">
-        <label for="plot-legend-label-5">Legend label #5</label>
-      </div>
-      <div class="col-sm-6">
-        <input id="plot-legend-label-5" class="form-control" type="text" [ngModel]="plotOptions.legendLabel4" (ngModelChange)="changeAttribute('legendLabel4', $event)" />
-      </div>
-    </div>
   </fieldset>
   <fieldset>
     <legend *ngIf="model.output == 'n' || model.output == 'nByCI'">Sample Size</legend>

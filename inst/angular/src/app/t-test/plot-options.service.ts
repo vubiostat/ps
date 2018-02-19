@@ -12,11 +12,6 @@ export class PlotOptionsService {
   paletteTheme = "typical";
   lineStyle = "solid";
   showLegendBox = false;
-  legendLabel0 = "Primary";
-  legendLabel1 = "Secondary";
-  legendLabel2 = "Tertiary";
-  legendLabel3 = "Quaternary";
-  legendLabel4 = "Quinary";
 
   reset(): void {
     Object.assign(this, new PlotOptionsService());
@@ -72,47 +67,5 @@ export class PlotOptionsService {
       return "round";
     }
     return "";
-  }
-
-  legendLabel(index: number): string {
-    let result = this[`legendLabel${index}`];
-    if (!result) {
-      switch (index) {
-        case 0:
-          result = "Primary";
-          break;
-        case 1:
-          result = "Secondary";
-          break;
-        case 2:
-          result = "Tertiary";
-          break;
-        case 3:
-          result = "Quaternary";
-          break;
-        case 4:
-          result = "Quinary";
-          break;
-        case 5:
-          result = "Senary";
-          break;
-        case 6:
-          result = "Septenary";
-          break;
-        case 7:
-          result = "Octonary";
-          break;
-        case 8:
-          result = "Nonary";
-          break;
-        case 9:
-          result = "Denary";
-          break;
-        default:
-          result = `Line ${index + 1}`;
-          break;
-      }
-    }
-    return result;
   }
 }
