@@ -21,6 +21,7 @@ interface Param {
 }
 
 interface Path {
+  index: number;
   id: string;
   path: string;
   color: string;
@@ -331,8 +332,8 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
       let lineCap = this.getLineCap(i);
       let primary = this.project.selectedIndex == i;
       let result = {
-        id: id, path: path, color: color, dashArray: dashArray, lineCap: lineCap,
-        opacity: primary ? 1 : 0.7, primary: primary
+        index: i, id: id, path: path, color: color, dashArray: dashArray,
+        lineCap: lineCap, opacity: primary ? 1 : 0.7, primary: primary
       } as Path;
       return result;
     });
@@ -342,7 +343,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.paths.sort((a, b) => {
       if (a.primary) return 1;
       if (b.primary) return -1;
-      return b - a;
+      return b.index - a.index;
     });
   }
 

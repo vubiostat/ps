@@ -16,6 +16,7 @@ import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 
 interface Group {
+  index: number;
   id: string;
   leftPath: string;
   centerPath: string;
@@ -218,6 +219,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       let distPath = this.getArea(this.plotData[i], 'x', 'y');
 
       let result = {
+        index: i,
         id: `${this.name}-group-${i}`,
         leftPath: leftPath,
         centerPath: centerPath,
@@ -241,7 +243,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     this.groups.sort((a, b) => {
       if (a.primary) return 1;
       if (b.primary) return -1;
-      return b - a;
+      return b.index - a.index;
     });
     this.mainGroup = this.groups[this.groups.length - 1];
   }
