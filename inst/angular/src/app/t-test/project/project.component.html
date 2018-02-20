@@ -20,7 +20,7 @@
     <li *ngFor="let model of project.models; index as i; trackBy: trackByIndex" class="nav-item">
       <a class="nav-link nav-model-link" [class.active]="i == project.selectedIndex"
         (click)="selectModel(i)">
-        {{i + 1}} <i class="fa fa-circle" [style.color]="getColor(i)"></i>
+        <i class="fa fa-square" [style.color]="getColor(i)"></i>
       </a>
     </li>
   </ul>

@@ -8,7 +8,7 @@
 
 ul.nav {
   border-bottom: 0;
-  z-index: 123;
+  z-index: 1;
 }
 
 ul.nav li.nav-item {
@@ -19,6 +19,8 @@ ul.nav li.nav-item a.nav-link {
   cursor: pointer;
   background-color: #ddd;
   border-color: #bbb #bbb #aaa;
+  font-size: x-large;
+  padding: 0.25rem 0.75rem;
 }
 
 ul.nav li.nav-item a.nav-link.active {
