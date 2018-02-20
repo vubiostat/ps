@@ -6,13 +6,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TTestModule } from './t-test/t-test.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
+import { KonamiDirective } from './konami.directive';
 
 const routes: Routes = [
   { path: '', redirectTo: '/t-test', pathMatch: 'full' },
 ];
 
 @NgModule({
-  declarations: [ AppComponent ],
+  declarations: [ AppComponent, KonamiDirective ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),

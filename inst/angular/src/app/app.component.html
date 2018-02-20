@@ -1,4 +1,5 @@
-<div id="app" class="container-fluid d-flex flex-column h-100">
+<div id="app" class="container-fluid d-flex flex-column h-100"
+  appKonami (konami)="konamiCode()">
   <nav class="navbar d-flex flex-nowrap flex-row justify-content-between" style="flex: 0 0 auto">
     <div class="navbar-brand">
       <img src="assets/ps.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -22,6 +23,10 @@
       </li>
     </ul>
   </nav>
+
+  <audio *ngIf="konami" autoplay (ended)="audioEnded()">
+    <source src="assets/contra.mp3" type="audio/mpeg">
+  </audio>
 
   <router-outlet></router-outlet>
 </div>

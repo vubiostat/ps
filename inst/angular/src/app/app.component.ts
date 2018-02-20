@@ -6,6 +6,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  konami = false;
+
   ngOnInit(): void {
+  }
+
+  konamiCode(): void {
+    this.konami = true;
+  }
+
+  audioEnded(): void {
+    this.konami = false;
   }
 }
