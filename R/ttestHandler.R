@@ -223,9 +223,8 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
           if (length(infIndex) > 0 && infIndex[1] > 1) {
             lastRow <- powerVsN[infIndex[1] - 1, ]
             if (lastRow$x < maxN) {
-              maxPower <- calculatePower(model$alpha, model$delta, model$sigma, maxN)
-              extraPower <- seq(lastRow$y, maxPower, length.out = 10)
-              extraN <- calculateN(model$alpha, model$delta, model$sigma, extraPower)
+              extraN <- seq(lastRow$x, maxN, length.out = 10)
+              extraPower <- calculatePower(model$alpha, model$delta, model$sigma, extraN)
               extra <- data.frame(x = extraN, y = extraPower)
 
               powerVsN <- rbind(powerVsN[1:(infIndex[1] - 1), ], extra)
@@ -307,6 +306,7 @@ TTestHandler <- setRefClass("TTestHandler",
       action <- route$action
       result <- try(action$run(params))
       if (inherits(result, "try-error")) {
+        print(result)
         return(fail(list(errors = list(base = as.character(result)))))
       }
       if ("errors" %in% names(result)) {
