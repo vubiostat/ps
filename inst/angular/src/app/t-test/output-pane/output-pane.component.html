@@ -32,13 +32,17 @@
     </button>
   </div>
   <ngb-tabset #footerTabset type="pills">
-    <ngb-tab id="t-test-interpretation">
-      <ng-template ngbTabTitle><i *ngIf="project.extraName" class="fa fa-circle dot"></i> Interpretation</ng-template>
+    <ngb-tab id="t-test-output-pane-interpretation">
+      <ng-template ngbTabTitle>
+        <i *ngIf="project.models.length > 1" class="fa fa-square"
+          [style.color]="getIndicatorColor()"></i>
+        Interpretation
+      </ng-template>
       <ng-template ngbTabContent>
         {{model?.interpretation()}}
       </ng-template>
     </ngb-tab>
-    <ngb-tab id="t-test-log" title="Log">
+    <ngb-tab id="t-test-output-pane-log" title="Log">
       <ng-template ngbTabContent>
         <ng-template [ngIf]="!project" [ngIfElse]="changeHistory">
           There have been no changes yet.

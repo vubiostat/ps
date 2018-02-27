@@ -101,6 +101,7 @@ export class TTestComponent implements OnInit {
   }
 
   onProjectChanged(): void {
+    this.outputPane.updateProject();
     this.outputPane.redrawPlots();
   }
 

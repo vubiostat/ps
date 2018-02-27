@@ -6,6 +6,8 @@ import { TTest } from '../t-test';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
+import { PlotOptionsService } from '../plot-options.service';
+import { PaletteService } from '../palette.service';
 
 @Component({
   selector: 't-test-output-pane',
@@ -29,7 +31,11 @@ export class OutputPaneComponent implements OnChanges {
   @ViewChild('saveDialog') saveDialog: TemplateRef<any>;
   @ViewChild('footerTabset') footerTabset: NgbTabset;
 
-  constructor(private modalService: NgbModal) {}
+  constructor(
+    private modalService: NgbModal,
+    private plotOptions: PlotOptionsService,
+    private palette: PaletteService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!('project' in changes)) return;
@@ -68,6 +74,12 @@ export class OutputPaneComponent implements OnChanges {
     this.redrawPlots();
   }
 
+  updateProject(): void {
+    if (this.project) {
+      this.model = this.project.getModel(this.project.selectedIndex);
+    }
+  }
+
   redrawPlots(): void {
     // Set a timeout here to let the UI resize if needed
     setTimeout(() => {
@@ -75,6 +87,10 @@ export class OutputPaneComponent implements OnChanges {
       this.topRightPlot.redraw();
       this.bottomPlot.redraw();
     }, 1);
+  }
+
+  getIndicatorColor(): string {
+    return this.palette.getColor(this.project.selectedIndex, this.plotOptions.paletteTheme);
   }
 
   describeChanges(changes: any): string {
@@ -91,11 +107,11 @@ export class OutputPaneComponent implements OnChanges {
 
   onCopy(event: any): void {
     switch (this.footerTabset.activeId) {
-      case 't-test-interpretation':
+      case 't-test-output-pane-interpretation':
         event.clipboardData.setData('text/plain', this.model.interpretation());
         event.preventDefault();
         break;
-      case 't-test-log':
+      case 't-test-output-pane-log':
         let text = this.project.changeHistory.
           map(changes => this.project.describeChanges(changes, false)).
           join("\r\n");
