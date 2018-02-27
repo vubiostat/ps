@@ -1,6 +1,7 @@
 import { TTest } from './t-test';
 import { Range } from './range';
-import { TTestService } from './t-test.service';
+import { Point } from './point';
+import { TTestService, PlotDataRanges } from './t-test.service';
 
 export class Project {
   models: TTest[] = [];
@@ -21,12 +22,75 @@ export class Project {
     return '';
   }
 
+  updatePlotData(): Promise<any> {
+    let ranges = {
+      nRange: this.nRange,
+      powerRange: this.powerRange,
+      deltaRange: this.deltaRange,
+      pSpaceRange: this.pSpaceRange
+    } as PlotDataRanges;
+
+    return this.ttestService.plotData(this.models, ranges).
+      then(result => {
+        result.forEach((data, i) => {
+          Object.assign(this.models[i], data);
+        });
+
+        let output = this.getOutput();
+        let nRange, powerRange, deltaRange;
+        for (let i = 0, ilen = this.models.length; i < ilen; i++) {
+          let model = this.models[i];
+          switch (output) {
+            case "n":
+            case "nByCI":
+              powerRange = this.makeXRange(model.nVsPower, this.nRange);
+              if (i == 0) {
+                this.powerRange = powerRange;
+              } else {
+                this.powerRange.combine(powerRange);
+              }
+
+              deltaRange = this.makeXRange(model.nVsDelta, this.nRange);
+              if (i == 0) {
+                this.deltaRange = deltaRange;
+              } else {
+                this.deltaRange.combine(deltaRange);
+              }
+              break;
+            case "power":
+              nRange = this.makeXRange(model.powerVsN, this.powerRange);
+              if (i == 0) {
+                this.nRange = nRange;
+              } else {
+                this.nRange.combine(nRange);
+              }
+              break;
+
+            case "delta":
+              powerRange = this.makeXRange(model.deltaVsPower, this.deltaRange);
+              if (i == 0) {
+                this.powerRange = powerRange;
+              } else {
+                this.powerRange.combine(powerRange);
+              }
+
+              nRange = this.makeXRange(model.deltaVsN, this.deltaRange);
+              if (i == 0) {
+                this.nRange = nRange;
+              } else {
+                this.nRange.combine(nRange);
+              }
+              break;
+          }
+        }
+      });
+  }
+
   addModel(model: TTest): Promise<any> {
     return this.ttestService.calculate(model).
       then(result => {
         let model = new TTest(result);
         model.name = this.getModelName(this.models.length);
-        model.calculateRanges();
         this.models.push(model);
         this.calculateRanges();
 
@@ -34,6 +98,8 @@ export class Project {
           'type': 'add', 'index': this.models.length - 1,
           'params': model.params()
         });
+
+        return this.updatePlotData();
       });
   }
 
@@ -72,26 +138,28 @@ export class Project {
 
     models.forEach(m => { Object.assign(m, changes); });
     return models.reduce((promise, model) => {
-      return promise.then(() => this.ttestService.calculate(model)).
-        then(result => {
-          Object.assign(model, result);
-          model.calculateRanges();
-        });
+      return promise.then(() => {
+        return this.ttestService.calculate(model);
+      }).then(result => {
+        Object.assign(model, result);
+      });
     }, Promise.resolve()).then(() => {
       this.calculateRanges();
       this.changeHistory.push({
         'type': 'change', 'index': index,
         'key': key, 'params': model.params()
       });
+      return this.updatePlotData();
     });
   }
 
-  removeModel(index: number): void {
+  removeModel(index: number): Promise<any> {
     this.models.splice(index, 1);
     this.changeHistory.push({
       'type': 'remove', 'index': index
     });
     this.calculateRanges();
+    return this.updatePlotData();
   }
 
   getModel(index: number): TTest {
@@ -102,18 +170,98 @@ export class Project {
     return this.models.length;
   }
 
-  calculateRanges(): void {
-    let nRanges = this.models.reduce((arr, m) => m.nRange ? arr.concat(m.nRange) : arr, []);
-    this.nRange = nRanges.length > 0 ? Range.combine(nRanges) : undefined;
+  calculateRanges(): any {
+    let nRange = [];
+    let powerRange = [];
+    let deltaRange = [];
+    let pSpaceRange = [];
 
-    let powerRanges = this.models.reduce((arr, m) => m.powerRange ? arr.concat(m.powerRange) : arr, []);
-    this.powerRange = powerRanges.length > 0 ? Range.combine(powerRanges) : undefined;
+    let output = this.getOutput();
+    let values;
+    for (let i = 0, ilen = this.models.length; i < ilen; i++) {
+      let model = this.models[i];
 
-    let deltaRanges = this.models.reduce((arr, m) => m.deltaRange ? arr.concat(m.deltaRange) : arr, []);
-    this.deltaRange = deltaRanges.length > 0 ? Range.combine(deltaRanges) : undefined;
+      switch (output) {
+        case "n": /* fall through */
+        case "nByCI":
+          // calculate n range
+          values = [model.n * 0.5, model.n * 1.5].sort((a, b) => a - b);
+          if (i == 0 || values[0] < nRange[0]) {
+            nRange[0] = values[0];
+          }
+          if (i == 0 || values[1] > nRange[1]) {
+            nRange[1] = values[1];
+          }
+          break;
 
-    let pSpaceRanges = this.models.reduce((arr, m) => m.pSpaceRange ? arr.concat(m.pSpaceRange) : arr, []);
-    this.pSpaceRange = pSpaceRanges.length > 0 ? Range.combine(pSpaceRanges) : undefined;
+        case "power":
+          if (i == 0) {
+            powerRange = [0.01, 1];
+          }
+
+          // calculate delta range
+          values = [1.5 * model.sigma, -1.5 * model.sigma].sort((a, b) => a - b);
+          if (i == 0 || values[0] < deltaRange[0]) {
+            deltaRange[0] = values[0];
+          }
+          if (i == 0 || values[1] > deltaRange[1]) {
+            deltaRange[1] = values[1];
+          }
+          break;
+
+        case "delta":
+          // calculate delta range
+          values = [model.delta * 0.5, model.delta * 1.5].sort((a, b) => a - b);
+          if (i == 0 || values[0] < deltaRange[0]) {
+            deltaRange[0] = values[0];
+          }
+          if (i == 0 || values[1] > deltaRange[1]) {
+            deltaRange[1] = values[1];
+          }
+          break;
+      }
+
+      // calculate parameter space range
+      values = [1.5 * model.sigma, -1.5 * model.sigma].sort((a, b) => a - b);
+      if (i == 0 || values[0] < pSpaceRange[0]) {
+        pSpaceRange[0] = values[0];
+      }
+      if (i == 0 || values[1] > pSpaceRange[1]) {
+        pSpaceRange[1] = values[1];
+      }
+
+      values = [model.delta - (model.ci / 2), model.delta + (model.ci / 2)];
+      if (values[0] < pSpaceRange[0]) {
+        pSpaceRange[0] = values[0] - Math.abs(values[0] * 0.5);
+      }
+      if (values[1] > pSpaceRange[1]) {
+        pSpaceRange[1] = values[1] + Math.abs(values[1] * 0.5);
+      }
+    }
+
+    if (nRange.length > 0) {
+      this.nRange = new Range(nRange[0], nRange[1]);
+    } else {
+      this.nRange = undefined;
+    }
+
+    if (powerRange.length > 0) {
+      this.powerRange = new Range(powerRange[0], powerRange[1]);
+    } else {
+      this.powerRange = undefined;
+    }
+
+    if (deltaRange.length > 0) {
+      this.deltaRange = new Range(deltaRange[0], deltaRange[1]);
+    } else {
+      this.deltaRange = undefined;
+    }
+
+    if (pSpaceRange.length > 0) {
+      this.pSpaceRange = new Range(pSpaceRange[0], pSpaceRange[1]);
+    } else {
+      this.pSpaceRange = undefined;
+    }
   }
 
   describeChanges(changes: any, html = true): string {
@@ -175,5 +323,24 @@ export class Project {
         return "Denary";
     }
     return `Line ${index + 1}`;
+  }
+
+  private makeXRange(data: Point[], yRange: Range): Range {
+    let minIndex = 0, maxIndex = data.length - 1;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i].y >= yRange.min) {
+        minIndex = i;
+        break
+      }
+    }
+    for (let i = data.length - 2; i >= 0; i--) {
+      if (data[i].y <= yRange.max) {
+        maxIndex = i;
+        break;
+      }
+    }
+
+    let values = [data[minIndex].x, data[maxIndex].x].sort((a, b) => a - b);
+    return new Range(values[0], values[1]);
   }
 }

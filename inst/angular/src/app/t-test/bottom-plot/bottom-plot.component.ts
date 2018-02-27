@@ -195,7 +195,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
 
   private setupGroups(): void {
     this.groups = this.project.models.map((model, i) => {
-      let range = model.precisionRange;
+      let range = model.precisionRange();
 
       // main lines
       let leftLimit = range.min;

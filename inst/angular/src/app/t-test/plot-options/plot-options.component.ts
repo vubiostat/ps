@@ -25,7 +25,6 @@ export class PlotOptionsComponent implements OnChanges {
 
   reset(): void {
     this.plotOptions.reset();
-    this.project.calculateRanges();
   }
 
   changeAttribute(name: string, value: any): void {

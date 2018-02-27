@@ -44,16 +44,9 @@ calculateNFromCI <- function(sigma, ci, ...) {
   (2 * 1.96 * sigma / ci) ** 2
 }
 
-paramTitles <- list(
-  power = "Power",
-  n = "Sample Size",
-  delta = "Detectable Alternative"
-)
-
 TTest <- setRefClass("TTest",
   fields = c("alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
-             "deltaMode", "output", "nVsPower", "nVsDelta", "powerVsN",
-             "powerVsDelta", "deltaVsPower", "deltaVsN", "sampDist"),
+             "deltaMode", "output"),
 
   methods = list(
     initialize = function(params) {
@@ -66,13 +59,6 @@ TTest <- setRefClass("TTest",
       ciMode       <<- params$ciMode
       deltaMode    <<- params$deltaMode
       output       <<- params$output
-      nVsPower     <<- NULL
-      nVsDelta     <<- NULL
-      powerVsN     <<- NULL
-      powerVsDelta <<- NULL
-      deltaVsPower <<- NULL
-      deltaVsN     <<- NULL
-      sampDist     <<- NULL
 
       if (is.null(ciMode)) {
         ciMode <<- FALSE
@@ -80,26 +66,51 @@ TTest <- setRefClass("TTest",
       if (is.null(deltaMode)) {
         deltaMode <<- FALSE
       }
-      calculate()
     },
     calculate = function() {
-      if (output == "n" || output == "nByCI") {
-        if (output == "n") {
-          n <<- calculateN(alpha, delta, sigma, power)
-          ci <<- calculateCI(sigma, n)
+      result <- list(
+        alpha     = alpha,
+        power     = power,
+        n         = n,
+        delta     = delta,
+        sigma     = sigma,
+        ci        = ci,
+        ciMode    = ciMode,
+        deltaMode = deltaMode,
+        output    = output
+      )
+      if (output == "n") {
+        result$n <- calculateN(alpha, delta, sigma, power)
+        result$ci <- calculateCI(sigma, n)
+      } else if (output == "nByCI") {
+        result$n <- calculateNFromCI(sigma, ci)
+        if (deltaMode) {
+          result$power <- calculatePower(alpha, delta, sigma, n)
         } else {
-          n <<- calculateNFromCI(sigma, ci)
-          if (deltaMode) {
-            power <<- calculatePower(alpha, delta, sigma, n)
-          } else {
-            delta <<- calculateDelta(alpha, sigma, n, power)
-          }
+          result$delta <- calculateDelta(alpha, sigma, n, power)
         }
+      } else if (output == "power") {
+        if (ciMode) {
+          result$n <- calculateNFromCI(sigma, ci)
+        } else {
+          result$ci <- calculateCI(sigma, n)
+        }
+        result$power <- calculatePower(alpha, delta, sigma, n)
 
-        # Calculate data for plots
-        nDiff <- n * 3
-        nRange <- c(max(c(1, n - nDiff)), n + nDiff)
-        n2 <- seq(nRange[1], nRange[2], length.out = 200)
+      } else if (output == "delta") {
+        if (ciMode) {
+          result$n <- calculateNFromCI(sigma, ci)
+        } else {
+          result$ci <- calculateCI(sigma, n)
+        }
+        result$delta <- calculateDelta(alpha, sigma, n, power)
+      }
+      result
+    },
+    plotData = function(ranges) {
+      result <- list()
+      if (output == "n" || output == "nByCI") {
+        n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = 200)
         if (!(n %in% n2)) {
           n2 <- sort(c(n2, n))
         }
@@ -109,97 +120,44 @@ TTest <- setRefClass("TTest",
         if (delta < 0) {
           delta2 <- -delta2
         }
-        nVsPower <<- data.frame(y = n2, x = power2)
-        nVsDelta <<- data.frame(y = n2, x = delta2)
+        result$nVsPower <- data.frame(y = n2, x = power2)
+        result$nVsDelta <- data.frame(y = n2, x = delta2)
 
       } else if (output == "power") {
-        if (ciMode) {
-          n <<- calculateNFromCI(sigma, ci)
-        } else {
-          ci <<- calculateCI(sigma, n)
-        }
-        power <<- calculatePower(alpha, delta, sigma, n)
-
-        # Calculate data for plots
-        power2 <- c(
-          seq(alpha + 0.01, 0.95, length.out = 180),
-          seq(0.951, 0.999, length.out = 20)
-        )
-        if (power < 1 && !(power %in% power2)) {
+        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = 200)
+        if (!(power %in% power2)) {
           power2 <- sort(c(power2, power))
         }
 
         n2 <- calculateN(alpha, delta, sigma, power2)
-        powerVsN <<- data.frame(y = power2, x = n2)
+        result$powerVsN <- data.frame(y = power2, x = n2)
 
-        deltaRange <- calculateDeltaRange(sigma, delta)
-        delta2 <- seq(deltaRange[1], deltaRange[2], length.out = 200)
+        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 200)
         power3 <- calculatePower(alpha, delta2, sigma, n)
-        powerVsDelta <<- data.frame(y = power3, x = delta2)
+        result$powerVsDelta <- data.frame(y = power3, x = delta2)
 
       } else if (output == "delta") {
-        if (ciMode) {
-          n <<- calculateNFromCI(sigma, ci)
-        } else {
-          ci <<- calculateCI(sigma, n)
-        }
-        delta <<- calculateDelta(alpha, sigma, n, power)
-
         # Calculate data for plots
         deltaDiff <- delta * 2
-        deltaRange <- c(delta - deltaDiff, delta + deltaDiff)
-        delta2 <- seq(deltaRange[1], deltaRange[2], length.out = 200)
+        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 200)
         if (!(delta %in% delta2)) {
           delta2 <- sort(c(delta2, delta))
         }
 
         n2 <- calculateN(alpha, delta2, sigma, power)
         power2 <- calculatePower(alpha, delta2, sigma, n)
-        deltaVsPower <<- data.frame(y = delta2, x = power2)
-        deltaVsN <<- data.frame(y = delta2, x = n2)
+        result$deltaVsPower <- data.frame(y = delta2, x = power2)
+        result$deltaVsN <- data.frame(y = delta2, x = n2)
       }
 
       # Calculate data for bottom/tertiary graph
       #moe <- calculateMarginOfError(alpha, delta, sigma, n)
       moe <- ci / 2
-      pSpace <- seq(delta - (2 * moe), delta + (2 * moe), length.out = 200)
-      sampDist <<- calculateSampDist(pSpace, delta, sigma, n)
-      sampDist <<- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
-    },
-    attributes = function() {
-      attribs <- list(
-        alpha     = unbox(alpha),
-        power     = unbox(power),
-        n         = unbox(n),
-        delta     = unbox(delta),
-        sigma     = unbox(sigma),
-        ci        = unbox(ci),
-        ciMode    = unbox(ciMode),
-        deltaMode = unbox(deltaMode),
-        output    = unbox(output)
-      )
-      if (!is.null(nVsPower)) {
-        attribs$nVsPower <- nVsPower
-      }
-      if (!is.null(nVsDelta)) {
-        attribs$nVsDelta <- nVsDelta
-      }
-      if (!is.null(powerVsN)) {
-        attribs$powerVsN <- powerVsN
-      }
-      if (!is.null(powerVsDelta)) {
-        attribs$powerVsDelta <- powerVsDelta
-      }
-      if (!is.null(deltaVsPower)) {
-        attribs$deltaVsPower <- deltaVsPower
-      }
-      if (!is.null(deltaVsN)) {
-        attribs$deltaVsN <- deltaVsN
-      }
-      if (!is.null(sampDist)) {
-        attribs$sampDist <- sampDist
-      }
-      attribs
+      pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = 200)
+      sampDist <- calculateSampDist(pSpace, delta, sigma, n)
+      result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
+
+      result
     }
   )
 )

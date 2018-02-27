@@ -9,7 +9,15 @@ import {
 import 'rxjs/add/operator/toPromise';
 
 import { environment } from '../../environments/environment';
+import { Range } from './range';
 import { TTest } from './t-test';
+
+export interface PlotDataRanges {
+  nRange?: Range;
+  powerRange?: Range;
+  deltaRange?: Range;
+  pSpaceRange?: Range;
+};
 
 @Injectable()
 export class TTestService {
@@ -20,13 +28,29 @@ export class TTestService {
   calculate(model: TTest): Promise<any> {
     let url = `${this.apiUrl}/calc`;
     let params = model.params();
+
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-
-    let options = new RequestOptions({ headers: headers });
-
+    let requestOptions = new RequestOptions({ headers: headers });
     return this.http.
-      post(url, JSON.stringify(params), options).
+      post(url, JSON.stringify(params), requestOptions).
+      toPromise().
+      then(response => response.json()).
+      catch(this.handleError);
+  }
+
+  plotData(models: TTest[], ranges: PlotDataRanges): Promise<any> {
+    let url = `${this.apiUrl}/plotData`;
+    let params = {
+      models: models.map(m => m.params()),
+      ranges: ranges
+    };
+
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    let requestOptions = new RequestOptions({ headers: headers });
+    return this.http.
+      post(url, JSON.stringify(params), requestOptions).
       toPromise().
       then(response => response.json()).
       catch(this.handleError);

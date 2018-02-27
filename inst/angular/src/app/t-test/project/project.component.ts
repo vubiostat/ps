@@ -53,11 +53,12 @@ export class ProjectComponent implements OnInit {
   }
 
   removeModel(index: number): void {
-    this.project.removeModel(index);
-    if (this.project.selectedIndex >= this.project.models.length) {
-      this.project.selectedIndex--;
-    }
-    this.projectChanged.emit();
+    this.project.removeModel(index).then(() => {
+      if (this.project.selectedIndex >= this.project.models.length) {
+        this.project.selectedIndex--;
+      }
+      this.projectChanged.emit();
+    });
   }
 
   onModelChanged(): void {

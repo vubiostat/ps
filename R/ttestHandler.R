@@ -1,7 +1,126 @@
+validateModelParams <- function(params) {
+  errors <- list()
+
+  keys <- names(params)
+  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "ci",
+                    "ciMode", "deltaMode", "output", "design")
+  extraKeys <- setdiff(keys, expectedKeys)
+
+  if (length(extraKeys) > 0) {
+    msg <- paste("had unexpected keys:", paste(extraKeys, collapse=", "))
+    errors$base <- if (is.character(errors$base)) c(errors$base, msg) else msg
+  }
+
+  if (!("alpha" %in% keys)) {
+    errors$alpha <- "is required"
+  } else if (!is.numeric(params$alpha)) {
+    errors$alpha <- "must be numeric"
+  } else if (params$alpha < 0 || params$alpha > 1) {
+    errors$alpha <- "must be within the range 0..1"
+  }
+
+  if (!("sigma" %in% keys)) {
+    errors$sigma <- "is required"
+  } else if (!is.numeric(params$sigma)) {
+    errors$sigma <- "must be numeric"
+  } else if (params$sigma <= 0) {
+    errors$sigma <- "must be greater than 0"
+  }
+
+  if ("n" %in% keys) {
+    if (!is.numeric(params$n)) {
+      errors$n <- "must be numeric"
+    } else if (params$n <= 0) {
+      errors$n <- "must be greater than 0"
+    }
+  }
+
+  if ("power" %in% keys) {
+    if (!is.numeric(params$power)) {
+      errors$power <- "must be numeric"
+    } else if (params$power < 0 || params$power > 1) {
+      errors$power <- "must be within the range 0..1"
+    }
+  }
+
+  if ("delta" %in% keys) {
+    if (!is.numeric(params$delta)) {
+      errors$delta <- "must be numeric"
+    }
+  }
+
+  if ("ci" %in% keys) {
+    if (!is.numeric(params$ci)) {
+      errors$ci <- "must be numeric"
+    }
+  }
+
+  ciMode <-
+    if ("ciMode" %in% keys) {
+      if (!is.logical(params$ciMode)) {
+        errors$ciMode <- "must be logical"
+        FALSE
+      } else {
+        params$ciMode
+      }
+    }
+
+  deltaMode <- FALSE
+  if ("deltaMode" %in% keys) {
+    if (!is.logical(params$deltaMode)) {
+      errors$deltaMode <- "must be logical"
+    } else {
+      deltaMode <- params$deltaMode
+    }
+  }
+
+  if (!("output" %in% keys)) {
+    errors$output <- "is required"
+  } else if (params$output == "n") {
+    if (!("power" %in% keys)) {
+      errors$power <- "is required when output is 'n'"
+    }
+    if (!("delta" %in% keys)) {
+      errors$delta <- "is required when output is 'n'"
+    }
+  } else if (params$output == "nByCI") {
+    if (!("ci" %in% keys)) {
+      errors$ci <- "is required when output is 'nByCI'"
+    }
+    if (!deltaMode && !("power" %in% keys)) {
+      errors$power <- "is required when output is 'nByCI' and deltaMode is false"
+    } else if (deltaMode && !("delta" %in% keys)) {
+      errors$delta <- "is required when output is 'nByCI' and deltaMode is true"
+    }
+  } else if (params$output == "power") {
+    if (!ciMode && !("n" %in% keys)) {
+      errors$n <- "is required when output is 'power' and ciMode is false"
+    } else if (ciMode && !("ci" %in% keys)) {
+      errors$ci <- "is required when output is 'power' and ciMode is true"
+    }
+    if (!("delta" %in% keys)) {
+      errors$delta <- "is required when output is 'power'"
+    }
+  } else if (params$output == "delta") {
+    if (!ciMode && !("n" %in% keys)) {
+      errors$n <- "is required when output is 'delta' and ciMode is false"
+    } else if (ciMode && !("ci" %in% keys)) {
+      errors$ci <- "is required when output is 'delta' and ciMode is true"
+    }
+    if (!("power" %in% keys)) {
+      errors$power <- "is required when output is 'delta'"
+    }
+  } else {
+    errors$output <- "is invalid"
+  }
+
+  errors
+}
+
 TTestCalculateAction <- setRefClass("TTestCalculateAction",
   methods = list(
     validate = function(params) {
-      validateParams(params)
+      validateModelParams(params)
     },
 
     run = function(params) {
@@ -11,22 +130,134 @@ TTestCalculateAction <- setRefClass("TTestCalculateAction",
       }
 
       model <- TTest(params)
-      model$attributes()
+      result <- model$calculate()
+      lapply(result, unbox)
+    }
+  )
+)
+
+TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
+  methods = list(
+    validate = function(params) {
+      errors <- list()
+      expectedKeys <- c("models", "ranges")
+      keys <- names(params)
+      extraKeys <- setdiff(keys, expectedKeys)
+
+      if (length(extraKeys) > 0) {
+        msg <- paste("had unexpected keys:", paste(extraKeys, collapse=", "))
+        errors$base <- if (is.character(errors$base)) c(errors$base, msg) else msg
+      }
+
+      if (!("models" %in% keys)) {
+        errors$models <- "is required"
+      } else if (!is.list(params$models)) {
+        errors$models <- "must be a list"
+      } else {
+        for (i in 1:length(params$models)) {
+          modelParams <- params$models[[i]]
+          modelErrors <- validateModelParams(modelParams)
+          if (length(modelErrors) > 0) {
+            for (modelErrorName in names(modelErrors)) {
+              errors[[paste0("models.", i, ".", modelErrorName)]] <-
+                modelErrors[[modelErrorName]]
+            }
+          }
+        }
+      }
+
+      if (!("ranges" %in% keys)) {
+        errors$ranges <- "is required"
+      } else if (!is.list(params$ranges)) {
+        errors$ranges <- "must be a list"
+      } else {
+        ranges <- params$ranges
+        rangesKeys <- names(ranges)
+        expectedRangesKeys <- c("nRange", "powerRange", "deltaRange", "pSpaceRange")
+        extraRangesKeys <- setdiff(rangesKeys, expectedRangesKeys)
+
+        if (length(extraRangesKeys) > 0) {
+          errors$ranges <- paste("had unexpected keys:", paste(extraRangesKeys, collapse=", "))
+        }
+
+        for (name in expectedRangesKeys) {
+          if (name %in% rangesKeys) {
+            value <- ranges[[name]]
+            if (!is.list(value)) {
+              errors[[paste0("ranges.", name)]] <- "must be a list"
+            } else if (!all.equal(sort(names(value)), c("max", "min"))) {
+              errors[[paste0("ranges.", name)]] <- "must only contain min and max"
+            } else if (!is.numeric(value$min)) {
+              errors[[paste0("ranges.", name, ".min")]] <- "must be numeric"
+            } else if (!is.numeric(value$max)) {
+              errors[[paste0("ranges.", name, ".max")]] <- "must be numeric"
+            }
+          }
+        }
+      }
+    },
+
+    run = function(params) {
+      errors <- validate(params)
+      if (length(errors) > 0) {
+        return(list(errors = errors))
+      }
+
+      models <- lapply(params$models, TTest)
+      ranges <- params$ranges
+      output <- models[[1]]$output
+      result <- lapply(models, function(m) m$plotData(ranges))
+
+      if (output == "power") {
+        # recalculate if needed
+        maxN <- do.call(max, lapply(result, function(r) {
+          n <- r$powerVsN$x
+          n[is.finite(n)]
+        }))
+        for (i in 1:length(result)) {
+          model <- models[[i]]
+          powerVsN <- result[[i]]$powerVsN
+
+          # look for infinity
+          infIndex <- which(is.infinite(powerVsN$x))
+          if (length(infIndex) > 0 && infIndex[1] > 1) {
+            lastRow <- powerVsN[infIndex[1] - 1, ]
+            if (lastRow$x < maxN) {
+              maxPower <- calculatePower(model$alpha, model$delta, model$sigma, maxN)
+              extraPower <- seq(lastRow$y, maxPower, length.out = 10)
+              extraN <- calculateN(model$alpha, model$delta, model$sigma, extraPower)
+              extra <- data.frame(x = extraN, y = extraPower)
+
+              powerVsN <- rbind(powerVsN[1:(infIndex[1] - 1), ], extra)
+              result[[i]]$powerVsN <- powerVsN
+            }
+          }
+        }
+      }
+
+      result
     }
   )
 )
 
 TTestHandler <- setRefClass("TTestHandler",
-  fields = c("app", "calcAction", "routes"),
+  fields = c("app", "calcAction", "plotDataAction", "routes"),
   methods = list(
     initialize = function(app) {
       app <<- app
       calcAction <<- TTestCalculateAction()
+      plotDataAction <<- TTestPlotDataAction()
       routes <<- list(
         list(
           url = "/ttests/calc",
           method = "POST",
           action = calcAction,
+          type = "json"
+        ),
+        list(
+          url = "/ttests/plotData",
+          method = "POST",
+          action = plotDataAction,
           type = "json"
         )
       )
@@ -76,7 +307,6 @@ TTestHandler <- setRefClass("TTestHandler",
       action <- route$action
       result <- try(action$run(params))
       if (inherits(result, "try-error")) {
-        print(result)
         return(fail(list(errors = list(base = as.character(result)))))
       }
       if ("errors" %in% names(result)) {
