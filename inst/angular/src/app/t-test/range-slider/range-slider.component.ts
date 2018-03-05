@@ -122,7 +122,9 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
   }
 
   numberChanged(newValue: string): void {
-    this.trySetValue(newValue);
+    if (this.dirty) {
+      this.trySetValue(newValue);
+    }
   }
 
   numberInput(newValue: string): void {
