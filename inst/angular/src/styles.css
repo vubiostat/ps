@@ -144,7 +144,7 @@ ngb-modal-window.export-plots .modal-content {
   background: white;
 }
 
-#t-test-output-pane-footer ngb-tabset > span.code {
+#t-test-output-pane-footer ngb-tabset span.code {
   display: inline-block;
   font-family: monospace;
   border: 1px solid #e0e0e0;
