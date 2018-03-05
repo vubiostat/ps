@@ -68,7 +68,33 @@ TTest <- setRefClass("TTest",
       }
     },
     calculate = function() {
-      result <- list(
+      if (output == "n") {
+        n <<- calculateN(alpha, delta, sigma, power)
+        ci <<- calculateCI(sigma, n)
+      } else if (output == "nByCI") {
+        n <<- calculateNFromCI(sigma, ci)
+        if (deltaMode) {
+          power <<- calculatePower(alpha, delta, sigma, n)
+        } else {
+          delta <<- calculateDelta(alpha, sigma, n, power)
+        }
+      } else if (output == "power") {
+        if (ciMode) {
+          n <<- calculateNFromCI(sigma, ci)
+        } else {
+          ci <<- calculateCI(sigma, n)
+        }
+        power <<- calculatePower(alpha, delta, sigma, n)
+
+      } else if (output == "delta") {
+        if (ciMode) {
+          n <<- calculateNFromCI(sigma, ci)
+        } else {
+          ci <<- calculateCI(sigma, n)
+        }
+        delta <<- calculateDelta(alpha, sigma, n, power)
+      }
+      list(
         alpha     = alpha,
         power     = power,
         n         = n,
@@ -79,33 +105,6 @@ TTest <- setRefClass("TTest",
         deltaMode = deltaMode,
         output    = output
       )
-      if (output == "n") {
-        result$n <- calculateN(alpha, delta, sigma, power)
-        result$ci <- calculateCI(sigma, n)
-      } else if (output == "nByCI") {
-        result$n <- calculateNFromCI(sigma, ci)
-        if (deltaMode) {
-          result$power <- calculatePower(alpha, delta, sigma, n)
-        } else {
-          result$delta <- calculateDelta(alpha, sigma, n, power)
-        }
-      } else if (output == "power") {
-        if (ciMode) {
-          result$n <- calculateNFromCI(sigma, ci)
-        } else {
-          result$ci <- calculateCI(sigma, n)
-        }
-        result$power <- calculatePower(alpha, delta, sigma, n)
-
-      } else if (output == "delta") {
-        if (ciMode) {
-          result$n <- calculateNFromCI(sigma, ci)
-        } else {
-          result$ci <- calculateCI(sigma, n)
-        }
-        result$delta <- calculateDelta(alpha, sigma, n, power)
-      }
-      result
     },
     plotData = function(ranges) {
       result <- list()
