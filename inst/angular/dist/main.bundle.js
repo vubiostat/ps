@@ -3098,7 +3098,9 @@ var RangeSliderComponent = (function () {
         this.inputSubject.next(newValue);
     };
     RangeSliderComponent.prototype.numberChanged = function (newValue) {
-        this.trySetValue(newValue);
+        if (this.dirty) {
+            this.trySetValue(newValue);
+        }
     };
     RangeSliderComponent.prototype.numberInput = function (newValue) {
         this.dirty = true;
@@ -3463,8 +3465,8 @@ var TTestComponent = (function () {
         this.projectFactory = projectFactory;
         this.newModel = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]();
         this.projects = [];
-        this.commitHash = "30f99830f3220f2e05c8c31593fb02e986a6b250".substr(0, 7);
-        this.buildTimestamp = "Tue Feb 27 2018 11:55:32 GMT-0600 (CST)";
+        this.commitHash = "10e8cd8280b692e867b2d3638206dc4c5a47cf83".substr(0, 7);
+        this.buildTimestamp = "Mon Mar 05 2018 11:27:20 GMT-0600 (CST)";
         this.helpTitles = {
             'overview': 'PS Overview',
             'start': 'PS Start Tab'
