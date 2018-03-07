@@ -1,4 +1,5 @@
 import { Directive, Input, Output, EventEmitter } from '@angular/core';
+import { environment } from '../environments/environment';
 
 @Directive({
   selector: '[appKonami]',
@@ -14,6 +15,8 @@ export class KonamiDirective {
   constructor() { }
 
   onKeyDown(event: any): void {
+    if (!environment.activateKonami) return;
+
     if (event.keyCode === this.konamiKeys[this.keyIndex]) {
       this.keyIndex++;
       if (this.keyIndex === this.konamiKeys.length) {
