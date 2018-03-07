@@ -8,6 +8,7 @@ import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/debounceTime';
 
 import * as d3 from 'd3';
+import * as stableSort from 'stable';
 
 import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
 import { Project } from '../project';
@@ -240,11 +241,14 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
 
     // order group in reverse so that they are drawn properly, put the selected
     // group at the end
-    this.groups.sort((a, b) => {
-      if (a.primary) return 1;
-      if (b.primary) return -1;
-      return b.index - a.index;
-    });
+    stableSort.inplace(
+      this.groups,
+      (a, b) => {
+        if (a.primary) return 1;
+        if (b.primary) return -1;
+        return d3.descending(b.index, a.index);
+      }
+    );
     this.mainGroup = this.groups[this.groups.length - 1];
   }
 

@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
+import * as stableSort from 'stable';
 
 import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
 import { Range } from '../range';
@@ -301,8 +302,9 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.plotData = this.project.models.map(m => m[this.dataKey]);
 
     // Prepare main data for bisection during target point dragging.
-    this.mainData = this.plotData[this.project.selectedIndex].slice();
-    this.mainData.sort((a, b) => a.x - b.x);
+    this.mainData = stableSort(
+      this.plotData[this.project.selectedIndex],
+      (a, b) => d3.ascending(a.x, b.x));
     this.xBisector = d3.bisector(point => point.x).left;
 
     return true;

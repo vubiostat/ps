@@ -5,6 +5,9 @@ import { PaletteService } from '../palette.service';
 import { TTest } from '../t-test';
 import { Project } from '../project';
 
+import * as d3 from 'd3';
+import * as stableSort from 'stable';
+
 @Component({
   selector: 't-test-project-model',
   templateUrl: './project-model.component.html',
@@ -88,7 +91,7 @@ export class ProjectModelComponent implements OnInit {
 
   private calculateSliderRange(name: string): void {
     let value = this.model[name];
-    let range = [value * 0.5, value * 1.5].sort((a, b) => a - b);
+    let range = stableSort([value * 0.5, value * 1.5], d3.ascending);
     this.min[name] = range[0];
     this.max[name] = range[1];
   }

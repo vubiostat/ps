@@ -3,6 +3,9 @@ import { Range } from './range';
 import { Point } from './point';
 import { TTestService, PlotDataRanges } from './t-test.service';
 
+import * as d3 from 'd3';
+import * as stableSort from 'stable';
+
 export class Project {
   models: TTest[] = [];
   selectedIndex: number = 0;
@@ -185,7 +188,7 @@ export class Project {
         case "n": /* fall through */
         case "nByCI":
           // calculate n range
-          values = [model.n * 0.5, model.n * 1.5].sort((a, b) => a - b);
+          values = stableSort([model.n * 0.5, model.n * 1.5], d3.ascending);
           if (i == 0 || values[0] < nRange[0]) {
             nRange[0] = values[0];
           }
@@ -200,7 +203,7 @@ export class Project {
           }
 
           // calculate delta range
-          values = [1.5 * model.sigma, -1.5 * model.sigma].sort((a, b) => a - b);
+          values = stableSort([1.5 * model.sigma, -1.5 * model.sigma], d3.ascending);
           if (i == 0 || values[0] < deltaRange[0]) {
             deltaRange[0] = values[0];
           }
@@ -211,7 +214,7 @@ export class Project {
 
         case "delta":
           // calculate delta range
-          values = [model.delta * 0.5, model.delta * 1.5].sort((a, b) => a - b);
+          values = stableSort([model.delta * 0.5, model.delta * 1.5], d3.ascending);
           if (i == 0 || values[0] < deltaRange[0]) {
             deltaRange[0] = values[0];
           }
@@ -222,7 +225,7 @@ export class Project {
       }
 
       // calculate parameter space range
-      values = [1.5 * model.sigma, -1.5 * model.sigma].sort((a, b) => a - b);
+      values = stableSort([1.5 * model.sigma, -1.5 * model.sigma], d3.ascending);
       if (i == 0 || values[0] < pSpaceRange[0]) {
         pSpaceRange[0] = values[0];
       }
@@ -340,7 +343,7 @@ export class Project {
       }
     }
 
-    let values = [data[minIndex].x, data[maxIndex].x].sort((a, b) => a - b);
+    let values = stableSort([data[minIndex].x, data[maxIndex].x], d3.ascending);
     return new Range(values[0], values[1]);
   }
 }

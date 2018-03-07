@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
 import * as d3 from 'd3';
+import * as stableSort from 'stable';
 
 import { PlotOptionsService } from './plot-options.service';
 import { PaletteService } from './palette.service';
@@ -56,8 +57,8 @@ export abstract class AbstractPlotComponent implements OnInit {
   }
 
   protected getPath(data: any[], xName = "x", yName = "y"): string {
-    let xScaleRange = this.xScale.domain().sort((a, b) => a - b);
-    let yScaleRange = this.yScale.domain().sort((a, b) => a - b);
+    let xScaleRange = stableSort(this.xScale.domain(), d3.ascending);
+    let yScaleRange = stableSort(this.yScale.domain(), d3.ascending);
     let line = d3.line().
       x((d, i) => this.xScale(d[xName])).
       y((d, i) => this.yScale(d[yName])).
