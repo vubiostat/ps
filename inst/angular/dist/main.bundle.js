@@ -144,6 +144,7 @@ var AppModule = (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return KonamiDirective; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__environments_environment__ = __webpack_require__("./src/environments/environment.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -154,6 +155,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var KonamiDirective = (function () {
     function KonamiDirective() {
         this.konami = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
@@ -161,6 +163,8 @@ var KonamiDirective = (function () {
         this.keyIndex = 0;
     }
     KonamiDirective.prototype.onKeyDown = function (event) {
+        if (!__WEBPACK_IMPORTED_MODULE_1__environments_environment__["a" /* environment */].activateKonami)
+            return;
         if (event.keyCode === this.konamiKeys[this.keyIndex]) {
             this.keyIndex++;
             if (this.keyIndex === this.konamiKeys.length) {
@@ -199,6 +203,8 @@ var KonamiDirective = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractPlotComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("./node_modules/d3/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_stable__ = __webpack_require__("./node_modules/stable/stable.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_stable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_stable__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -208,6 +214,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 var Draw;
@@ -250,9 +257,9 @@ var AbstractPlotComponent = (function () {
         var _this = this;
         if (xName === void 0) { xName = "x"; }
         if (yName === void 0) { yName = "y"; }
-        var xScaleRange = this.xScale.domain().sort(function (a, b) { return a - b; });
-        var yScaleRange = this.yScale.domain().sort(function (a, b) { return a - b; });
-        var line = __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* line */]().
+        var xScaleRange = __WEBPACK_IMPORTED_MODULE_2_stable__(this.xScale.domain(), __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* ascending */]);
+        var yScaleRange = __WEBPACK_IMPORTED_MODULE_2_stable__(this.yScale.domain(), __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* ascending */]);
+        var line = __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* line */]().
             x(function (d, i) { return _this.xScale(d[xName]); }).
             y(function (d, i) { return _this.yScale(d[yName]); }).
             defined(function (d, i) {
@@ -327,10 +334,12 @@ module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.fontFamily\"\n 
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_observable_merge__ = __webpack_require__("./node_modules/rxjs/_esm5/add/observable/merge.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_debounceTime__ = __webpack_require__("./node_modules/rxjs/_esm5/add/operator/debounceTime.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_d3__ = __webpack_require__("./node_modules/d3/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__ = __webpack_require__("./src/app/t-test/abstract-plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__project__ = __webpack_require__("./src/app/t-test/project.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__plot_options_service__ = __webpack_require__("./src/app/t-test/plot-options.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__palette_service__ = __webpack_require__("./src/app/t-test/palette.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_stable__ = __webpack_require__("./node_modules/stable/stable.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_stable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_stable__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__ = __webpack_require__("./src/app/t-test/abstract-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__project__ = __webpack_require__("./src/app/t-test/project.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__plot_options_service__ = __webpack_require__("./src/app/t-test/plot-options.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__palette_service__ = __webpack_require__("./src/app/t-test/palette.service.ts");
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -350,6 +359,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -379,7 +389,7 @@ var BottomPlotComponent = (function (_super) {
         _this.topMargin = 50;
         _this.bottomMargin = 50;
         _this.viewBox = "0 0 0 0";
-        _this.needDraw = __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].No;
+        _this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].No;
         // target dragging
         _this.targetDragging = false;
         _this.showTargetInfo = false;
@@ -402,7 +412,7 @@ var BottomPlotComponent = (function (_super) {
         if (!this.targetDragging && !this.barDragging) {
             this.showTargetInfo = value;
             if (value) {
-                this.needDraw = __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].Hover;
+                this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].Hover;
             }
         }
     };
@@ -410,7 +420,7 @@ var BottomPlotComponent = (function (_super) {
         if (!this.targetDragging && !this.barDragging) {
             this.showLeftBarInfo = value;
             if (value) {
-                this.needDraw = __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].Hover;
+                this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].Hover;
             }
         }
     };
@@ -418,7 +428,7 @@ var BottomPlotComponent = (function (_super) {
         if (!this.targetDragging && !this.barDragging) {
             this.showRightBarInfo = value;
             if (value) {
-                this.needDraw = __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].Hover;
+                this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].Hover;
             }
         }
     };
@@ -463,7 +473,7 @@ var BottomPlotComponent = (function (_super) {
         this.setupScales();
         this.setupGroups();
         this.resetDragging();
-        this.needDraw = __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].Yes;
+        this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].Yes;
     };
     BottomPlotComponent.prototype.setupTitle = function () {
         this.title = "Precision (95% Confidence Interval) vs. Effect Size";
@@ -473,17 +483,17 @@ var BottomPlotComponent = (function (_super) {
     };
     BottomPlotComponent.prototype.setupScales = function () {
         var pSpaceRange = this.project.pSpaceRange;
-        this.xScale = __WEBPACK_IMPORTED_MODULE_3_d3__["j" /* scaleLinear */]().
+        this.xScale = __WEBPACK_IMPORTED_MODULE_3_d3__["l" /* scaleLinear */]().
             domain(pSpaceRange.toArray()).
             range([0, this.innerWidth]);
-        this.yScale = __WEBPACK_IMPORTED_MODULE_3_d3__["j" /* scaleLinear */]().
+        this.yScale = __WEBPACK_IMPORTED_MODULE_3_d3__["l" /* scaleLinear */]().
             domain([0, 0.7]).
             range([0, this.innerHeight]);
         var sampDistExtent = this.plotData.reduce(function (arr, sampDist) {
-            var extent = __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* extent */](sampDist, function (d) { return d.y; });
-            return __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* extent */](arr.concat(extent));
+            var extent = __WEBPACK_IMPORTED_MODULE_3_d3__["i" /* extent */](sampDist, function (d) { return d.y; });
+            return __WEBPACK_IMPORTED_MODULE_3_d3__["i" /* extent */](arr.concat(extent));
         }, []);
-        this.yScaleSD = __WEBPACK_IMPORTED_MODULE_3_d3__["j" /* scaleLinear */]().
+        this.yScaleSD = __WEBPACK_IMPORTED_MODULE_3_d3__["l" /* scaleLinear */]().
             domain(sampDistExtent.reverse()).
             range([0, this.yScale(0.5)]).
             clamp(true);
@@ -530,12 +540,12 @@ var BottomPlotComponent = (function (_super) {
         });
         // order group in reverse so that they are drawn properly, put the selected
         // group at the end
-        this.groups.sort(function (a, b) {
+        __WEBPACK_IMPORTED_MODULE_4_stable__["inplace"](this.groups, function (a, b) {
             if (a.primary)
                 return 1;
             if (b.primary)
                 return -1;
-            return b.index - a.index;
+            return __WEBPACK_IMPORTED_MODULE_3_d3__["f" /* descending */](b.index, a.index);
         });
         this.mainGroup = this.groups[this.groups.length - 1];
     };
@@ -545,20 +555,20 @@ var BottomPlotComponent = (function (_super) {
     };
     BottomPlotComponent.prototype.draw = function () {
         var _this = this;
-        if (this.needDraw == __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].No) {
+        if (this.needDraw == __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].No) {
             return;
         }
         this.drawInfoBox('left');
         this.drawInfoBox('right');
         this.drawInfoBox('target');
-        if (this.needDraw == __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].Hover) {
-            this.needDraw = __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].No;
+        if (this.needDraw == __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].Hover) {
+            this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].No;
             return;
         }
-        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */](this.plotElement.nativeElement);
         var t = svg.transition();
         // axes (drawn by d3)
-        var xAxis = __WEBPACK_IMPORTED_MODULE_3_d3__["b" /* axisBottom */](this.xScale).ticks(Math.floor(this.innerWidth / 75));
+        var xAxis = __WEBPACK_IMPORTED_MODULE_3_d3__["c" /* axisBottom */](this.xScale).ticks(Math.floor(this.innerWidth / 75));
         t.select("#" + this.name + "-bottom-axis").
             call(xAxis).
             attr("font-size", 15 * this.plotOptions.axisFontSize).
@@ -576,33 +586,33 @@ var BottomPlotComponent = (function (_super) {
                 attr('cy', _this.yScale(0.5));
         });
         // make target point draggable
-        var target = __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* select */]("#" + this.mainGroup.id + "-target");
-        var targetDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["e" /* drag */]().
+        var target = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */]("#" + this.mainGroup.id + "-target");
+        var targetDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* drag */]().
             container(target.node().parentNode.parentNode).
             on("start", this.dragTargetStart.bind(this)).
             on("drag", this.dragTarget.bind(this)).
             on("end", this.dragTargetEnd.bind(this));
         target.call(targetDrag);
         // make left bar draggable
-        var leftBar = __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* select */]("#" + this.mainGroup.id + "-left");
-        var leftBarDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["e" /* drag */]().
+        var leftBar = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */]("#" + this.mainGroup.id + "-left");
+        var leftBarDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* drag */]().
             container(leftBar.node().parentNode.parentNode).
             on("start", this.dragBarStart.bind(this, CIBar.Left)).
             on("drag", this.dragBar.bind(this, CIBar.Left)).
             on("end", this.dragBarEnd.bind(this, CIBar.Left));
         leftBar.call(leftBarDrag);
         // make right bar draggable
-        var rightBar = __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* select */]("#" + this.mainGroup.id + "-right");
-        var rightBarDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["e" /* drag */]().
+        var rightBar = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */]("#" + this.mainGroup.id + "-right");
+        var rightBarDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* drag */]().
             container(rightBar.node().parentNode.parentNode).
             on("start", this.dragBarStart.bind(this, CIBar.Right)).
             on("drag", this.dragBar.bind(this, CIBar.Right)).
             on("end", this.dragBarEnd.bind(this, CIBar.Right));
         rightBar.call(rightBarDrag);
-        this.needDraw = __WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["b" /* Draw */].No;
+        this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].No;
     };
     BottomPlotComponent.prototype.drawInfoBox = function (which) {
-        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */](this.plotElement.nativeElement);
         var box = svg.select("#" + this.name + "-" + which + "-box");
         var coords = svg.select("#" + this.name + "-" + which + "-coords");
         if (box.size() > 0 && coords.size() > 0) {
@@ -612,7 +622,7 @@ var BottomPlotComponent = (function (_super) {
             var lmid = left + (7 * unit) + 5, rmid = left + (9 * unit) + 5;
             var mid = left + (8 * unit) + 5;
             var top_1 = dim.y - 5, bottom = dim.y + dim.height + 5;
-            box.attr("d", __WEBPACK_IMPORTED_MODULE_3_d3__["i" /* line */]()([
+            box.attr("d", __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* line */]()([
                 [left, top_1], [right, top_1], [right, bottom],
                 [rmid, bottom], [mid, bottom + 5], [lmid, bottom],
                 [left, bottom], [left, top_1]
@@ -640,7 +650,7 @@ var BottomPlotComponent = (function (_super) {
     BottomPlotComponent.prototype.dragTarget = function (event) {
         if (this.disableDragTarget)
             return;
-        var mouseX = __WEBPACK_IMPORTED_MODULE_3_d3__["f" /* event */].x - this.leftMargin;
+        var mouseX = __WEBPACK_IMPORTED_MODULE_3_d3__["h" /* event */].x - this.leftMargin;
         var x = this.xScale.invert(mouseX);
         if (x >= 0 && x < 0.1) {
             x = 0.1;
@@ -651,7 +661,7 @@ var BottomPlotComponent = (function (_super) {
             mouseX = this.xScale(x);
         }
         var offset = mouseX - this.xScale(this.mainGroup.originalTarget);
-        var g = __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* select */]("#" + this.mainGroup.id).
+        var g = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */]("#" + this.mainGroup.id).
             attr('transform', this.translate(this.leftMargin + offset, this.topMargin));
         this.mainGroup.target = x;
     };
@@ -675,7 +685,7 @@ var BottomPlotComponent = (function (_super) {
     BottomPlotComponent.prototype.dragBar = function (which, event) {
         if (this.disableDragCI)
             return;
-        var mouseX = __WEBPACK_IMPORTED_MODULE_3_d3__["f" /* event */].x - this.leftMargin;
+        var mouseX = __WEBPACK_IMPORTED_MODULE_3_d3__["h" /* event */].x - this.leftMargin;
         var x = this.xScale.invert(mouseX);
         var diff = 0;
         switch (which) {
@@ -703,7 +713,7 @@ var BottomPlotComponent = (function (_super) {
             { x: this.mainGroup.left, y: 0.5 },
             { x: this.mainGroup.right, y: 0.5 }
         ]);
-        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */](this.plotElement.nativeElement);
         svg.select("#" + this.mainGroup.id + "-left").attr('d', leftPath);
         svg.select("#" + this.mainGroup.id + "-right").attr('d', rightPath);
         svg.select("#" + this.mainGroup.id + "-center").attr('d', centerPath);
@@ -722,7 +732,7 @@ var BottomPlotComponent = (function (_super) {
     };
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('project'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_5__project__["a" /* Project */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_6__project__["a" /* Project */])
     ], BottomPlotComponent.prototype, "project", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('disable-drag-target'),
@@ -743,11 +753,11 @@ var BottomPlotComponent = (function (_super) {
             styles: [__webpack_require__("./src/app/t-test/bottom-plot/bottom-plot.component.css")],
             encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewEncapsulation */].None
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_6__plot_options_service__["a" /* PlotOptionsService */],
-            __WEBPACK_IMPORTED_MODULE_7__palette_service__["a" /* PaletteService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_7__plot_options_service__["a" /* PlotOptionsService */],
+            __WEBPACK_IMPORTED_MODULE_8__palette_service__["a" /* PaletteService */]])
     ], BottomPlotComponent);
     return BottomPlotComponent;
-}(__WEBPACK_IMPORTED_MODULE_4__abstract_plot_component__["a" /* AbstractPlotComponent */]));
+}(__WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["a" /* AbstractPlotComponent */]));
 
 
 
@@ -1765,10 +1775,12 @@ module.exports = "<svg #plot\n  [style.fontFamily]=\"plotOptions.getFontFamily()
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PlotComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3__ = __webpack_require__("./node_modules/d3/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__ = __webpack_require__("./src/app/t-test/abstract-plot.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__project__ = __webpack_require__("./src/app/t-test/project.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plot_options_service__ = __webpack_require__("./src/app/t-test/plot-options.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__palette_service__ = __webpack_require__("./src/app/t-test/palette.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_stable__ = __webpack_require__("./node_modules/stable/stable.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_stable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_stable__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__ = __webpack_require__("./src/app/t-test/abstract-plot.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__project__ = __webpack_require__("./src/app/t-test/project.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__plot_options_service__ = __webpack_require__("./src/app/t-test/plot-options.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__palette_service__ = __webpack_require__("./src/app/t-test/palette.service.ts");
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -1788,6 +1800,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -1822,7 +1835,7 @@ var PlotComponent = (function (_super) {
         _this.viewBox = "0 0 0 0";
         _this.hoverInfo = HoverInfo.Disabled;
         _this.targetDragging = false;
-        _this.needDraw = __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["b" /* Draw */].No;
+        _this.needDraw = __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["b" /* Draw */].No;
         return _this;
     }
     PlotComponent.prototype.ngOnChanges = function (changes) {
@@ -1855,7 +1868,7 @@ var PlotComponent = (function (_super) {
         if (this.hoverPoint) {
             this.hoverX = this.xScale(this.hoverPoint.x);
             this.hoverY = this.yScale(this.hoverPoint.y);
-            this.needDraw = __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["b" /* Draw */].Hover;
+            this.needDraw = __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["b" /* Draw */].Hover;
         }
     };
     PlotComponent.prototype.hoverInfoY = function () {
@@ -2022,16 +2035,15 @@ var PlotComponent = (function (_super) {
         var _this = this;
         this.plotData = this.project.models.map(function (m) { return m[_this.dataKey]; });
         // Prepare main data for bisection during target point dragging.
-        this.mainData = this.plotData[this.project.selectedIndex].slice();
-        this.mainData.sort(function (a, b) { return a.x - b.x; });
-        this.xBisector = __WEBPACK_IMPORTED_MODULE_1_d3__["d" /* bisector */](function (point) { return point.x; }).left;
+        this.mainData = __WEBPACK_IMPORTED_MODULE_2_stable__(this.plotData[this.project.selectedIndex], function (a, b) { return __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* ascending */](a.x, b.x); });
+        this.xBisector = __WEBPACK_IMPORTED_MODULE_1_d3__["e" /* bisector */](function (point) { return point.x; }).left;
         return true;
     };
     PlotComponent.prototype.setupScales = function () {
-        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* scaleLinear */]().
+        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["l" /* scaleLinear */]().
             domain(this.x.range.toArray()).
             range([0, this.innerWidth]);
-        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* scaleLinear */]().
+        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["l" /* scaleLinear */]().
             domain(this.y.range.toArray().reverse()).
             range([0, this.innerHeight]);
     };
@@ -2067,7 +2079,7 @@ var PlotComponent = (function (_super) {
     PlotComponent.prototype.setupDropPaths = function () {
         var _this = this;
         this.dropPaths = [];
-        var path = __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* line */]().
+        var path = __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* line */]().
             x(function (d, i) { return _this.xScale(d.x); }).
             y(function (d, i) { return _this.yScale(d.y); });
         var xData = [
@@ -2102,13 +2114,13 @@ var PlotComponent = (function (_super) {
             this.hover(this.lastDragEvent);
             this.lastDragEvent = undefined;
         }
-        this.needDraw = __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["b" /* Draw */].Yes;
+        this.needDraw = __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["b" /* Draw */].Yes;
     };
     PlotComponent.prototype.draw = function () {
-        if (this.needDraw == __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["b" /* Draw */].No) {
+        if (this.needDraw == __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["b" /* Draw */].No) {
             return;
         }
-        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["m" /* select */](this.plotElement.nativeElement);
         if (this.hoverInfo != HoverInfo.Disabled) {
             // draw hover info box
             var box = svg.select("#" + this.name + "-hover-info");
@@ -2120,26 +2132,26 @@ var PlotComponent = (function (_super) {
                 var lmid = left + (7 * unit) + 5, rmid = left + (9 * unit) + 5;
                 var mid = left + (8 * unit) + 5;
                 var top_1 = dim.y - 5, bottom = dim.y + dim.height + 5;
-                box.attr("d", __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* line */]()([
+                box.attr("d", __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* line */]()([
                     [left, top_1], [right, top_1], [right, bottom],
                     [rmid, bottom], [mid, bottom + 5], [lmid, bottom],
                     [left, bottom], [left, top_1]
                 ]));
             }
         }
-        if (this.needDraw == __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["b" /* Draw */].Hover) {
+        if (this.needDraw == __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["b" /* Draw */].Hover) {
             // only need to draw hover box
-            this.needDraw = __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["b" /* Draw */].No;
+            this.needDraw = __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["b" /* Draw */].No;
             return;
         }
         var t = svg.transition();
         // axes (drawn by d3)
-        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* axisBottom */](this.xScale).ticks(Math.floor(this.innerWidth / 75));
+        var xAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["c" /* axisBottom */](this.xScale).ticks(Math.floor(this.innerWidth / 75));
         t.select("#" + this.name + "-x-axis").
             call(xAxis).
             attr("font-size", this.plotOptions.getAxisFontSize() + "px").
             attr("stroke-width", this.plotOptions.getAxisLineWidth());
-        var yAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["c" /* axisLeft */](this.yScale).ticks(Math.floor(this.innerHeight / 75));
+        var yAxis = __WEBPACK_IMPORTED_MODULE_1_d3__["d" /* axisLeft */](this.yScale).ticks(Math.floor(this.innerHeight / 75));
         t.select("#" + this.name + "-y-axis").
             call(yAxis).
             attr("font-size", this.plotOptions.getAxisFontSize() + "px").
@@ -2166,7 +2178,7 @@ var PlotComponent = (function (_super) {
         // drag
         if (!this.disableDrag) {
             var target = svg.select(targetId);
-            var targetDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["e" /* drag */]().
+            var targetDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["g" /* drag */]().
                 on("start", this.dragTargetStart.bind(this)).
                 on("drag", this.dragTarget.bind(this)).
                 on("end", this.dragTargetEnd.bind(this));
@@ -2180,23 +2192,23 @@ var PlotComponent = (function (_super) {
                 var dim = labels.node().getBBox();
                 var left = dim.x - 5, right = dim.x + dim.width + 5;
                 var top_2 = dim.y - 5, bottom = dim.y + dim.height + 5;
-                box.attr("d", __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* line */]()([
+                box.attr("d", __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* line */]()([
                     [left, top_2], [right, top_2], [right, bottom],
                     [left, bottom], [left, top_2]
                 ]));
             }
             var legend = svg.select("#" + this.name + "-legend");
-            var legendDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["e" /* drag */]().
+            var legendDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["g" /* drag */]().
                 on("drag", this.dragLegend.bind(this));
             legend.call(legendDrag);
         }
-        this.needDraw = __WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["b" /* Draw */].No;
+        this.needDraw = __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["b" /* Draw */].No;
     };
     PlotComponent.prototype.dragTargetStart = function () {
         this.targetDragging = true;
     };
     PlotComponent.prototype.dragTarget = function (event) {
-        var x = this.xScale.invert(__WEBPACK_IMPORTED_MODULE_1_d3__["f" /* event */].x - this.leftMargin);
+        var x = this.xScale.invert(__WEBPACK_IMPORTED_MODULE_1_d3__["h" /* event */].x - this.leftMargin);
         if (x < this.x.range.min) {
             x = this.x.range.min;
         }
@@ -2207,7 +2219,7 @@ var PlotComponent = (function (_super) {
         var point = this.mainData[index];
         if (!point)
             return;
-        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["m" /* select */](this.plotElement.nativeElement);
         var targetId = "#" + this.name + "-target";
         this.target = point;
         this.setupDropPaths();
@@ -2230,8 +2242,8 @@ var PlotComponent = (function (_super) {
         }
     };
     PlotComponent.prototype.dragLegend = function () {
-        this.legendXOffset += __WEBPACK_IMPORTED_MODULE_1_d3__["f" /* event */].dx;
-        this.legendYOffset += __WEBPACK_IMPORTED_MODULE_1_d3__["f" /* event */].dy;
+        this.legendXOffset += __WEBPACK_IMPORTED_MODULE_1_d3__["h" /* event */].dx;
+        this.legendYOffset += __WEBPACK_IMPORTED_MODULE_1_d3__["h" /* event */].dy;
     };
     // from https://bl.ocks.org/mbostock/3916621
     PlotComponent.prototype.pathTween = function (d1, precision) {
@@ -2245,7 +2257,7 @@ var PlotComponent = (function (_super) {
             // Compute point-interpolators at each distance.
             var points = distances.map(function (t) {
                 var p0 = path0.getPointAtLength(t * n0), p1 = path1.getPointAtLength(t * n1);
-                return __WEBPACK_IMPORTED_MODULE_1_d3__["h" /* interpolate */]([p0.x, p0.y], [p1.x, p1.y]);
+                return __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* interpolate */]([p0.x, p0.y], [p1.x, p1.y]);
             });
             return function (t) {
                 return t < 1 ? "M" + points.map(function (p) { return p(t); }).join("L") : d1;
@@ -2254,7 +2266,7 @@ var PlotComponent = (function (_super) {
     };
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('project'),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_3__project__["a" /* Project */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_4__project__["a" /* Project */])
     ], PlotComponent.prototype, "project", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])('hover-disabled'),
@@ -2291,11 +2303,11 @@ var PlotComponent = (function (_super) {
             styles: [__webpack_require__("./src/app/t-test/plot/plot.component.css")],
             encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["_13" /* ViewEncapsulation */].None
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__plot_options_service__["a" /* PlotOptionsService */],
-            __WEBPACK_IMPORTED_MODULE_5__palette_service__["a" /* PaletteService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_5__plot_options_service__["a" /* PlotOptionsService */],
+            __WEBPACK_IMPORTED_MODULE_6__palette_service__["a" /* PaletteService */]])
     ], PlotComponent);
     return PlotComponent;
-}(__WEBPACK_IMPORTED_MODULE_2__abstract_plot_component__["a" /* AbstractPlotComponent */]));
+}(__WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["a" /* AbstractPlotComponent */]));
 
 
 
@@ -2374,6 +2386,9 @@ module.exports = "<div *ngIf=\"project.models.length > 1\" class=\"form-inline j
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__palette_service__ = __webpack_require__("./src/app/t-test/palette.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__t_test__ = __webpack_require__("./src/app/t-test/t-test.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__project__ = __webpack_require__("./src/app/t-test/project.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_d3__ = __webpack_require__("./node_modules/d3/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_stable__ = __webpack_require__("./node_modules/stable/stable.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_stable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_stable__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2383,6 +2398,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
 
 
 
@@ -2450,7 +2467,7 @@ var ProjectModelComponent = (function () {
     };
     ProjectModelComponent.prototype.calculateSliderRange = function (name) {
         var value = this.model[name];
-        var range = [value * 0.5, value * 1.5].sort(function (a, b) { return a - b; });
+        var range = __WEBPACK_IMPORTED_MODULE_6_stable__([value * 0.5, value * 1.5], __WEBPACK_IMPORTED_MODULE_5_d3__["b" /* ascending */]);
         this.min[name] = range[0];
         this.max[name] = range[1];
     };
@@ -2493,6 +2510,11 @@ var ProjectModelComponent = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Project; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__t_test__ = __webpack_require__("./src/app/t-test/t-test.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__range__ = __webpack_require__("./src/app/t-test/range.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_d3__ = __webpack_require__("./node_modules/d3/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_stable__ = __webpack_require__("./node_modules/stable/stable.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_stable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_stable__);
+
+
 
 
 var Project = (function () {
@@ -2664,7 +2686,7 @@ var Project = (function () {
                 case "n": /* fall through */
                 case "nByCI":
                     // calculate n range
-                    values = [model.n * 0.5, model.n * 1.5].sort(function (a, b) { return a - b; });
+                    values = __WEBPACK_IMPORTED_MODULE_3_stable__([model.n * 0.5, model.n * 1.5], __WEBPACK_IMPORTED_MODULE_2_d3__["b" /* ascending */]);
                     if (i == 0 || values[0] < nRange[0]) {
                         nRange[0] = values[0];
                     }
@@ -2677,7 +2699,7 @@ var Project = (function () {
                         powerRange = [0.01, 1];
                     }
                     // calculate delta range
-                    values = [1.5 * model.sigma, -1.5 * model.sigma].sort(function (a, b) { return a - b; });
+                    values = __WEBPACK_IMPORTED_MODULE_3_stable__([1.5 * model.sigma, -1.5 * model.sigma], __WEBPACK_IMPORTED_MODULE_2_d3__["b" /* ascending */]);
                     if (i == 0 || values[0] < deltaRange[0]) {
                         deltaRange[0] = values[0];
                     }
@@ -2687,7 +2709,7 @@ var Project = (function () {
                     break;
                 case "delta":
                     // calculate delta range
-                    values = [model.delta * 0.5, model.delta * 1.5].sort(function (a, b) { return a - b; });
+                    values = __WEBPACK_IMPORTED_MODULE_3_stable__([model.delta * 0.5, model.delta * 1.5], __WEBPACK_IMPORTED_MODULE_2_d3__["b" /* ascending */]);
                     if (i == 0 || values[0] < deltaRange[0]) {
                         deltaRange[0] = values[0];
                     }
@@ -2697,7 +2719,7 @@ var Project = (function () {
                     break;
             }
             // calculate parameter space range
-            values = [1.5 * model.sigma, -1.5 * model.sigma].sort(function (a, b) { return a - b; });
+            values = __WEBPACK_IMPORTED_MODULE_3_stable__([1.5 * model.sigma, -1.5 * model.sigma], __WEBPACK_IMPORTED_MODULE_2_d3__["b" /* ascending */]);
             if (i == 0 || values[0] < pSpaceRange[0]) {
                 pSpaceRange[0] = values[0];
             }
@@ -2811,7 +2833,7 @@ var Project = (function () {
                 break;
             }
         }
-        var values = [data[minIndex].x, data[maxIndex].x].sort(function (a, b) { return a - b; });
+        var values = __WEBPACK_IMPORTED_MODULE_3_stable__([data[minIndex].x, data[maxIndex].x], __WEBPACK_IMPORTED_MODULE_2_d3__["b" /* ascending */]);
         return new __WEBPACK_IMPORTED_MODULE_1__range__["a" /* Range */](values[0], values[1]);
     };
     return Project;
@@ -2842,7 +2864,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/project/project.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"grow-vert\">\n  <div class=\"form-inline justify-content-between mb-2\">\n    <div class=\"form-group\">\n      <label for=\"t-test-project-{{name}}-output\" class=\"mr-2\">Output:</label>\n      <select id=\"t-test-project-{{name}}-output\" class=\"form-control\" name=\"output\"\n        [ngModel]=\"project.getOutput()\" (ngModelChange)=\"changeOutput($event)\">\n        <option value=\"n\">Sample size by Power</option>\n        <option value=\"nByCI\">Sample size by 95% CI</option>\n        <option value=\"power\">Power</option>\n        <option value=\"delta\">Detectable alternative</option>\n      </select>\n    </div>\n\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"addModel()\">\n      <i class=\"fa fa-plus-circle\"></i> Add line\n    </button>\n  </div>\n\n  <ul *ngIf=\"project.models.length > 1\" class=\"nav nav-tabs mt-2\">\n    <li *ngFor=\"let model of project.models; index as i; trackBy: trackByIndex\" class=\"nav-item\">\n      <a class=\"nav-link nav-model-link\" [class.active]=\"i == project.selectedIndex\"\n        (click)=\"selectModel(i)\">\n        <i class=\"fa fa-square\" [style.color]=\"getColor(i)\"></i>\n      </a>\n    </li>\n  </ul>\n\n  <div *ngFor=\"let model of project.models; index as i\" class=\"project-model\"\n    [class.active]=\"i == project.selectedIndex\"\n    [class.tab]=\"project.models.length > 1\">\n    <t-test-project-model [project]=\"project\" [index]=\"i\"\n      (modelChanged)=\"onModelChanged()\" (remove)=\"onModelRemove(i)\">\n    </t-test-project-model>\n  </div>\n</div>\n"
+module.exports = "<div class=\"grow-vert\">\n  <div class=\"form-inline justify-content-between mb-2\">\n    <div class=\"form-group\">\n      <label for=\"t-test-project-{{name}}-output\" class=\"mr-2\">Output:</label>\n      <select id=\"t-test-project-{{name}}-output\" class=\"form-control\" name=\"output\"\n        [ngModel]=\"project.getOutput()\" (ngModelChange)=\"changeOutput($event)\">\n        <option value=\"power\">Power</option>\n        <option value=\"n\">Sample size</option>\n        <option value=\"delta\">Detectable alternative</option>\n        <option value=\"nByCI\">Sample size for 95% CI</option>\n      </select>\n    </div>\n\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"addModel()\">\n      <i class=\"fa fa-plus-circle\"></i> Add line\n    </button>\n  </div>\n\n  <ul *ngIf=\"project.models.length > 1\" class=\"nav nav-tabs mt-2\">\n    <li *ngFor=\"let model of project.models; index as i; trackBy: trackByIndex\" class=\"nav-item\">\n      <a class=\"nav-link nav-model-link\" [class.active]=\"i == project.selectedIndex\"\n        (click)=\"selectModel(i)\">\n        <i class=\"fa fa-square\" [style.color]=\"getColor(i)\"></i>\n      </a>\n    </li>\n  </ul>\n\n  <div *ngFor=\"let model of project.models; index as i\" class=\"project-model\"\n    [class.active]=\"i == project.selectedIndex\"\n    [class.tab]=\"project.models.length > 1\">\n    <t-test-project-model [project]=\"project\" [index]=\"i\"\n      (modelChanged)=\"onModelChanged()\" (remove)=\"onModelRemove(i)\">\n    </t-test-project-model>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -3332,7 +3354,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/start/start.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<form (ngSubmit)=\"onSubmit()\" #startForm=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"output\">\n      What do you want to know?\n      <button type=\"button\" class=\"btn btn-secondary fa fa-question-circle\"\n        (click)=\"toggleHelp()\"></button>\n    </label>\n    <select class=\"form-control\" id=\"output\"\n            required\n            [(ngModel)]=\"model.output\" name=\"output\">\n      <option></option>\n      <option value=\"n\">Sample size by Power</option>\n      <option value=\"nByCI\">Sample size by 95% CI</option>\n      <option value=\"power\">Power</option>\n      <option value=\"delta\">Detectable alternative</option>\n    </select>\n  </div>\n  <!--\n  <div class=\"form-group\" *ngIf=\"model.output\">\n    <label for=\"design\">Paired or independent?</label>\n    <select class=\"form-control\" id=\"design\"\n            required\n            [(ngModel)]=\"model.design\" name=\"design\">\n      <option></option>\n      <option>Paired</option>\n      <option>Independent</option>\n    </select>\n  </div>\n  -->\n  <div *ngIf=\"model.output\">\n    <div class=\"form-group\">\n      <label for=\"alpha\">\n        Type I Error (&alpha;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"alphaHelp\" popoverTitle=\"Type I Error (&alpha;)\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n      </label>\n      <input class=\"form-control\" id=\"alpha\"\n             type=\"number\" step=\"0.01\" min=\"0.01\" max=\"0.99\"\n             required\n             [(ngModel)]=\"model.alpha\" name=\"alpha\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"sigma\">\n        Standard deviation (&sigma;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"sigmaHelp\" popoverTitle=\"Standard deviation (&sigma;)\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n      </label>\n      <input class=\"form-control\" id=\"sigma\"\n             type=\"number\" step=\"0.1\" min=\"0.1\"\n             required\n             [(ngModel)]=\"model.sigma\" name=\"sigma\">\n    </div>\n    <div *ngIf=\"needDelta()\" class=\"form-group\">\n      <label for=\"delta\">Difference in population means (&delta;)</label>\n      <input class=\"form-control\" id=\"delta\"\n             type=\"number\" step=\"0.1\"\n             required\n             [(ngModel)]=\"model.delta\" name=\"delta\">\n    </div>\n    <div *ngIf=\"needPower()\" class=\"form-group\">\n      <label for=\"power\">\n        Power\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"powerHelp\" popoverTitle=\"Power\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n      </label>\n      <input class=\"form-control\" id=\"power\"\n             type=\"number\" step=\"0.01\" min=\"0.01\" max=\"0.99\"\n             required\n             [(ngModel)]=\"model.power\" name=\"power\">\n    </div>\n    <div *ngIf=\"needCI()\" class=\"form-group\">\n      <label for=\"ci\">95% confidence interval width</label>\n      <input class=\"form-control\" id=\"ci\" type=\"number\" required\n             [(ngModel)]=\"model.ci\" name=\"ci\">\n    </div>\n    <ng-template [ngIf]=\"needNOrCI()\">\n      <div class=\"form-check form-check-inline\">\n        <label class=\"form-check-label\">\n          <input class=\"form-check-input\" type=\"radio\"\n                 name=\"ciMode\" id=\"ciMode-false\"\n                 [(ngModel)]=\"model.ciMode\" [value]=\"false\">\n          Sample size\n          <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n            [ngbPopover]=\"nHelp\" popoverTitle=\"Sample size\"\n            placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        </label>\n        <label class=\"form-check-label\">\n          <input class=\"form-check-input\" type=\"radio\"\n                 name=\"ciMode\" id=\"ciMode-true\"\n                 [(ngModel)]=\"model.ciMode\" [value]=\"true\">\n          95% confidence interval width\n        </label>\n      </div>\n\n      <div class=\"form-group\">\n        <input *ngIf=\"!model.ciMode\"\n               class=\"form-control\" id=\"n\"\n               type=\"number\" min=\"1\"\n               required\n               [(ngModel)]=\"model.n\" name=\"n\">\n        <input *ngIf=\"model.ciMode\"\n               class=\"form-control\" id=\"ci\"\n               type=\"number\" min=\"1\" step=\"0.1\"\n               required\n               [(ngModel)]=\"model.ci\" name=\"ci\">\n      </div>\n\n    </ng-template>\n    <ng-template [ngIf]=\"needPowerOrDelta()\">\n      <div class=\"form-check form-check-inline\">\n        <label class=\"form-check-label\">\n          <input class=\"form-check-input\" type=\"radio\"\n                 name=\"deltaMode\" id=\"deltaMode-false\"\n                 [(ngModel)]=\"model.deltaMode\" [value]=\"false\">\n          Power\n          <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n            [ngbPopover]=\"powerHelp\" popoverTitle=\"Power\"\n            placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        </label>\n        <label class=\"form-check-label\">\n          <input class=\"form-check-input\" type=\"radio\"\n                 name=\"deltaMode\" id=\"deltaMode-true\"\n                 [(ngModel)]=\"model.deltaMode\" [value]=\"true\">\n          Difference in population means (&delta;)\n        </label>\n      </div>\n\n      <div class=\"form-group\">\n        <input *ngIf=\"!model.deltaMode\"\n               class=\"form-control\" id=\"power\"\n               type=\"number\" step=\"0.01\" min=\"0.01\" max=\"0.99\"\n               required\n               [(ngModel)]=\"model.power\" name=\"power\">\n        <input *ngIf=\"model.deltaMode\"\n               class=\"form-control\" id=\"delta\"\n               type=\"number\" step=\"0.1\"\n               required\n               [(ngModel)]=\"model.delta\" name=\"delta\">\n      </div>\n\n    </ng-template>\n    <button type=\"submit\" class=\"btn btn-success\"\n            [disabled]=\"!startForm.form.valid\">\n      Calculate\n    </button>\n  </div>\n</form>\n<ng-template #alphaHelp>\n  The Type I error probability for a two sided test. This is the\n  probability that we will falsely reject the null hypothesis.\n</ng-template>\n<ng-template #sigmaHelp>\n  For independent tests σ is the within group standard deviation. For\n  paired designs it is the standard deviation of difference in the\n  response of matched pairs.\n</ng-template>\n<ng-template #powerHelp>\n  For independent tests power is probability of correctly rejecting the null\n  hypothesis of equal population means given n experimental patients, m control\n  patients per experimental patient, a Type I error probability α and a true\n  difference in population means of δ. For paired tests it is the probability\n  of correctly rejecting the null hypothesis of equal population means given n\n  pairs of patients, a Type I error probability α and a true difference in\n  population means of δ.\n</ng-template>\n<ng-template #nHelp>\n  For independent t-tests n is the number of experimental subjects. For\n  pair test n is the number of pairs.\n</ng-template>\n"
+module.exports = "<form (ngSubmit)=\"onSubmit()\" #startForm=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"output\">\n      What do you want to know?\n      <button type=\"button\" class=\"btn btn-secondary fa fa-question-circle\"\n        (click)=\"toggleHelp()\"></button>\n    </label>\n    <select class=\"form-control\" id=\"output\"\n            required\n            [(ngModel)]=\"model.output\" name=\"output\">\n      <option></option>\n      <option value=\"power\">Power</option>\n      <option value=\"n\">Sample size</option>\n      <option value=\"delta\">Detectable alternative</option>\n      <option value=\"nByCI\">Sample size for 95% CI</option>\n    </select>\n  </div>\n  <!--\n  <div class=\"form-group\" *ngIf=\"model.output\">\n    <label for=\"design\">Paired or independent?</label>\n    <select class=\"form-control\" id=\"design\"\n            required\n            [(ngModel)]=\"model.design\" name=\"design\">\n      <option></option>\n      <option>Paired</option>\n      <option>Independent</option>\n    </select>\n  </div>\n  -->\n  <div *ngIf=\"model.output\">\n    <div class=\"form-group\">\n      <label for=\"alpha\">\n        Type I Error (&alpha;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"alphaHelp\" popoverTitle=\"Type I Error (&alpha;)\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n      </label>\n      <input class=\"form-control\" id=\"alpha\"\n             type=\"number\" step=\"0.01\" min=\"0.01\" max=\"0.99\"\n             required\n             [(ngModel)]=\"model.alpha\" name=\"alpha\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"sigma\">\n        Standard deviation (&sigma;)\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"sigmaHelp\" popoverTitle=\"Standard deviation (&sigma;)\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n      </label>\n      <input class=\"form-control\" id=\"sigma\"\n             type=\"number\" step=\"0.1\" min=\"0.1\"\n             required\n             [(ngModel)]=\"model.sigma\" name=\"sigma\">\n    </div>\n    <div *ngIf=\"needDelta()\" class=\"form-group\">\n      <label for=\"delta\">Difference in population means (&delta;)</label>\n      <input class=\"form-control\" id=\"delta\"\n             type=\"number\" step=\"0.1\"\n             required\n             [(ngModel)]=\"model.delta\" name=\"delta\">\n    </div>\n    <div *ngIf=\"needPower()\" class=\"form-group\">\n      <label for=\"power\">\n        Power\n        <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n          [ngbPopover]=\"powerHelp\" popoverTitle=\"Power\"\n          placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n      </label>\n      <input class=\"form-control\" id=\"power\"\n             type=\"number\" step=\"0.01\" min=\"0.01\" max=\"0.99\"\n             required\n             [(ngModel)]=\"model.power\" name=\"power\">\n    </div>\n    <div *ngIf=\"needCI()\" class=\"form-group\">\n      <label for=\"ci\">95% confidence interval width</label>\n      <input class=\"form-control\" id=\"ci\" type=\"number\" required\n             [(ngModel)]=\"model.ci\" name=\"ci\">\n    </div>\n    <ng-template [ngIf]=\"needNOrCI()\">\n      <div class=\"form-check form-check-inline\">\n        <label class=\"form-check-label\">\n          <input class=\"form-check-input\" type=\"radio\"\n                 name=\"ciMode\" id=\"ciMode-false\"\n                 [(ngModel)]=\"model.ciMode\" [value]=\"false\">\n          Sample size\n          <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n            [ngbPopover]=\"nHelp\" popoverTitle=\"Sample size\"\n            placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        </label>\n        <label class=\"form-check-label\">\n          <input class=\"form-check-input\" type=\"radio\"\n                 name=\"ciMode\" id=\"ciMode-true\"\n                 [(ngModel)]=\"model.ciMode\" [value]=\"true\">\n          95% confidence interval width\n        </label>\n      </div>\n\n      <div class=\"form-group\">\n        <input *ngIf=\"!model.ciMode\"\n               class=\"form-control\" id=\"n\"\n               type=\"number\" min=\"1\"\n               required\n               [(ngModel)]=\"model.n\" name=\"n\">\n        <input *ngIf=\"model.ciMode\"\n               class=\"form-control\" id=\"ci\"\n               type=\"number\" min=\"1\" step=\"0.1\"\n               required\n               [(ngModel)]=\"model.ci\" name=\"ci\">\n      </div>\n\n    </ng-template>\n    <ng-template [ngIf]=\"needPowerOrDelta()\">\n      <div class=\"form-check form-check-inline\">\n        <label class=\"form-check-label\">\n          <input class=\"form-check-input\" type=\"radio\"\n                 name=\"deltaMode\" id=\"deltaMode-false\"\n                 [(ngModel)]=\"model.deltaMode\" [value]=\"false\">\n          Power\n          <i class=\"fa fa-info-circle\" aria-hidden=\"true\"\n            [ngbPopover]=\"powerHelp\" popoverTitle=\"Power\"\n            placement=\"right\" triggers=\"hover\" container=\"body\"></i>\n        </label>\n        <label class=\"form-check-label\">\n          <input class=\"form-check-input\" type=\"radio\"\n                 name=\"deltaMode\" id=\"deltaMode-true\"\n                 [(ngModel)]=\"model.deltaMode\" [value]=\"true\">\n          Difference in population means (&delta;)\n        </label>\n      </div>\n\n      <div class=\"form-group\">\n        <input *ngIf=\"!model.deltaMode\"\n               class=\"form-control\" id=\"power\"\n               type=\"number\" step=\"0.01\" min=\"0.01\" max=\"0.99\"\n               required\n               [(ngModel)]=\"model.power\" name=\"power\">\n        <input *ngIf=\"model.deltaMode\"\n               class=\"form-control\" id=\"delta\"\n               type=\"number\" step=\"0.1\"\n               required\n               [(ngModel)]=\"model.delta\" name=\"delta\">\n      </div>\n\n    </ng-template>\n    <button type=\"submit\" class=\"btn btn-success\"\n            [disabled]=\"!startForm.form.valid\">\n      Calculate\n    </button>\n  </div>\n</form>\n<ng-template #alphaHelp>\n  The Type I error probability for a two sided test. This is the\n  probability that we will falsely reject the null hypothesis.\n</ng-template>\n<ng-template #sigmaHelp>\n  For independent tests σ is the within group standard deviation. For\n  paired designs it is the standard deviation of difference in the\n  response of matched pairs.\n</ng-template>\n<ng-template #powerHelp>\n  For independent tests power is probability of correctly rejecting the null\n  hypothesis of equal population means given n experimental patients, m control\n  patients per experimental patient, a Type I error probability α and a true\n  difference in population means of δ. For paired tests it is the probability\n  of correctly rejecting the null hypothesis of equal population means given n\n  pairs of patients, a Type I error probability α and a true difference in\n  population means of δ.\n</ng-template>\n<ng-template #nHelp>\n  For independent t-tests n is the number of experimental subjects. For\n  pair test n is the number of pairs.\n</ng-template>\n"
 
 /***/ }),
 
@@ -3465,8 +3487,8 @@ var TTestComponent = (function () {
         this.projectFactory = projectFactory;
         this.newModel = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]();
         this.projects = [];
-        this.commitHash = "10e8cd8280b692e867b2d3638206dc4c5a47cf83".substr(0, 7);
-        this.buildTimestamp = "Mon Mar 05 2018 11:27:20 GMT-0600 (CST)";
+        this.commitHash = "8e0bdf11c3489a5f53d3df69d88f33e507d759b0".substr(0, 7);
+        this.buildTimestamp = "Wed Mar 07 2018 15:36:04 GMT-0600 (CST)";
         this.helpTitles = {
             'overview': 'PS Overview',
             'start': 'PS Start Tab'
@@ -3478,7 +3500,7 @@ var TTestComponent = (function () {
     TTestComponent.prototype.ngOnInit = function () {
         /* Add example project */
         var model = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]({
-            output: 'n', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32
+            output: 'power', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32
         });
         this.createProject(model, false);
     };
