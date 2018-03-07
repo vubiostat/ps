@@ -109,7 +109,7 @@ runPS <- function(mode = c("standalone", "backend"), host = "127.0.0.1", port = 
   if (mode == "standalone") {
     corsHost <- host
     corsPort <- port
-    app <- StandaloneHandler(backendApp)
+    app <- StandaloneHandler(app)
   }
 
   app <- OptionsHandler(app)
