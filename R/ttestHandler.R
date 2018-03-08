@@ -209,6 +209,16 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
       result <- lapply(models, function(m) m$plotData(ranges))
 
       if (output == "power") {
+        maxN <-
+          if (!is.null(ranges$nRange)) {
+            ranges$nRange$max
+          } else {
+            do.call(max, lapply(result, function(r) {
+              n <- r$powerVsN$x
+              n[is.finite(n)]
+            }))
+          }
+
         # recalculate if needed
         for (i in 1:length(result)) {
           model <- models[[i]]
@@ -218,8 +228,8 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
           infIndex <- which(is.infinite(powerVsN$x) | is.nan(powerVsN$x))
           if (length(infIndex) > 0 && infIndex[1] > 1) {
             lastRow <- powerVsN[infIndex[1] - 1, ]
-            if (lastRow$x < ranges$nRange$max) {
-              extraN <- seq(lastRow$x, ranges$nRange$max, length.out = 10)
+            if (lastRow$x < maxN) {
+              extraN <- seq(lastRow$x, maxN, length.out = 10)
               extraPower <- calculatePower(model$alpha, model$delta, model$sigma, extraN)
               extra <- data.frame(x = extraN, y = extraPower)
 
