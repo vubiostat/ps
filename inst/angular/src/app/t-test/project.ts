@@ -6,6 +6,12 @@ import { TTestService, PlotDataRanges } from './t-test.service';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
+export interface ProjectRangeChange {
+  name: string;
+  which: string;
+  value: number;
+}
+
 export class Project {
   models: TTest[] = [];
   selectedIndex: number = 0;
@@ -25,7 +31,13 @@ export class Project {
     return '';
   }
 
-  updatePlotData(): Promise<any> {
+  updateRange(change: ProjectRangeChange): Promise<any> {
+    let attrib = `${change.name}Range`;
+    this[attrib][change.which] = change.value;
+    return this.updatePlotData(false);
+  }
+
+  updatePlotData(updateRanges = true): Promise<any> {
     let ranges = {
       nRange: this.nRange,
       powerRange: this.powerRange,
@@ -38,6 +50,8 @@ export class Project {
         result.forEach((data, i) => {
           Object.assign(this.models[i], data);
         });
+
+        if (!updateRanges) return;
 
         let output = this.getOutput();
         let nRange, powerRange, deltaRange;

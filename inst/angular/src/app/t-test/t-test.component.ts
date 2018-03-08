@@ -5,11 +5,11 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switch';
 
 import { TTest } from './t-test';
-import { Project } from './project';
+import { Project, ProjectRangeChange } from './project';
 import { ProjectFactoryService } from './project-factory.service';
 
-import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component'
-import { OutputPaneComponent } from './output-pane/output-pane.component'
+import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
+import { OutputPaneComponent } from './output-pane/output-pane.component';
 
 // globals from webpack
 declare var __COMMITHASH__: string;
@@ -109,8 +109,16 @@ export class TTestComponent implements OnInit {
     this.outputPane.redrawPlots();
   }
 
-  onPlotOptionsChanged(): void {
+  onPlotOptionChanged(): void {
     this.outputPane.redrawPlots();
+  }
+
+  onProjectRangeChanged(change: ProjectRangeChange): void {
+    if (this.selectedProject) {
+      this.selectedProject.updateRange(change).then(() => {
+        this.outputPane.redrawPlots();
+      });
+    }
   }
 
   onMouseUp(): void {

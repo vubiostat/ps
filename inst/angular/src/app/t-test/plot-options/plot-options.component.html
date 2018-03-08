@@ -3,8 +3,9 @@
     <legend>Global</legend>
     <div class="form-group">
       <label for="plot-font-family">Font family</label>
-      <select id="plot-font-family" class="form-control"
-        [ngModel]="plotOptions.fontFamily" (ngModelChange)="changeAttribute('fontFamily', $event)">
+      <select #fontFamily id="plot-font-family" class="form-control"
+        [value]="plotOptions.fontFamily"
+        (change)="changeAttribute('fontFamily', fontFamily.value)">
         <option value="">Default</option>
         <option value="serif">Serif</option>
         <option value="sans">Sans-serif</option>
@@ -15,8 +16,9 @@
     </div>
     <div class="form-group">
       <label for="plot-palette-theme">Color palette</label>
-      <select id="plot-palette-theme" class="form-control"
-        [ngModel]="plotOptions.paletteTheme" (ngModelChange)="changeAttribute('paletteTheme', $event)">
+      <select #paletteTheme id="plot-palette-theme" class="form-control"
+        [value]="plotOptions.paletteTheme"
+        (change)="changeAttribute('paletteTheme', paletteTheme.value)">
         <option value="typical">Default</option>
         <option value="plasma">Plasma</option>
         <option value="viridis">Viridis</option>
@@ -28,17 +30,21 @@
       <div class="col-sm-6">
         <label for="plot-font-size">Font size: {{plotOptions.fontSize}}</label>
         <div class="input-group">
-          <input id="plot-font-size" class="form-control"
+          <input #fontSize id="plot-font-size" class="form-control"
             type="range" min="0.1" max="2" step="0.1"
-            [ngModel]="plotOptions.fontSize" (ngModelChange)="changeAttribute('fontSize', $event)" />
+            [value]="plotOptions.fontSize"
+            (change)="changeNumberAttribute('fontSize', fontSize.value)"
+            (input)="changeNumberAttribute('fontSize', fontSize.value)" />
         </div>
       </div>
       <div class="col-sm-6">
         <label for="plot-axis-font-size">Axis font size: {{plotOptions.axisFontSize}}</label>
         <div class="input-group">
-          <input id="plot-axis-font-size" class="form-control"
+          <input #axisFontSize id="plot-axis-font-size" class="form-control"
             type="range" min="0.1" max="2" step="0.1"
-            [ngModel]="plotOptions.axisFontSize" (ngModelChange)="changeAttribute('axisFontSize', $event)" />
+            [value]="plotOptions.axisFontSize"
+            (change)="changeNumberAttribute('axisFontSize', axisFontSize.value)"
+            (input)="changeNumberAttribute('axisFontSize', axisFontSize.value)" />
         </div>
       </div>
     </div>
@@ -46,24 +52,29 @@
       <div class="col-sm-6">
         <label for="plot-line-width">Line width: {{plotOptions.lineWidth}}</label>
         <div class="input-group">
-          <input id="plot-line-width" class="form-control"
+          <input #lineWidth id="plot-line-width" class="form-control"
             type="range" min="0.1" max="2" step="0.1"
-            [ngModel]="plotOptions.lineWidth" (ngModelChange)="changeAttribute('lineWidth', $event)" />
+            [value]="plotOptions.lineWidth"
+            (change)="changeNumberAttribute('lineWidth', lineWidth.value)"
+            (input)="changeNumberAttribute('lineWidth', lineWidth.value)" />
         </div>
       </div>
       <div class="col-sm-6">
         <label for="plot-axis-line-width">Axis line width: {{plotOptions.axisLineWidth}}</label>
         <div class="input-group">
-          <input id="plot-axis-line-width" class="form-control"
+          <input #axisLineWidth id="plot-axis-line-width" class="form-control"
             type="range" min="0.1" max="2" step="0.1"
-            [ngModel]="plotOptions.axisLineWidth" (ngModelChange)="changeAttribute('axisLineWidth', $event)" />
+            [value]="plotOptions.axisLineWidth"
+            (change)="changeNumberAttribute('axisLineWidth', axisLineWidth.value)"
+            (input)="changeNumberAttribute('axisLineWidth', axisLineWidth.value)" />
         </div>
       </div>
     </div>
     <div class="form-group">
       <label for="plot-line-style">Line style</label>
-      <select id="plot-line-style" class="form-control"
-        [ngModel]="plotOptions.lineStyle" (ngModelChange)="changeAttribute('lineStyle', $event)">
+      <select #lineStyle id="plot-line-style" class="form-control"
+        [value]="plotOptions.lineStyle"
+        (change)="changeAttribute('lineStyle', lineStyle.value)">
         <option value="solid">Solid</option>
         <option value="short-dash">Short Dash</option>
         <option value="medium-dash">Medium Dash</option>
@@ -73,7 +84,10 @@
     </div>
     <div class="form-check">
       <label class="form-check-label">
-        <input class="form-check-input" type="checkbox" [ngModel]="plotOptions.showLegendBox" (ngModelChange)="changeAttribute('showLegendBox', $event)" />
+        <input #showLegendBox class="form-check-input" type="checkbox"
+          [checked]="plotOptions.showLegendBox"
+          (change)="changeAttribute('showLegendBox', showLegendBox.checked)"
+          (input)="changeAttribute('showLegendBox', showLegendBox.checked)" />
         Display legend background
       </label>
     </div>
@@ -87,22 +101,25 @@
         <label for="plot-top-y-min">Minimum</label>
         <div class="input-group">
           <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
-            <input *ngIf="project.nRange" class="form-control"
+            <input #nRangeMin *ngIf="project.nRange" class="form-control"
               type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
-              [ngModel]="project.nRange.min | round"
-              (ngModelChange)="changeRange('n', 'min', $event)" />
+              [value]="project.nRange.min | round"
+              (change)="changeProjectRange('n', 'min', nRangeMin.value)"
+              (input)="changeProjectRange('n', 'min', nRangeMin.value, true)"/>
           </ng-template>
           <ng-template [ngIf]="model.output == 'power'">
-            <input *ngIf="project.powerRange" class="form-control"
+            <input #powerRangeMin *ngIf="project.powerRange" class="form-control"
               type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
-              [ngModel]="project.powerRange.min | round"
-              (ngModelChange)="changeRange('power', 'min', $event)" />
+              [value]="project.powerRange.min | round"
+              (change)="changeProjectRange('power', 'min', powerRangeMin.value)"
+              (input)="changeProjectRange('power', 'min', powerRangeMin.value, true)"/>
           </ng-template>
           <ng-template [ngIf]="model.output == 'delta'">
-            <input *ngIf="project.deltaRange" class="form-control"
+            <input #deltaRangeMin *ngIf="project.deltaRange" class="form-control"
               type="number" step="0.01" [max]="(project.deltaRange.max - 0.01) | round"
-              [ngModel]="project.deltaRange.min | round"
-              (ngModelChange)="changeRange('delta', 'min', $event)" />
+              [value]="project.deltaRange.min | round"
+              (change)="changeProjectRange('delta', 'min', deltaRangeMin.value)"
+              (input)="changeProjectRange('delta', 'min', deltaRangeMin.value, true)"/>
           </ng-template>
         </div>
       </div>
@@ -110,22 +127,25 @@
         <label for="plot-top-y-max">Maximum</label>
         <div class="input-group">
           <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
-            <input *ngIf="project.nRange" class="form-control"
+            <input #nRangeMax *ngIf="project.nRange" class="form-control"
               type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
-              [ngModel]="project.nRange.max | round"
-              (ngModelChange)="changeRange('n', 'max', $event)" />
+              [value]="project.nRange.max | round"
+              (change)="changeProjectRange('n', 'max', nRangeMax.value)"
+              (input)="changeProjectRange('n', 'max', nRangeMax.value, true)"/>
           </ng-template>
           <ng-template [ngIf]="model.output == 'power'">
-            <input *ngIf="project.powerRange" class="form-control"
+            <input #powerRangeMax *ngIf="project.powerRange" class="form-control"
               type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
-              [ngModel]="project.powerRange.max | round"
-              (ngModelChange)="changeRange('power', 'max', $event)" />
+              [value]="project.powerRange.max | round"
+              (change)="changeProjectRange('power', 'max', powerRangeMax.value)"
+              (input)="changeProjectRange('power', 'max', powerRangeMax.value, true)"/>
           </ng-template>
           <ng-template [ngIf]="model.output == 'delta'">
-            <input *ngIf="project.deltaRange" class="form-control"
+            <input #deltaRangeMax *ngIf="project.deltaRange" class="form-control"
               type="number" step="0.01" [min]="(project.deltaRange.min + 0.01) | round"
-              [ngModel]="project.deltaRange.max | round"
-              (ngModelChange)="changeRange('delta', 'max', $event)" />
+              [value]="project.deltaRange.max | round"
+              (change)="changeProjectRange('delta', 'max', deltaRangeMax.value)"
+              (input)="changeProjectRange('delta', 'max', deltaRangeMax.value, true)"/>
           </ng-template>
         </div>
       </div>
@@ -138,19 +158,21 @@
         <div class="col-sm">
           <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
-            <input *ngIf="project.powerRange" class="form-control"
+            <input #powerRangeMin *ngIf="project.powerRange" class="form-control"
               type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
-              [ngModel]="project.powerRange.min | round"
-              (ngModelChange)="changeRange('power', 'min', $event)" />
+              [value]="project.powerRange.min | round"
+              (change)="changeProjectRange('power', 'min', powerRangeMin.value)"
+              (input)="changeProjectRange('power', 'min', powerRangeMin.value, true)"/>
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
-            <input *ngIf="project.powerRange" class="form-control"
+            <input #powerRangeMax *ngIf="project.powerRange" class="form-control"
               type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
-              [ngModel]="project.powerRange.max | round"
-              (ngModelChange)="changeRange('power', 'max', $event)" />
+              [value]="project.powerRange.max | round"
+              (change)="changeProjectRange('power', 'max', powerRangeMax.value)"
+              (input)="changeProjectRange('power', 'max', powerRangeMax.value, true)"/>
           </div>
         </div>
       </div>
@@ -161,19 +183,21 @@
         <div class="col-sm">
           <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
-            <input *ngIf="project.nRange" class="form-control"
+            <input #nRangeMin *ngIf="project.nRange" class="form-control"
               type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
-              [ngModel]="project.nRange.min | round"
-              (ngModelChange)="changeRange('n', 'min', $event)" />
+              [value]="project.nRange.min | round"
+              (change)="changeProjectRange('n', 'min', nRangeMin.value)"
+              (input)="changeProjectRange('n', 'min', nRangeMin.value, true)"/>
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
-            <input *ngIf="project.nRange" class="form-control"
+            <input #nRangeMax *ngIf="project.nRange" class="form-control"
               type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
-              [ngModel]="project.nRange.max | round"
-              (ngModelChange)="changeRange('n', 'max', $event)" />
+              [value]="project.nRange.max | round"
+              (change)="changeProjectRange('n', 'max', nRangeMax.value)"
+              (input)="changeProjectRange('n', 'max', nRangeMax.value, true)"/>
           </div>
         </div>
       </div>
@@ -184,19 +208,21 @@
         <div class="col-sm">
           <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
-            <input *ngIf="project.nRange" class="form-control"
+            <input #nRangeMin *ngIf="project.nRange" class="form-control"
               type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
-              [ngModel]="project.nRange.min | round"
-              (ngModelChange)="changeRange('n', 'min', $event)" />
+              [value]="project.nRange.min | round"
+              (change)="changeProjectRange('n', 'min', nRangeMin.value)"
+              (input)="changeProjectRange('n', 'min', nRangeMin.value, true)"/>
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
-            <input *ngIf="project.nRange" class="form-control"
+            <input #nRangeMax *ngIf="project.nRange" class="form-control"
               type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
-              [ngModel]="project.nRange.max | round"
-              (ngModelChange)="changeRange('n', 'max', $event)" />
+              [value]="project.nRange.max | round"
+              (change)="changeProjectRange('n', 'max', nRangeMax.value)"
+              (input)="changeProjectRange('n', 'max', nRangeMax.value, true)"/>
           </div>
         </div>
       </div>
@@ -209,19 +235,21 @@
         <div class="col-sm">
           <label for="plot-top-right-x-min">X minimum</label>
           <div class="input-group">
-            <input *ngIf="project.deltaRange" class="form-control"
+            <input #deltaRangeMin *ngIf="project.deltaRange" class="form-control"
               type="number" step="0.01" [max]="(project.deltaRange.max - 1) | round"
-              [ngModel]="project.deltaRange.min | round"
-              (ngModelChange)="changeRange('delta', 'min', $event)" />
+              [value]="project.deltaRange.min | round"
+              (change)="changeProjectRange('delta', 'min', deltaRangeMin.value)"
+              (input)="changeProjectRange('delta', 'min', deltaRangeMin.value, true)"/>
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-right-x-max">X maximum</label>
           <div class="input-group">
-            <input *ngIf="project.deltaRange" class="form-control"
+            <input #deltaRangeMax *ngIf="project.deltaRange" class="form-control"
               type="number" step="0.01" [min]="(project.deltaRange.min - 1) | round"
-              [ngModel]="project.deltaRange.max | round"
-              (ngModelChange)="changeRange('delta', 'max', $event)" />
+              [value]="project.deltaRange.max | round"
+              (change)="changeProjectRange('delta', 'max', deltaRangeMax.value)"
+              (input)="changeProjectRange('delta', 'max', deltaRangeMax.value, true)"/>
           </div>
         </div>
       </div>
@@ -232,19 +260,21 @@
         <div class="col-sm">
           <label for="plot-top-right-x-min">X minimum</label>
           <div class="input-group">
-            <input *ngIf="project.deltaRange" class="form-control"
+            <input #deltaRangeMin *ngIf="project.deltaRange" class="form-control"
               type="number" step="0.01" [max]="(project.deltaRange.max - 1) | round"
-              [ngModel]="project.deltaRange.min | round"
-              (ngModelChange)="changeRange('delta', 'min', $event)" />
+              [value]="project.deltaRange.min | round"
+              (change)="changeProjectRange('delta', 'min', deltaRangeMin.value)"
+              (input)="changeProjectRange('delta', 'min', deltaRangeMin.value, true)"/>
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-right-x-max">X maximum</label>
           <div class="input-group">
-            <input *ngIf="project.deltaRange" class="form-control"
+            <input #deltaRangeMax *ngIf="project.deltaRange" class="form-control"
               type="number" step="0.01" [min]="(project.deltaRange.min - 1) | round"
-              [ngModel]="project.deltaRange.max | round"
-              (ngModelChange)="changeRange('delta', 'max', $event)" />
+              [value]="project.deltaRange.max | round"
+              (change)="changeProjectRange('delta', 'max', deltaRangeMax.value)"
+              (input)="changeProjectRange('delta', 'max', deltaRangeMax.value, true)"/>
           </div>
         </div>
       </div>
@@ -255,19 +285,21 @@
         <div class="col-sm">
           <label for="plot-top-left-x-min">X minimum</label>
           <div class="input-group">
-            <input *ngIf="project.powerRange" class="form-control"
+            <input #powerRangeMin *ngIf="project.powerRange" class="form-control"
               type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
-              [ngModel]="project.powerRange.min | round"
-              (ngModelChange)="changeRange('power', 'min', $event)" />
+              [value]="project.powerRange.min | round"
+              (change)="changeProjectRange('power', 'min', powerRangeMin.value)"
+              (input)="changeProjectRange('power', 'min', powerRangeMin.value, true)"/>
           </div>
         </div>
         <div class="col-sm">
           <label for="plot-top-left-x-max">X maximum</label>
           <div class="input-group">
-            <input *ngIf="project.powerRange" class="form-control"
+            <input #powerRangeMax *ngIf="project.powerRange" class="form-control"
               type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
-              [ngModel]="project.powerRange.max | round"
-              (ngModelChange)="changeRange('power', 'max', $event)" />
+              [value]="project.powerRange.max | round"
+              (change)="changeProjectRange('power', 'max', powerRangeMax.value)"
+              (input)="changeProjectRange('power', 'max', powerRangeMax.value, true)"/>
           </div>
         </div>
       </div>
@@ -279,19 +311,21 @@
       <div class="col-sm">
         <label for="plot-bottom-x-min">X minimum</label>
         <div class="input-group">
-          <input *ngIf="project.pSpaceRange" class="form-control"
+          <input #pSpaceRangeMin *ngIf="project.pSpaceRange" class="form-control"
             type="number" step="0.01" [max]="(project.pSpaceRange.max - 1) | round"
-            [ngModel]="project.pSpaceRange.min | round"
-            (ngModelChange)="changeRange('pSpace', 'min', $event)" />
+            [value]="project.pSpaceRange.min | round"
+            (change)="changeProjectRange('pSpace', 'min', pSpaceRangeMin.value)"
+            (input)="changeProjectRange('pSpace', 'min', pSpaceRangeMin.value, true)"/>
         </div>
       </div>
       <div class="col-sm">
         <label for="plot-bottom-x-max">X maximum</label>
         <div class="input-group">
-          <input *ngIf="project.pSpaceRange" class="form-control"
+          <input #pSpaceRangeMax *ngIf="project.pSpaceRange" class="form-control"
             type="number" step="0.01" [min]="(project.pSpaceRange.min + 1) | round"
-            [ngModel]="project.pSpaceRange.max | round"
-            (ngModelChange)="changeRange('pSpace', 'max', $event)" />
+            [value]="project.pSpaceRange.max | round"
+            (change)="changeProjectRange('pSpace', 'max', pSpaceRangeMax.value)"
+            (input)="changeProjectRange('pSpace', 'max', pSpaceRangeMax.value, true)"/>
         </div>
       </div>
     </div>
