@@ -99,10 +99,6 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   hover(event: any, target?: Point): void {
-    var dim = event.target.getBoundingClientRect();
-    var x = event.clientX - dim.left;
-    var y = event.clientY - dim.top;
-
     this.hoverPoint = undefined;
     this.hoverInfo = HoverInfo.Disabled;
     if (target) {
@@ -110,6 +106,10 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
       this.hoverInfo = HoverInfo.Target;
 
     } else if (!this.hoverDisabled) {
+      var dim = event.target.getBoundingClientRect();
+      var x = event.clientX - dim.left;
+      //var y = event.clientY - dim.top;
+
       let index = this.xBisector(this.mainData, this.xScale.invert(x));
       let point = this.mainData[index];
       if (point) {
@@ -148,8 +148,16 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     return this.hoverInfo == HoverInfo.Target;
   }
 
-  hideHoverInfo(): void {
-    this.hoverInfo = HoverInfo.Disabled;
+  hideHoverInfo(event: any): void {
+    // check to make sure mouse is actually outside box and not just on top of
+    // the target dot
+    var dim = event.target.getBoundingClientRect();
+    let x = event.clientX;
+    let y = event.clientY;
+
+    if (x < dim.left || x > dim.right || y < dim.top || y > dim.bottom) {
+      this.hoverInfo = HoverInfo.Disabled;
+    }
   }
 
   getPathColor(index: number): string {
@@ -395,6 +403,30 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.needDraw = Draw.Yes;
   }
 
+  private getHoverBoxPath(above: boolean, coords: any): void {
+    let dim = coords.getBBox();
+    let left = dim.x - 5, right = dim.x + dim.width + 5;
+    let unit = dim.width / 16;
+    let lmid = left + (7 * unit) + 5, rmid = left + (9 * unit) + 5;
+    let mid = left + (8 * unit) + 5;
+
+    let top, bottom, bottom2;
+    if (above) {
+      top = dim.y - 5;
+      bottom = dim.y + dim.height + 5;
+      bottom2 = bottom + 5;
+    } else {
+      top = dim.y + dim.height + 5;
+      bottom = dim.y - 5;
+      bottom2 = bottom - 5;
+    }
+    return d3.line()([
+      [left, top], [right, top], [right, bottom],
+      [rmid, bottom], [mid, bottom2], [lmid, bottom],
+      [left, bottom], [left, top]
+    ]);
+  }
+
   private draw(): void {
     if (this.needDraw == Draw.No) {
       return;
@@ -404,20 +436,22 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
     if (this.hoverInfo != HoverInfo.Disabled) {
       // draw hover info box
-      let box = svg.select(`#${this.name}-hover-info`);
-      let coords = svg.select(`#${this.name}-hover-coords`);
+      let t = svg.transition().duration(50);
+
+      let info = svg.select(`#${this.name}-hover-info`);
+      info.attr('transform', this.translate(
+        this.leftMargin + this.hoverX, this.topMargin + this.hoverY));
+
+      let above = this.hoverY >= 50;
+
+      let box = t.select(`#${this.name}-hover-box`);
+      let coords = t.select(`#${this.name}-hover-coords`);
+      coords.attr('y', above ? "-2.5em" : "2.5em");
+
       if (box.size() > 0 && coords.size() > 0) {
-        let dim = coords.node().getBBox();
-        let left = dim.x - 5, right = dim.x + dim.width + 5;
-        let unit = dim.width / 16;
-        let lmid = left + (7 * unit) + 5, rmid = left + (9 * unit) + 5;
-        let mid = left + (8 * unit) + 5;
-        let top = dim.y - 5, bottom = dim.y + dim.height + 5;
-        box.attr("d", d3.line()([
-          [left, top], [right, top], [right, bottom],
-          [rmid, bottom], [mid, bottom + 5], [lmid, bottom],
-          [left, bottom], [left, top]
-        ]));
+        box.attrTween('d', () => {
+          return this.getHoverBoxPath.bind(this, above, coords.node());
+        });
       }
     }
 
@@ -523,6 +557,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     for (let i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
       svg.select(`${targetId}-drop-${i}`).attr("d", this.dropPaths[i]);
     }
+    this.hover(event, this.target);
   }
 
   private dragTargetEnd(event: any): void {

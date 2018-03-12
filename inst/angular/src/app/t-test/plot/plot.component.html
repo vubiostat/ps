@@ -42,7 +42,7 @@
     <rect [attr.transform]="translate(leftMargin, topMargin)"
       [attr.width]="innerWidth" [attr.height]="innerHeight"
       fill="none" pointer-events="all"
-      (mouseout)="hideHoverInfo()"
+      (mouseout)="hideHoverInfo($event)"
       (mousemove)="hover($event)" />
 
     <g *ngIf="!hideTarget">
@@ -84,12 +84,11 @@
       </g>
     </g>
 
-    <g *ngIf="isHoverInfoActive()"
-      [attr.transform]="translate(leftMargin + hoverX, topMargin + hoverY)">
+    <g id="{{name}}-hover-info" *ngIf="isHoverInfoActive()" pointer-events="none">
       <circle *ngIf="!isHoverInfoTarget()" r="4" fill="none" stroke="blue" />
-      <path id="{{name}}-hover-info"
+      <path id="{{name}}-hover-box"
         stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
-      <text id="{{name}}-hover-coords" y="-2.5em" font-family="monospace" text-anchor="middle">
+      <text id="{{name}}-hover-coords" font-family="monospace" text-anchor="middle">
         <tspan style="white-space: pre">{{x.sym}}: {{hoverPoint.x | formatFixed:[hoverPoint.y]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">{{y.sym}}: {{hoverPoint.y | formatFixed:[hoverPoint.x]}}</tspan>
       </text>
     </g>
