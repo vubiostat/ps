@@ -113,6 +113,10 @@ export class TTestComponent implements OnInit {
     this.outputPane.redrawPlots();
   }
 
+  onPlotOptionsReset(): void {
+    this.outputPane.redrawPlots();
+  }
+
   onProjectRangeChanged(change: ProjectRangeChange): void {
     if (this.selectedProject) {
       this.selectedProject.updateRange(change).then(() => {

@@ -19,6 +19,7 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
   @Input('project') project: Project;
   @Output() optionChanged: EventEmitter<any> = new EventEmitter();
   @Output() rangeChanged: EventEmitter<ProjectRangeChange> = new EventEmitter();
+  @Output() reset: EventEmitter<any> = new EventEmitter();
   model: TTest;
 
   private attributeChangedImmediate: Subject<any> = new Subject();
@@ -52,8 +53,10 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
     }
   }
 
-  reset(): void {
+  doReset(): void {
     this.plotOptions.reset();
+    this.project.resetRanges();
+    this.reset.emit();
   }
 
   changeAttribute(name: string, value: any): void {

@@ -22,6 +22,13 @@ export class Project {
   deltaRange?: Range;
   pSpaceRange?: Range;
 
+  previousRanges: {
+    nRange?: Range;
+    powerRange?: Range;
+    deltaRange?: Range;
+    pSpaceRange?: Range;
+  };
+
   constructor(private ttestService: TTestService) {}
 
   getOutput(): string {
@@ -100,7 +107,20 @@ export class Project {
               break;
           }
         }
+
+        this.previousRanges = {
+          nRange: this.nRange,
+          powerRange: this.powerRange,
+          deltaRange: this.deltaRange,
+          pSpaceRange: this.pSpaceRange
+        };
       });
+  }
+
+  resetRanges(): void {
+    if (this.previousRanges) {
+      Object.assign(this, this.previousRanges);
+    }
   }
 
   addModel(model: TTest): Promise<any> {
