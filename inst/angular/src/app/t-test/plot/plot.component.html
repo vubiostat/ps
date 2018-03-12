@@ -66,9 +66,9 @@
        *ngIf="project.models.length > 1"
        [attr.transform]="translate(leftMargin + 15 + legendXOffset, topMargin + 15 + legendYOffset)"
        font-size="smaller" (dblclick)="resetLegend()">
-      <path id="{{name}}-legend-box"
-            fill="white" [attr.fill-opacity]="plotOptions.showLegendBox ? 0.8 : 0"
-            stroke="black" [attr.stroke-opacity]="plotOptions.showLegendBox ? 1 : 0" />
+      <path id="{{name}}-legend-box" *ngIf="plotOptions.showLegendBox"
+            fill="white" fill-opacity="0.8"
+            stroke="black" stroke-opacity="1" />
       <g id="{{name}}-legend-labels">
         <g *ngFor="let model of project.models; index as i; trackBy: trackByIndex"
            [attr.transform]="translate(5, 20 * plotOptions.fontSize * i)">
