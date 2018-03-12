@@ -8,6 +8,8 @@ import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../export.service'
 
+import * as stableSort from 'stable';
+
 @Component({
   selector: 't-test-export-plots',
   templateUrl: './export-plots.component.html',
@@ -58,6 +60,15 @@ export class ExportPlotsComponent implements OnInit {
   ngOnInit(): void {
     this.exportService.formats().then(response => {
       this.imageFormats = response.formats;
+
+      // Make WMF the default (for now)
+      stableSort.inplace(this.imageFormats, (a, b) => {
+        if (a === "WMF") return -1;
+        if (b === "WMF") return 1;
+        if (a < b) return -1;
+        if (b > a) return 1;
+        return 0;
+      });
     });
 
     switch (this.project.getModel(0).output) {
