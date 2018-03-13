@@ -56,7 +56,7 @@ export abstract class AbstractPlotComponent implements OnInit {
     return `translate(${x}, ${y})`;
   }
 
-  protected getPath(data: any[], xName = "x", yName = "y"): string {
+  protected getPath(data: any[], xName = "x", yName = "y", curve = true): string {
     let xScaleRange = stableSort(this.xScale.domain(), d3.ascending);
     let yScaleRange = stableSort(this.yScale.domain(), d3.ascending);
     let line = d3.line().
@@ -69,6 +69,9 @@ export abstract class AbstractPlotComponent implements OnInit {
           x >= xScaleRange[0] && x <= xScaleRange[1] &&
           y >= yScaleRange[0] && y <= yScaleRange[1];
       });
+    if (curve) {
+      line = line.curve(d3.curveBasis);
+    }
 
     return line(data);
   }

@@ -203,18 +203,18 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       let leftPath = this.getPath([
         { x: leftLimit, y: 0.40 },
         { x: leftLimit, y: 0.60 }
-      ]);
+      ], 'x', 'y', false);
 
       let rightLimit = range.max;
       let rightPath = this.getPath([
         { x: rightLimit, y: 0.40 },
         { x: rightLimit, y: 0.60 }
-      ]);
+      ], 'x', 'y', false);
 
       let centerPath = this.getPath([
         { x: leftLimit, y: 0.5 },
         { x: rightLimit, y: 0.5 }
-      ]);
+      ], 'x', 'y', false);
 
       // sample distribution
       let distPath = this.getArea(this.plotData[i], 'x', 'y');
@@ -348,7 +348,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   private getArea(points: any[], xName: string, yName: string): string {
-    let area = d3.area().
+    let area = d3.area().curve(d3.curveBasis).
       x((d, i) => this.xScale(d[xName])).
       y0(this.yScaleSD(0)).
       y1((d, i) => this.yScaleSD(d[yName]));
@@ -426,17 +426,17 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     let leftPath = this.getPath([
       { x: this.mainGroup.left, y: 0.40 },
       { x: this.mainGroup.left, y: 0.60 }
-    ]);
+    ], 'x', 'y', false);
 
     let rightPath = this.getPath([
       { x: this.mainGroup.right, y: 0.40 },
       { x: this.mainGroup.right, y: 0.60 }
-    ]);
+    ], 'x', 'y', false);
 
     let centerPath = this.getPath([
       { x: this.mainGroup.left, y: 0.5 },
       { x: this.mainGroup.right, y: 0.5 }
-    ]);
+    ], 'x', 'y', false);
 
     let svg = d3.select(this.plotElement.nativeElement);
     svg.select(`#${this.mainGroup.id}-left`).attr('d', leftPath);

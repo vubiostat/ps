@@ -1,18 +1,25 @@
 # Calculate sample size, given the other parameters
 calculateN <- function(alpha, delta, sigma, power, ...) {
-  (sigma * (qnorm(1 - alpha/2) + qnorm(power)) / delta) ^ 2
+  #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " power = ", power, "\n", sep = "")
+  result <- try(pwr.t.test(d = delta / sigma, power = power, sig.level = alpha,
+                           type = "paired", alternative = "two.sided"))
+  if (inherits(result, "try-error")) NA else result$n
 }
 
 # Calculate power, given the other parameters
 calculatePower <- function(alpha, delta, sigma, n, ...) {
-  z <- delta / sigma * sqrt(n)
-  pnorm(z - qnorm(1 - alpha/2)) + pnorm(-z - qnorm(1 - alpha/2))
+  #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " n = ", n, "\n", sep = "")
+  result <- try(pwr.t.test(d = delta / sigma, n = n, sig.level = alpha,
+                           type = "paired", alternative = "two.sided"))
+  if (inherits(result, "try-error")) NA else result$power
 }
 
 # Calculate detectable alternative, given the other parameters
 calculateDelta <- function(alpha, sigma, n, power, ...) {
-  # Note: ignores the smaller tail (typical)
-  sqrt((qnorm(1 - alpha/2) - qnorm(1 - power)) ^ 2 * (sigma ^ 2) / n)
+  #cat("alpha = ", alpha, " sigma = ", sigma, " n = ", n, " power = ", power, "\n", sep = "")
+  result <- try(pwr.t.test(n = n, power = power, sig.level = alpha,
+                           type = "paired", alternative = "two.sided"))
+  if (inherits(result, "try-error")) NA else result$d * sigma
 }
 
 # Calculate detectable alternative axis range
@@ -109,13 +116,13 @@ TTest <- setRefClass("TTest",
     plotData = function(ranges) {
       result <- list()
       if (output == "n" || output == "nByCI") {
-        n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = 200)
+        n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = 50)
         if (!(n %in% n2)) {
           n2 <- sort(c(n2, n))
         }
 
-        power2 <- calculatePower(alpha, delta, sigma, n2)
-        delta2 <- calculateDelta(alpha, sigma, n2, power)
+        power2 <- sapply(n2, calculatePower, alpha = alpha, delta = delta, sigma = sigma)
+        delta2 <- sapply(n2, calculateDelta, alpha = alpha, sigma = sigma, power = power)
         if (delta < 0) {
           delta2 <- -delta2
         }
@@ -123,28 +130,28 @@ TTest <- setRefClass("TTest",
         result$nVsDelta <- data.frame(y = n2, x = delta2)
 
       } else if (output == "power") {
-        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = 200)
+        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = 50)
         if (!(power %in% power2)) {
           power2 <- sort(c(power2, power))
         }
 
-        n2 <- calculateN(alpha, delta, sigma, power2)
+        n2 <- sapply(power2, calculateN, alpha = alpha, delta = delta, sigma = sigma)
         result$powerVsN <- data.frame(y = power2, x = n2)
 
-        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 200)
-        power3 <- calculatePower(alpha, delta2, sigma, n)
+        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 50)
+        power3 <- sapply(delta2, calculatePower, alpha = alpha, sigma = sigma, n = n)
         result$powerVsDelta <- data.frame(y = power3, x = delta2)
 
       } else if (output == "delta") {
         # Calculate data for plots
         deltaDiff <- delta * 2
-        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 200)
+        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 50)
         if (!(delta %in% delta2)) {
           delta2 <- sort(c(delta2, delta))
         }
 
-        n2 <- calculateN(alpha, delta2, sigma, power)
-        power2 <- calculatePower(alpha, delta2, sigma, n)
+        n2 <- sapply(delta2, calculateN, alpha = alpha, sigma = sigma, power = power)
+        power2 <- sapply(delta2, calculatePower, alpha = alpha, sigma = sigma, n = n)
         result$deltaVsPower <- data.frame(y = delta2, x = power2)
         result$deltaVsN <- data.frame(y = delta2, x = n2)
       }
@@ -152,7 +159,7 @@ TTest <- setRefClass("TTest",
       # Calculate data for bottom/tertiary graph
       #moe <- calculateMarginOfError(alpha, delta, sigma, n)
       moe <- ci / 2
-      pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = 200)
+      pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = 50)
       sampDist <- calculateSampDist(pSpace, delta, sigma, n)
       result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
 

@@ -2,8 +2,8 @@ validateModelParams <- function(params) {
   errors <- list()
 
   keys <- names(params)
-  expectedKeys <- c("id", "alpha", "sigma", "n", "power", "delta", "ci",
-                    "ciMode", "deltaMode", "output", "design")
+  expectedKeys <- c("alpha", "sigma", "n", "power", "delta", "ci", "ciMode",
+                    "deltaMode", "output", "design")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {

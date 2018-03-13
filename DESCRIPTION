@@ -4,7 +4,7 @@ Date: 2017-06-07
 Title: Power and Sample Size Calculation
 Author: Jeffrey Blume, William DuPont, Dale Plummer, Jeremy Stephens
 Maintainer: Jeremy Stephens <jeremy.f.stephens@vanderbilt.edu>
-Depends: R (>= 3.1.0), httpuv, jsonlite, openssl, mime, zip, base64enc, rsvg
+Depends: R (>= 3.1.0), httpuv, jsonlite, openssl, mime, zip, base64enc, rsvg, pwr
 Suggests: devtools
 Description: Calculate power, sample size, and detectable alternative
   by using various methods.
