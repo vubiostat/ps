@@ -109,21 +109,15 @@ export class Project {
               break;
           }
         }
-
-        this.previousRanges = {
-          nRange: this.nRange,
-          powerRange: this.powerRange,
-          deltaRange: this.deltaRange,
-          pSpaceRange: this.pSpaceRange
-        };
       });
   }
 
-  resetRanges(): void {
+  resetRanges(): Promise<any> {
     if (this.previousRanges) {
       Object.assign(this, this.previousRanges);
     }
     this.keepRanges = false;
+    return this.updatePlotData();
   }
 
   addModel(model: TTest): Promise<any> {
@@ -311,6 +305,13 @@ export class Project {
     } else {
       this.pSpaceRange = undefined;
     }
+
+    this.previousRanges = {
+      nRange: this.nRange ? this.nRange.clone() : undefined,
+      powerRange: this.powerRange ? this.powerRange.clone() : undefined,
+      deltaRange: this.deltaRange ? this.deltaRange.clone() : undefined,
+      pSpaceRange: this.pSpaceRange ? this.pSpaceRange.clone() : undefined
+    };
   }
 
   describeChanges(changes: any, html = true): string {

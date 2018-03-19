@@ -55,7 +55,6 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
 
   doReset(): void {
     this.plotOptions.reset();
-    this.project.resetRanges();
     this.reset.emit();
   }
 

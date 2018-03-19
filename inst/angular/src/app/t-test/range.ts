@@ -13,4 +13,8 @@ export class Range {
   toArray(): number[] {
     return [this.min, this.max];
   }
+
+  clone(): Range {
+    return new Range(this.min, this.max);
+  }
 }
