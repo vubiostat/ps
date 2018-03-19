@@ -17,6 +17,7 @@ export class Project {
   selectedIndex: number = 0;
   changeHistory: any[] = [];
 
+  keepRanges = false
   nRange?: Range;
   powerRange?: Range;
   deltaRange?: Range;
@@ -39,18 +40,20 @@ export class Project {
   }
 
   updateRange(change: ProjectRangeChange): Promise<any> {
+    this.keepRanges = true;
     let attrib = `${change.name}Range`;
     this[attrib][change.which] = change.value;
-    return this.updatePlotData(false);
+    return this.updatePlotData();
   }
 
-  updatePlotData(updateRanges = true): Promise<any> {
+  updatePlotData(): Promise<any> {
     let ranges = {
       nRange: this.nRange,
       powerRange: this.powerRange,
       deltaRange: this.deltaRange,
       pSpaceRange: this.pSpaceRange
     } as PlotDataRanges;
+    console.log('updating plot data with ranges:', ranges);
 
     return this.ttestService.plotData(this.models, ranges).
       then(result => {
@@ -58,7 +61,7 @@ export class Project {
           Object.assign(this.models[i], data);
         });
 
-        if (!updateRanges) return;
+        if (this.keepRanges) return;
 
         let output = this.getOutput();
         let nRange, powerRange, deltaRange;
@@ -121,6 +124,7 @@ export class Project {
     if (this.previousRanges) {
       Object.assign(this, this.previousRanges);
     }
+    this.keepRanges = false;
   }
 
   addModel(model: TTest): Promise<any> {
@@ -129,7 +133,9 @@ export class Project {
         let model = new TTest(result);
         model.name = this.getModelName(this.models.length);
         this.models.push(model);
-        this.calculateRanges();
+        if (!this.keepRanges) {
+          this.calculateRanges();
+        }
 
         this.changeHistory.push({
           'type': 'add', 'index': this.models.length - 1,
@@ -170,7 +176,10 @@ export class Project {
 
     let models = [model];
     if (key === "output") {
+      // If the output is changed, all models need to be updated. Additionally,
+      // reset the flag to keep ranges.
       models = this.models;
+      this.keepRanges = false;
     }
 
     models.forEach(m => { Object.assign(m, changes); });
@@ -181,7 +190,9 @@ export class Project {
         Object.assign(model, result);
       });
     }, Promise.resolve()).then(() => {
-      this.calculateRanges();
+      if (!this.keepRanges) {
+        this.calculateRanges();
+      }
       this.changeHistory.push({
         'type': 'change', 'index': index,
         'key': key, 'params': model.params()
@@ -195,7 +206,9 @@ export class Project {
     this.changeHistory.push({
       'type': 'remove', 'index': index
     });
-    this.calculateRanges();
+    if (!this.keepRanges) {
+      this.calculateRanges();
+    }
     return this.updatePlotData();
   }
 
