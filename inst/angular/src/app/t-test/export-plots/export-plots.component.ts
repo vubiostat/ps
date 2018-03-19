@@ -45,7 +45,7 @@ export class ExportPlotsComponent implements OnInit {
   bottomHeight = 160;
 
   imageFormats: string[] = [];
-  imageFormat = "PNG";
+  imageFormat: string;
 
   @ViewChild('topLeftPlot') topLeftPlot: PlotComponent;
   @ViewChild('topRightPlot') topRightPlot: PlotComponent;
@@ -69,6 +69,8 @@ export class ExportPlotsComponent implements OnInit {
         if (b > a) return 1;
         return 0;
       });
+
+      this.imageFormat = this.imageFormats[0];
     });
 
     switch (this.project.getModel(0).output) {

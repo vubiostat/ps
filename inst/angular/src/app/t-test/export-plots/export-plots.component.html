@@ -188,7 +188,8 @@
   <div class="d-flex-inline flex-row">
     <div class="form-inline">
       <label for="export-image-format" class="mr-sm-2">Image format:</label>
-      <select id="export-image-format" class="form-control" [(ngModel)]="imageFormat">
+      <select id="export-image-format" class="form-control"
+        name="imageFormat" [(ngModel)]="imageFormat">
         <option *ngFor="let format of imageFormats">{{format}}</option>
       </select>
     </div>
