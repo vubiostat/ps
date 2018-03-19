@@ -189,7 +189,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
       (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
 
     this.leftMargin = this.plotOptions.getFontSize() + this.yAxisWidth + 10;
-    this.rightMargin = 10;
+    this.rightMargin = this.plotOptions.getAxisFontSize() + 9;
     this.topMargin = this.plotOptions.getFontSize() + 10;
     this.bottomMargin = this.plotOptions.getFontSize() + this.xAxisHeight + 10;
 

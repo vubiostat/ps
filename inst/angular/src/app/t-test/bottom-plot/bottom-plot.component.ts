@@ -132,8 +132,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     this.bottomMargin = 10 + this.plotOptions.getFontSize() +
       this.plotOptions.getAxisLineWidth() +         // x axis line width
       (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
-    this.leftMargin = 10;
-    this.rightMargin = 10;
+    this.leftMargin = this.plotOptions.getAxisFontSize() + 9;
+    this.rightMargin = this.leftMargin;
 
     // dimensions
     if (this.fixedWidth) {
