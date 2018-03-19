@@ -53,7 +53,6 @@ export class Project {
       deltaRange: this.deltaRange,
       pSpaceRange: this.pSpaceRange
     } as PlotDataRanges;
-    console.log('updating plot data with ranges:', ranges);
 
     return this.ttestService.plotData(this.models, ranges).
       then(result => {
