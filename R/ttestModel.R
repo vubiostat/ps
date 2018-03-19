@@ -2,7 +2,8 @@
 calculateN <- function(alpha, delta, sigma, power, ...) {
   #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " power = ", power, "\n", sep = "")
   result <- try(pwr.t.test(d = delta / sigma, power = power, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"))
+                           type = "paired", alternative = "two.sided"),
+                silent = TRUE)
   if (inherits(result, "try-error")) NA else result$n
 }
 
@@ -10,7 +11,8 @@ calculateN <- function(alpha, delta, sigma, power, ...) {
 calculatePower <- function(alpha, delta, sigma, n, ...) {
   #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " n = ", n, "\n", sep = "")
   result <- try(pwr.t.test(d = delta / sigma, n = n, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"))
+                           type = "paired", alternative = "two.sided"),
+                silent = TRUE)
   if (inherits(result, "try-error")) NA else result$power
 }
 
@@ -18,7 +20,8 @@ calculatePower <- function(alpha, delta, sigma, n, ...) {
 calculateDelta <- function(alpha, sigma, n, power, ...) {
   #cat("alpha = ", alpha, " sigma = ", sigma, " n = ", n, " power = ", power, "\n", sep = "")
   result <- try(pwr.t.test(n = n, power = power, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"))
+                           type = "paired", alternative = "two.sided"),
+                silent = TRUE)
   if (inherits(result, "try-error")) NA else result$d * sigma
 }
 
