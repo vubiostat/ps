@@ -69,7 +69,7 @@
     (drag-end)="onChildDragEnded()">
     <t-test-plot-options [project]="selectedProject"
       (optionChanged)="onPlotOptionChanged()"
-      (rangeChanged)="onProjectRangeChanged($event)"
+      (projectChanged)="onProjectChangedFromPlotOptions()"
       (reset)="onPlotOptionsReset()">
     </t-test-plot-options>
   </t-test-draggable-dialog>

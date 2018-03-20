@@ -6,9 +6,15 @@ import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/filter';
 
-import { Project, ProjectRangeChange } from '../project';
+import { Project } from '../project';
 import { TTest } from '../t-test';
 import { PlotOptionsService } from '../plot-options.service';
+
+interface ProjectChange {
+  name: string;
+  subname?: string;
+  value: any;
+}
 
 @Component({
   selector: 't-test-plot-options',
@@ -17,34 +23,35 @@ import { PlotOptionsService } from '../plot-options.service';
 })
 export class PlotOptionsComponent implements OnInit, OnChanges {
   @Input('project') project: Project;
-  @Output() optionChanged: EventEmitter<any> = new EventEmitter();
-  @Output() rangeChanged: EventEmitter<ProjectRangeChange> = new EventEmitter();
-  @Output() reset: EventEmitter<any> = new EventEmitter();
+  @Output() optionChanged = new EventEmitter();
+  @Output() projectChanged = new EventEmitter();
+  @Output() reset = new EventEmitter();
   model: TTest;
 
-  private attributeChangedImmediate: Subject<any> = new Subject();
-  private rangeChangedDelay: Subject<ProjectRangeChange> = new Subject();
-  private rangeChangedImmediate: Subject<ProjectRangeChange> = new Subject();
-  private attributeSub: Subscription;
+  private projectChangedDelay: Subject<ProjectChange> = new Subject();
+  private projectChangedImmediate: Subject<ProjectChange> = new Subject();
   private rangeSub: Subscription;
 
   constructor(private plotOptions: PlotOptionsService) {}
 
   ngOnInit(): void {
     this.rangeSub = Observable.merge(
-      this.rangeChangedDelay.debounceTime(400),
-      this.rangeChangedImmediate
+      this.projectChangedDelay.debounceTime(400),
+      this.projectChangedImmediate
     ).subscribe(change => {
-      this.rangeChanged.emit(change);
-    });
+      if (change.subname) {
+        this.project[change.name][change.subname] = change.value;
+      } else {
+        this.project[change.name] = change.value;
+      }
+      if (change.name == 'customRanges' && !change.value) {
+        this.project.resetRanges();
+      }
 
-    this.attributeSub = this.attributeChangedImmediate.
-      filter(change => {
-        return this.plotOptions[change.name] !== change.value;
-      }).subscribe(change => {
-        this.plotOptions[change.name] = change.value;
-        this.optionChanged.emit();
+      this.project.updatePlotData().then(() => {
+        this.projectChanged.emit()
       });
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -55,12 +62,17 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
 
   doReset(): void {
     this.plotOptions.reset();
-    this.reset.emit();
+    this.project.resetRanges();
+    this.project.updatePlotData().then(() => {
+      this.reset.emit();
+    });
   }
 
   changeAttribute(name: string, value: any): void {
-    let change = { name: name, value: value };
-    this.attributeChangedImmediate.next(change);
+    if (this.plotOptions[name] !== value) {
+      this.plotOptions[name] = value;
+      this.optionChanged.emit();
+    }
   }
 
   changeNumberAttribute(name: string, value: string): void {
@@ -70,15 +82,20 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
     }
   }
 
-  changeProjectRange(name: string, which: string, value: string, input = false): void {
+  setProjectAttribute(name: string, value: any): void {
+    let change = { name: name, value: value } as ProjectChange;
+    this.projectChangedImmediate.next(change);
+  }
+
+  setProjectRange(name: string, which: string, value: string, delay = false): void {
     let n = parseFloat(value);
     if (isNaN(n)) return;
 
-    let change = { name: name, which: which, value: n } as ProjectRangeChange;
-    if (input) {
-      this.rangeChangedDelay.next(change);
+    let change = { name: `${name}Range`, subname: which, value: n } as ProjectChange;
+    if (delay) {
+      this.projectChangedDelay.next(change);
     } else {
-      this.rangeChangedImmediate.next(change);
+      this.projectChangedImmediate.next(change);
     }
   }
 }

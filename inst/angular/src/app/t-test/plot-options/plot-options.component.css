@@ -12,6 +12,18 @@ fieldset legend {
   width: auto;
 }
 
+h4 {
+  font-size: inherit;
+  font-weight: bold;
+  border-bottom: 1px solid #bbb;
+  margin: 1em 0;
+  padding-bottom: 0.2em;
+}
+
+div.disabled {
+  opacity: 0.5;
+}
+
 .form-group {
   padding: 0 5px;
 }

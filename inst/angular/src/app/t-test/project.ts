@@ -6,18 +6,12 @@ import { TTestService, PlotDataRanges } from './t-test.service';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
-export interface ProjectRangeChange {
-  name: string;
-  which: string;
-  value: number;
-}
-
 export class Project {
   models: TTest[] = [];
   selectedIndex: number = 0;
   changeHistory: any[] = [];
 
-  keepRanges = false
+  customRanges = false;
   nRange?: Range;
   powerRange?: Range;
   deltaRange?: Range;
@@ -39,13 +33,6 @@ export class Project {
     return '';
   }
 
-  updateRange(change: ProjectRangeChange): Promise<any> {
-    this.keepRanges = true;
-    let attrib = `${change.name}Range`;
-    this[attrib][change.which] = change.value;
-    return this.updatePlotData();
-  }
-
   updatePlotData(): Promise<any> {
     let ranges = {
       nRange: this.nRange,
@@ -60,7 +47,7 @@ export class Project {
           Object.assign(this.models[i], data);
         });
 
-        if (this.keepRanges) return;
+        if (this.customRanges) return;
 
         let output = this.getOutput();
         let nRange, powerRange, deltaRange;
@@ -109,15 +96,20 @@ export class Project {
               break;
           }
         }
+
+        this.previousRanges = {
+          nRange: this.nRange ? this.nRange.clone() : undefined,
+          powerRange: this.powerRange ? this.powerRange.clone() : undefined,
+          deltaRange: this.deltaRange ? this.deltaRange.clone() : undefined,
+          pSpaceRange: this.pSpaceRange ? this.pSpaceRange.clone() : undefined
+        };
       });
   }
 
-  resetRanges(): Promise<any> {
+  resetRanges(): void {
     if (this.previousRanges) {
       Object.assign(this, this.previousRanges);
     }
-    this.keepRanges = false;
-    return this.updatePlotData();
   }
 
   addModel(model: TTest): Promise<any> {
@@ -126,7 +118,7 @@ export class Project {
         let model = new TTest(result);
         model.name = this.getModelName(this.models.length);
         this.models.push(model);
-        if (!this.keepRanges) {
+        if (!this.customRanges) {
           this.calculateRanges();
         }
 
@@ -172,7 +164,7 @@ export class Project {
       // If the output is changed, all models need to be updated. Additionally,
       // reset the flag to keep ranges.
       models = this.models;
-      this.keepRanges = false;
+      this.customRanges = false;
     }
 
     models.forEach(m => { Object.assign(m, changes); });
@@ -183,7 +175,7 @@ export class Project {
         Object.assign(model, result);
       });
     }, Promise.resolve()).then(() => {
-      if (!this.keepRanges) {
+      if (!this.customRanges) {
         this.calculateRanges();
       }
       this.changeHistory.push({
@@ -199,7 +191,7 @@ export class Project {
     this.changeHistory.push({
       'type': 'remove', 'index': index
     });
-    if (!this.keepRanges) {
+    if (!this.customRanges) {
       this.calculateRanges();
     }
     return this.updatePlotData();
@@ -305,13 +297,6 @@ export class Project {
     } else {
       this.pSpaceRange = undefined;
     }
-
-    this.previousRanges = {
-      nRange: this.nRange ? this.nRange.clone() : undefined,
-      powerRange: this.powerRange ? this.powerRange.clone() : undefined,
-      deltaRange: this.deltaRange ? this.deltaRange.clone() : undefined,
-      pSpaceRange: this.pSpaceRange ? this.pSpaceRange.clone() : undefined
-    };
   }
 
   describeChanges(changes: any, html = true): string {

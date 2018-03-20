@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switch';
 
 import { TTest } from './t-test';
-import { Project, ProjectRangeChange } from './project';
+import { Project } from './project';
 import { ProjectFactoryService } from './project-factory.service';
 
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
@@ -114,17 +114,11 @@ export class TTestComponent implements OnInit {
   }
 
   onPlotOptionsReset(): void {
-    this.selectedProject.resetRanges().then(() => {
-      this.outputPane.redrawPlots();
-    });
+    this.outputPane.redrawPlots();
   }
 
-  onProjectRangeChanged(change: ProjectRangeChange): void {
-    if (this.selectedProject) {
-      this.selectedProject.updateRange(change).then(() => {
-        this.outputPane.redrawPlots();
-      });
-    }
+  onProjectChangedFromPlotOptions(): void {
+    this.outputPane.redrawPlots();
   }
 
   onMouseUp(): void {
