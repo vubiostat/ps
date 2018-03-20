@@ -22,7 +22,7 @@ enum Platform {
 }
 
 /* browser.js v0.1-dev | @ajlkn | MIT licensed */
-let platformPatterns = [
+let platformPatterns: [Platform, RegExp][] = [
   [Platform.iOS,     /([0-9_]+) like Mac OS X/],
   [Platform.iOS,     /CPU like Mac OS X/],
   [Platform.WP,      /Windows Phone ([0-9\.]+)/],
