@@ -253,13 +253,14 @@ var AbstractPlotComponent = (function () {
         }
         return "translate(" + x + ", " + y + ")";
     };
-    AbstractPlotComponent.prototype.getPath = function (data, xName, yName) {
+    AbstractPlotComponent.prototype.getPath = function (data, xName, yName, curve) {
         var _this = this;
         if (xName === void 0) { xName = "x"; }
         if (yName === void 0) { yName = "y"; }
+        if (curve === void 0) { curve = true; }
         var xScaleRange = __WEBPACK_IMPORTED_MODULE_2_stable__(this.xScale.domain(), __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* ascending */]);
         var yScaleRange = __WEBPACK_IMPORTED_MODULE_2_stable__(this.yScale.domain(), __WEBPACK_IMPORTED_MODULE_1_d3__["b" /* ascending */]);
-        var line = __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* line */]().
+        var line = __WEBPACK_IMPORTED_MODULE_1_d3__["l" /* line */]().
             x(function (d, i) { return _this.xScale(d[xName]); }).
             y(function (d, i) { return _this.yScale(d[yName]); }).
             defined(function (d, i) {
@@ -269,6 +270,9 @@ var AbstractPlotComponent = (function () {
                 x >= xScaleRange[0] && x <= xScaleRange[1] &&
                 y >= yScaleRange[0] && y <= yScaleRange[1];
         });
+        if (curve) {
+            line = line.curve(__WEBPACK_IMPORTED_MODULE_1_d3__["f" /* curveBasis */]);
+        }
         return line(data);
     };
     AbstractPlotComponent.prototype.setup = function () {
@@ -444,8 +448,8 @@ var BottomPlotComponent = (function (_super) {
         this.bottomMargin = 10 + this.plotOptions.getFontSize() +
             this.plotOptions.getAxisLineWidth() +
             (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
-        this.leftMargin = 10;
-        this.rightMargin = 10;
+        this.leftMargin = this.plotOptions.getAxisFontSize() + 9;
+        this.rightMargin = this.leftMargin;
         // dimensions
         if (this.fixedWidth) {
             this.width = this.fixedWidth;
@@ -483,17 +487,17 @@ var BottomPlotComponent = (function (_super) {
     };
     BottomPlotComponent.prototype.setupScales = function () {
         var pSpaceRange = this.project.pSpaceRange;
-        this.xScale = __WEBPACK_IMPORTED_MODULE_3_d3__["l" /* scaleLinear */]().
+        this.xScale = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* scaleLinear */]().
             domain(pSpaceRange.toArray()).
             range([0, this.innerWidth]);
-        this.yScale = __WEBPACK_IMPORTED_MODULE_3_d3__["l" /* scaleLinear */]().
+        this.yScale = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* scaleLinear */]().
             domain([0, 0.7]).
             range([0, this.innerHeight]);
         var sampDistExtent = this.plotData.reduce(function (arr, sampDist) {
-            var extent = __WEBPACK_IMPORTED_MODULE_3_d3__["i" /* extent */](sampDist, function (d) { return d.y; });
-            return __WEBPACK_IMPORTED_MODULE_3_d3__["i" /* extent */](arr.concat(extent));
+            var extent = __WEBPACK_IMPORTED_MODULE_3_d3__["j" /* extent */](sampDist, function (d) { return d.y; });
+            return __WEBPACK_IMPORTED_MODULE_3_d3__["j" /* extent */](arr.concat(extent));
         }, []);
-        this.yScaleSD = __WEBPACK_IMPORTED_MODULE_3_d3__["l" /* scaleLinear */]().
+        this.yScaleSD = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* scaleLinear */]().
             domain(sampDistExtent.reverse()).
             range([0, this.yScale(0.5)]).
             clamp(true);
@@ -507,16 +511,16 @@ var BottomPlotComponent = (function (_super) {
             var leftPath = _this.getPath([
                 { x: leftLimit, y: 0.40 },
                 { x: leftLimit, y: 0.60 }
-            ]);
+            ], 'x', 'y', false);
             var rightLimit = range.max;
             var rightPath = _this.getPath([
                 { x: rightLimit, y: 0.40 },
                 { x: rightLimit, y: 0.60 }
-            ]);
+            ], 'x', 'y', false);
             var centerPath = _this.getPath([
                 { x: leftLimit, y: 0.5 },
                 { x: rightLimit, y: 0.5 }
-            ]);
+            ], 'x', 'y', false);
             // sample distribution
             var distPath = _this.getArea(_this.plotData[i], 'x', 'y');
             var result = {
@@ -545,7 +549,7 @@ var BottomPlotComponent = (function (_super) {
                 return 1;
             if (b.primary)
                 return -1;
-            return __WEBPACK_IMPORTED_MODULE_3_d3__["f" /* descending */](b.index, a.index);
+            return __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* descending */](b.index, a.index);
         });
         this.mainGroup = this.groups[this.groups.length - 1];
     };
@@ -565,7 +569,7 @@ var BottomPlotComponent = (function (_super) {
             this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].No;
             return;
         }
-        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["n" /* select */](this.plotElement.nativeElement);
         var t = svg.transition();
         // axes (drawn by d3)
         var xAxis = __WEBPACK_IMPORTED_MODULE_3_d3__["c" /* axisBottom */](this.xScale).ticks(Math.floor(this.innerWidth / 75));
@@ -586,24 +590,24 @@ var BottomPlotComponent = (function (_super) {
                 attr('cy', _this.yScale(0.5));
         });
         // make target point draggable
-        var target = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */]("#" + this.mainGroup.id + "-target");
-        var targetDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* drag */]().
+        var target = __WEBPACK_IMPORTED_MODULE_3_d3__["n" /* select */]("#" + this.mainGroup.id + "-target");
+        var targetDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["h" /* drag */]().
             container(target.node().parentNode.parentNode).
             on("start", this.dragTargetStart.bind(this)).
             on("drag", this.dragTarget.bind(this)).
             on("end", this.dragTargetEnd.bind(this));
         target.call(targetDrag);
         // make left bar draggable
-        var leftBar = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */]("#" + this.mainGroup.id + "-left");
-        var leftBarDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* drag */]().
+        var leftBar = __WEBPACK_IMPORTED_MODULE_3_d3__["n" /* select */]("#" + this.mainGroup.id + "-left");
+        var leftBarDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["h" /* drag */]().
             container(leftBar.node().parentNode.parentNode).
             on("start", this.dragBarStart.bind(this, CIBar.Left)).
             on("drag", this.dragBar.bind(this, CIBar.Left)).
             on("end", this.dragBarEnd.bind(this, CIBar.Left));
         leftBar.call(leftBarDrag);
         // make right bar draggable
-        var rightBar = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */]("#" + this.mainGroup.id + "-right");
-        var rightBarDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["g" /* drag */]().
+        var rightBar = __WEBPACK_IMPORTED_MODULE_3_d3__["n" /* select */]("#" + this.mainGroup.id + "-right");
+        var rightBarDrag = __WEBPACK_IMPORTED_MODULE_3_d3__["h" /* drag */]().
             container(rightBar.node().parentNode.parentNode).
             on("start", this.dragBarStart.bind(this, CIBar.Right)).
             on("drag", this.dragBar.bind(this, CIBar.Right)).
@@ -612,7 +616,7 @@ var BottomPlotComponent = (function (_super) {
         this.needDraw = __WEBPACK_IMPORTED_MODULE_5__abstract_plot_component__["b" /* Draw */].No;
     };
     BottomPlotComponent.prototype.drawInfoBox = function (which) {
-        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["n" /* select */](this.plotElement.nativeElement);
         var box = svg.select("#" + this.name + "-" + which + "-box");
         var coords = svg.select("#" + this.name + "-" + which + "-coords");
         if (box.size() > 0 && coords.size() > 0) {
@@ -622,7 +626,7 @@ var BottomPlotComponent = (function (_super) {
             var lmid = left + (7 * unit) + 5, rmid = left + (9 * unit) + 5;
             var mid = left + (8 * unit) + 5;
             var top_1 = dim.y - 5, bottom = dim.y + dim.height + 5;
-            box.attr("d", __WEBPACK_IMPORTED_MODULE_3_d3__["k" /* line */]()([
+            box.attr("d", __WEBPACK_IMPORTED_MODULE_3_d3__["l" /* line */]()([
                 [left, top_1], [right, top_1], [right, bottom],
                 [rmid, bottom], [mid, bottom + 5], [lmid, bottom],
                 [left, bottom], [left, top_1]
@@ -634,7 +638,7 @@ var BottomPlotComponent = (function (_super) {
     };
     BottomPlotComponent.prototype.getArea = function (points, xName, yName) {
         var _this = this;
-        var area = __WEBPACK_IMPORTED_MODULE_3_d3__["a" /* area */]().
+        var area = __WEBPACK_IMPORTED_MODULE_3_d3__["a" /* area */]().curve(__WEBPACK_IMPORTED_MODULE_3_d3__["f" /* curveBasis */]).
             x(function (d, i) { return _this.xScale(d[xName]); }).
             y0(this.yScaleSD(0)).
             y1(function (d, i) { return _this.yScaleSD(d[yName]); });
@@ -650,7 +654,7 @@ var BottomPlotComponent = (function (_super) {
     BottomPlotComponent.prototype.dragTarget = function (event) {
         if (this.disableDragTarget)
             return;
-        var mouseX = __WEBPACK_IMPORTED_MODULE_3_d3__["h" /* event */].x - this.leftMargin;
+        var mouseX = __WEBPACK_IMPORTED_MODULE_3_d3__["i" /* event */].x - this.leftMargin;
         var x = this.xScale.invert(mouseX);
         if (x >= 0 && x < 0.1) {
             x = 0.1;
@@ -661,7 +665,7 @@ var BottomPlotComponent = (function (_super) {
             mouseX = this.xScale(x);
         }
         var offset = mouseX - this.xScale(this.mainGroup.originalTarget);
-        var g = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */]("#" + this.mainGroup.id).
+        var g = __WEBPACK_IMPORTED_MODULE_3_d3__["n" /* select */]("#" + this.mainGroup.id).
             attr('transform', this.translate(this.leftMargin + offset, this.topMargin));
         this.mainGroup.target = x;
     };
@@ -685,7 +689,7 @@ var BottomPlotComponent = (function (_super) {
     BottomPlotComponent.prototype.dragBar = function (which, event) {
         if (this.disableDragCI)
             return;
-        var mouseX = __WEBPACK_IMPORTED_MODULE_3_d3__["h" /* event */].x - this.leftMargin;
+        var mouseX = __WEBPACK_IMPORTED_MODULE_3_d3__["i" /* event */].x - this.leftMargin;
         var x = this.xScale.invert(mouseX);
         var diff = 0;
         switch (which) {
@@ -704,16 +708,16 @@ var BottomPlotComponent = (function (_super) {
         var leftPath = this.getPath([
             { x: this.mainGroup.left, y: 0.40 },
             { x: this.mainGroup.left, y: 0.60 }
-        ]);
+        ], 'x', 'y', false);
         var rightPath = this.getPath([
             { x: this.mainGroup.right, y: 0.40 },
             { x: this.mainGroup.right, y: 0.60 }
-        ]);
+        ], 'x', 'y', false);
         var centerPath = this.getPath([
             { x: this.mainGroup.left, y: 0.5 },
             { x: this.mainGroup.right, y: 0.5 }
-        ]);
-        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["m" /* select */](this.plotElement.nativeElement);
+        ], 'x', 'y', false);
+        var svg = __WEBPACK_IMPORTED_MODULE_3_d3__["n" /* select */](this.plotElement.nativeElement);
         svg.select("#" + this.mainGroup.id + "-left").attr('d', leftPath);
         svg.select("#" + this.mainGroup.id + "-right").attr('d', rightPath);
         svg.select("#" + this.mainGroup.id + "-center").attr('d', centerPath);
@@ -958,7 +962,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/export-plots/export-plots.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Export graphs</h4>\n  <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"cancel()\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n<div id=\"t-test-export-plots-modal-body\" class=\"modal-body grow-vert h-100\">\n  <div class=\"d-flex flex-column h-100\">\n    <ngb-tabset [destroyOnHide]=\"false\">\n      <ngb-tab [title]=\"topLeftTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopLeft\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopLeft\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topLeftDim\"\n                  [(ngModel)]=\"topLeftDim\" (ngModelChange)=\"setDim('topLeft', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topLeftPlot name=\"top-left-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topLeftDropLines\"\n              [hide-target]=\"!topLeftTarget\"\n              [fixed-width]=\"topLeftWidth\" [fixed-height]=\"topLeftHeight\"\n              [legend-x-offset]=\"topLeftLegendXOffset\"\n              [legend-y-offset]=\"topLeftLegendYOffset\">\n            </t-test-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"topRightTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopRight\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopRight\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topRightDim\"\n                  [(ngModel)]=\"topRightDim\" (ngModelChange)=\"setDim('topRight', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topRightPlot name=\"top-right-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topRightDropLines\"\n              [hide-target]=\"!topRightTarget\"\n              [fixed-width]=\"topRightWidth\" [fixed-height]=\"topRightHeight\"\n              [legend-x-offset]=\"topRightLegendXOffset\"\n              [legend-y-offset]=\"topRightLegendYOffset\">\n            </t-test-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"bottomTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeBottom\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeBottom\">\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"bottomDim\"\n                  [(ngModel)]=\"bottomDim\" (ngModelChange)=\"setDim('bottom', $event)\">\n                  <option value=\"640x160\">640 by 160</option>\n                  <option value=\"800x200\">800 by 200</option>\n                  <option value=\"1024x256\">1024 by 256</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-bottom-plot #bottomPlot name=\"bottom-export\"\n              [project]=\"project\"\n              [disable-drag-target]=\"true\" [disable-drag-ci]=\"true\"\n              [fixed-width]=\"bottomWidth\" [fixed-height]=\"bottomHeight\">\n            </t-test-bottom-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n    </ngb-tabset>\n  </div>\n</div>\n<div class=\"modal-footer\">\n  <div class=\"d-flex-inline flex-row\">\n    <div class=\"form-inline\">\n      <label for=\"export-image-format\" class=\"mr-sm-2\">Image format:</label>\n      <select id=\"export-image-format\" class=\"form-control\" [(ngModel)]=\"imageFormat\">\n        <option *ngFor=\"let format of imageFormats\">{{format}}</option>\n      </select>\n    </div>\n  </div>\n  <p>\n    The graphs you have chosen will be packaged in a ZIP file.\n    <a #downloadLink style=\"display: none\"></a>\n  </p>\n  <div class=\"d-flex flex-row align-items-center\">\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"save()\"\n      [disabled]=\"!includeTopLeft && !includeTopRight && !includeBottom\">\n      <i class=\"fa fa-floppy-o\"></i> Save\n    </button>\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"cancel()\">\n      <i class=\"fa fa-circle-x\"></i> Close\n    </button>\n  </div>\n</div>\n"
+module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Export graphs</h4>\n  <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"cancel()\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n<div id=\"t-test-export-plots-modal-body\" class=\"modal-body grow-vert h-100\">\n  <div class=\"d-flex flex-column h-100\">\n    <ngb-tabset [destroyOnHide]=\"false\">\n      <ngb-tab [title]=\"topLeftTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopLeft\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopLeft\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topLeftTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topLeftDim\"\n                  [(ngModel)]=\"topLeftDim\" (ngModelChange)=\"setDim('topLeft', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topLeftDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topLeftHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topLeftPlot name=\"top-left-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topLeftDropLines\"\n              [hide-target]=\"!topLeftTarget\"\n              [fixed-width]=\"topLeftWidth\" [fixed-height]=\"topLeftHeight\"\n              [legend-x-offset]=\"topLeftLegendXOffset\"\n              [legend-y-offset]=\"topLeftLegendYOffset\">\n            </t-test-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"topRightTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeTopRight\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeTopRight\">\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightDropLines\">\n                    Show drop lines\n                </label>\n              </div>\n              <div class=\"form-check\">\n                <label class=\"form-check-label\">\n                  <input class=\"form-check-input\" type=\"checkbox\"\n                    [(ngModel)]=\"topRightTarget\">\n                    Show target\n                </label>\n              </div>\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"topRightDim\"\n                  [(ngModel)]=\"topRightDim\" (ngModelChange)=\"setDim('topRight', $event)\">\n                  <option value=\"640x480\">640 by 480</option>\n                  <option value=\"800x600\">800 by 600</option>\n                  <option value=\"1024x768\">1024 by 768</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"topRightDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"topRightHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-plot #topRightPlot name=\"top-right-export\"\n              [project]=\"project\" [hover-disabled]=\"true\"\n              [disable-drag]=\"true\"\n              [hide-drop-lines]=\"!topRightDropLines\"\n              [hide-target]=\"!topRightTarget\"\n              [fixed-width]=\"topRightWidth\" [fixed-height]=\"topRightHeight\"\n              [legend-x-offset]=\"topRightLegendXOffset\"\n              [legend-y-offset]=\"topRightLegendYOffset\">\n            </t-test-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n      <ngb-tab [title]=\"bottomTitle\">\n        <ng-template ngbTabContent>\n          <div class=\"left\">\n            <div class=\"form-check\">\n              <label class=\"form-check-label\">\n                <input class=\"form-check-input\" type=\"checkbox\"\n                  [(ngModel)]=\"includeBottom\">\n                  Export this graph\n              </label>\n            </div>\n            <ng-template [ngIf]=\"includeBottom\">\n              <label>\n                Dimensions\n                <select class=\"form-control\" name=\"bottomDim\"\n                  [(ngModel)]=\"bottomDim\" (ngModelChange)=\"setDim('bottom', $event)\">\n                  <option value=\"640x160\">640 by 160</option>\n                  <option value=\"800x200\">800 by 200</option>\n                  <option value=\"1024x256\">1024 by 256</option>\n                  <option value=\"other\">Custom</option>\n                </select>\n              </label>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Width\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomWidth\">\n                </label>\n              </div>\n              <div *ngIf=\"bottomDim == 'other'\" class=\"form-group\">\n                <label>\n                  Height\n                  <input class=\"form-control\" type=\"number\"\n                    [(ngModel)]=\"bottomHeight\">\n                </label>\n              </div>\n            </ng-template>\n          </div>\n          <div class=\"right\">\n            <t-test-bottom-plot #bottomPlot name=\"bottom-export\"\n              [project]=\"project\"\n              [disable-drag-target]=\"true\" [disable-drag-ci]=\"true\"\n              [fixed-width]=\"bottomWidth\" [fixed-height]=\"bottomHeight\">\n            </t-test-bottom-plot>\n          </div>\n        </ng-template>\n      </ngb-tab>\n    </ngb-tabset>\n  </div>\n</div>\n<div class=\"modal-footer\">\n  <div class=\"d-flex-inline flex-row\">\n    <div class=\"form-inline\">\n      <label for=\"export-image-format\" class=\"mr-sm-2\">Image format:</label>\n      <select id=\"export-image-format\" class=\"form-control\" name=\"imageFormat\"\n        [ngModel]=\"imageFormat\" (ngModelChange)=\"imageFormat = $event\">\n        <option *ngFor=\"let format of imageFormats\"\n          [selected]=\"imageFormat == format\">{{format}}</option>\n      </select>\n    </div>\n  </div>\n  <p>\n    The graphs you have chosen will be packaged in a ZIP file.\n    <a #downloadLink style=\"display: none\"></a>\n  </p>\n  <div class=\"d-flex flex-row align-items-center\">\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"save()\"\n      [disabled]=\"!includeTopLeft && !includeTopRight && !includeBottom\">\n      <i class=\"fa fa-floppy-o\"></i> Save\n    </button>\n    <button type=\"button\" class=\"btn btn-secondary m-1\" (click)=\"cancel()\">\n      <i class=\"fa fa-circle-x\"></i> Close\n    </button>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -973,8 +977,6 @@ module.exports = "<div class=\"modal-header\">\n  <h4 class=\"modal-title\">Expo
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plot_plot_component__ = __webpack_require__("./src/app/t-test/plot/plot.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__bottom_plot_bottom_plot_component__ = __webpack_require__("./src/app/t-test/bottom-plot/bottom-plot.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__export_service__ = __webpack_require__("./src/app/t-test/export.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_stable__ = __webpack_require__("./node_modules/stable/stable.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_stable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_stable__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -990,7 +992,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
+var Platform;
+(function (Platform) {
+    Platform[Platform["iOS"] = 0] = "iOS";
+    Platform[Platform["WP"] = 1] = "WP";
+    Platform[Platform["Android"] = 2] = "Android";
+    Platform[Platform["Linux"] = 3] = "Linux";
+    Platform[Platform["Mac"] = 4] = "Mac";
+    Platform[Platform["Windows"] = 5] = "Windows";
+    Platform[Platform["BB"] = 6] = "BB";
+    Platform[Platform["Other"] = 7] = "Other";
+})(Platform || (Platform = {}));
+/* browser.js v0.1-dev | @ajlkn | MIT licensed */
+var platformPatterns = [
+    [Platform.iOS, /([0-9_]+) like Mac OS X/],
+    [Platform.iOS, /CPU like Mac OS X/],
+    [Platform.WP, /Windows Phone ([0-9\.]+)/],
+    [Platform.Android, /Android ([0-9\.]+)/],
+    [Platform.Linux, /Linux/],
+    [Platform.Mac, /Macintosh.+Mac OS X ([0-9_]+)/],
+    [Platform.Windows, /Windows NT ([0-9\.]+)/],
+    [Platform.BB, /BlackBerry.+Version\/([0-9\.]+)/],
+    [Platform.BB, /BB[0-9]+.+Version\/([0-9\.]+)/],
+];
 var ExportPlotsComponent = (function () {
     function ExportPlotsComponent(activeModal, exportService) {
         this.activeModal = activeModal;
@@ -1013,24 +1037,33 @@ var ExportPlotsComponent = (function () {
         this.bottomWidth = 640;
         this.bottomHeight = 160;
         this.imageFormats = [];
-        this.imageFormat = "PNG";
     }
     ExportPlotsComponent.prototype.ngOnInit = function () {
         var _this = this;
+        var platform = this.detectPlatform();
+        switch (platform) {
+            case Platform.Windows:
+                this.imageFormat = "WMF";
+                break;
+            case Platform.Mac:
+                this.imageFormat = "EPS";
+                break;
+            case Platform.Linux:
+                this.imageFormat = "SVG";
+                break;
+            default:
+                this.imageFormat = "PNG";
+                break;
+        }
         this.exportService.formats().then(function (response) {
             _this.imageFormats = response.formats;
-            // Make WMF the default (for now)
-            __WEBPACK_IMPORTED_MODULE_6_stable__["inplace"](_this.imageFormats, function (a, b) {
-                if (a === "WMF")
-                    return -1;
-                if (b === "WMF")
-                    return 1;
-                if (a < b)
-                    return -1;
-                if (b > a)
-                    return 1;
-                return 0;
+            var formatOk = _this.imageFormats.some(function (format) {
+                return _this.imageFormat == format;
             });
+            if (!formatOk) {
+                // PNG will always be supported
+                _this.imageFormat = "PNG";
+            }
         });
         switch (this.project.getModel(0).output) {
             case "n":
@@ -1047,6 +1080,18 @@ var ExportPlotsComponent = (function () {
                 this.topRightTitle = "Detectable Alternative vs. Power";
                 break;
         }
+    };
+    ExportPlotsComponent.prototype.detectPlatform = function () {
+        if (navigator) {
+            var ua = navigator.userAgent;
+            for (var i = 0, ilen = platformPatterns.length; i < ilen; i++) {
+                var pattern = platformPatterns[i];
+                if (ua.match(pattern[1])) {
+                    return pattern[0];
+                }
+            }
+        }
+        return Platform.Other;
     };
     ExportPlotsComponent.prototype.setDim = function (which, value) {
         if (value != 'other') {
@@ -1677,7 +1722,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "fieldset {\n  border: 1px solid #bbb;\n  border-radius: 5px;\n  padding: 10px;\n  margin: 10px;\n}\n\nfieldset legend {\n  font-size: inherit;\n  font-weight: bold;\n  display: table;\n  width: auto;\n}\n\n.form-group {\n  padding: 0 5px;\n}\n", ""]);
+exports.push([module.i, "fieldset {\n  border: 1px solid #bbb;\n  border-radius: 5px;\n  padding: 10px;\n  margin: 10px;\n}\n\nfieldset legend {\n  font-size: inherit;\n  font-weight: bold;\n  display: table;\n  width: auto;\n}\n\nh4 {\n  font-size: inherit;\n  font-weight: bold;\n  border-bottom: 1px solid #bbb;\n  margin: 1em 0;\n  padding-bottom: 0.2em;\n}\n\ndiv.disabled {\n  opacity: 0.5;\n}\n\n.form-group {\n  padding: 0 5px;\n}\n", ""]);
 
 // exports
 
@@ -1690,7 +1735,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/plot-options/plot-options.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"plotOptions && project\" class=\"content\">\n  <fieldset>\n    <legend>Global</legend>\n    <div class=\"form-group\">\n      <label for=\"plot-font-family\">Font family</label>\n      <select #fontFamily id=\"plot-font-family\" class=\"form-control\"\n        [value]=\"plotOptions.fontFamily\"\n        (change)=\"changeAttribute('fontFamily', fontFamily.value)\">\n        <option value=\"\">Default</option>\n        <option value=\"serif\">Serif</option>\n        <option value=\"sans\">Sans-serif</option>\n        <option value=\"monospace\">Monospace</option>\n        <option>Bungee Shade</option>\n        <option>Sancreek</option>\n      </select>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-palette-theme\">Color palette</label>\n      <select #paletteTheme id=\"plot-palette-theme\" class=\"form-control\"\n        [value]=\"plotOptions.paletteTheme\"\n        (change)=\"changeAttribute('paletteTheme', paletteTheme.value)\">\n        <option value=\"typical\">Default</option>\n        <option value=\"plasma\">Plasma</option>\n        <option value=\"viridis\">Viridis</option>\n        <option value=\"magma\">Magma</option>\n        <option value=\"pattern\">Pattern</option>\n      </select>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-font-size\">Font size: {{plotOptions.fontSize}}</label>\n        <div class=\"input-group\">\n          <input #fontSize id=\"plot-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [value]=\"plotOptions.fontSize\"\n            (change)=\"changeNumberAttribute('fontSize', fontSize.value)\"\n            (input)=\"changeNumberAttribute('fontSize', fontSize.value)\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-font-size\">Axis font size: {{plotOptions.axisFontSize}}</label>\n        <div class=\"input-group\">\n          <input #axisFontSize id=\"plot-axis-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [value]=\"plotOptions.axisFontSize\"\n            (change)=\"changeNumberAttribute('axisFontSize', axisFontSize.value)\"\n            (input)=\"changeNumberAttribute('axisFontSize', axisFontSize.value)\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-line-width\">Line width: {{plotOptions.lineWidth}}</label>\n        <div class=\"input-group\">\n          <input #lineWidth id=\"plot-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [value]=\"plotOptions.lineWidth\"\n            (change)=\"changeNumberAttribute('lineWidth', lineWidth.value)\"\n            (input)=\"changeNumberAttribute('lineWidth', lineWidth.value)\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-line-width\">Axis line width: {{plotOptions.axisLineWidth}}</label>\n        <div class=\"input-group\">\n          <input #axisLineWidth id=\"plot-axis-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [value]=\"plotOptions.axisLineWidth\"\n            (change)=\"changeNumberAttribute('axisLineWidth', axisLineWidth.value)\"\n            (input)=\"changeNumberAttribute('axisLineWidth', axisLineWidth.value)\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-line-style\">Line style</label>\n      <select #lineStyle id=\"plot-line-style\" class=\"form-control\"\n        [value]=\"plotOptions.lineStyle\"\n        (change)=\"changeAttribute('lineStyle', lineStyle.value)\">\n        <option value=\"solid\">Solid</option>\n        <option value=\"short-dash\">Short Dash</option>\n        <option value=\"medium-dash\">Medium Dash</option>\n        <option value=\"long-dash\">Long Dash</option>\n        <option value=\"dot\">Dotted</option>\n      </select>\n    </div>\n    <div class=\"form-check\">\n      <label class=\"form-check-label\">\n        <input #showLegendBox class=\"form-check-input\" type=\"checkbox\"\n          [checked]=\"plotOptions.showLegendBox\"\n          (change)=\"changeAttribute('showLegendBox', showLegendBox.checked)\"\n          (input)=\"changeAttribute('showLegendBox', showLegendBox.checked)\" />\n        Display legend background\n      </label>\n    </div>\n  </fieldset>\n  <fieldset>\n    <legend *ngIf=\"model.output == 'n' || model.output == 'nByCI'\">Sample Size</legend>\n    <legend *ngIf=\"model.output == 'power'\">Power</legend>\n    <legend *ngIf=\"model.output == 'delta'\">Detectable Alternative</legend>\n    <div class=\"row\">\n      <div class=\"col-sm\">\n        <label for=\"plot-top-y-min\">Minimum</label>\n        <div class=\"input-group\">\n          <ng-template [ngIf]=\"model.output == 'n' || model.output == 'nByCI'\">\n            <input #nRangeMin *ngIf=\"project.nRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.nRange.max - 1) | round\"\n              [value]=\"project.nRange.min | round\"\n              (change)=\"changeProjectRange('n', 'min', nRangeMin.value)\"\n              (input)=\"changeProjectRange('n', 'min', nRangeMin.value, true)\"/>\n          </ng-template>\n          <ng-template [ngIf]=\"model.output == 'power'\">\n            <input #powerRangeMin *ngIf=\"project.powerRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.powerRange.max - 0.01) | round\"\n              [value]=\"project.powerRange.min | round\"\n              (change)=\"changeProjectRange('power', 'min', powerRangeMin.value)\"\n              (input)=\"changeProjectRange('power', 'min', powerRangeMin.value, true)\"/>\n          </ng-template>\n          <ng-template [ngIf]=\"model.output == 'delta'\">\n            <input #deltaRangeMin *ngIf=\"project.deltaRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.deltaRange.max - 0.01) | round\"\n              [value]=\"project.deltaRange.min | round\"\n              (change)=\"changeProjectRange('delta', 'min', deltaRangeMin.value)\"\n              (input)=\"changeProjectRange('delta', 'min', deltaRangeMin.value, true)\"/>\n          </ng-template>\n        </div>\n      </div>\n      <div class=\"col-sm\">\n        <label for=\"plot-top-y-max\">Maximum</label>\n        <div class=\"input-group\">\n          <ng-template [ngIf]=\"model.output == 'n' || model.output == 'nByCI'\">\n            <input #nRangeMax *ngIf=\"project.nRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.nRange.min + 1) | round\"\n              [value]=\"project.nRange.max | round\"\n              (change)=\"changeProjectRange('n', 'max', nRangeMax.value)\"\n              (input)=\"changeProjectRange('n', 'max', nRangeMax.value, true)\"/>\n          </ng-template>\n          <ng-template [ngIf]=\"model.output == 'power'\">\n            <input #powerRangeMax *ngIf=\"project.powerRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.powerRange.min + 0.01) | round\"\n              [value]=\"project.powerRange.max | round\"\n              (change)=\"changeProjectRange('power', 'max', powerRangeMax.value)\"\n              (input)=\"changeProjectRange('power', 'max', powerRangeMax.value, true)\"/>\n          </ng-template>\n          <ng-template [ngIf]=\"model.output == 'delta'\">\n            <input #deltaRangeMax *ngIf=\"project.deltaRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.deltaRange.min + 0.01) | round\"\n              [value]=\"project.deltaRange.max | round\"\n              (change)=\"changeProjectRange('delta', 'max', deltaRangeMax.value)\"\n              (input)=\"changeProjectRange('delta', 'max', deltaRangeMax.value, true)\"/>\n          </ng-template>\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <fieldset>\n    <ng-template [ngIf]=\"model.output == 'n' || model.output == 'nByCI'\">\n      <legend>Sample Size vs. Power</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input #powerRangeMin *ngIf=\"project.powerRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.powerRange.max - 0.01) | round\"\n              [value]=\"project.powerRange.min | round\"\n              (change)=\"changeProjectRange('power', 'min', powerRangeMin.value)\"\n              (input)=\"changeProjectRange('power', 'min', powerRangeMin.value, true)\"/>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input #powerRangeMax *ngIf=\"project.powerRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.powerRange.min + 0.01) | round\"\n              [value]=\"project.powerRange.max | round\"\n              (change)=\"changeProjectRange('power', 'max', powerRangeMax.value)\"\n              (input)=\"changeProjectRange('power', 'max', powerRangeMax.value, true)\"/>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"model.output == 'power'\">\n      <legend>Power vs. Sample Size</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input #nRangeMin *ngIf=\"project.nRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.nRange.max - 1) | round\"\n              [value]=\"project.nRange.min | round\"\n              (change)=\"changeProjectRange('n', 'min', nRangeMin.value)\"\n              (input)=\"changeProjectRange('n', 'min', nRangeMin.value, true)\"/>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input #nRangeMax *ngIf=\"project.nRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.nRange.min + 1) | round\"\n              [value]=\"project.nRange.max | round\"\n              (change)=\"changeProjectRange('n', 'max', nRangeMax.value)\"\n              (input)=\"changeProjectRange('n', 'max', nRangeMax.value, true)\"/>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"model.output == 'delta'\">\n      <legend>Detectable Alternative vs. Sample Size</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input #nRangeMin *ngIf=\"project.nRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.nRange.max - 1) | round\"\n              [value]=\"project.nRange.min | round\"\n              (change)=\"changeProjectRange('n', 'min', nRangeMin.value)\"\n              (input)=\"changeProjectRange('n', 'min', nRangeMin.value, true)\"/>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input #nRangeMax *ngIf=\"project.nRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.nRange.min + 1) | round\"\n              [value]=\"project.nRange.max | round\"\n              (change)=\"changeProjectRange('n', 'max', nRangeMax.value)\"\n              (input)=\"changeProjectRange('n', 'max', nRangeMax.value, true)\"/>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </fieldset>\n  <fieldset>\n    <ng-template [ngIf]=\"model.output == 'n' || model.output == 'nByCI'\">\n      <legend>Sample Size vs. Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input #deltaRangeMin *ngIf=\"project.deltaRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.deltaRange.max - 1) | round\"\n              [value]=\"project.deltaRange.min | round\"\n              (change)=\"changeProjectRange('delta', 'min', deltaRangeMin.value)\"\n              (input)=\"changeProjectRange('delta', 'min', deltaRangeMin.value, true)\"/>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input #deltaRangeMax *ngIf=\"project.deltaRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.deltaRange.min - 1) | round\"\n              [value]=\"project.deltaRange.max | round\"\n              (change)=\"changeProjectRange('delta', 'max', deltaRangeMax.value)\"\n              (input)=\"changeProjectRange('delta', 'max', deltaRangeMax.value, true)\"/>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"model.output == 'power'\">\n      <legend>Power vs. Detectable Alternative</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input #deltaRangeMin *ngIf=\"project.deltaRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.deltaRange.max - 1) | round\"\n              [value]=\"project.deltaRange.min | round\"\n              (change)=\"changeProjectRange('delta', 'min', deltaRangeMin.value)\"\n              (input)=\"changeProjectRange('delta', 'min', deltaRangeMin.value, true)\"/>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-right-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input #deltaRangeMax *ngIf=\"project.deltaRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.deltaRange.min - 1) | round\"\n              [value]=\"project.deltaRange.max | round\"\n              (change)=\"changeProjectRange('delta', 'max', deltaRangeMax.value)\"\n              (input)=\"changeProjectRange('delta', 'max', deltaRangeMax.value, true)\"/>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n    <ng-template [ngIf]=\"model.output == 'delta'\">\n      <legend>Detectable Alternative vs. Power</legend>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input #powerRangeMin *ngIf=\"project.powerRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.powerRange.max - 0.01) | round\"\n              [value]=\"project.powerRange.min | round\"\n              (change)=\"changeProjectRange('power', 'min', powerRangeMin.value)\"\n              (input)=\"changeProjectRange('power', 'min', powerRangeMin.value, true)\"/>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-left-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input #powerRangeMax *ngIf=\"project.powerRange\" class=\"form-control\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.powerRange.min + 0.01) | round\"\n              [value]=\"project.powerRange.max | round\"\n              (change)=\"changeProjectRange('power', 'max', powerRangeMax.value)\"\n              (input)=\"changeProjectRange('power', 'max', powerRangeMax.value, true)\"/>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </fieldset>\n  <fieldset>\n    <legend>Precision vs. Parameter Space</legend>\n    <div class=\"row\">\n      <div class=\"col-sm\">\n        <label for=\"plot-bottom-x-min\">X minimum</label>\n        <div class=\"input-group\">\n          <input #pSpaceRangeMin *ngIf=\"project.pSpaceRange\" class=\"form-control\"\n            type=\"number\" step=\"0.01\" [max]=\"(project.pSpaceRange.max - 1) | round\"\n            [value]=\"project.pSpaceRange.min | round\"\n            (change)=\"changeProjectRange('pSpace', 'min', pSpaceRangeMin.value)\"\n            (input)=\"changeProjectRange('pSpace', 'min', pSpaceRangeMin.value, true)\"/>\n        </div>\n      </div>\n      <div class=\"col-sm\">\n        <label for=\"plot-bottom-x-max\">X maximum</label>\n        <div class=\"input-group\">\n          <input #pSpaceRangeMax *ngIf=\"project.pSpaceRange\" class=\"form-control\"\n            type=\"number\" step=\"0.01\" [min]=\"(project.pSpaceRange.min + 1) | round\"\n            [value]=\"project.pSpaceRange.max | round\"\n            (change)=\"changeProjectRange('pSpace', 'max', pSpaceRangeMax.value)\"\n            (input)=\"changeProjectRange('pSpace', 'max', pSpaceRangeMax.value, true)\"/>\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"doReset()\">\n    Reset all settings\n  </button>\n</div>\n"
+module.exports = "<div *ngIf=\"plotOptions && project\" class=\"content\">\n  <fieldset>\n    <legend>Global</legend>\n    <div class=\"form-group\">\n      <label for=\"plot-font-family\">Font family</label>\n      <select #fontFamily id=\"plot-font-family\" class=\"form-control\"\n        [value]=\"plotOptions.fontFamily\"\n        (change)=\"changeAttribute('fontFamily', fontFamily.value)\">\n        <option value=\"\">Default</option>\n        <option value=\"serif\">Serif</option>\n        <option value=\"sans\">Sans-serif</option>\n        <option value=\"monospace\">Monospace</option>\n        <option>Bungee Shade</option>\n        <option>Sancreek</option>\n      </select>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-palette-theme\">Color palette</label>\n      <select #paletteTheme id=\"plot-palette-theme\" class=\"form-control\"\n        [value]=\"plotOptions.paletteTheme\"\n        (change)=\"changeAttribute('paletteTheme', paletteTheme.value)\">\n        <option value=\"typical\">Default</option>\n        <option value=\"plasma\">Plasma</option>\n        <option value=\"viridis\">Viridis</option>\n        <option value=\"magma\">Magma</option>\n        <option value=\"pattern\">Pattern</option>\n      </select>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-font-size\">Font size: {{plotOptions.fontSize}}</label>\n        <div class=\"input-group\">\n          <input #fontSize id=\"plot-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [value]=\"plotOptions.fontSize\"\n            (change)=\"changeNumberAttribute('fontSize', fontSize.value)\"\n            (input)=\"changeNumberAttribute('fontSize', fontSize.value)\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-font-size\">Axis font size: {{plotOptions.axisFontSize}}</label>\n        <div class=\"input-group\">\n          <input #axisFontSize id=\"plot-axis-font-size\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [value]=\"plotOptions.axisFontSize\"\n            (change)=\"changeNumberAttribute('axisFontSize', axisFontSize.value)\"\n            (input)=\"changeNumberAttribute('axisFontSize', axisFontSize.value)\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-sm-6\">\n        <label for=\"plot-line-width\">Line width: {{plotOptions.lineWidth}}</label>\n        <div class=\"input-group\">\n          <input #lineWidth id=\"plot-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [value]=\"plotOptions.lineWidth\"\n            (change)=\"changeNumberAttribute('lineWidth', lineWidth.value)\"\n            (input)=\"changeNumberAttribute('lineWidth', lineWidth.value)\" />\n        </div>\n      </div>\n      <div class=\"col-sm-6\">\n        <label for=\"plot-axis-line-width\">Axis line width: {{plotOptions.axisLineWidth}}</label>\n        <div class=\"input-group\">\n          <input #axisLineWidth id=\"plot-axis-line-width\" class=\"form-control\"\n            type=\"range\" min=\"0.1\" max=\"2\" step=\"0.1\"\n            [value]=\"plotOptions.axisLineWidth\"\n            (change)=\"changeNumberAttribute('axisLineWidth', axisLineWidth.value)\"\n            (input)=\"changeNumberAttribute('axisLineWidth', axisLineWidth.value)\" />\n        </div>\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"plot-line-style\">Line style</label>\n      <select #lineStyle id=\"plot-line-style\" class=\"form-control\"\n        [value]=\"plotOptions.lineStyle\"\n        (change)=\"changeAttribute('lineStyle', lineStyle.value)\">\n        <option value=\"solid\">Solid</option>\n        <option value=\"short-dash\">Short Dash</option>\n        <option value=\"medium-dash\">Medium Dash</option>\n        <option value=\"long-dash\">Long Dash</option>\n        <option value=\"dot\">Dotted</option>\n      </select>\n    </div>\n    <div class=\"form-check\">\n      <label class=\"form-check-label\">\n        <input #showLegendBox class=\"form-check-input\" type=\"checkbox\"\n          [checked]=\"plotOptions.showLegendBox\"\n          (change)=\"changeAttribute('showLegendBox', showLegendBox.checked)\"\n          (input)=\"changeAttribute('showLegendBox', showLegendBox.checked)\" />\n        Display legend background\n      </label>\n    </div>\n  </fieldset>\n  <fieldset>\n    <legend>Project</legend>\n    <div class=\"form-check\">\n      <label class=\"form-check-label\">\n        <input #customRanges class=\"form-check-input\" type=\"checkbox\"\n          [value]=\"project.customRanges\"\n          (change)=\"setProjectAttribute('customRanges', customRanges.checked)\">\n        Custom plot ranges\n      </label>\n    </div>\n\n    <div class=\"ranges\" [class.disabled]=\"!project.customRanges\">\n      <h4 *ngIf=\"model.output == 'n' || model.output == 'nByCI'\">Sample Size</h4>\n      <h4 *ngIf=\"model.output == 'power'\">Power</h4>\n      <h4 *ngIf=\"model.output == 'delta'\">Detectable Alternative</h4>\n      <div class=\"row mb-4\">\n        <div class=\"col-sm\">\n          <label for=\"plot-top-y-min\">Minimum</label>\n          <div class=\"input-group\">\n            <ng-template [ngIf]=\"model.output == 'n' || model.output == 'nByCI'\">\n              <input #nRangeMin *ngIf=\"project.nRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.nRange.max - 1) | round\"\n                [value]=\"project.nRange.min | round\"\n                (change)=\"setProjectRange('n', 'min', nRangeMin.value)\"\n                (input)=\"setProjectRange('n', 'min', nRangeMin.value, true)\"/>\n            </ng-template>\n            <ng-template [ngIf]=\"model.output == 'power'\">\n              <input #powerRangeMin *ngIf=\"project.powerRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.powerRange.max - 0.01) | round\"\n                [value]=\"project.powerRange.min | round\"\n                (change)=\"setProjectRange('power', 'min', powerRangeMin.value)\"\n                (input)=\"setProjectRange('power', 'min', powerRangeMin.value, true)\"/>\n            </ng-template>\n            <ng-template [ngIf]=\"model.output == 'delta'\">\n              <input #deltaRangeMin *ngIf=\"project.deltaRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.deltaRange.max - 0.01) | round\"\n                [value]=\"project.deltaRange.min | round\"\n                (change)=\"setProjectRange('delta', 'min', deltaRangeMin.value)\"\n                (input)=\"setProjectRange('delta', 'min', deltaRangeMin.value, true)\"/>\n            </ng-template>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-top-y-max\">Maximum</label>\n          <div class=\"input-group\">\n            <ng-template [ngIf]=\"model.output == 'n' || model.output == 'nByCI'\">\n              <input #nRangeMax *ngIf=\"project.nRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.nRange.min + 1) | round\"\n                [value]=\"project.nRange.max | round\"\n                (change)=\"setProjectRange('n', 'max', nRangeMax.value)\"\n                (input)=\"setProjectRange('n', 'max', nRangeMax.value, true)\"/>\n            </ng-template>\n            <ng-template [ngIf]=\"model.output == 'power'\">\n              <input #powerRangeMax *ngIf=\"project.powerRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.powerRange.min + 0.01) | round\"\n                [value]=\"project.powerRange.max | round\"\n                (change)=\"setProjectRange('power', 'max', powerRangeMax.value)\"\n                (input)=\"setProjectRange('power', 'max', powerRangeMax.value, true)\"/>\n            </ng-template>\n            <ng-template [ngIf]=\"model.output == 'delta'\">\n              <input #deltaRangeMax *ngIf=\"project.deltaRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.deltaRange.min + 0.01) | round\"\n                [value]=\"project.deltaRange.max | round\"\n                (change)=\"setProjectRange('delta', 'max', deltaRangeMax.value)\"\n                (input)=\"setProjectRange('delta', 'max', deltaRangeMax.value, true)\"/>\n            </ng-template>\n          </div>\n        </div>\n      </div>\n      <ng-template [ngIf]=\"model.output == 'n' || model.output == 'nByCI'\">\n        <h4>Sample Size vs. Power</h4>\n        <div class=\"row mb-4\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input #powerRangeMin *ngIf=\"project.powerRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.powerRange.max - 0.01) | round\"\n                [value]=\"project.powerRange.min | round\"\n                (change)=\"setProjectRange('power', 'min', powerRangeMin.value)\"\n                (input)=\"setProjectRange('power', 'min', powerRangeMin.value, true)\"/>\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input #powerRangeMax *ngIf=\"project.powerRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.powerRange.min + 0.01) | round\"\n                [value]=\"project.powerRange.max | round\"\n                (change)=\"setProjectRange('power', 'max', powerRangeMax.value)\"\n                (input)=\"setProjectRange('power', 'max', powerRangeMax.value, true)\"/>\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"model.output == 'power'\">\n        <h4>Power vs. Sample Size</h4>\n        <div class=\"row mb-4\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input #nRangeMin *ngIf=\"project.nRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.nRange.max - 1) | round\"\n                [value]=\"project.nRange.min | round\"\n                (change)=\"setProjectRange('n', 'min', nRangeMin.value)\"\n                (input)=\"setProjectRange('n', 'min', nRangeMin.value, true)\"/>\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input #nRangeMax *ngIf=\"project.nRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.nRange.min + 1) | round\"\n                [value]=\"project.nRange.max | round\"\n                (change)=\"setProjectRange('n', 'max', nRangeMax.value)\"\n                (input)=\"setProjectRange('n', 'max', nRangeMax.value, true)\"/>\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"model.output == 'delta'\">\n        <h4>Detectable Alternative vs. Sample Size</h4>\n        <div class=\"row mb-4\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input #nRangeMin *ngIf=\"project.nRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.nRange.max - 1) | round\"\n                [value]=\"project.nRange.min | round\"\n                (change)=\"setProjectRange('n', 'min', nRangeMin.value)\"\n                (input)=\"setProjectRange('n', 'min', nRangeMin.value, true)\"/>\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input #nRangeMax *ngIf=\"project.nRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.nRange.min + 1) | round\"\n                [value]=\"project.nRange.max | round\"\n                (change)=\"setProjectRange('n', 'max', nRangeMax.value)\"\n                (input)=\"setProjectRange('n', 'max', nRangeMax.value, true)\"/>\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"model.output == 'n' || model.output == 'nByCI'\">\n        <h4>Sample Size vs. Detectable Alternative</h4>\n        <div class=\"row mb-4\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input #deltaRangeMin *ngIf=\"project.deltaRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.deltaRange.max - 1) | round\"\n                [value]=\"project.deltaRange.min | round\"\n                (change)=\"setProjectRange('delta', 'min', deltaRangeMin.value)\"\n                (input)=\"setProjectRange('delta', 'min', deltaRangeMin.value, true)\"/>\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input #deltaRangeMax *ngIf=\"project.deltaRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.deltaRange.min - 1) | round\"\n                [value]=\"project.deltaRange.max | round\"\n                (change)=\"setProjectRange('delta', 'max', deltaRangeMax.value)\"\n                (input)=\"setProjectRange('delta', 'max', deltaRangeMax.value, true)\"/>\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"model.output == 'power'\">\n        <h4>Power vs. Detectable Alternative</h4>\n        <div class=\"row mb-4\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input #deltaRangeMin *ngIf=\"project.deltaRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.deltaRange.max - 1) | round\"\n                [value]=\"project.deltaRange.min | round\"\n                (change)=\"setProjectRange('delta', 'min', deltaRangeMin.value)\"\n                (input)=\"setProjectRange('delta', 'min', deltaRangeMin.value, true)\"/>\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-right-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input #deltaRangeMax *ngIf=\"project.deltaRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.deltaRange.min - 1) | round\"\n                [value]=\"project.deltaRange.max | round\"\n                (change)=\"setProjectRange('delta', 'max', deltaRangeMax.value)\"\n                (input)=\"setProjectRange('delta', 'max', deltaRangeMax.value, true)\"/>\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"model.output == 'delta'\">\n        <h4>Detectable Alternative vs. Power</h4>\n        <div class=\"row mb-4\">\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-min\">X minimum</label>\n            <div class=\"input-group\">\n              <input #powerRangeMin *ngIf=\"project.powerRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [max]=\"(project.powerRange.max - 0.01) | round\"\n                [value]=\"project.powerRange.min | round\"\n                (change)=\"setProjectRange('power', 'min', powerRangeMin.value)\"\n                (input)=\"setProjectRange('power', 'min', powerRangeMin.value, true)\"/>\n            </div>\n          </div>\n          <div class=\"col-sm\">\n            <label for=\"plot-top-left-x-max\">X maximum</label>\n            <div class=\"input-group\">\n              <input #powerRangeMax *ngIf=\"project.powerRange\" class=\"form-control\"\n                [disabled]=\"!project.customRanges\"\n                type=\"number\" step=\"0.01\" [min]=\"(project.powerRange.min + 0.01) | round\"\n                [value]=\"project.powerRange.max | round\"\n                (change)=\"setProjectRange('power', 'max', powerRangeMax.value)\"\n                (input)=\"setProjectRange('power', 'max', powerRangeMax.value, true)\"/>\n            </div>\n          </div>\n        </div>\n      </ng-template>\n      <h4>Precision vs. Parameter Space</h4>\n      <div class=\"row\">\n        <div class=\"col-sm\">\n          <label for=\"plot-bottom-x-min\">X minimum</label>\n          <div class=\"input-group\">\n            <input #pSpaceRangeMin *ngIf=\"project.pSpaceRange\" class=\"form-control\"\n              [disabled]=\"!project.customRanges\"\n              type=\"number\" step=\"0.01\" [max]=\"(project.pSpaceRange.max - 1) | round\"\n              [value]=\"project.pSpaceRange.min | round\"\n              (change)=\"setProjectRange('pSpace', 'min', pSpaceRangeMin.value)\"\n              (input)=\"setProjectRange('pSpace', 'min', pSpaceRangeMin.value, true)\"/>\n          </div>\n        </div>\n        <div class=\"col-sm\">\n          <label for=\"plot-bottom-x-max\">X maximum</label>\n          <div class=\"input-group\">\n            <input #pSpaceRangeMax *ngIf=\"project.pSpaceRange\" class=\"form-control\"\n              [disabled]=\"!project.customRanges\"\n              type=\"number\" step=\"0.01\" [min]=\"(project.pSpaceRange.min + 1) | round\"\n              [value]=\"project.pSpaceRange.max | round\"\n              (change)=\"setProjectRange('pSpace', 'max', pSpaceRangeMax.value)\"\n              (input)=\"setProjectRange('pSpace', 'max', pSpaceRangeMax.value, true)\"/>\n          </div>\n        </div>\n      </div>\n    </div>\n  </fieldset>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"doReset()\">\n    Reset all settings\n  </button>\n</div>\n"
 
 /***/ }),
 
@@ -1728,23 +1773,26 @@ var PlotOptionsComponent = (function () {
     function PlotOptionsComponent(plotOptions) {
         this.plotOptions = plotOptions;
         this.optionChanged = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
-        this.rangeChanged = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
+        this.projectChanged = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
         this.reset = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
-        this.attributeChangedImmediate = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["a" /* Subject */]();
-        this.rangeChangedDelay = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["a" /* Subject */]();
-        this.rangeChangedImmediate = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["a" /* Subject */]();
+        this.projectChangedDelay = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["a" /* Subject */]();
+        this.projectChangedImmediate = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["a" /* Subject */]();
     }
     PlotOptionsComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.rangeSub = __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__["a" /* Observable */].merge(this.rangeChangedDelay.debounceTime(400), this.rangeChangedImmediate).subscribe(function (change) {
-            _this.rangeChanged.emit(change);
-        });
-        this.attributeSub = this.attributeChangedImmediate.
-            filter(function (change) {
-            return _this.plotOptions[change.name] !== change.value;
-        }).subscribe(function (change) {
-            _this.plotOptions[change.name] = change.value;
-            _this.optionChanged.emit();
+        this.rangeSub = __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__["a" /* Observable */].merge(this.projectChangedDelay.debounceTime(400), this.projectChangedImmediate).subscribe(function (change) {
+            if (change.subname) {
+                _this.project[change.name][change.subname] = change.value;
+            }
+            else {
+                _this.project[change.name] = change.value;
+            }
+            if (change.name == 'customRanges' && !change.value) {
+                _this.project.resetRanges();
+            }
+            _this.project.updatePlotData().then(function () {
+                _this.projectChanged.emit();
+            });
         });
     };
     PlotOptionsComponent.prototype.ngOnChanges = function (changes) {
@@ -1753,13 +1801,18 @@ var PlotOptionsComponent = (function () {
         }
     };
     PlotOptionsComponent.prototype.doReset = function () {
+        var _this = this;
         this.plotOptions.reset();
         this.project.resetRanges();
-        this.reset.emit();
+        this.project.updatePlotData().then(function () {
+            _this.reset.emit();
+        });
     };
     PlotOptionsComponent.prototype.changeAttribute = function (name, value) {
-        var change = { name: name, value: value };
-        this.attributeChangedImmediate.next(change);
+        if (this.plotOptions[name] !== value) {
+            this.plotOptions[name] = value;
+            this.optionChanged.emit();
+        }
     };
     PlotOptionsComponent.prototype.changeNumberAttribute = function (name, value) {
         var n = parseFloat(value);
@@ -1767,17 +1820,21 @@ var PlotOptionsComponent = (function () {
             this.changeAttribute(name, n);
         }
     };
-    PlotOptionsComponent.prototype.changeProjectRange = function (name, which, value, input) {
-        if (input === void 0) { input = false; }
+    PlotOptionsComponent.prototype.setProjectAttribute = function (name, value) {
+        var change = { name: name, value: value };
+        this.projectChangedImmediate.next(change);
+    };
+    PlotOptionsComponent.prototype.setProjectRange = function (name, which, value, delay) {
+        if (delay === void 0) { delay = false; }
         var n = parseFloat(value);
         if (isNaN(n))
             return;
-        var change = { name: name, which: which, value: n };
-        if (input) {
-            this.rangeChangedDelay.next(change);
+        var change = { name: name + "Range", subname: which, value: n };
+        if (delay) {
+            this.projectChangedDelay.next(change);
         }
         else {
-            this.rangeChangedImmediate.next(change);
+            this.projectChangedImmediate.next(change);
         }
     };
     __decorate([
@@ -1786,15 +1843,15 @@ var PlotOptionsComponent = (function () {
     ], PlotOptionsComponent.prototype, "project", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Q" /* Output */])(),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */])
+        __metadata("design:type", Object)
     ], PlotOptionsComponent.prototype, "optionChanged", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Q" /* Output */])(),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */])
-    ], PlotOptionsComponent.prototype, "rangeChanged", void 0);
+        __metadata("design:type", Object)
+    ], PlotOptionsComponent.prototype, "projectChanged", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Q" /* Output */])(),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */])
+        __metadata("design:type", Object)
     ], PlotOptionsComponent.prototype, "reset", void 0);
     PlotOptionsComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
@@ -1991,7 +2048,7 @@ var PlotComponent = (function (_super) {
             this.plotOptions.getAxisLineWidth() +
             (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
         this.leftMargin = this.plotOptions.getFontSize() + this.yAxisWidth + 10;
-        this.rightMargin = 10;
+        this.rightMargin = this.plotOptions.getAxisFontSize() + 9;
         this.topMargin = this.plotOptions.getFontSize() + 10;
         this.bottomMargin = this.plotOptions.getFontSize() + this.xAxisHeight + 10;
         // dimensions
@@ -2115,10 +2172,10 @@ var PlotComponent = (function (_super) {
         return true;
     };
     PlotComponent.prototype.setupScales = function () {
-        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["l" /* scaleLinear */]().
+        this.xScale = __WEBPACK_IMPORTED_MODULE_1_d3__["m" /* scaleLinear */]().
             domain(this.x.range.toArray()).
             range([0, this.innerWidth]);
-        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["l" /* scaleLinear */]().
+        this.yScale = __WEBPACK_IMPORTED_MODULE_1_d3__["m" /* scaleLinear */]().
             domain(this.y.range.toArray().reverse()).
             range([0, this.innerHeight]);
     };
@@ -2154,7 +2211,7 @@ var PlotComponent = (function (_super) {
     PlotComponent.prototype.setupDropPaths = function () {
         var _this = this;
         this.dropPaths = [];
-        var path = __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* line */]().
+        var path = __WEBPACK_IMPORTED_MODULE_1_d3__["l" /* line */]().
             x(function (d, i) { return _this.xScale(d.x); }).
             y(function (d, i) { return _this.yScale(d.y); });
         var xData = [
@@ -2208,7 +2265,7 @@ var PlotComponent = (function (_super) {
             bottom = dim.y - 5;
             bottom2 = bottom - 5;
         }
-        return __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* line */]()([
+        return __WEBPACK_IMPORTED_MODULE_1_d3__["l" /* line */]()([
             [left, top], [right, top], [right, bottom],
             [rmid, bottom], [mid, bottom2], [lmid, bottom],
             [left, bottom], [left, top]
@@ -2219,7 +2276,7 @@ var PlotComponent = (function (_super) {
         if (this.needDraw == __WEBPACK_IMPORTED_MODULE_3__abstract_plot_component__["b" /* Draw */].No) {
             return;
         }
-        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["m" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["n" /* select */](this.plotElement.nativeElement);
         if (this.hoverInfo != HoverInfo.Disabled) {
             // draw hover info box
             var t_1 = svg.transition().duration(50);
@@ -2274,7 +2331,7 @@ var PlotComponent = (function (_super) {
         // drag
         if (!this.disableDrag) {
             var target = svg.select(targetId);
-            var targetDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["g" /* drag */]().
+            var targetDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["h" /* drag */]().
                 on("start", this.dragTargetStart.bind(this)).
                 on("drag", this.dragTarget.bind(this)).
                 on("end", this.dragTargetEnd.bind(this));
@@ -2288,13 +2345,13 @@ var PlotComponent = (function (_super) {
                 var dim = labels.node().getBBox();
                 var left = dim.x - 5, right = dim.x + dim.width + 5;
                 var top_1 = dim.y - 5, bottom = dim.y + dim.height + 5;
-                box.attr("d", __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* line */]()([
+                box.attr("d", __WEBPACK_IMPORTED_MODULE_1_d3__["l" /* line */]()([
                     [left, top_1], [right, top_1], [right, bottom],
                     [left, bottom], [left, top_1]
                 ]));
             }
             var legend = svg.select("#" + this.name + "-legend");
-            var legendDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["g" /* drag */]().
+            var legendDrag = __WEBPACK_IMPORTED_MODULE_1_d3__["h" /* drag */]().
                 on("drag", this.dragLegend.bind(this));
             legend.call(legendDrag);
         }
@@ -2304,7 +2361,7 @@ var PlotComponent = (function (_super) {
         this.targetDragging = true;
     };
     PlotComponent.prototype.dragTarget = function (event) {
-        var x = this.xScale.invert(__WEBPACK_IMPORTED_MODULE_1_d3__["h" /* event */].x - this.leftMargin);
+        var x = this.xScale.invert(__WEBPACK_IMPORTED_MODULE_1_d3__["i" /* event */].x - this.leftMargin);
         if (x < this.x.range.min) {
             x = this.x.range.min;
         }
@@ -2315,7 +2372,7 @@ var PlotComponent = (function (_super) {
         var point = this.mainData[index];
         if (!point)
             return;
-        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["m" /* select */](this.plotElement.nativeElement);
+        var svg = __WEBPACK_IMPORTED_MODULE_1_d3__["n" /* select */](this.plotElement.nativeElement);
         var targetId = "#" + this.name + "-target";
         this.target = point;
         this.setupDropPaths();
@@ -2339,8 +2396,8 @@ var PlotComponent = (function (_super) {
         }
     };
     PlotComponent.prototype.dragLegend = function () {
-        this.legendXOffset += __WEBPACK_IMPORTED_MODULE_1_d3__["h" /* event */].dx;
-        this.legendYOffset += __WEBPACK_IMPORTED_MODULE_1_d3__["h" /* event */].dy;
+        this.legendXOffset += __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* event */].dx;
+        this.legendYOffset += __WEBPACK_IMPORTED_MODULE_1_d3__["i" /* event */].dy;
     };
     // from https://bl.ocks.org/mbostock/3916621
     PlotComponent.prototype.pathTween = function (d1, precision) {
@@ -2354,7 +2411,7 @@ var PlotComponent = (function (_super) {
             // Compute point-interpolators at each distance.
             var points = distances.map(function (t) {
                 var p0 = path0.getPointAtLength(t * n0), p1 = path1.getPointAtLength(t * n1);
-                return __WEBPACK_IMPORTED_MODULE_1_d3__["j" /* interpolate */]([p0.x, p0.y], [p1.x, p1.y]);
+                return __WEBPACK_IMPORTED_MODULE_1_d3__["k" /* interpolate */]([p0.x, p0.y], [p1.x, p1.y]);
             });
             return function (t) {
                 return t < 1 ? "M" + points.map(function (p) { return p(t); }).join("L") : d1;
@@ -2620,6 +2677,7 @@ var Project = (function () {
         this.models = [];
         this.selectedIndex = 0;
         this.changeHistory = [];
+        this.customRanges = false;
     }
     Project.prototype.getOutput = function () {
         if (this.models.length > 0) {
@@ -2627,14 +2685,8 @@ var Project = (function () {
         }
         return '';
     };
-    Project.prototype.updateRange = function (change) {
-        var attrib = change.name + "Range";
-        this[attrib][change.which] = change.value;
-        return this.updatePlotData(false);
-    };
-    Project.prototype.updatePlotData = function (updateRanges) {
+    Project.prototype.updatePlotData = function () {
         var _this = this;
-        if (updateRanges === void 0) { updateRanges = true; }
         var ranges = {
             nRange: this.nRange,
             powerRange: this.powerRange,
@@ -2646,7 +2698,7 @@ var Project = (function () {
             result.forEach(function (data, i) {
                 Object.assign(_this.models[i], data);
             });
-            if (!updateRanges)
+            if (_this.customRanges)
                 return;
             var output = _this.getOutput();
             var nRange, powerRange, deltaRange;
@@ -2698,10 +2750,10 @@ var Project = (function () {
                 }
             }
             _this.previousRanges = {
-                nRange: _this.nRange,
-                powerRange: _this.powerRange,
-                deltaRange: _this.deltaRange,
-                pSpaceRange: _this.pSpaceRange
+                nRange: _this.nRange ? _this.nRange.clone() : undefined,
+                powerRange: _this.powerRange ? _this.powerRange.clone() : undefined,
+                deltaRange: _this.deltaRange ? _this.deltaRange.clone() : undefined,
+                pSpaceRange: _this.pSpaceRange ? _this.pSpaceRange.clone() : undefined
             };
         });
     };
@@ -2717,7 +2769,9 @@ var Project = (function () {
             var model = new __WEBPACK_IMPORTED_MODULE_0__t_test__["a" /* TTest */](result);
             model.name = _this.getModelName(_this.models.length);
             _this.models.push(model);
-            _this.calculateRanges();
+            if (!_this.customRanges) {
+                _this.calculateRanges();
+            }
             _this.changeHistory.push({
                 'type': 'add', 'index': _this.models.length - 1,
                 'params': model.params()
@@ -2756,7 +2810,10 @@ var Project = (function () {
         }
         var models = [model];
         if (key === "output") {
+            // If the output is changed, all models need to be updated. Additionally,
+            // reset the flag to keep ranges.
             models = this.models;
+            this.customRanges = false;
         }
         models.forEach(function (m) { Object.assign(m, changes); });
         return models.reduce(function (promise, model) {
@@ -2766,7 +2823,9 @@ var Project = (function () {
                 Object.assign(model, result);
             });
         }, Promise.resolve()).then(function () {
-            _this.calculateRanges();
+            if (!_this.customRanges) {
+                _this.calculateRanges();
+            }
             _this.changeHistory.push({
                 'type': 'change', 'index': index,
                 'key': key, 'params': model.params()
@@ -2780,7 +2839,9 @@ var Project = (function () {
         this.changeHistory.push({
             'type': 'remove', 'index': index
         });
-        this.calculateRanges();
+        if (!this.customRanges) {
+            this.calculateRanges();
+        }
         return this.updatePlotData();
     };
     Project.prototype.getModel = function (index) {
@@ -2938,13 +2999,13 @@ var Project = (function () {
     Project.prototype.makeXRange = function (data, yRange) {
         var minIndex = 0, maxIndex = data.length - 1;
         for (var i = 1; i < data.length; i++) {
-            if (data[i].y >= yRange.min) {
+            if (typeof (data[i].x) === "number" && data[i].y >= yRange.min) {
                 minIndex = i;
                 break;
             }
         }
         for (var i = data.length - 2; i >= 0; i--) {
-            if (data[i].y <= yRange.max) {
+            if (typeof (data[i].x) === "number" && data[i].y <= yRange.max) {
                 maxIndex = i;
                 break;
             }
@@ -3378,6 +3439,9 @@ var Range = (function () {
     Range.prototype.toArray = function () {
         return [this.min, this.max];
     };
+    Range.prototype.clone = function () {
+        return new Range(this.min, this.max);
+    };
     return Range;
 }());
 
@@ -3566,7 +3630,7 @@ module.exports = module.exports.toString();
 /***/ "./src/app/t-test/t-test.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"t-test\" class=\"d-flex flex-column h-100\"\n  [class.block-selection]=\"blockSelection\" (mouseup)=\"onMouseUp()\">\n\n  <div id=\"t-test-main\" class=\"row d-flex\" style=\"flex: 1 0 auto\">\n    <div class=\"col-4 d-flex flex-column justify-content-between\">\n      <div id=\"t-test-sidebar\" class=\"d-flex flex-row\" style=\"flex: auto\">\n        <div class=\"overview\">\n          <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleHelp('overview')\">\n            Overview <i class=\"fa fa-question-circle\"></i>\n          </button>\n        </div>\n        <ngb-tabset #tabset (tabChange)=\"onTabChange($event)\">\n          <ngb-tab title=\"Start\" id=\"t-test-start\">\n            <ng-template ngbTabContent>\n              <t-test-start [model]=\"newModel\"\n                (onCalculate)=\"calculate()\"\n                (onToggleHelp)=\"toggleHelp('start')\">\n              </t-test-start>\n            </ng-template>\n          </ngb-tab>\n          <ngb-tab *ngFor=\"let project of projects; let i = index\"\n            title=\"Test {{i+1}}\" id=\"t-test-{{i+1}}\">\n            <ng-template ngbTabContent>\n              <t-test-project name=\"{{i}}\" [project]=\"project\"\n                (projectChanged)=\"onProjectChanged()\">\n              </t-test-project>\n            </ng-template>\n          </ngb-tab>\n        </ngb-tabset>\n      </div>\n\n      <div id=\"t-test-footer\" class=\"d-flex flex-column\">\n        <img src=\"assets/biostat.jpg\">\n        <div class=\"build\">\n          Build version: {{ commitHash }} ({{ buildTimestamp | date }})\n        </div>\n      </div>\n    </div>\n    <div class=\"col-8\">\n      <div class=\"plot-buttons\" *ngIf=\"selectedProject\">\n        <button class=\"btn btn-secondary\" (click)=\"togglePlotOptions()\" title=\"Toggle plot options\">\n          <i class=\"fa fa-cog\"></i>\n        </button>\n        <button class=\"btn btn-secondary\" (click)=\"save()\" title=\"Export plots\">\n          <i class=\"fa fa-floppy-o\"></i>\n        </button>\n        <button class=\"btn btn-secondary\" (click)=\"toggleHoverBox()\" title=\"Toggle hover box\">\n          <i class=\"fa\" [class.fa-cubes]=\"hoverBoxEnabled\" [class.fa-cube]=\"!hoverBoxEnabled\"></i>\n        </button>\n      </div>\n      <t-test-output-pane #outputPane\n        [project]=\"selectedProject\"\n        [hover-disabled]=\"!hoverBoxEnabled\"\n        (modelChanged)=\"onModelChanged()\">\n      </t-test-output-pane>\n    </div>\n  </div>\n  <t-test-draggable-dialog #helpDialog\n    [title]=\"helpTitles[helpTopic]\"\n    start-x-offset=\"33%\" start-y-offset=\"55px\"\n    (drag-start)=\"onChildDragStarted()\"\n    (drag-end)=\"onChildDragEnded()\">\n    <t-test-help [topic]=\"helpTopic\"></t-test-help>\n  </t-test-draggable-dialog>\n  <t-test-draggable-dialog #plotOptionsDialog\n    title=\"Plot options\"\n    start-x-offset=\"5%\" start-y-offset=\"55px\"\n    (drag-start)=\"onChildDragStarted()\"\n    (drag-end)=\"onChildDragEnded()\">\n    <t-test-plot-options [project]=\"selectedProject\"\n      (optionChanged)=\"onPlotOptionChanged()\"\n      (rangeChanged)=\"onProjectRangeChanged($event)\"\n      (reset)=\"onPlotOptionsReset()\">\n    </t-test-plot-options>\n  </t-test-draggable-dialog>\n</div>\n"
+module.exports = "<div id=\"t-test\" class=\"d-flex flex-column h-100\"\n  [class.block-selection]=\"blockSelection\" (mouseup)=\"onMouseUp()\">\n\n  <div id=\"t-test-main\" class=\"row d-flex\" style=\"flex: 1 0 auto\">\n    <div class=\"col-4 d-flex flex-column justify-content-between\">\n      <div id=\"t-test-sidebar\" class=\"d-flex flex-row\" style=\"flex: auto\">\n        <div class=\"overview\">\n          <button type=\"button\" class=\"btn btn-secondary\" (click)=\"toggleHelp('overview')\">\n            Overview <i class=\"fa fa-question-circle\"></i>\n          </button>\n        </div>\n        <ngb-tabset #tabset (tabChange)=\"onTabChange($event)\">\n          <ngb-tab title=\"Start\" id=\"t-test-start\">\n            <ng-template ngbTabContent>\n              <t-test-start [model]=\"newModel\"\n                (onCalculate)=\"calculate()\"\n                (onToggleHelp)=\"toggleHelp('start')\">\n              </t-test-start>\n            </ng-template>\n          </ngb-tab>\n          <ngb-tab *ngFor=\"let project of projects; let i = index\"\n            title=\"Test {{i+1}}\" id=\"t-test-{{i+1}}\">\n            <ng-template ngbTabContent>\n              <t-test-project name=\"{{i}}\" [project]=\"project\"\n                (projectChanged)=\"onProjectChanged()\">\n              </t-test-project>\n            </ng-template>\n          </ngb-tab>\n        </ngb-tabset>\n      </div>\n\n      <div id=\"t-test-footer\" class=\"d-flex flex-column\">\n        <img src=\"assets/biostat.jpg\">\n        <div class=\"build\">\n          Build version: {{ commitHash }} ({{ buildTimestamp | date }})\n        </div>\n      </div>\n    </div>\n    <div class=\"col-8\">\n      <div class=\"plot-buttons\" *ngIf=\"selectedProject\">\n        <button class=\"btn btn-secondary\" (click)=\"togglePlotOptions()\" title=\"Toggle plot options\">\n          <i class=\"fa fa-cog\"></i>\n        </button>\n        <button class=\"btn btn-secondary\" (click)=\"save()\" title=\"Export plots\">\n          <i class=\"fa fa-floppy-o\"></i>\n        </button>\n        <button class=\"btn btn-secondary\" (click)=\"toggleHoverBox()\" title=\"Toggle hover box\">\n          <i class=\"fa\" [class.fa-cubes]=\"hoverBoxEnabled\" [class.fa-cube]=\"!hoverBoxEnabled\"></i>\n        </button>\n      </div>\n      <t-test-output-pane #outputPane\n        [project]=\"selectedProject\"\n        [hover-disabled]=\"!hoverBoxEnabled\"\n        (modelChanged)=\"onModelChanged()\">\n      </t-test-output-pane>\n    </div>\n  </div>\n  <t-test-draggable-dialog #helpDialog\n    [title]=\"helpTitles[helpTopic]\"\n    start-x-offset=\"33%\" start-y-offset=\"55px\"\n    (drag-start)=\"onChildDragStarted()\"\n    (drag-end)=\"onChildDragEnded()\">\n    <t-test-help [topic]=\"helpTopic\"></t-test-help>\n  </t-test-draggable-dialog>\n  <t-test-draggable-dialog #plotOptionsDialog\n    title=\"Plot options\"\n    start-x-offset=\"5%\" start-y-offset=\"55px\"\n    (drag-start)=\"onChildDragStarted()\"\n    (drag-end)=\"onChildDragEnded()\">\n    <t-test-plot-options [project]=\"selectedProject\"\n      (optionChanged)=\"onPlotOptionChanged()\"\n      (projectChanged)=\"onProjectChangedFromPlotOptions()\"\n      (reset)=\"onPlotOptionsReset()\">\n    </t-test-plot-options>\n  </t-test-draggable-dialog>\n</div>\n"
 
 /***/ }),
 
@@ -3603,8 +3667,8 @@ var TTestComponent = (function () {
         this.projectFactory = projectFactory;
         this.newModel = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]();
         this.projects = [];
-        this.commitHash = "778386cea9ef793b699463265c0400a63f62afda".substr(0, 7);
-        this.buildTimestamp = "Mon Mar 12 2018 15:01:19 GMT-0500 (CDT)";
+        this.commitHash = "38763537767489d567611e01db955215b9f143f2".substr(0, 7);
+        this.buildTimestamp = "Tue Mar 20 2018 16:30:10 GMT-0500 (CDT)";
         this.helpTitles = {
             'overview': 'PS Overview',
             'start': 'PS Start Tab'
@@ -3679,13 +3743,8 @@ var TTestComponent = (function () {
     TTestComponent.prototype.onPlotOptionsReset = function () {
         this.outputPane.redrawPlots();
     };
-    TTestComponent.prototype.onProjectRangeChanged = function (change) {
-        var _this = this;
-        if (this.selectedProject) {
-            this.selectedProject.updateRange(change).then(function () {
-                _this.outputPane.redrawPlots();
-            });
-        }
+    TTestComponent.prototype.onProjectChangedFromPlotOptions = function () {
+        this.outputPane.redrawPlots();
     };
     TTestComponent.prototype.onMouseUp = function () {
         this.plotOptionsDialog.stopDragging();
