@@ -143,7 +143,17 @@ TTest <- setRefClass("TTest",
 
         delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 50)
         power3 <- sapply(delta2, calculatePower, alpha = alpha, sigma = sigma, n = n)
-        result$powerVsDelta <- data.frame(y = power3, x = delta2)
+        df <- data.frame(y = power3, x = delta2)
+
+        if (!(ranges$powerRange$min %in% df$power3)) {
+          delta3 <- calculateDelta(alpha, sigma, n, ranges$powerRange$min)
+          extra <- data.frame(y = rep(ranges$powerRange$min, 2),
+                              x = c(-delta3, delta3))
+          df <- rbind(df, extra)
+          df <- df[order(df$x), ]
+        }
+
+        result$powerVsDelta <- df
 
       } else if (output == "delta") {
         # Calculate data for plots
