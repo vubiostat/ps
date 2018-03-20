@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, OnInit} from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -9,6 +9,30 @@ import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../export.service'
 
 import * as stableSort from 'stable';
+
+enum Platform {
+  iOS,
+  WP,
+  Android,
+  Linux,
+  Mac,
+  Windows,
+  BB,
+  Other
+}
+
+/* browser.js v0.1-dev | @ajlkn | MIT licensed */
+let platformPatterns = [
+  [Platform.iOS,     /([0-9_]+) like Mac OS X/],
+  [Platform.iOS,     /CPU like Mac OS X/],
+  [Platform.WP,      /Windows Phone ([0-9\.]+)/],
+  [Platform.Android, /Android ([0-9\.]+)/],
+  [Platform.Linux,   /Linux/],
+  [Platform.Mac,     /Macintosh.+Mac OS X ([0-9_]+)/],
+  [Platform.Windows, /Windows NT ([0-9\.]+)/],
+  [Platform.BB,      /BlackBerry.+Version\/([0-9\.]+)/],
+  [Platform.BB,      /BB[0-9]+.+Version\/([0-9\.]+)/],
+];
 
 @Component({
   selector: 't-test-export-plots',
@@ -58,19 +82,31 @@ export class ExportPlotsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    let platform = this.detectPlatform();
+    switch (platform) {
+      case Platform.Windows:
+        this.imageFormat = "WMF";
+        break;
+      case Platform.Mac:
+        this.imageFormat = "EPS";
+        break;
+      case Platform.Linux:
+        this.imageFormat = "SVG";
+        break;
+      default:
+        this.imageFormat = "PNG";
+        break;
+    }
+
     this.exportService.formats().then(response => {
       this.imageFormats = response.formats;
-
-      // Make WMF the default (for now)
-      stableSort.inplace(this.imageFormats, (a, b) => {
-        if (a === "WMF") return -1;
-        if (b === "WMF") return 1;
-        if (a < b) return -1;
-        if (b > a) return 1;
-        return 0;
-      });
-
-      this.imageFormat = this.imageFormats[0];
+      let formatOk = this.imageFormats.some(format => {
+        return this.imageFormat == format;
+      })
+      if (!formatOk) {
+        // PNG will always be supported
+        this.imageFormat = "PNG";
+      }
     });
 
     switch (this.project.getModel(0).output) {
@@ -88,6 +124,20 @@ export class ExportPlotsComponent implements OnInit {
         this.topRightTitle = "Detectable Alternative vs. Power";
         break;
     }
+  }
+
+  detectPlatform(): Platform {
+    if (navigator) {
+      let ua = navigator.userAgent;
+      for (var i = 0, ilen = platformPatterns.length; i < ilen; i++) {
+        let pattern = platformPatterns[i];
+        if (ua.match(pattern[1])) {
+          return pattern[0];
+        }
+      }
+    }
+
+    return Platform.Other;
   }
 
   setDim(which: string, value: string): void {
