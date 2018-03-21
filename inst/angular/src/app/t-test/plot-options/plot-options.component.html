@@ -97,7 +97,7 @@
     <div class="form-check">
       <label class="form-check-label">
         <input #customRanges class="form-check-input" type="checkbox"
-          [value]="project.customRanges"
+          [checked]="project.customRanges"
           (change)="setProjectAttribute('customRanges', customRanges.checked)">
         Custom plot ranges
       </label>
