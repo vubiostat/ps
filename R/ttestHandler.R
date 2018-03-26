@@ -149,7 +149,13 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
         pSpaceRange = list(min = -15, max = 15)
       )
       time <- system.time(model$plotData(ranges, 50))
-      defaultPoints <<- as.integer(0.20 / time[1] * 50)
+      points <- as.integer(0.20 / time[1] * 50)
+      if (points < 50) {
+        points <- 50
+      } else if (points > 200) {
+        points <- 200
+      }
+      defaultPoints <<- points
     },
     validate = function(params) {
       errors <- list()
@@ -217,7 +223,12 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
         } else if (!is.integer(params$points)) {
           errors$points <- "must be an integer"
         }
+
+        if (is.null(errors$points) && (params$points < 50 || params$points > 200)) {
+          errors$points <- "must be in the range (50, 200)"
+        }
       }
+      errors
     },
 
     run = function(params) {
