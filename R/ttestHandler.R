@@ -239,7 +239,7 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
           } else {
             do.call(max, lapply(result, function(r) {
               n <- r$powerVsN$x
-              n[is.finite(n)]
+              n[!is.na(n)]
             }))
           }
 
@@ -248,18 +248,18 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
           model <- models[[i]]
           powerVsN <- result[[i]]$powerVsN
 
-          # look for infinity
-          infIndex <- which(is.infinite(powerVsN$x) | is.nan(powerVsN$x))
-          if (length(infIndex) > 0 && infIndex[1] > 1) {
-            lastRow <- powerVsN[infIndex[1] - 1, ]
-            if (lastRow$x < maxN) {
-              extraN <- seq(lastRow$x, maxN, length.out = 10)
-              extraPower <- calculatePower(model$alpha, model$delta, model$sigma, extraN)
-              extra <- data.frame(x = extraN, y = extraPower)
+          if (!(maxN %in% powerVsN$x)) {
+            indices <- which(powerVsN$x < maxN)
+            rowIndex <- indices[length(indices)]
+            row <- powerVsN[rowIndex, ]
 
-              powerVsN <- rbind(powerVsN[1:(infIndex[1] - 1), ], extra)
-              result[[i]]$powerVsN <- powerVsN
-            }
+            extraN <- seq(row$x, maxN, length.out = 10)
+            extraPower <- sapply(extraN, calculatePower, alpha = model$alpha,
+                                 delta = model$delta, sigma = model$sigma)
+            extra <- data.frame(x = extraN, y = extraPower)
+
+            powerVsN <- rbind(powerVsN[1:rowIndex, ], extra)
+            result[[i]]$powerVsN <- powerVsN
           }
         }
       }

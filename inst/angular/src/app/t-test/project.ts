@@ -368,13 +368,13 @@ export class Project {
 
   private makeXRange(data: Point[], yRange: Range): Range {
     let minIndex = 0, maxIndex = data.length - 1;
-    for (let i = 1; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       if (typeof(data[i].x) === "number" && data[i].y >= yRange.min) {
         minIndex = i;
         break;
       }
     }
-    for (let i = data.length - 2; i >= 0; i--) {
+    for (let i = data.length - 1; i >= 0; i--) {
       if (typeof(data[i].x) === "number" && data[i].y <= yRange.max) {
         maxIndex = i;
         break;

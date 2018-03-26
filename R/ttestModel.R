@@ -1,6 +1,10 @@
 # Calculate sample size, given the other parameters
 calculateN <- function(alpha, delta, sigma, power, ...) {
   #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " power = ", power, "\n", sep = "")
+  if (power == 1) {
+    return(NA)
+  }
+
   result <- try(pwr.t.test(d = delta / sigma, power = power, sig.level = alpha,
                            type = "paired", alternative = "two.sided"),
                 silent = TRUE)
