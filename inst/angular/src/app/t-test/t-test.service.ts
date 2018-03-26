@@ -39,12 +39,15 @@ export class TTestService {
       catch(this.handleError);
   }
 
-  plotData(models: TTest[], ranges: PlotDataRanges): Promise<any> {
+  plotData(models: TTest[], ranges: PlotDataRanges, pointsPerPlot?: number): Promise<any> {
     let url = `${this.apiUrl}/plotData`;
-    let params = {
+    let params: any = {
       models: models.map(m => m.params()),
       ranges: ranges
     };
+    if (typeof(pointsPerPlot) === 'number') {
+      params.points = pointsPerPlot;
+    }
 
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');

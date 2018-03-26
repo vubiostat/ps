@@ -24,6 +24,8 @@ export class Project {
     pSpaceRange?: Range;
   };
 
+  pointsPerPlot: number;
+
   constructor(private ttestService: TTestService) {}
 
   getOutput(): string {
@@ -41,9 +43,13 @@ export class Project {
       pSpaceRange: this.pSpaceRange
     } as PlotDataRanges;
 
-    return this.ttestService.plotData(this.models, ranges).
+    return this.ttestService.plotData(this.models, ranges, this.pointsPerPlot).
       then(result => {
-        result.forEach((data, i) => {
+        if (typeof(this.pointsPerPlot) === 'undefined') {
+          this.pointsPerPlot = result.points;
+        }
+
+        result.data.forEach((data, i) => {
           Object.assign(this.models[i], data);
         });
 

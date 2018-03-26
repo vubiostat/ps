@@ -116,10 +116,10 @@ TTest <- setRefClass("TTest",
         output    = output
       )
     },
-    plotData = function(ranges) {
+    plotData = function(ranges, points = 50) {
       result <- list()
       if (output == "n" || output == "nByCI") {
-        n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = 50)
+        n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = points)
         if (!(n %in% n2)) {
           n2 <- sort(c(n2, n))
         }
@@ -133,7 +133,7 @@ TTest <- setRefClass("TTest",
         result$nVsDelta <- data.frame(y = n2, x = delta2)
 
       } else if (output == "power") {
-        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = 50)
+        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = points)
         if (!(power %in% power2)) {
           power2 <- sort(c(power2, power))
         }
@@ -141,7 +141,7 @@ TTest <- setRefClass("TTest",
         n2 <- sapply(power2, calculateN, alpha = alpha, delta = delta, sigma = sigma)
         result$powerVsN <- data.frame(y = power2, x = n2)
 
-        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 50)
+        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
         power3 <- sapply(delta2, calculatePower, alpha = alpha, sigma = sigma, n = n)
         df <- data.frame(y = power3, x = delta2)
 
@@ -158,7 +158,7 @@ TTest <- setRefClass("TTest",
       } else if (output == "delta") {
         # Calculate data for plots
         deltaDiff <- delta * 2
-        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = 50)
+        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
         if (!(delta %in% delta2)) {
           delta2 <- sort(c(delta2, delta))
         }
@@ -172,7 +172,7 @@ TTest <- setRefClass("TTest",
       # Calculate data for bottom/tertiary graph
       #moe <- calculateMarginOfError(alpha, delta, sigma, n)
       moe <- ci / 2
-      pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = 50)
+      pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
       sampDist <- calculateSampDist(pSpace, delta, sigma, n)
       result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
 

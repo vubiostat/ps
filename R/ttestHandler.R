@@ -137,10 +137,23 @@ TTestCalculateAction <- setRefClass("TTestCalculateAction",
 )
 
 TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
+  fields = c("defaultPoints"),
   methods = list(
+    initialize = function() {
+      # try to guess a reasonable default
+      model <- TTest(list(alpha = 0.05, sigma = 10, delta = 5, n = 32, output = "power"))
+      model$calculate()
+      ranges <- list(
+        powerRange = list(min = 0.01, max = 1),
+        deltaRange = list(min = -15, max = 15),
+        pSpaceRange = list(min = -15, max = 15)
+      )
+      time <- system.time(model$plotData(ranges, 50))
+      defaultPoints <<- as.integer(0.20 / time[1] * 50)
+    },
     validate = function(params) {
       errors <- list()
-      expectedKeys <- c("models", "ranges")
+      expectedKeys <- c("models", "ranges", "points")
       keys <- names(params)
       extraKeys <- setdiff(keys, expectedKeys)
 
@@ -195,6 +208,16 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
           }
         }
       }
+
+      if ("points" %in% keys) {
+        if (is.numeric(params$points)) {
+          if (is.numeric(params$points) && floor(params$points) != params$points) {
+            errors$points <- "must be an integer"
+          }
+        } else if (!is.integer(params$points)) {
+          errors$points <- "must be an integer"
+        }
+      }
     },
 
     run = function(params) {
@@ -205,8 +228,9 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
 
       models <- lapply(params$models, TTest)
       ranges <- params$ranges
+      points <- if (is.null(params$points)) defaultPoints else params$points
       output <- models[[1]]$output
-      result <- lapply(models, function(m) m$plotData(ranges))
+      result <- lapply(models, function(m) m$plotData(ranges, points))
 
       if (output == "power") {
         maxN <-
@@ -240,7 +264,7 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
         }
       }
 
-      result
+      list(data = result, points = unbox(points))
     }
   )
 )

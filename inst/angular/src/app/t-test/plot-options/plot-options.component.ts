@@ -87,6 +87,12 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
     this.projectChangedImmediate.next(change);
   }
 
+  setProjectNumberAttribute(name: string, value: any): void {
+    let n = parseFloat(value);
+    if (isNaN(n)) return;
+    this.setProjectAttribute(name, n);
+  }
+
   setProjectRange(name: string, which: string, value: string, delay = false): void {
     let n = parseFloat(value);
     if (isNaN(n)) return;
