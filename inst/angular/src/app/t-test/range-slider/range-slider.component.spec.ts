@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { NgbModule, NgbPopoverConfig } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
 import { RangeSliderComponent } from './range-slider.component';
 
 describe('RangeSliderComponent', () => {
@@ -8,7 +10,11 @@ describe('RangeSliderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RangeSliderComponent ]
+      imports: [ NgbModule, FormsModule ],
+      declarations: [ RangeSliderComponent ],
+      providers: [
+        NgbPopoverConfig
+      ]
     })
     .compileComponents();
   }));

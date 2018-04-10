@@ -1,11 +1,17 @@
 import { TestBed, inject } from '@angular/core/testing';
 
+import { Http } from '@angular/http';
 import { ExportService } from './export.service';
 
 describe('ExportService', () => {
+  let httpStub = {};
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ExportService]
+      providers: [
+        { provide: Http, useValue: httpStub },
+        ExportService
+      ]
     });
   });
 
