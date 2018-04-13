@@ -18,20 +18,9 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /***/ }),
 
 /***/ "./src/app/app.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "#app {\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = "#app {\n}\n"
 
 /***/ }),
 
@@ -55,7 +44,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-var AppComponent = (function () {
+var AppComponent = /** @class */ (function () {
     function AppComponent() {
         this.konami = false;
     }
@@ -113,7 +102,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var routes = [
     { path: '', redirectTo: '/t-test', pathMatch: 'full' },
 ];
-var AppModule = (function () {
+var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = __decorate([
@@ -156,7 +145,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-var KonamiDirective = (function () {
+var KonamiDirective = /** @class */ (function () {
     function KonamiDirective() {
         this.konami = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
         this.konamiKeys = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
@@ -223,7 +212,7 @@ var Draw;
     Draw[Draw["Yes"] = 1] = "Yes";
     Draw[Draw["Hover"] = 2] = "Hover";
 })(Draw || (Draw = {}));
-var AbstractPlotComponent = (function () {
+var AbstractPlotComponent = /** @class */ (function () {
     function AbstractPlotComponent(plotOptions, palette) {
         this.plotOptions = plotOptions;
         this.palette = palette;
@@ -305,20 +294,9 @@ var AbstractPlotComponent = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/bottom-plot/bottom-plot.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ".draggable {\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ".draggable {\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n"
 
 /***/ }),
 
@@ -379,7 +357,7 @@ var CIBar;
     CIBar[CIBar["Right"] = 1] = "Right";
 })(CIBar || (CIBar = {}));
 ;
-var BottomPlotComponent = (function (_super) {
+var BottomPlotComponent = /** @class */ (function (_super) {
     __extends(BottomPlotComponent, _super);
     function BottomPlotComponent(plotOptions, palette) {
         var _this = _super.call(this, plotOptions, palette) || this;
@@ -446,7 +424,7 @@ var BottomPlotComponent = (function (_super) {
         // margin
         this.topMargin = this.plotOptions.getFontSize() + 20;
         this.bottomMargin = 10 + this.plotOptions.getFontSize() +
-            this.plotOptions.getAxisLineWidth() +
+            this.plotOptions.getAxisLineWidth() + // x axis line width
             (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
         this.leftMargin = this.plotOptions.getAxisFontSize() + 9;
         this.rightMargin = this.leftMargin;
@@ -780,7 +758,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-var CeilPipe = (function () {
+var CeilPipe = /** @class */ (function () {
     function CeilPipe() {
     }
     CeilPipe.prototype.transform = function (value, args) {
@@ -799,20 +777,9 @@ var CeilPipe = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/draggable-dialog/draggable-dialog.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ".dialog {\n  display: block;\n  position: absolute;\n  z-index: 100;\n  background-color: white;\n  border: 1px solid #888;\n  border-radius: 10px;\n  box-shadow: 5px 5px 25px #888;\n  top: 20px;\n  left: 20px;\n  width: 25vw;\n  min-width: 300px;\n}\n\n.dialog .header {\n  font-size: larger;\n  font-weight: bold;\n  background-color: #e5e5e5;\n  border-bottom: 1px solid #ccc;\n  padding: 10px;\n  border-radius: 10px 10px 0 0;\n  cursor: move;\n}\n\n.dialog .close {\n  float: right;\n  margin: 5px;\n}\n\n.dialog .content {\n  overflow: auto;\n  height: 50vh;\n  padding: 5px;\n  margin: 0 5px;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ".dialog {\n  display: block;\n  position: absolute;\n  z-index: 100;\n  background-color: white;\n  border: 1px solid #888;\n  border-radius: 10px;\n  -webkit-box-shadow: 5px 5px 25px #888;\n          box-shadow: 5px 5px 25px #888;\n  top: 20px;\n  left: 20px;\n  width: 25vw;\n  min-width: 300px;\n}\n\n.dialog .header {\n  font-size: larger;\n  font-weight: bold;\n  background-color: #e5e5e5;\n  border-bottom: 1px solid #ccc;\n  padding: 10px;\n  border-radius: 10px 10px 0 0;\n  cursor: move;\n}\n\n.dialog .close {\n  float: right;\n  margin: 5px;\n}\n\n.dialog .content {\n  overflow: auto;\n  height: 50vh;\n  padding: 5px;\n  margin: 0 5px;\n}\n"
 
 /***/ }),
 
@@ -839,7 +806,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
-var DraggableDialogComponent = (function () {
+var DraggableDialogComponent = /** @class */ (function () {
     function DraggableDialogComponent() {
         this.startEnabled = false;
         this.startXOffset = "20px";
@@ -942,20 +909,9 @@ var DraggableDialogComponent = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/export-plots/export-plots.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ":host {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n}\n\n.modal-body {\n}\n\n.modal-body .left {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  width: 20%;\n  border-right: 1px solid #888;\n  padding: 10px;\n}\n\n.modal-body .right {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  margin-left: 10px;\n  overflow: auto;\n  padding: 10px;\n}\n\n.modal-footer {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ":host {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n}\n\n.modal-body {\n}\n\n.modal-body .left {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  width: 20%;\n  border-right: 1px solid #888;\n  padding: 10px;\n}\n\n.modal-body .right {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  margin-left: 10px;\n  overflow: auto;\n  padding: 10px;\n}\n\n.modal-footer {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\n"
 
 /***/ }),
 
@@ -1015,7 +971,7 @@ var platformPatterns = [
     [Platform.BB, /BlackBerry.+Version\/([0-9\.]+)/],
     [Platform.BB, /BB[0-9]+.+Version\/([0-9\.]+)/],
 ];
-var ExportPlotsComponent = (function () {
+var ExportPlotsComponent = /** @class */ (function () {
     function ExportPlotsComponent(activeModal, exportService) {
         this.activeModal = activeModal;
         this.exportService = exportService;
@@ -1226,7 +1182,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var ExportService = (function () {
+var ExportService = /** @class */ (function () {
     function ExportService(http) {
         this.http = http;
         this.apiUrl = __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].apiUrl + "/export";
@@ -1282,7 +1238,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-var FormatFixedPipe = (function () {
+var FormatFixedPipe = /** @class */ (function () {
     function FormatFixedPipe() {
     }
     FormatFixedPipe.prototype.transform = function (value, others) {
@@ -1312,20 +1268,9 @@ var FormatFixedPipe = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/help/help.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "h5 {\n  font-weight: bold;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = "h5 {\n  font-weight: bold;\n}\n"
 
 /***/ }),
 
@@ -1352,7 +1297,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
-var HelpComponent = (function () {
+var HelpComponent = /** @class */ (function () {
     function HelpComponent() {
     }
     __decorate([
@@ -1374,20 +1319,9 @@ var HelpComponent = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/output-pane/output-pane.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ".plot {\n  height: 80%;\n  /*min-height: 500px;*/\n  position: relative;\n}\n.without-footer {\n  height: 100%;\n}\n\ndiv.show-footer {\n  position: absolute;\n  right: 5px;\n  bottom: 5px;\n}\n\n.output-footer {\n  position: relative;\n  background-color: #e5e5e5;\n  border: 1px solid #aaa;\n  border-radius: 5px;\n  /*padding: 10px 20px;*/\n  /*text-align: justify;*/\n  /*overflow: auto;*/\n  margin-top: 5px;\n  margin-bottom: 5px;\n}\n\n.footer-buttons {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n}\n.footer-buttons i {\n  margin: 0 3px;\n}\n\n.dot {\n  color: red;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ".plot {\n  height: 80%;\n  /*min-height: 500px;*/\n  position: relative;\n}\n.without-footer {\n  height: 100%;\n}\ndiv.show-footer {\n  position: absolute;\n  right: 5px;\n  bottom: 5px;\n}\n.output-footer {\n  position: relative;\n  background-color: #e5e5e5;\n  border: 1px solid #aaa;\n  border-radius: 5px;\n  /*padding: 10px 20px;*/\n  /*text-align: justify;*/\n  /*overflow: auto;*/\n  margin-top: 5px;\n  margin-bottom: 5px;\n}\n.footer-buttons {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n}\n.footer-buttons i {\n  margin: 0 3px;\n}\n.dot {\n  color: red;\n}\n"
 
 /***/ }),
 
@@ -1428,7 +1362,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var OutputPaneComponent = (function () {
+var OutputPaneComponent = /** @class */ (function () {
     function OutputPaneComponent(modalService, plotOptions, palette) {
         this.modalService = modalService;
         this.plotOptions = plotOptions;
@@ -1580,7 +1514,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-var PaletteService = (function () {
+var PaletteService = /** @class */ (function () {
     function PaletteService() {
         this.colors = {
             typical: ["#0000DD", "#DD0000", "#000000", "#006600", "#008888"],
@@ -1642,7 +1576,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-var PlotOptionsService = (function () {
+var PlotOptionsService = /** @class */ (function () {
     function PlotOptionsService() {
         this.fontFamily = "";
         this.fontSize = 1;
@@ -1715,20 +1649,9 @@ var PlotOptionsService = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/plot-options/plot-options.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "fieldset {\n  border: 1px solid #bbb;\n  border-radius: 5px;\n  padding: 10px;\n  margin: 10px;\n}\n\nfieldset legend {\n  font-size: inherit;\n  font-weight: bold;\n  display: table;\n  width: auto;\n}\n\nh4 {\n  font-size: inherit;\n  font-weight: bold;\n  border-bottom: 1px solid #bbb;\n  margin: 1em 0;\n  padding-bottom: 0.2em;\n}\n\ndiv.disabled {\n  opacity: 0.5;\n}\n\n.form-group {\n  padding: 0 5px;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = "fieldset {\n  border: 1px solid #bbb;\n  border-radius: 5px;\n  padding: 10px;\n  margin: 10px;\n}\n\nfieldset legend {\n  font-size: inherit;\n  font-weight: bold;\n  display: table;\n  width: auto;\n}\n\nh4 {\n  font-size: inherit;\n  font-weight: bold;\n  border-bottom: 1px solid #bbb;\n  margin: 1em 0;\n  padding-bottom: 0.2em;\n}\n\ndiv.disabled {\n  opacity: 0.5;\n}\n\n.form-group {\n  padding: 0 5px;\n}\n"
 
 /***/ }),
 
@@ -1769,7 +1692,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var PlotOptionsComponent = (function () {
+var PlotOptionsComponent = /** @class */ (function () {
     function PlotOptionsComponent(plotOptions) {
         this.plotOptions = plotOptions;
         this.optionChanged = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
@@ -1875,20 +1798,9 @@ var PlotOptionsComponent = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/plot/plot.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ".target {\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n\n.legend {\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ".target {\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n\n.legend {\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n"
 
 /***/ }),
 
@@ -1944,7 +1856,7 @@ var HoverInfo;
     HoverInfo[HoverInfo["NonTarget"] = 1] = "NonTarget";
     HoverInfo[HoverInfo["Target"] = 2] = "Target";
 })(HoverInfo || (HoverInfo = {}));
-var PlotComponent = (function (_super) {
+var PlotComponent = /** @class */ (function (_super) {
     __extends(PlotComponent, _super);
     function PlotComponent(plotOptions, palette) {
         var _this = _super.call(this, plotOptions, palette) || this;
@@ -2048,10 +1960,10 @@ var PlotComponent = (function (_super) {
     PlotComponent.prototype.setupDimensions = function () {
         // margin
         this.yAxisWidth = 10 +
-            this.plotOptions.getAxisLineWidth() +
+            this.plotOptions.getAxisLineWidth() + // y axis line width
             this.plotOptions.getAxisFontSize() + 9; // y axis tick (font + tick)
         this.xAxisHeight = 10 +
-            this.plotOptions.getAxisLineWidth() +
+            this.plotOptions.getAxisLineWidth() + // x axis line width
             (this.plotOptions.getAxisFontSize() / 2) + 9; // x axis tick (font + tick)
         this.leftMargin = this.plotOptions.getFontSize() + this.yAxisWidth + 10;
         this.rightMargin = this.plotOptions.getAxisFontSize() + 9;
@@ -2493,7 +2405,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var ProjectFactoryService = (function () {
+var ProjectFactoryService = /** @class */ (function () {
     function ProjectFactoryService(ttestService) {
         this.ttestService = ttestService;
     }
@@ -2512,20 +2424,9 @@ var ProjectFactoryService = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/project-model/project-model.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ".output {\n  -webkit-box-ordinal-group: 2;\n      -ms-flex-order: 1;\n          order: 1;\n}\n\n.output .range-slider {\n  background-color: #d8ecf3;\n  border-radius: 0.5em;\n}\n\n.order-2 {\n  -webkit-box-ordinal-group: 3;\n      -ms-flex-order: 2;\n          order: 2;\n}\n\n.alt {\n  margin-top: 5px;\n}\n\n.alt .range-slider {\n  background-color: #ffff99;\n  border-radius: 0.5em;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ".output {\n  -webkit-box-ordinal-group: 2;\n      -ms-flex-order: 1;\n          order: 1;\n}\n\n.output .range-slider {\n  background-color: #d8ecf3;\n  border-radius: 0.5em;\n}\n\n.order-2 {\n  -webkit-box-ordinal-group: 3;\n      -ms-flex-order: 2;\n          order: 2;\n}\n\n.alt {\n  margin-top: 5px;\n}\n\n.alt .range-slider {\n  background-color: #ffff99;\n  border-radius: 0.5em;\n}\n"
 
 /***/ }),
 
@@ -2565,7 +2466,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var ProjectModelComponent = (function () {
+var ProjectModelComponent = /** @class */ (function () {
     function ProjectModelComponent(plotOptions, palette) {
         this.plotOptions = plotOptions;
         this.palette = palette;
@@ -2677,7 +2578,7 @@ var ProjectModelComponent = (function () {
 
 
 
-var Project = (function () {
+var Project = /** @class */ (function () {
     function Project(ttestService) {
         this.ttestService = ttestService;
         this.models = [];
@@ -3030,20 +2931,9 @@ var Project = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/project/project.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ".overview {\n  text-align: right;\n}\n\n.btn-secondary {\n  padding: 0.3rem 0.3rem;\n}\n\nul.nav {\n  border-bottom: 0;\n  z-index: 1;\n}\n\nul.nav li.nav-item {\n  margin-bottom: -1px;\n}\n\nul.nav li.nav-item a.nav-link {\n  cursor: pointer;\n  background-color: #ddd;\n  border-color: #bbb #bbb #aaa;\n  font-size: x-large;\n  padding: 0.25rem 0.75rem;\n}\n\nul.nav li.nav-item a.nav-link.active {\n  border-color: #aaa #aaa #f6f6f6;\n  background-color: #f6f6f6;\n}\n\n.project-model {\n  display: none;\n}\n\n.project-model.active {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n}\n\n.project-model.tab {\n  padding: 1rem 0.5rem 0 0.5rem;\n  border: 1px solid #aaa;\n  background-color: #f6f6f6;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ".overview {\n  text-align: right;\n}\n\n.btn-secondary {\n  padding: 0.3rem 0.3rem;\n}\n\nul.nav {\n  border-bottom: 0;\n  z-index: 1;\n}\n\nul.nav li.nav-item {\n  margin-bottom: -1px;\n}\n\nul.nav li.nav-item a.nav-link {\n  cursor: pointer;\n  background-color: #ddd;\n  border-color: #bbb #bbb #aaa;\n  font-size: x-large;\n  padding: 0.25rem 0.75rem;\n}\n\nul.nav li.nav-item a.nav-link.active {\n  border-color: #aaa #aaa #f6f6f6;\n  background-color: #f6f6f6;\n}\n\n.project-model {\n  display: none;\n}\n\n.project-model.active {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n}\n\n.project-model.tab {\n  padding: 1rem 0.5rem 0 0.5rem;\n  border: 1px solid #aaa;\n  background-color: #f6f6f6;\n}\n"
 
 /***/ }),
 
@@ -3078,7 +2968,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var ProjectComponent = (function () {
+var ProjectComponent = /** @class */ (function () {
     function ProjectComponent(plotOptions, palette) {
         this.plotOptions = plotOptions;
         this.palette = palette;
@@ -3160,20 +3050,9 @@ var ProjectComponent = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/range-slider/range-slider.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ":host {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: row;\n          flex-direction: row;\n}\n\ndiv.slider-group {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  padding: 5px;\n  border-radius: 5px;\n}\n\ndiv.slider-group .label span {\n  font-weight: bold;\n}\n\ndiv.slider-group .slider,\ndiv.slider-group .number {\n  padding-top: 2ex;\n}\ndiv.slider-group .add-remove {\n  padding-top: 2.3ex;\n}\n\ndiv.slider-group div.inputs input {\n  width: 100%;\n}\n\ndiv.slider-group div.slider {\n  position: relative;\n  padding-left: 0;\n  padding-right: 0;\n}\n\ndiv.slider-group div.slider input {\n  display: block;\n}\n\ndiv.slider-group div.slider div.min,\ndiv.slider-group div.slider div.max {\n  position: absolute;\n  font-size: x-small;\n  top: 0;\n  background-color: #ddd;\n  border-radius: 1ex;\n  padding: 0.5ex;\n}\n\ndiv.slider-group.output div.slider div.min,\ndiv.slider-group.output div.slider div.max {\n  background-color: #ccc;\n}\n\ndiv.slider-group div.slider div.min {\n  left: 0;\n}\n\ndiv.slider-group div.slider div.max {\n  right: 0;\n}\n\n.fa {\n  opacity: 0.7;\n}\n.fa:hover {\n  opacity: 1;\n}\n.dot {\n  color: red;\n  opacity: 1;\n}\n\n.palette-color .fa {\n  opacity: 1;\n}\n\nspan.error {\n  color: red;\n}\n\ninput.error {\n  border: 2px solid red;\n  color: red;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ":host {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: row;\n          flex-direction: row;\n}\n\ndiv.slider-group {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  padding: 5px;\n  border-radius: 5px;\n}\n\ndiv.slider-group .label span {\n  font-weight: bold;\n}\n\ndiv.slider-group .slider,\ndiv.slider-group .number {\n  padding-top: 2ex;\n}\n\ndiv.slider-group .add-remove {\n  padding-top: 2.3ex;\n}\n\ndiv.slider-group div.inputs input {\n  width: 100%;\n}\n\ndiv.slider-group div.slider {\n  position: relative;\n  padding-left: 0;\n  padding-right: 0;\n}\n\ndiv.slider-group div.slider input {\n  display: block;\n}\n\ndiv.slider-group div.slider div.min,\ndiv.slider-group div.slider div.max {\n  position: absolute;\n  font-size: x-small;\n  top: 0;\n  background-color: #ddd;\n  border-radius: 1ex;\n  padding: 0.5ex;\n}\n\ndiv.slider-group.output div.slider div.min,\ndiv.slider-group.output div.slider div.max {\n  background-color: #ccc;\n}\n\ndiv.slider-group div.slider div.min {\n  left: 0;\n}\n\ndiv.slider-group div.slider div.max {\n  right: 0;\n}\n\n.fa {\n  opacity: 0.7;\n}\n\n.fa:hover {\n  opacity: 1;\n}\n\n.dot {\n  color: red;\n  opacity: 1;\n}\n\n.palette-color .fa {\n  opacity: 1;\n}\n\nspan.error {\n  color: red;\n}\n\ninput.error {\n  border: 2px solid red;\n  color: red;\n}\n"
 
 /***/ }),
 
@@ -3212,7 +3091,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var RangeSliderLabel = (function () {
+var RangeSliderLabel = /** @class */ (function () {
     function RangeSliderLabel(templateRef) {
         this.templateRef = templateRef;
     }
@@ -3223,7 +3102,7 @@ var RangeSliderLabel = (function () {
     return RangeSliderLabel;
 }());
 
-var RangeSliderHelp = (function () {
+var RangeSliderHelp = /** @class */ (function () {
     function RangeSliderHelp(templateRef) {
         this.templateRef = templateRef;
     }
@@ -3234,7 +3113,7 @@ var RangeSliderHelp = (function () {
     return RangeSliderHelp;
 }());
 
-var RangeSliderComponent = (function () {
+var RangeSliderComponent = /** @class */ (function () {
     function RangeSliderComponent() {
         this.step = 0.01;
         this.isOutput = false;
@@ -3432,7 +3311,7 @@ var RangeSliderComponent = (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Range; });
-var Range = (function () {
+var Range = /** @class */ (function () {
     function Range(min, max) {
         this.min = min;
         this.max = max;
@@ -3471,7 +3350,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-var ReversePipe = (function () {
+var ReversePipe = /** @class */ (function () {
     function ReversePipe() {
     }
     ReversePipe.prototype.transform = function (value, args) {
@@ -3502,7 +3381,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-var RoundPipe = (function () {
+var RoundPipe = /** @class */ (function () {
     function RoundPipe() {
     }
     RoundPipe.prototype.transform = function (value, digits) {
@@ -3523,20 +3402,9 @@ var RoundPipe = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/start/start.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ".overview {\n  text-align: right;\n}\n\n.btn-secondary {\n  padding: 0.3rem 0.3rem;\n}\n\n.ng-valid[required], .ng-valid.required  {\n  border-left: 5px solid #42A948; /* green */\n}\n\n.ng-invalid:not(form) {\n  border-left: 5px solid #a94442; /* red */\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ".overview {\n  text-align: right;\n}\n\n.btn-secondary {\n  padding: 0.3rem 0.3rem;\n}\n\n.ng-valid[required], .ng-valid.required  {\n  border-left: 5px solid #42A948; /* green */\n}\n\n.ng-invalid:not(form) {\n  border-left: 5px solid #a94442; /* red */\n}\n"
 
 /***/ }),
 
@@ -3565,7 +3433,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-var StartComponent = (function () {
+var StartComponent = /** @class */ (function () {
     function StartComponent() {
         this.onCalculate = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
         this.onToggleHelp = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* EventEmitter */]();
@@ -3619,20 +3487,9 @@ var StartComponent = (function () {
 /***/ }),
 
 /***/ "./src/app/t-test/t-test.component.css":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ":host {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n}\n\n#t-test {\n}\n\n#t-test-main {\n  /*min-height: 85vh;*/\n}\n\n#t-test-sidebar {\n  background-color: #e5e5e5;\n  border: 1px solid #ccc;\n  border-radius: 5px;\n  padding: 10px;\n  /*margin: 10px;*/\n  position: relative;\n}\n\n#t-test-sidebar .overview {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n}\n\n.plot-buttons {\n  position: absolute;\n  top: 0;\n  left: 0;\n  font-size: large;\n  z-index: 99;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 auto;\n          flex: 0 0 auto;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n}\n.plot-buttons button {\n  padding: 0.4rem 0;\n  margin: 0.2rem 0;\n  width: 2.4rem;\n}\n\n#t-test-sidebar ngb-tabset {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n  /*width: 100%;*/\n}\n\n#t-test-sidebar t-test-start,\n#t-test-sidebar t-test-project {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n}\n\n#t-test-footer {\n  margin: 20px 0;\n  padding: 20px;\n  text-align: center;\n}\n#t-test-footer img {\n  margin: auto;\n  display: block;\n}\n#t-test-footer div.build {\n  margin-top: 5px;\n  font-size: smaller;\n}\n\n.block-selection * {\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
+module.exports = ":host {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n}\n\n#t-test {\n}\n\n#t-test-main {\n  /*min-height: 85vh;*/\n}\n\n#t-test-sidebar {\n  background-color: #e5e5e5;\n  border: 1px solid #ccc;\n  border-radius: 5px;\n  padding: 10px;\n  /*margin: 10px;*/\n  position: relative;\n}\n\n#t-test-sidebar .overview {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n}\n\n.plot-buttons {\n  position: absolute;\n  top: 0;\n  left: 0;\n  font-size: large;\n  z-index: 99;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 auto;\n          flex: 0 0 auto;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n}\n\n.plot-buttons button {\n  padding: 0.4rem 0;\n  margin: 0.2rem 0;\n  width: 2.4rem;\n}\n\n#t-test-sidebar ngb-tabset {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n  /*width: 100%;*/\n}\n\n#t-test-sidebar t-test-start,\n#t-test-sidebar t-test-project {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-flex: 1;\n      -ms-flex: auto;\n          flex: auto;\n}\n\n#t-test-footer {\n  margin: 20px 0;\n  padding: 20px;\n  text-align: center;\n}\n\n#t-test-footer img {\n  margin: auto;\n  display: block;\n}\n\n#t-test-footer div.build {\n  margin-top: 5px;\n  font-size: smaller;\n}\n\n.block-selection * {\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n"
 
 /***/ }),
 
@@ -3671,13 +3528,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var TTestComponent = (function () {
+var TTestComponent = /** @class */ (function () {
     function TTestComponent(projectFactory) {
         this.projectFactory = projectFactory;
         this.newModel = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]();
         this.projects = [];
-        this.commitHash = "aa5a52a42156bb37bb303b63b9f000ed38cc0b03".substr(0, 7);
-        this.buildTimestamp = "Mon Mar 26 2018 11:29:03 GMT-0500 (CDT)";
+        this.commitHash = "bd202794e41a7447ac6614dfa159c6917d551340".substr(0, 7);
+        this.buildTimestamp = "Fri Apr 13 2018 10:42:55 GMT-0500 (CDT)";
         this.helpTitles = {
             'overview': 'PS Overview',
             'start': 'PS Start Tab'
@@ -3689,7 +3546,7 @@ var TTestComponent = (function () {
     TTestComponent.prototype.ngOnInit = function () {
         /* Add example project */
         var model = new __WEBPACK_IMPORTED_MODULE_3__t_test__["a" /* TTest */]({
-            output: 'power', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32
+            output: 'power', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 33
         });
         this.createProject(model, false);
     };
@@ -3872,7 +3729,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var routes = [
     { path: 't-test', component: __WEBPACK_IMPORTED_MODULE_11__t_test_component__["a" /* TTestComponent */] },
 ];
-var TTestModule = (function () {
+var TTestModule = /** @class */ (function () {
     function TTestModule() {
     }
     TTestModule = __decorate([
@@ -3947,7 +3804,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 ;
-var TTestService = (function () {
+var TTestService = /** @class */ (function () {
     function TTestService(http) {
         this.http = http;
         this.apiUrl = __WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].apiUrl + "/ttests";
@@ -4004,7 +3861,7 @@ var TTestService = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TTest; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__range__ = __webpack_require__("./src/app/t-test/range.ts");
 
-var TTest = (function () {
+var TTest = /** @class */ (function () {
     function TTest(attribs) {
         this.ciMode = false;
         this.deltaMode = false;
@@ -4094,7 +3951,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 if (__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].production) {
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_16" /* enableProdMode */])();
 }
-Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_2__app_app_module__["a" /* AppModule */]);
+Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_2__app_app_module__["a" /* AppModule */])
+    .catch(function (err) { return console.log(err); });
 
 
 /***/ }),
