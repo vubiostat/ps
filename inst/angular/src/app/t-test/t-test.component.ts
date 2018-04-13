@@ -45,7 +45,7 @@ export class TTestComponent implements OnInit {
   ngOnInit(): void {
     /* Add example project */
     let model = new TTest({
-      output: 'power', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 32
+      output: 'power', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 33
     });
     this.createProject(model, false);
   }
