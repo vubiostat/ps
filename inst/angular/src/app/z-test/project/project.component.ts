@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angu
 import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 import { PlotOptionsService } from '../plot-options.service';
-import { PaletteService } from '../palette.service';
+import { PaletteService } from '../../palette.service';
 import { Project } from '../project';
 import { ZTest } from '../z-test';
 

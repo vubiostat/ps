@@ -8,7 +8,6 @@ import { AppCommonModule } from '../app-common.module';
 
 import { TTestService } from './t-test.service';
 import { PlotOptionsService } from './plot-options.service';
-import { PaletteService } from './palette.service';
 import { ProjectFactoryService } from './project-factory.service';
 
 import { TTestComponent } from './t-test.component';
@@ -56,7 +55,6 @@ const routes: Routes = [
   providers: [
     TTestService,
     PlotOptionsService,
-    PaletteService,
     ProjectFactoryService
   ],
   entryComponents: [

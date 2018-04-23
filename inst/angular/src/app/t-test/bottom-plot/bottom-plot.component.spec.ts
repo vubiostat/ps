@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BottomPlotComponent } from './bottom-plot.component';
 import { FormatFixedPipe } from '../../format-fixed.pipe';
 import { PlotOptionsService } from '../plot-options.service';
-import { PaletteService } from '../palette.service';
+import { PaletteService } from '../../palette.service';
 
 describe('BottomPlotComponent', () => {
   let component: BottomPlotComponent;

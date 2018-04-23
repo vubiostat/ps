@@ -14,7 +14,7 @@ import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
 import { Project } from '../project';
 import { Range } from '../../range';
 import { PlotOptionsService } from '../plot-options.service';
-import { PaletteService } from '../palette.service';
+import { PaletteService } from '../../palette.service';
 
 interface Group {
   index: number;

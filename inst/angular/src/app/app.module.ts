@@ -9,7 +9,9 @@ import { TTestModule } from './t-test/t-test.module';
 import { ZTestModule } from './z-test/z-test.module';
 import { AppComponent } from './app.component';
 import { KonamiDirective } from './konami.directive';
+
 import { ExportService } from './export.service';
+import { PaletteService } from './palette.service';
 
 import { environment } from '../environments/environment';
 
@@ -33,7 +35,8 @@ const routes: Routes = [
   bootstrap: [ AppComponent ],
   providers: [
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
-    ExportService
+    ExportService,
+    PaletteService
   ]
 })
 export class AppModule { }

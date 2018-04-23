@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PlotOptionsService } from '../plot-options.service';
-import { PaletteService } from '../palette.service';
+import { PaletteService } from '../../palette.service';
 import { Project } from '../project';
 import { ProjectComponent } from './project.component';
 

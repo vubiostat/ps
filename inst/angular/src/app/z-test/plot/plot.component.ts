@@ -11,7 +11,7 @@ import { Range } from '../../range';
 import { Point } from '../../point';
 import { Project } from '../project';
 import { PlotOptionsService } from '../plot-options.service';
-import { PaletteService } from '../palette.service';
+import { PaletteService } from '../../palette.service';
 
 interface Param {
   name: string;
