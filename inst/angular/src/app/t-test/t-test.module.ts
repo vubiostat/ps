@@ -10,7 +10,6 @@ import { TTestService } from './t-test.service';
 import { PlotOptionsService } from './plot-options.service';
 import { PaletteService } from './palette.service';
 import { ProjectFactoryService } from './project-factory.service';
-import { ExportService } from './export.service';
 
 import { TTestComponent } from './t-test.component';
 import { StartComponent } from './start/start.component';
@@ -58,8 +57,7 @@ const routes: Routes = [
     TTestService,
     PlotOptionsService,
     PaletteService,
-    ProjectFactoryService,
-    ExportService
+    ProjectFactoryService
   ],
   entryComponents: [
     ExportPlotsComponent

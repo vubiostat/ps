@@ -6,7 +6,7 @@ import { Project } from '../project';
 import { AbstractPlotComponent } from '../abstract-plot.component';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
-import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../export.service'
+import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../../export.service'
 
 import * as stableSort from 'stable';
 
