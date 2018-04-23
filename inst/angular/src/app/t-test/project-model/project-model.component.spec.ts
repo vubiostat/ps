@@ -2,8 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NgbModule, NgbPopoverConfig } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
-import { RoundPipe } from '../round.pipe';
-import { CeilPipe } from '../ceil.pipe';
+import { RoundPipe } from '../../round.pipe';
+import { CeilPipe } from '../../ceil.pipe';
 import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 import { RangeSliderComponent } from '../range-slider/range-slider.component';

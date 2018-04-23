@@ -1,5 +1,5 @@
-import { Point } from './point';
-import { Range } from './range';
+import { Point } from '../point';
+import { Range } from '../range';
 
 export class TTest {
   name: string;

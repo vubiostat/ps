@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppCommonModule } from './app-common.module';
 import { TTestModule } from './t-test/t-test.module';
 import { ZTestModule } from './z-test/z-test.module';
 import { AppComponent } from './app.component';
@@ -14,11 +15,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ AppComponent, KonamiDirective ],
+  declarations: [
+    AppComponent,
+    KonamiDirective,
+  ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
     NgbModule.forRoot(),
+    AppCommonModule,
     TTestModule,
     ZTestModule
   ],

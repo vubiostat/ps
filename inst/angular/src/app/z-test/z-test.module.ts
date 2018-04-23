@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppCommonModule } from '../app-common.module';
 
 import { ZTestService } from './z-test.service';
 import { PlotOptionsService } from './plot-options.service';
@@ -23,10 +24,6 @@ import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from './export-plots/export-plots.component';
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
 
-import { RoundPipe } from './round.pipe';
-import { CeilPipe } from './ceil.pipe';
-import { ReversePipe } from './reverse.pipe';
-import { FormatFixedPipe } from './format-fixed.pipe';
 import { ProjectModelComponent } from './project-model/project-model.component';
 
 const routes: Routes = [
@@ -48,10 +45,6 @@ const routes: Routes = [
     BottomPlotComponent,
     ExportPlotsComponent,
     DraggableDialogComponent,
-    RoundPipe,
-    CeilPipe,
-    ReversePipe,
-    FormatFixedPipe,
     ProjectModelComponent,
   ],
   imports: [
@@ -59,7 +52,8 @@ const routes: Routes = [
     FormsModule,
     HttpModule,
     NgbModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    AppCommonModule
   ],
   providers: [
     ZTestService,

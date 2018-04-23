@@ -7,8 +7,8 @@ import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
 import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
-import { Range } from '../range';
-import { Point } from '../point';
+import { Range } from '../../range';
+import { Point } from '../../point';
 import { Project } from '../project';
 import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';

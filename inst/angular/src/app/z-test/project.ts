@@ -1,6 +1,6 @@
 import { ZTest } from './z-test';
-import { Range } from './range';
-import { Point } from './point';
+import { Range } from '../range';
+import { Point } from '../point';
 import { ZTestService, PlotDataRanges } from './z-test.service';
 
 import * as d3 from 'd3';

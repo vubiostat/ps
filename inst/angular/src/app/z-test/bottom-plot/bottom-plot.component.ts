@@ -12,7 +12,7 @@ import * as stableSort from 'stable';
 
 import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
 import { Project } from '../project';
-import { Range } from '../range';
+import { Range } from '../../range';
 import { PlotOptionsService } from '../plot-options.service';
 import { PaletteService } from '../palette.service';
 

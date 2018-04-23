@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
 import { NgbModule, NgbActiveModal, NgbTabsetConfig } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ExportService } from '../export.service';
-import { FormatFixedPipe } from '../format-fixed.pipe';
+import { FormatFixedPipe } from '../../format-fixed.pipe';
 import { Project } from '../project';
 import { ExportPlotsComponent } from './export-plots.component';
 

@@ -19,7 +19,7 @@
             </ng-template>
           </ngb-tab>
           <ngb-tab *ngFor="let project of projects; let i = index"
-            title="Test {{i+1}}" id="t-test-{{i+1}}">
+            title="T-Test #{{i+1}}" id="t-test-{{i+1}}">
             <ng-template ngbTabContent>
               <t-test-project name="{{i}}" [project]="project"
                 (projectChanged)="onProjectChanged()">

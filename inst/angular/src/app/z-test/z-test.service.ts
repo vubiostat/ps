@@ -9,7 +9,7 @@ import {
 import 'rxjs/add/operator/toPromise';
 
 import { environment } from '../../environments/environment';
-import { Range } from './range';
+import { Range } from '../range';
 import { ZTest } from './z-test';
 
 export interface PlotDataRanges {

@@ -1,6 +1,6 @@
 import { TTest } from './t-test';
-import { Range } from './range';
-import { Point } from './point';
+import { Range } from '../range';
+import { Point } from '../point';
 import { TTestService, PlotDataRanges } from './t-test.service';
 
 import * as d3 from 'd3';
