@@ -13,7 +13,7 @@
 
 <div class="grow-horiz">
   <div class="grow-vert range-slider">
-    <t-test-range-slider name="alpha" label="Type I Error (&alpha;)"
+    <app-range-slider name="alpha" label="Type I Error (&alpha;)"
       [min]="min.alpha" [max]="max.alpha"
       [hard-min]="min.alpha" [hard-max]="max.alpha"
       [ngModel]="model.alpha | round" (ngModelChange)="changeModel('alpha', $event)">
@@ -21,13 +21,13 @@
         The Type I error probability for a two sided test. This is the
         probability that we will falsely reject the null hypothesis.
       </ng-template>
-    </t-test-range-slider>
+    </app-range-slider>
   </div>
 </div>
 
 <div class="grow-horiz">
   <div class="grow-vert range-slider">
-    <t-test-range-slider name="sigma" label="Std. deviation (&sigma;)"
+    <app-range-slider name="sigma" label="Std. deviation (&sigma;)"
       [min]="min.sigma" [max]="max.sigma" step="0.1"
       [hard-min]="1"
       [ngModel]="model.sigma | round:1" (ngModelChange)="changeModel('sigma', $event)">
@@ -36,83 +36,83 @@
         paired designs it is the standard deviation of difference in the
         response of matched pairs.
       </ng-template>
-    </t-test-range-slider>
+    </app-range-slider>
   </div>
 </div>
 
 <ng-template [ngIf]="!isOutput('nByCI')" [ngIfElse]="nByCI">
   <div class="grow-horiz" [class.output]="isOutput('delta')">
     <div class="grow-vert range-slider">
-      <t-test-range-slider name="delta" label="Difference in population means (&delta;)"
+      <app-range-slider name="delta" label="Difference in population means (&delta;)"
         [min]="min.delta" [max]="max.delta" step="0.1"
         [is-output]="model.output == 'delta'" [help-tpl]="deltaHelp"
         [ngModel]="model.delta | round:1" (ngModelChange)="changeModel('delta', $event)">
-      </t-test-range-slider>
+      </app-range-slider>
     </div>
   </div>
 
   <div class="grow-horiz" [class.output]="isOutput('power')">
     <div class="grow-vert range-slider">
-      <t-test-range-slider name="power" label="Power"
+      <app-range-slider name="power" label="Power"
         [min]="min.power" [max]="max.power"
         [hard-min]="min.power" [hard-max]="max.power"
         [is-output]="model.output == 'power'" [help-tpl]="powerHelp"
         [ngModel]="model.power | round" (ngModelChange)="changeModel('power', $event)">
-      </t-test-range-slider>
+      </app-range-slider>
     </div>
   </div>
 
   <div class="grow-horiz" [class.output]="isOutput('n')">
     <div class="grow-vert range-slider">
-      <t-test-range-slider name="n" label="Sample size"
+      <app-range-slider name="n" label="Sample size"
         [min]="min.n" [max]="max.n" step="1"
         [hard-min]="1"
         [is-output]="model.output == 'n'" [help-tpl]="nHelp"
         [ngModel]="model.n | ceil" (ngModelChange)="changeModel('n', $event)">
-      </t-test-range-slider>
-      <t-test-range-slider name="ci" label="95% confidence interval width"
+      </app-range-slider>
+      <app-range-slider name="ci" label="95% confidence interval width"
         [min]="min.ci" [max]="max.ci" step="0.1"
         [hard-min]="1"
         [is-output]="model.output == 'n'" [help-tpl]="ciHelp"
         [ngModel]="model.ci | round:1" (ngModelChange)="changeModel('ci', $event)">
-      </t-test-range-slider>
+      </app-range-slider>
     </div>
   </div>
 </ng-template>
 <ng-template #nByCI>
   <div class="grow-horiz">
     <div class="grow-vert range-slider">
-      <t-test-range-slider name="ci" label="95% confidence interval width"
+      <app-range-slider name="ci" label="95% confidence interval width"
         [min]="min.ci" [max]="max.ci" step="0.1" [help-tpl]="ciHelp"
         [ngModel]="model.ci | round:1" (ngModelChange)="changeModel('ci', $event)">
-      </t-test-range-slider>
+      </app-range-slider>
     </div>
   </div>
 
   <div class="grow-horiz output">
     <div class="grow-vert range-slider">
-      <t-test-range-slider name="n" label="Sample size"
+      <app-range-slider name="n" label="Sample size"
         [min]="min.n" [max]="max.n" step="1"
         [hard-min]="1"
         [is-output]="true" [help-tpl]="nHelp"
         [ngModel]="model.n | ceil" (ngModelChange)="changeModel('n', $event)">
-      </t-test-range-slider>
+      </app-range-slider>
     </div>
   </div>
 
   <div class="grow-horiz order-2 alt">
     <div class="grow-vert range-slider">
-      <t-test-range-slider name="delta" label="Difference in population means (&delta;)"
+      <app-range-slider name="delta" label="Difference in population means (&delta;)"
         [min]="min.delta" [max]="max.delta" step="0.1" [help-tpl]="deltaHelp"
         [ngModel]="model.delta | round:1" (ngModelChange)="changeModel('delta', $event)">
-      </t-test-range-slider>
+      </app-range-slider>
 
-      <t-test-range-slider name="power" label="Power"
+      <app-range-slider name="power" label="Power"
         [min]="min.power" [max]="max.power"
         [hard-min]="min.power" [hard-max]="max.power"
         [is-output]="model.output == 'power'" [help-tpl]="powerHelp"
         [ngModel]="model.power | round" (ngModelChange)="changeModel('power', $event)">
-      </t-test-range-slider>
+      </app-range-slider>
     </div>
   </div>
 </ng-template>

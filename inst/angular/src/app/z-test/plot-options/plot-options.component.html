@@ -94,7 +94,7 @@
   </fieldset>
   <fieldset>
     <legend>Project</legend>
-    <z-test-range-slider name="projectPointsPerPlot" label="Points per plot"
+    <app-range-slider name="projectPointsPerPlot" label="Points per plot"
       [min]="50" [max]="200" [hard-min]="50" [hard-max]="200" [step]="1"
       [ngModel]="project.pointsPerPlot"
       (ngModelChange)="setProjectNumberAttribute('pointsPerPlot', $event)">
@@ -102,7 +102,7 @@
         The number of points to use when drawing plots. More is slower. The
         number of points to use by default is calculated based on host speed.
       </ng-template>
-    </z-test-range-slider>
+    </app-range-slider>
     <div class="form-check">
       <label class="form-check-label">
         <input #customRanges class="form-check-input" type="checkbox"

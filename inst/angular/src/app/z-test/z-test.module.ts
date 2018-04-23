@@ -12,7 +12,6 @@ import { ProjectFactoryService } from './project-factory.service';
 
 import { ZTestComponent } from './z-test.component';
 import { StartComponent } from './start/start.component';
-import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range-slider/range-slider.component';
 import { ProjectComponent } from './project/project.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 import { HelpComponent } from './help/help.component';
@@ -31,9 +30,6 @@ const routes: Routes = [
   declarations: [
     ZTestComponent,
     StartComponent,
-    RangeSliderComponent,
-    RangeSliderLabel,
-    RangeSliderHelp,
     ProjectComponent,
     OutputPaneComponent,
     HelpComponent,
