@@ -1,0 +1,13 @@
+<div #main *ngIf="enabled" class="dialog"
+  [style.top]="yOffset ? yOffset + 'px' : startYOffset"
+  [style.left]="xOffset ? xOffset + 'px' : startXOffset">
+  <div class="header"
+    (mousedown)="mousedown($event)" (mouseup)="mouseup($event)"
+    (mousemove)="mousemove($event)">
+    {{title}}
+    <button type="button" class="close fa fa-times-circle" (click)="close()"></button>
+  </div>
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
+</div>

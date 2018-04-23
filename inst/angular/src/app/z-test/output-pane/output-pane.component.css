@@ -1,0 +1,39 @@
+.plot {
+  height: 80%;
+  /*min-height: 500px;*/
+  position: relative;
+}
+.without-footer {
+  height: 100%;
+}
+
+div.show-footer {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+
+.output-footer {
+  position: relative;
+  background-color: #e5e5e5;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  /*padding: 10px 20px;*/
+  /*text-align: justify;*/
+  /*overflow: auto;*/
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.footer-buttons {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.footer-buttons i {
+  margin: 0 3px;
+}
+
+.dot {
+  color: red;
+}

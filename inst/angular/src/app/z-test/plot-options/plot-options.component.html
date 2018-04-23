@@ -1,0 +1,371 @@
+<div *ngIf="plotOptions && project" class="content">
+  <fieldset>
+    <legend>Global</legend>
+    <div class="form-group">
+      <label for="plot-font-family">Font family</label>
+      <select #fontFamily id="plot-font-family" class="form-control"
+        [value]="plotOptions.fontFamily"
+        (change)="changeAttribute('fontFamily', fontFamily.value)">
+        <option value="">Default</option>
+        <option value="serif">Serif</option>
+        <option value="sans">Sans-serif</option>
+        <option value="monospace">Monospace</option>
+        <option>Bungee Shade</option>
+        <option>Sancreek</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="plot-palette-theme">Color palette</label>
+      <select #paletteTheme id="plot-palette-theme" class="form-control"
+        [value]="plotOptions.paletteTheme"
+        (change)="changeAttribute('paletteTheme', paletteTheme.value)">
+        <option value="typical">Default</option>
+        <option value="plasma">Plasma</option>
+        <option value="viridis">Viridis</option>
+        <option value="magma">Magma</option>
+        <option value="pattern">Pattern</option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <label for="plot-font-size">Font size: {{plotOptions.fontSize}}</label>
+        <div class="input-group">
+          <input #fontSize id="plot-font-size" class="form-control"
+            type="range" min="0.1" max="2" step="0.1"
+            [value]="plotOptions.fontSize"
+            (change)="changeNumberAttribute('fontSize', fontSize.value)"
+            (input)="changeNumberAttribute('fontSize', fontSize.value)" />
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="plot-axis-font-size">Axis font size: {{plotOptions.axisFontSize}}</label>
+        <div class="input-group">
+          <input #axisFontSize id="plot-axis-font-size" class="form-control"
+            type="range" min="0.1" max="2" step="0.1"
+            [value]="plotOptions.axisFontSize"
+            (change)="changeNumberAttribute('axisFontSize', axisFontSize.value)"
+            (input)="changeNumberAttribute('axisFontSize', axisFontSize.value)" />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <label for="plot-line-width">Line width: {{plotOptions.lineWidth}}</label>
+        <div class="input-group">
+          <input #lineWidth id="plot-line-width" class="form-control"
+            type="range" min="0.1" max="2" step="0.1"
+            [value]="plotOptions.lineWidth"
+            (change)="changeNumberAttribute('lineWidth', lineWidth.value)"
+            (input)="changeNumberAttribute('lineWidth', lineWidth.value)" />
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="plot-axis-line-width">Axis line width: {{plotOptions.axisLineWidth}}</label>
+        <div class="input-group">
+          <input #axisLineWidth id="plot-axis-line-width" class="form-control"
+            type="range" min="0.1" max="2" step="0.1"
+            [value]="plotOptions.axisLineWidth"
+            (change)="changeNumberAttribute('axisLineWidth', axisLineWidth.value)"
+            (input)="changeNumberAttribute('axisLineWidth', axisLineWidth.value)" />
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="plot-line-style">Line style</label>
+      <select #lineStyle id="plot-line-style" class="form-control"
+        [value]="plotOptions.lineStyle"
+        (change)="changeAttribute('lineStyle', lineStyle.value)">
+        <option value="solid">Solid</option>
+        <option value="short-dash">Short Dash</option>
+        <option value="medium-dash">Medium Dash</option>
+        <option value="long-dash">Long Dash</option>
+        <option value="dot">Dotted</option>
+      </select>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input #showLegendBox class="form-check-input" type="checkbox"
+          [checked]="plotOptions.showLegendBox"
+          (change)="changeAttribute('showLegendBox', showLegendBox.checked)"
+          (input)="changeAttribute('showLegendBox', showLegendBox.checked)" />
+        Display legend background
+      </label>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Project</legend>
+    <z-test-range-slider name="projectPointsPerPlot" label="Points per plot"
+      [min]="50" [max]="200" [hard-min]="50" [hard-max]="200" [step]="1"
+      [ngModel]="project.pointsPerPlot"
+      (ngModelChange)="setProjectNumberAttribute('pointsPerPlot', $event)">
+      <ng-template rsHelp>
+        The number of points to use when drawing plots. More is slower. The
+        number of points to use by default is calculated based on host speed.
+      </ng-template>
+    </z-test-range-slider>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input #customRanges class="form-check-input" type="checkbox"
+          [checked]="project.customRanges"
+          (change)="setProjectAttribute('customRanges', customRanges.checked)" />
+        Custom plot ranges
+      </label>
+    </div>
+
+    <div class="ranges" [class.disabled]="!project.customRanges">
+      <h4 *ngIf="model.output == 'n' || model.output == 'nByCI'">Sample Size</h4>
+      <h4 *ngIf="model.output == 'power'">Power</h4>
+      <h4 *ngIf="model.output == 'delta'">Detectable Alternative</h4>
+      <div class="row mb-4">
+        <div class="col-sm">
+          <label for="plot-top-y-min">Minimum</label>
+          <div class="input-group">
+            <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
+              <input #nRangeMin *ngIf="project.nRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
+                [value]="project.nRange.min | round"
+                (change)="setProjectRange('n', 'min', nRangeMin.value)"
+                (input)="setProjectRange('n', 'min', nRangeMin.value, true)"/>
+            </ng-template>
+            <ng-template [ngIf]="model.output == 'power'">
+              <input #powerRangeMin *ngIf="project.powerRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
+                [value]="project.powerRange.min | round"
+                (change)="setProjectRange('power', 'min', powerRangeMin.value)"
+                (input)="setProjectRange('power', 'min', powerRangeMin.value, true)"/>
+            </ng-template>
+            <ng-template [ngIf]="model.output == 'delta'">
+              <input #deltaRangeMin *ngIf="project.deltaRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.deltaRange.max - 0.01) | round"
+                [value]="project.deltaRange.min | round"
+                (change)="setProjectRange('delta', 'min', deltaRangeMin.value)"
+                (input)="setProjectRange('delta', 'min', deltaRangeMin.value, true)"/>
+            </ng-template>
+          </div>
+        </div>
+        <div class="col-sm">
+          <label for="plot-top-y-max">Maximum</label>
+          <div class="input-group">
+            <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
+              <input #nRangeMax *ngIf="project.nRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
+                [value]="project.nRange.max | round"
+                (change)="setProjectRange('n', 'max', nRangeMax.value)"
+                (input)="setProjectRange('n', 'max', nRangeMax.value, true)"/>
+            </ng-template>
+            <ng-template [ngIf]="model.output == 'power'">
+              <input #powerRangeMax *ngIf="project.powerRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
+                [value]="project.powerRange.max | round"
+                (change)="setProjectRange('power', 'max', powerRangeMax.value)"
+                (input)="setProjectRange('power', 'max', powerRangeMax.value, true)"/>
+            </ng-template>
+            <ng-template [ngIf]="model.output == 'delta'">
+              <input #deltaRangeMax *ngIf="project.deltaRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.deltaRange.min + 0.01) | round"
+                [value]="project.deltaRange.max | round"
+                (change)="setProjectRange('delta', 'max', deltaRangeMax.value)"
+                (input)="setProjectRange('delta', 'max', deltaRangeMax.value, true)"/>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
+        <h4>Sample Size vs. Power</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-left-x-min">X minimum</label>
+            <div class="input-group">
+              <input #powerRangeMin *ngIf="project.powerRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
+                [value]="project.powerRange.min | round"
+                (change)="setProjectRange('power', 'min', powerRangeMin.value)"
+                (input)="setProjectRange('power', 'min', powerRangeMin.value, true)"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-left-x-max">X maximum</label>
+            <div class="input-group">
+              <input #powerRangeMax *ngIf="project.powerRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
+                [value]="project.powerRange.max | round"
+                (change)="setProjectRange('power', 'max', powerRangeMax.value)"
+                (input)="setProjectRange('power', 'max', powerRangeMax.value, true)"/>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template [ngIf]="model.output == 'power'">
+        <h4>Power vs. Sample Size</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-left-x-min">X minimum</label>
+            <div class="input-group">
+              <input #nRangeMin *ngIf="project.nRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
+                [value]="project.nRange.min | round"
+                (change)="setProjectRange('n', 'min', nRangeMin.value)"
+                (input)="setProjectRange('n', 'min', nRangeMin.value, true)"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-left-x-max">X maximum</label>
+            <div class="input-group">
+              <input #nRangeMax *ngIf="project.nRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
+                [value]="project.nRange.max | round"
+                (change)="setProjectRange('n', 'max', nRangeMax.value)"
+                (input)="setProjectRange('n', 'max', nRangeMax.value, true)"/>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template [ngIf]="model.output == 'delta'">
+        <h4>Detectable Alternative vs. Sample Size</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-left-x-min">X minimum</label>
+            <div class="input-group">
+              <input #nRangeMin *ngIf="project.nRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.nRange.max - 1) | round"
+                [value]="project.nRange.min | round"
+                (change)="setProjectRange('n', 'min', nRangeMin.value)"
+                (input)="setProjectRange('n', 'min', nRangeMin.value, true)"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-left-x-max">X maximum</label>
+            <div class="input-group">
+              <input #nRangeMax *ngIf="project.nRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.nRange.min + 1) | round"
+                [value]="project.nRange.max | round"
+                (change)="setProjectRange('n', 'max', nRangeMax.value)"
+                (input)="setProjectRange('n', 'max', nRangeMax.value, true)"/>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template [ngIf]="model.output == 'n' || model.output == 'nByCI'">
+        <h4>Sample Size vs. Detectable Alternative</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-right-x-min">X minimum</label>
+            <div class="input-group">
+              <input #deltaRangeMin *ngIf="project.deltaRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.deltaRange.max - 1) | round"
+                [value]="project.deltaRange.min | round"
+                (change)="setProjectRange('delta', 'min', deltaRangeMin.value)"
+                (input)="setProjectRange('delta', 'min', deltaRangeMin.value, true)"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-right-x-max">X maximum</label>
+            <div class="input-group">
+              <input #deltaRangeMax *ngIf="project.deltaRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.deltaRange.min - 1) | round"
+                [value]="project.deltaRange.max | round"
+                (change)="setProjectRange('delta', 'max', deltaRangeMax.value)"
+                (input)="setProjectRange('delta', 'max', deltaRangeMax.value, true)"/>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template [ngIf]="model.output == 'power'">
+        <h4>Power vs. Detectable Alternative</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-right-x-min">X minimum</label>
+            <div class="input-group">
+              <input #deltaRangeMin *ngIf="project.deltaRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.deltaRange.max - 1) | round"
+                [value]="project.deltaRange.min | round"
+                (change)="setProjectRange('delta', 'min', deltaRangeMin.value)"
+                (input)="setProjectRange('delta', 'min', deltaRangeMin.value, true)"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-right-x-max">X maximum</label>
+            <div class="input-group">
+              <input #deltaRangeMax *ngIf="project.deltaRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.deltaRange.min - 1) | round"
+                [value]="project.deltaRange.max | round"
+                (change)="setProjectRange('delta', 'max', deltaRangeMax.value)"
+                (input)="setProjectRange('delta', 'max', deltaRangeMax.value, true)"/>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template [ngIf]="model.output == 'delta'">
+        <h4>Detectable Alternative vs. Power</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-left-x-min">X minimum</label>
+            <div class="input-group">
+              <input #powerRangeMin *ngIf="project.powerRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [max]="(project.powerRange.max - 0.01) | round"
+                [value]="project.powerRange.min | round"
+                (change)="setProjectRange('power', 'min', powerRangeMin.value)"
+                (input)="setProjectRange('power', 'min', powerRangeMin.value, true)"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-left-x-max">X maximum</label>
+            <div class="input-group">
+              <input #powerRangeMax *ngIf="project.powerRange" class="form-control"
+                [disabled]="!project.customRanges"
+                type="number" step="0.01" [min]="(project.powerRange.min + 0.01) | round"
+                [value]="project.powerRange.max | round"
+                (change)="setProjectRange('power', 'max', powerRangeMax.value)"
+                (input)="setProjectRange('power', 'max', powerRangeMax.value, true)"/>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <h4>Precision vs. Parameter Space</h4>
+      <div class="row">
+        <div class="col-sm">
+          <label for="plot-bottom-x-min">X minimum</label>
+          <div class="input-group">
+            <input #pSpaceRangeMin *ngIf="project.pSpaceRange" class="form-control"
+              [disabled]="!project.customRanges"
+              type="number" step="0.01" [max]="(project.pSpaceRange.max - 1) | round"
+              [value]="project.pSpaceRange.min | round"
+              (change)="setProjectRange('pSpace', 'min', pSpaceRangeMin.value)"
+              (input)="setProjectRange('pSpace', 'min', pSpaceRangeMin.value, true)"/>
+          </div>
+        </div>
+        <div class="col-sm">
+          <label for="plot-bottom-x-max">X maximum</label>
+          <div class="input-group">
+            <input #pSpaceRangeMax *ngIf="project.pSpaceRange" class="form-control"
+              [disabled]="!project.customRanges"
+              type="number" step="0.01" [min]="(project.pSpaceRange.min + 1) | round"
+              [value]="project.pSpaceRange.max | round"
+              (change)="setProjectRange('pSpace', 'max', pSpaceRangeMax.value)"
+              (input)="setProjectRange('pSpace', 'max', pSpaceRangeMax.value, true)"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  <button type="button" class="btn btn-primary" (click)="doReset()">
+    Reset all settings
+  </button>
+</div>

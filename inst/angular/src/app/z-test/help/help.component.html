@@ -1,0 +1,92 @@
+<ng-template [ngIf]="topic == 'overview'">
+  <h5>Introduction</h5>
+  <p>
+    PS is a program for performing power and sample size calculations. You are
+    using a web-enabled beta-test version of the program, where we are actively
+    working on the interactive user interface. Currently, it can only be used
+    for paired t-tests but it will be expanded for use in studies with
+    dichotomous, continuous, survival response and other data.
+  </p>
+  <h5>Program Output</h5>
+  <p>
+    The program can determine the sample size needed to detect a specified
+    alternative hypothesis with the required power, the power with which a
+    specific alternative hypothesis can be detected with a given sample size,
+    or the specific alternative hypotheses that can be detected with a given
+    power and sample size. It also gives the 95% confidence interval for the
+    test statistic under the specified alternative hypothesis as a measure of
+    the precision of the test statistic.
+  </p>
+  <h5>Interactive Help</h5>
+  <p>
+    Click on any question-mark icon for help or pull-down menu to determine
+    the needed information. In the Start tab, choose one of sample size,
+    power, or detectable difference  and then complete the other fields that
+    appear. Hover over the i icon for information on what is needed in each
+    field. Then click the calculate button. A new tab will appear with
+    sliders for altering the input variables, the desired output variable and
+    various graphs.
+  </p>
+  <h5>Graphical Output</h5>
+  <p>
+    The graphs that can be generated are sample size vs. power, sample size
+    vs. the detectable alternative hypothesis, power vs. sample size, and
+    power vs. the detectable alternative hypothesis.  The y-axes of these
+    graphs are always show the output variable. In addition, a graph of
+    precision vs effect size is always given.  The red dot on the top two
+    graphs can be dragged to enhance the users intuition on how the input and
+    output variables interact.
+  </p>
+  <h5>Interpretation</h5>
+  <p>
+    The output also includes text that describes the power or sample size
+    calculation in English, which may be a useful starting point for a
+    description in a grant application.
+  </p>
+  <h5>Options gear wheel</h5>
+  <p>
+    Click on this icon to change the point size, line width and other graph
+    options.
+  </p>
+  <p>
+    <img src="assets/cc.png"> &copy; William D. Dupont, Jeffrey D. Blume, W.
+    Dale Plummer, Jeremy Stephens 2017-2018
+  </p>
+  <p>
+    Use of this program is restricted by a Creative Commons Attribution
+    Non-Commercial Share Alike license. See
+    <a href="https://creativecommons.org/licenses">https://creativecommons.org/licenses</a>
+    for details. We are grateful for support from Dr. Gordon R. Bernard and
+    the Vanderbilt Institute for Clinical and Translational Research.
+  </p>
+</ng-template>
+<ng-template [ngIf]="topic == 'start'">
+  <p>Select one of the following:</p>
+  <h5>Sample size</h5>
+  <p>
+    For independent t-tests this is the number of experimental patients that
+    must be studied to detect a true difference in population means &delta;
+    with Type I error probability &alpha; given a standard deviation &sigma;
+    and <em>m</em> controls per experimental patient. For paired t-tests it
+    is the number of pairs of patients needed to detect a true difference in
+    population means &delta; with Type I error probability &alpha; given a
+    standard deviation &sigma;.
+  </p>
+  <h5>Power</h5>
+  <p>
+    For independent studies it is the probability of rejecting the null
+    hypothesis with Type I error probability &alpha; given the specified
+    sample size, a standard deviation &sigma; and a control/experimental
+    patient ratio <em>m</em> when the true difference in population means is
+    &delta;. For paired studies it is the probability of rejecting the null
+    hypothesis with Type I error probability &alpha; given the specified
+    sample size, a standard deviation &sigma; when the true difference in
+    population means is &delta;.
+  </p>
+  <h5>Detectable alternative</h5>
+  <p>
+    A difference in population means that can be detected with the specified
+    power and Type I error probability &alpha; given a standard deviation
+    &sigma;, and the specified sample size.
+  </p>
+</ng-template>

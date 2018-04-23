@@ -1,0 +1,96 @@
+<svg #plot
+  [style.fontFamily]="plotOptions.getFontFamily()"
+  style.fontSize="{{plotOptions.getFontSize()}}px"
+  [attr.class]="name" [attr.width]="fixedWidth" [attr.height]="fixedHeight"
+  [attr.viewBox]="viewBox">
+
+  <ng-template [ngIf]="x && y && project">
+    <text text-anchor="middle"
+      [attr.x]="innerWidth / 2 + leftMargin"
+      [attr.y]="height - (plotOptions.getFontSize() / 2)">
+      {{x.title}}
+    </text>
+    <text text-anchor="middle"
+      [attr.x]="-(innerHeight / 2 + topMargin)"
+      [attr.y]="plotOptions.getFontSize()"
+      transform="rotate(-90)">
+      {{y.title}}
+    </text>
+    <text text-anchor="middle" font-weight="bold"
+      [attr.x]="innerWidth / 2 + leftMargin"
+      [attr.y]="plotOptions.getFontSize()">
+      {{title}}
+    </text>
+
+    <g *ngFor="let path of paths; trackBy: trackById"
+      [attr.transform]="translate(leftMargin, topMargin)">
+      <path
+        [attr.id]="path.id"
+        [attr.stroke]="path.color"
+        [attr.stroke-width]="plotOptions.getLineWidth()"
+        [attr.stroke-dasharray]="path.dashArray"
+        [attr.stroke-linecap]="path.lineCap"
+        [attr.stroke-opacity]="path.opacity"
+        fill="none" />
+    </g>
+
+    <g id="{{name}}-x-axis"
+      [attr.transform]="translate(leftMargin, innerHeight + topMargin)"></g>
+    <g id="{{name}}-y-axis"
+      [attr.transform]="translate(leftMargin, topMargin)"></g>
+
+    <rect [attr.transform]="translate(leftMargin, topMargin)"
+      [attr.width]="innerWidth" [attr.height]="innerHeight"
+      fill="none" pointer-events="all"
+      (mouseout)="hideHoverInfo($event)"
+      (mousemove)="hover($event)" />
+
+    <g *ngIf="!hideTarget">
+      <ng-template [ngIf]="!hideDropLines">
+        <g *ngFor="let path of dropPaths; index as dpIndex; trackBy: trackByIndex"
+          [attr.transform]="translate(leftMargin, topMargin)">
+          <path id="{{name}}-target-drop-{{dpIndex}}"
+            stroke="red"
+            [attr.stroke-width]="plotOptions.getLineWidth() / 2"
+            stroke-dasharray="5, 5"
+            fill="none" />
+        </g>
+      </ng-template>
+      <circle id="{{name}}-target" class="target" r="5"
+        [attr.transform]="translate(leftMargin, topMargin)"
+        fill="red"
+        (mousemove)="hover($event, target)" />
+    </g>
+
+    <g id="{{name}}-legend" class="legend"
+       *ngIf="project.models.length > 1"
+       [attr.transform]="translate(leftMargin + 15 + legendXOffset, topMargin + 15 + legendYOffset)"
+       font-size="smaller" (dblclick)="resetLegend()">
+      <path id="{{name}}-legend-box" *ngIf="plotOptions.showLegendBox"
+            fill="white" fill-opacity="0.8"
+            stroke="black" stroke-opacity="1" />
+      <g id="{{name}}-legend-labels">
+        <g *ngFor="let model of project.models; index as i; trackBy: trackByIndex"
+           [attr.transform]="translate(5, 20 * plotOptions.fontSize * i)">
+          <path
+            d="m0,0 l45,0"
+            [attr.stroke]="getPathColor(i)"
+            [attr.stroke-width]="plotOptions.getLineWidth()"
+            [attr.stroke-dasharray]="getDashArray(i)"
+            [attr.stroke-linecap]="getLineCap(i)"
+            fill="none" />
+          <text x="50" y="5">{{model.name}}</text>
+        </g>
+      </g>
+    </g>
+
+    <g id="{{name}}-hover-info" *ngIf="isHoverInfoActive()" pointer-events="none">
+      <circle *ngIf="!isHoverInfoTarget()" r="4" fill="none" stroke="blue" />
+      <path id="{{name}}-hover-box"
+        stroke="black" stroke-width="1" fill="white" fill-opacity="0.8" />
+      <text id="{{name}}-hover-coords" font-family="monospace" text-anchor="middle">
+        <tspan style="white-space: pre">{{x.sym}}: {{hoverPoint.x | formatFixed:[hoverPoint.y]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">{{y.sym}}: {{hoverPoint.y | formatFixed:[hoverPoint.x]}}</tspan>
+      </text>
+    </g>
+  </ng-template>
+</svg>

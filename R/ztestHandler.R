@@ -117,7 +117,7 @@ validateModelParams <- function(params) {
   errors
 }
 
-TTestCalculateAction <- setRefClass("TTestCalculateAction",
+ZTestCalculateAction <- setRefClass("ZTestCalculateAction",
   methods = list(
     validate = function(params) {
       validateModelParams(params)
@@ -129,19 +129,19 @@ TTestCalculateAction <- setRefClass("TTestCalculateAction",
         return(list(errors = errors))
       }
 
-      model <- TTest(params)
+      model <- ZTest(params)
       result <- model$calculate()
       lapply(result, unbox)
     }
   )
 )
 
-TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
+ZTestPlotDataAction <- setRefClass("ZTestPlotDataAction",
   fields = c("defaultPoints"),
   methods = list(
     initialize = function() {
       # try to guess a reasonable default
-      model <- TTest(list(alpha = 0.05, sigma = 10, delta = 5, n = 32, output = "power"))
+      model <- ZTest(list(alpha = 0.05, sigma = 10, delta = 5, n = 32, output = "power"))
       model$calculate()
       ranges <- list(
         powerRange = list(min = 0.01, max = 1),
@@ -237,7 +237,7 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
         return(list(errors = errors))
       }
 
-      models <- lapply(params$models, TTest)
+      models <- lapply(params$models, ZTest)
       ranges <- params$ranges
       points <- if (is.null(params$points)) defaultPoints else params$points
       output <- models[[1]]$output
@@ -250,7 +250,7 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
           } else {
             do.call(max, lapply(result, function(r) {
               n <- r$powerVsN$x
-              n[!is.na(n)]
+              n[is.finite(n)]
             }))
           }
 
@@ -259,18 +259,18 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
           model <- models[[i]]
           powerVsN <- result[[i]]$powerVsN
 
-          if (!(maxN %in% powerVsN$x)) {
-            indices <- which(powerVsN$x < maxN)
-            rowIndex <- indices[length(indices)]
-            row <- powerVsN[rowIndex, ]
+          # look for infinity
+          infIndex <- which(is.infinite(powerVsN$x) | is.nan(powerVsN$x))
+          if (length(infIndex) > 0 && infIndex[1] > 1) {
+            lastRow <- powerVsN[infIndex[1] - 1, ]
+            if (lastRow$x < maxN) {
+              extraN <- seq(lastRow$x, maxN, length.out = 10)
+              extraPower <- ztestCalculatePower(model$alpha, model$delta, model$sigma, extraN)
+              extra <- data.frame(x = extraN, y = extraPower)
 
-            extraN <- seq(row$x, maxN, length.out = 10)
-            extraPower <- sapply(extraN, ttestCalculatePower, alpha = model$alpha,
-                                 delta = model$delta, sigma = model$sigma)
-            extra <- data.frame(x = extraN, y = extraPower)
-
-            powerVsN <- rbind(powerVsN[1:rowIndex, ], extra)
-            result[[i]]$powerVsN <- powerVsN
+              powerVsN <- rbind(powerVsN[1:(infIndex[1] - 1), ], extra)
+              result[[i]]$powerVsN <- powerVsN
+            }
           }
         }
       }
@@ -280,22 +280,22 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
   )
 )
 
-TTestHandler <- setRefClass("TTestHandler",
+ZTestHandler <- setRefClass("ZTestHandler",
   fields = c("app", "calcAction", "plotDataAction", "routes"),
   methods = list(
     initialize = function(app) {
       app <<- app
-      calcAction <<- TTestCalculateAction()
-      plotDataAction <<- TTestPlotDataAction()
+      calcAction <<- ZTestCalculateAction()
+      plotDataAction <<- ZTestPlotDataAction()
       routes <<- list(
         list(
-          url = "/ttests/calc",
+          url = "/ztests/calc",
           method = "POST",
           action = calcAction,
           type = "json"
         ),
         list(
-          url = "/ttests/plotData",
+          url = "/ztests/plotData",
           method = "POST",
           action = plotDataAction,
           type = "json"

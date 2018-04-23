@@ -105,6 +105,7 @@ runPS <- function(mode = c("standalone", "backend"), host = "127.0.0.1", port = 
   app <- NotFoundHandler()
   app <- ExportHandler(app)
   app <- TTestHandler(app)
+  app <- ZTestHandler(app)
 
   if (mode == "standalone") {
     corsHost <- host

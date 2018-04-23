@@ -1,0 +1,35 @@
+.dialog {
+  display: block;
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  border: 1px solid #888;
+  border-radius: 10px;
+  box-shadow: 5px 5px 25px #888;
+  top: 20px;
+  left: 20px;
+  width: 25vw;
+  min-width: 300px;
+}
+
+.dialog .header {
+  font-size: larger;
+  font-weight: bold;
+  background-color: #e5e5e5;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+  cursor: move;
+}
+
+.dialog .close {
+  float: right;
+  margin: 5px;
+}
+
+.dialog .content {
+  overflow: auto;
+  height: 50vh;
+  padding: 5px;
+  margin: 0 5px;
+}

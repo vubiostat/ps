@@ -1,51 +1,37 @@
 # Calculate sample size, given the other parameters
-ttestCalculateN <- function(alpha, delta, sigma, power, ...) {
-  #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " power = ", power, "\n", sep = "")
-  if (power == 1) {
-    return(NA)
-  }
-
-  result <- try(pwr.t.test(d = delta / sigma, power = power, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"),
-                silent = TRUE)
-  if (inherits(result, "try-error")) NA else result$n
+ztestCalculateN <- function(alpha, delta, sigma, power, ...) {
+  (sigma * (qnorm(1 - alpha/2) + qnorm(power)) / delta) ^ 2
 }
 
 # Calculate power, given the other parameters
-ttestCalculatePower <- function(alpha, delta, sigma, n, ...) {
-  #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " n = ", n, "\n", sep = "")
-  result <- try(pwr.t.test(d = delta / sigma, n = n, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"),
-                silent = TRUE)
-  if (inherits(result, "try-error")) NA else result$power
+ztestCalculatePower <- function(alpha, delta, sigma, n, ...) {
+  z <- delta / sigma * sqrt(n)
+  pnorm(z - qnorm(1 - alpha/2)) + pnorm(-z - qnorm(1 - alpha/2))
 }
 
 # Calculate detectable alternative, given the other parameters
-ttestCalculateDelta <- function(alpha, sigma, n, power, ...) {
-  #cat("alpha = ", alpha, " sigma = ", sigma, " n = ", n, " power = ", power, "\n", sep = "")
-  result <- try(pwr.t.test(n = n, power = power, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"),
-                silent = TRUE)
-  if (inherits(result, "try-error")) NA else result$d * sigma
+ztestCalculateDelta <- function(alpha, sigma, n, power, ...) {
+  # Note: ignores the smaller tail (typical)
+  sqrt((qnorm(1 - alpha/2) - qnorm(1 - power)) ^ 2 * (sigma ^ 2) / n)
 }
 
 # Calculate sample distribution for precision vs. effect size graph
-ttestCalculateSampDist <- function(pSpace, delta, sigma, n, ...) {
+ztestCalculateSampDist <- function(pSpace, delta, sigma, n, ...) {
   sampDist <- dnorm(pSpace, mean = delta, sd = sigma/sqrt(n))
   ifelse(sampDist < 0.01, NA, sampDist)
 }
 
 # Calculate 95% confidence interval width, given std. dev. and sample size
-ttestCalculateCI <- function(sigma, n, ...) {
+ztestCalculateCI <- function(sigma, n, ...) {
   2 * 1.96 * sigma / sqrt(n)
 }
 
 # Calculate sample size, given 95% confidence interval width and std. dev.
-ttestCalculateNFromCI <- function(sigma, ci, ...) {
+ztestCalculateNFromCI <- function(sigma, ci, ...) {
   (2 * 1.96 * sigma / ci) ** 2
 }
 
-TTest <- setRefClass("TTest",
+ZTest <- setRefClass("ZTest",
   fields = c("alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
              "deltaMode", "output"),
 
@@ -70,30 +56,30 @@ TTest <- setRefClass("TTest",
     },
     calculate = function() {
       if (output == "n") {
-        n <<- ttestCalculateN(alpha, delta, sigma, power)
-        ci <<- ttestCalculateCI(sigma, n)
+        n <<- ztestCalculateN(alpha, delta, sigma, power)
+        ci <<- ztestCalculateCI(sigma, n)
       } else if (output == "nByCI") {
-        n <<- ttestCalculateNFromCI(sigma, ci)
+        n <<- ztestCalculateNFromCI(sigma, ci)
         if (deltaMode) {
-          power <<- ttestCalculatePower(alpha, delta, sigma, n)
+          power <<- ztestCalculatePower(alpha, delta, sigma, n)
         } else {
-          delta <<- ttestCalculateDelta(alpha, sigma, n, power)
+          delta <<- ztestCalculateDelta(alpha, sigma, n, power)
         }
       } else if (output == "power") {
         if (ciMode) {
-          n <<- ttestCalculateNFromCI(sigma, ci)
+          n <<- ztestCalculateNFromCI(sigma, ci)
         } else {
-          ci <<- ttestCalculateCI(sigma, n)
+          ci <<- ztestCalculateCI(sigma, n)
         }
-        power <<- ttestCalculatePower(alpha, delta, sigma, n)
+        power <<- ztestCalculatePower(alpha, delta, sigma, n)
 
       } else if (output == "delta") {
         if (ciMode) {
-          n <<- ttestCalculateNFromCI(sigma, ci)
+          n <<- ztestCalculateNFromCI(sigma, ci)
         } else {
-          ci <<- ttestCalculateCI(sigma, n)
+          ci <<- ztestCalculateCI(sigma, n)
         }
-        delta <<- ttestCalculateDelta(alpha, sigma, n, power)
+        delta <<- ztestCalculateDelta(alpha, sigma, n, power)
       }
       list(
         alpha     = alpha,
@@ -115,8 +101,8 @@ TTest <- setRefClass("TTest",
           n2 <- sort(c(n2, n))
         }
 
-        power2 <- sapply(n2, ttestCalculatePower, alpha = alpha, delta = delta, sigma = sigma)
-        delta2 <- sapply(n2, ttestCalculateDelta, alpha = alpha, sigma = sigma, power = power)
+        power2 <- ztestCalculatePower(alpha, delta, sigma, n2)
+        delta2 <- ztestCalculateDelta(alpha, sigma, n2, power)
         if (delta < 0) {
           delta2 <- -delta2
         }
@@ -129,22 +115,12 @@ TTest <- setRefClass("TTest",
           power2 <- sort(c(power2, power))
         }
 
-        n2 <- sapply(power2, ttestCalculateN, alpha = alpha, delta = delta, sigma = sigma)
+        n2 <- ztestCalculateN(alpha, delta, sigma, power2)
         result$powerVsN <- data.frame(y = power2, x = n2)
 
         delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
-        power3 <- sapply(delta2, ttestCalculatePower, alpha = alpha, sigma = sigma, n = n)
-        df <- data.frame(y = power3, x = delta2)
-
-        if (!(ranges$powerRange$min %in% df$power3)) {
-          delta3 <- ttestCalculateDelta(alpha, sigma, n, ranges$powerRange$min)
-          extra <- data.frame(y = rep(ranges$powerRange$min, 2),
-                              x = c(-delta3, delta3))
-          df <- rbind(df, extra)
-          df <- df[order(df$x), ]
-        }
-
-        result$powerVsDelta <- df
+        power3 <- ztestCalculatePower(alpha, delta2, sigma, n)
+        result$powerVsDelta <- data.frame(y = power3, x = delta2)
 
       } else if (output == "delta") {
         # Calculate data for plots
@@ -154,8 +130,8 @@ TTest <- setRefClass("TTest",
           delta2 <- sort(c(delta2, delta))
         }
 
-        n2 <- sapply(delta2, ttestCalculateN, alpha = alpha, sigma = sigma, power = power)
-        power2 <- sapply(delta2, ttestCalculatePower, alpha = alpha, sigma = sigma, n = n)
+        n2 <- ztestCalculateN(alpha, delta2, sigma, power)
+        power2 <- ztestCalculatePower(alpha, delta2, sigma, n)
         result$deltaVsPower <- data.frame(y = delta2, x = power2)
         result$deltaVsN <- data.frame(y = delta2, x = n2)
       }
@@ -163,7 +139,7 @@ TTest <- setRefClass("TTest",
       # Calculate data for bottom/tertiary graph
       moe <- ci / 2
       pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
-      sampDist <- ttestCalculateSampDist(pSpace, delta, sigma, n)
+      sampDist <- ztestCalculateSampDist(pSpace, delta, sigma, n)
       result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
 
       result
