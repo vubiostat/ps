@@ -28,7 +28,7 @@ class HelpStubComponent {
   @Input() topic: string;
 }
 
-@Component({selector: 't-test-draggable-dialog', template: ''})
+@Component({selector: 'app-draggable-dialog', template: ''})
 class DraggableDialogStubComponent {}
 
 @Component({selector: 't-test-plot-options', template: ''})

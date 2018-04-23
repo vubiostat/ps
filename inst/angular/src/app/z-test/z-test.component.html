@@ -55,14 +55,14 @@
       </z-test-output-pane>
     </div>
   </div>
-  <z-test-draggable-dialog #helpDialog
+  <app-draggable-dialog #helpDialog
     [title]="helpTitles[helpTopic]"
     start-x-offset="33%" start-y-offset="55px"
     (drag-start)="onChildDragStarted()"
     (drag-end)="onChildDragEnded()">
     <z-test-help [topic]="helpTopic"></z-test-help>
-  </z-test-draggable-dialog>
-  <z-test-draggable-dialog #plotOptionsDialog
+  </app-draggable-dialog>
+  <app-draggable-dialog #plotOptionsDialog
     title="Plot options"
     start-x-offset="5%" start-y-offset="55px"
     (drag-start)="onChildDragStarted()"
@@ -72,5 +72,5 @@
       (projectChanged)="onProjectChangedFromPlotOptions()"
       (reset)="onPlotOptionsReset()">
     </z-test-plot-options>
-  </z-test-draggable-dialog>
+  </app-draggable-dialog>
 </div>

@@ -8,7 +8,7 @@ import { ZTest } from './z-test';
 import { Project } from './project';
 import { ProjectFactoryService } from './project-factory.service';
 
-import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
+import { DraggableDialogComponent } from '../draggable-dialog/draggable-dialog.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 
 // globals from webpack

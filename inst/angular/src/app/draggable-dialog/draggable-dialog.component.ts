@@ -1,7 +1,7 @@
 import { Component, Directive, Input, Output, EventEmitter, ViewChild, TemplateRef, ElementRef, OnInit } from '@angular/core';
 
 @Component({
-  selector: 't-test-draggable-dialog',
+  selector: 'app-draggable-dialog',
   templateUrl: './draggable-dialog.component.html',
   styleUrls: ['./draggable-dialog.component.css']
 })

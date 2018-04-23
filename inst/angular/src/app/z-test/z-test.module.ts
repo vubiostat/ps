@@ -20,7 +20,6 @@ import { PlotOptionsComponent } from './plot-options/plot-options.component';
 import { PlotComponent } from './plot/plot.component';
 import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from './export-plots/export-plots.component';
-import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
 
 import { ProjectModelComponent } from './project-model/project-model.component';
 
@@ -42,7 +41,6 @@ const routes: Routes = [
     PlotComponent,
     BottomPlotComponent,
     ExportPlotsComponent,
-    DraggableDialogComponent,
     ProjectModelComponent,
   ],
   imports: [

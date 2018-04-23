@@ -28,7 +28,7 @@ class HelpStubComponent {
   @Input() topic: string;
 }
 
-@Component({selector: 'z-test-draggable-dialog', template: ''})
+@Component({selector: 'app-draggable-dialog', template: ''})
 class DraggableDialogStubComponent {}
 
 @Component({selector: 'z-test-plot-options', template: ''})
