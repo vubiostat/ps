@@ -88,7 +88,7 @@ export class ZTestComponent implements OnInit {
     }, 1);
   }
 
-  createProject(model: TTest, select = true): void {
+  createProject(model: ZTest, select = true): void {
     let project = this.projectService.createProject();
     project.addModel(model).
       then(result => {

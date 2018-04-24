@@ -394,7 +394,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.dropPaths.push(path(yData));
   }
 
-  protected setup(): void {
+  protected setup(): boolean {
     if (!this.project) {
       return false;
     }

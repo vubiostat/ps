@@ -2,9 +2,9 @@ import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
-import { PlotOptionsService } from '../plot-options.service';
-import { PaletteService } from '../palette.service';
-import { Range } from '../range';
+import { PlotOptionsService } from './plot-options.service';
+import { PaletteService } from './palette.service';
+import { Range } from './range';
 
 export enum Draw {
   No,
