@@ -10,7 +10,7 @@ import 'rxjs/add/operator/debounceTime';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
-import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
+import { AbstractPlotComponent, Draw } from '../../abstract-plot.component';
 import { Project } from '../project';
 import { Range } from '../../range';
 import { PlotOptionsService } from '../../plot-options.service';

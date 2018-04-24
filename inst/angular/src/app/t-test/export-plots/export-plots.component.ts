@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Project } from '../project';
-import { AbstractPlotComponent } from '../abstract-plot.component';
+import { AbstractPlotComponent } from '../../abstract-plot.component';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../../export.service'

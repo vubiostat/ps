@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
-import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
+import { AbstractPlotComponent, Draw } from '../../abstract-plot.component';
 import { Range } from '../../range';
 import { Point } from '../../point';
 import { Project } from '../project';
