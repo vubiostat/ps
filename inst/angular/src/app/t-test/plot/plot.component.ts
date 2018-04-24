@@ -87,7 +87,13 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   needDraw = Draw.No;
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.setup();
+    let result = this.setup();
+    if (!result && this.project) {
+      // this might happen if the browser elements aren't ready yet
+      setTimeout(() => {
+        this.setup();
+      }, 1);
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -179,7 +185,28 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.legendYOffset = 0;
   }
 
-  private setupDimensions(): void {
+  private setupDimensions(): boolean {
+    // dimensions
+    if (this.fixedWidth) {
+      this.width = this.fixedWidth;
+    } else {
+      this.width = this.getDimension('width');
+      if (this.width == 0) {
+        // window isn't ready to draw
+        return false;
+      }
+    }
+
+    if (this.fixedHeight) {
+      this.height = this.fixedHeight;
+    } else {
+      this.height = this.getDimension('height');
+      if (this.height == 0) {
+        // window isn't ready to draw
+        return false;
+      }
+    }
+
     // margin
     this.yAxisWidth = 10 +
       this.plotOptions.getAxisLineWidth() +   // y axis line width
@@ -193,20 +220,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     this.topMargin = this.plotOptions.getFontSize() + 10;
     this.bottomMargin = this.plotOptions.getFontSize() + this.xAxisHeight + 10;
 
-    // dimensions
-    if (this.fixedWidth) {
-      this.width = this.fixedWidth;
-    } else {
-      this.width = this.getDimension('width');
-    }
-    if (this.fixedHeight) {
-      this.height = this.fixedHeight;
-    } else {
-      this.height = this.getDimension('height');
-    }
     this.viewBox = `0 0 ${this.width} ${this.height}`;
     this.innerWidth  = this.width  - this.leftMargin - this.rightMargin;
     this.innerHeight = this.height - this.topMargin - this.bottomMargin;
+
+    return true;
   }
 
   private setupParams(): boolean {
@@ -378,17 +396,16 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
   protected setup(): void {
     if (!this.project) {
-      return;
+      return false;
     }
-
-    this.setupDimensions();
+    if (!this.setupDimensions()) {
+      return false;
+    }
     if (!this.setupParams()) {
-      // setting up parameters failed
-      return;
+      return false;
     }
     if (!this.setupPlotData()) {
-      // setting up plot data failed
-      return;
+      return false;
     }
     this.setupScales();
     this.setupTarget();
@@ -401,6 +418,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     }
 
     this.needDraw = Draw.Yes;
+    return true;
   }
 
   private getHoverBoxPath(above: boolean, coords: any): void {

@@ -23,6 +23,7 @@ declare var __BUILDTIMESTAMP__: string;
 export class ZTestComponent implements OnInit {
   newModel = new ZTest();
   projects: Project[] = [];
+  selectedIndex: number;
   selectedProject: Project;
   commitHash = __COMMITHASH__.substr(0, 7);
   buildTimestamp = __BUILDTIMESTAMP__;
@@ -40,11 +41,13 @@ export class ZTestComponent implements OnInit {
   @ViewChild('tabset') tabset: NgbTabset;
   @ViewChild('outputPane') outputPane: OutputPaneComponent;
 
-  constructor(private projectService: ProjectService) {}
+  constructor(private projectService: ProjectService) {
+    this.projects = this.projectService.getProjects();
+    this.selectedIndex = this.projectService.getSelectedIndex();
+    this.selectedProject = this.projects[this.selectedIndex];
+  }
 
   ngOnInit(): void {
-    this.projects = this.projectService.getProjects();
-
     if (this.projects.length == 0) {
       /* Add example project */
       let model = new ZTest({
@@ -79,14 +82,18 @@ export class ZTestComponent implements OnInit {
     this.createProject(this.newModel);
   }
 
-  createProject(model: ZTest, select = true): void {
+  selectProject(index: number): void {
+    setTimeout(() => {
+      this.tabset.select(`t-test-${index + 1}`);
+    }, 1);
+  }
+
+  createProject(model: TTest, select = true): void {
     let project = this.projectService.createProject();
     project.addModel(model).
       then(result => {
         if (select) {
-          setTimeout(() => {
-            this.tabset.select(`z-test-${this.projects.length}`);
-          }, 1);
+          this.selectProject(this.projects.length - 1);
         }
       }).
       catch(err => console.error(err));
@@ -96,10 +103,13 @@ export class ZTestComponent implements OnInit {
     let md = event.nextId.match(/\d+/);
     if (md) {
       let index = parseInt(md[0]) - 1;
+      this.selectedIndex = index;
       this.selectedProject = this.projects[index];
     } else {
+      this.selectedIndex = undefined;
       this.selectedProject = undefined;
     }
+    this.projectService.setSelectedIndex(this.selectedIndex);
   }
 
   onProjectChanged(): void {

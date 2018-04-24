@@ -80,7 +80,13 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.setup();
+    let result = this.setup();
+    if (!result && this.project) {
+      // this might happen if the browser elements aren't ready yet
+      setTimeout(() => {
+        this.setup();
+      }, 1);
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -126,7 +132,27 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     return group.id;
   }
 
-  private setupDimensions(): void {
+  private setupDimensions(): boolean {
+    // dimensions
+    if (this.fixedWidth) {
+      this.width = this.fixedWidth;
+    } else {
+      this.width = this.getDimension('width');
+      if (this.width == 0) {
+        // window isn't ready to draw
+        return false;
+      }
+    }
+    if (this.fixedHeight) {
+      this.height = this.fixedHeight;
+    } else {
+      this.height = this.getDimension('height');
+      if (this.height == 0) {
+        // window isn't ready to draw
+        return false;
+      }
+    }
+
     // margin
     this.topMargin = this.plotOptions.getFontSize() + 20;
     this.bottomMargin = 10 + this.plotOptions.getFontSize() +
@@ -135,35 +161,29 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     this.leftMargin = this.plotOptions.getAxisFontSize() + 9;
     this.rightMargin = this.leftMargin;
 
-    // dimensions
-    if (this.fixedWidth) {
-      this.width = this.fixedWidth;
-    } else {
-      this.width = this.getDimension('width');
-    }
-    if (this.fixedHeight) {
-      this.height = this.fixedHeight;
-    } else {
-      this.height = this.getDimension('height');
-    }
     this.viewBox = `0 0 ${this.width} ${this.height}`;
     this.innerWidth  = this.width  - this.leftMargin - this.rightMargin;
     this.innerHeight = this.height - this.topMargin - this.bottomMargin;
+
+    return true;
   }
 
-  protected setup(): void {
+  protected setup(): boolean {
     if (!this.project) {
-      return;
+      return false;
     }
 
     this.setupTitle();
-    this.setupDimensions();
+    if (!this.setupDimensions()) {
+      return false;
+    }
     this.setupPlotData();
     this.setupScales();
     this.setupGroups();
     this.resetDragging();
 
     this.needDraw = Draw.Yes;
+    return true;
   }
 
   private setupTitle(): void {

@@ -76,6 +76,7 @@ export abstract class AbstractPlotComponent implements OnInit {
     return line(data);
   }
 
-  protected setup(): void {
+  protected setup(): boolean {
+    return true;
   }
 }

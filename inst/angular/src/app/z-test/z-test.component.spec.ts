@@ -37,7 +37,10 @@ class PlotOptionsStubComponent {
 }
 
 describe('ZTestComponent', () => {
-  let projectServiceStub = {};
+  let projectServiceStub = {
+    getProjects: () => [],
+    getSelectedIndex: () => undefined
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
