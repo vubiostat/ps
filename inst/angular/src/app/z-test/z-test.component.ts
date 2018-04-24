@@ -6,7 +6,7 @@ import 'rxjs/add/operator/switch';
 
 import { ZTest } from './z-test';
 import { Project } from './project';
-import { ProjectFactoryService } from './project-factory.service';
+import { ProjectService } from './project.service';
 
 import { DraggableDialogComponent } from '../draggable-dialog/draggable-dialog.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
@@ -40,14 +40,18 @@ export class ZTestComponent implements OnInit {
   @ViewChild('tabset') tabset: NgbTabset;
   @ViewChild('outputPane') outputPane: OutputPaneComponent;
 
-  constructor(private projectFactory: ProjectFactoryService) {}
+  constructor(private projectService: ProjectService) {}
 
   ngOnInit(): void {
-    /* Add example project */
-    let model = new ZTest({
-      output: 'power', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 33
-    });
-    this.createProject(model, false);
+    this.projects = this.projectService.getProjects();
+
+    if (this.projects.length == 0) {
+      /* Add example project */
+      let model = new ZTest({
+        output: 'power', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 33
+      });
+      this.createProject(model, false);
+    }
   }
 
   toggleHelp(topic: string): void {
@@ -76,11 +80,9 @@ export class ZTestComponent implements OnInit {
   }
 
   createProject(model: ZTest, select = true): void {
-    let project = this.projectFactory.create();
+    let project = this.projectService.createProject();
     project.addModel(model).
       then(result => {
-        this.projects.push(project);
-
         if (select) {
           setTimeout(() => {
             this.tabset.select(`z-test-${this.projects.length}`);

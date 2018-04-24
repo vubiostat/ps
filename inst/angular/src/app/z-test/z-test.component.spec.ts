@@ -3,7 +3,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { Component, Input } from '@angular/core';
 import { NgbModule, NgbTabsetConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Project } from './project';
-import { ProjectFactoryService } from './project-factory.service';
+import { ProjectService } from './project.service';
 import { ZTestComponent } from './z-test.component';
 
 @Component({selector: 'z-test-start', template: ''})
@@ -37,7 +37,7 @@ class PlotOptionsStubComponent {
 }
 
 describe('ZTestComponent', () => {
-  let projectFactoryServiceStub = {};
+  let projectServiceStub = {};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -52,7 +52,7 @@ describe('ZTestComponent', () => {
         ZTestComponent
       ],
       providers: [
-        { provide: ProjectFactoryService, useValue: projectFactoryServiceStub },
+        { provide: ProjectService, useValue: projectServiceStub },
         NgbTabsetConfig
       ]
     }).compileComponents();

@@ -7,7 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppCommonModule } from '../app-common.module';
 
 import { ZTestService } from './z-test.service';
-import { ProjectFactoryService } from './project-factory.service';
+import { ProjectService } from './project.service';
 
 import { ZTestComponent } from './z-test.component';
 import { StartComponent } from './start/start.component';
@@ -48,7 +48,7 @@ const routes: Routes = [
   ],
   providers: [
     ZTestService,
-    ProjectFactoryService
+    ProjectService
   ],
   entryComponents: [
     ExportPlotsComponent
