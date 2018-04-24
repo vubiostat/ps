@@ -7,7 +7,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppCommonModule } from '../app-common.module';
 
 import { ZTestService } from './z-test.service';
-import { PlotOptionsService } from './plot-options.service';
 import { ProjectFactoryService } from './project-factory.service';
 
 import { ZTestComponent } from './z-test.component';
@@ -49,7 +48,6 @@ const routes: Routes = [
   ],
   providers: [
     ZTestService,
-    PlotOptionsService,
     ProjectFactoryService
   ],
   entryComponents: [

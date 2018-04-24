@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Component, Input } from '@angular/core';
 import { RoundPipe } from '../../round.pipe';
-import { PlotOptionsService } from '../plot-options.service';
+import { PlotOptionsService } from '../../plot-options.service';
 import { PlotOptionsComponent } from './plot-options.component';
 
 @Component({selector: 'app-range-slider', template: ''})

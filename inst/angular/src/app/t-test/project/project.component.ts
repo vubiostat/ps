@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
-import { PlotOptionsService } from '../plot-options.service';
+import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 import { Project } from '../project';
 import { TTest } from '../t-test';

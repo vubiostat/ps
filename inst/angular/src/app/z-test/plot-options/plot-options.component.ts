@@ -8,7 +8,7 @@ import 'rxjs/add/operator/filter';
 
 import { Project } from '../project';
 import { ZTest } from '../z-test';
-import { PlotOptionsService } from '../plot-options.service';
+import { PlotOptionsService } from '../../plot-options.service';
 
 interface ProjectChange {
   name: string;

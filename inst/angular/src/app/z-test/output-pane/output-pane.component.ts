@@ -6,7 +6,7 @@ import { ZTest } from '../z-test';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
-import { PlotOptionsService } from '../plot-options.service';
+import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 
 @Component({

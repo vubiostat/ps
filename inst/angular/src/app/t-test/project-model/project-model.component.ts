@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 
-import { PlotOptionsService } from '../plot-options.service';
+import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 import { TTest } from '../t-test';
 import { Project } from '../project';

@@ -12,6 +12,7 @@ import { KonamiDirective } from './konami.directive';
 
 import { ExportService } from './export.service';
 import { PaletteService } from './palette.service';
+import { PlotOptionsService } from './plot-options.service';
 
 import { environment } from '../environments/environment';
 
@@ -36,7 +37,8 @@ const routes: Routes = [
   providers: [
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
     ExportService,
-    PaletteService
+    PaletteService,
+    PlotOptionsService
   ]
 })
 export class AppModule { }

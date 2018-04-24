@@ -10,7 +10,7 @@ import { AbstractPlotComponent, Draw } from '../abstract-plot.component';
 import { Range } from '../../range';
 import { Point } from '../../point';
 import { Project } from '../project';
-import { PlotOptionsService } from '../plot-options.service';
+import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 
 interface Param {
