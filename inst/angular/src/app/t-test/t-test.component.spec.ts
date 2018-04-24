@@ -3,7 +3,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { Component, Input } from '@angular/core';
 import { NgbModule, NgbTabsetConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Project } from './project';
-import { ProjectFactoryService } from './project-factory.service';
+import { ProjectService } from './project.service';
 import { TTestComponent } from './t-test.component';
 
 @Component({selector: 't-test-start', template: ''})
@@ -37,7 +37,7 @@ class PlotOptionsStubComponent {
 }
 
 describe('TTestComponent', () => {
-  let projectFactoryServiceStub = {};
+  let projectServiceStub = {};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -52,7 +52,7 @@ describe('TTestComponent', () => {
         TTestComponent
       ],
       providers: [
-        { provide: ProjectFactoryService, useValue: projectFactoryServiceStub },
+        { provide: ProjectService, useValue: projectServiceStub },
         NgbTabsetConfig
       ]
     }).compileComponents();
