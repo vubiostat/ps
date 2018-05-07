@@ -1,0 +1,47 @@
+<nav class="navbar d-flex flex-nowrap flex-row justify-content-between" style="flex: 0 0 auto">
+  <div class="navbar-brand">
+    <img src="assets/ps.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+    <a routerLink="">Power and Sample Size</a>
+  </div>
+  <div *ngIf="state == 'main' || state == 'ztest'" class="d-flex flex-row"
+    ngbPopover="Choose a study design to get started." container="body"
+    placement="bottom" triggers="">
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a class="nav-link" href="#" (click)="setState('ttest')">t-test</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/z-test" routerLinkActive="active">z-test</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Survival</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Dichotomous</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Regression</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Mantel-Haenszel</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><i class="fa fa-home"></i></a>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="state == 'ttest' || state == 'ttestPaired'" class="d-flex flex-row">
+    <div class="navbar-text mr-2">t-test Design:</div>
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/t-test" routerLinkActive="active">Paired</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Independent</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="setState('main')"><i class="fa fa-home"></i></a>
+      </li>
+    </ul>
+  </div>
+</nav>

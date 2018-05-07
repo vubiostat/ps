@@ -1,31 +1,7 @@
 <div id="app" class="container-fluid d-flex flex-column h-100"
   appKonami (konami)="konamiCode()">
-  <nav class="navbar d-flex flex-nowrap flex-row justify-content-between" style="flex: 0 0 auto">
-    <div class="navbar-brand">
-      <img src="assets/ps.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-      Power and Sample Size
-    </div>
-    <ul class="nav nav-pills">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/t-test" routerLinkActive="active">t-test</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/z-test" routerLinkActive="active">z-test</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Survival</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Dichotomous</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Regression</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Mantel-Haenszel</a>
-      </li>
-    </ul>
-  </nav>
+
+  <app-menu></app-menu>
 
   <audio *ngIf="konami" autoplay (ended)="audioEnded()">
     <source src="assets/contra.mp3" type="audio/mpeg">

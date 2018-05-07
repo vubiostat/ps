@@ -15,15 +15,19 @@ import { PaletteService } from './palette.service';
 import { PlotOptionsService } from './plot-options.service';
 
 import { environment } from '../environments/environment';
+import { MenuComponent } from './menu/menu.component';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/t-test', pathMatch: 'full' },
+  { path: '', component: WelcomeComponent },
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     KonamiDirective,
+    MenuComponent,
+    WelcomeComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,7 @@
+.navbar-brand a {
+  color: black;
+}
+
+.nav-link.disabled {
+  cursor: not-allowed;
+}
