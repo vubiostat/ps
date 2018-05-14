@@ -7,11 +7,10 @@ export class FormatFixedPipe implements PipeTransform {
 
   transform(value: number, others: number[]): string {
     let widths = others.concat(value).map(v => {
-      let result = Math.ceil(Math.log10(Math.abs(v)));
-      if (v < 0) result++;
-      return result;
+      let wholeDigits = Math.ceil(Math.log10(Math.abs(v)));
+      return wholeDigits + 4; // 4 = 2 digits after decimal, decimal, +/-
     });
-    let width = Math.max.apply(undefined, widths) + 3;
+    let width = Math.max.apply(undefined, widths);
     let result = value.toFixed(2);
     while (result.length < width) {
       result = ' ' + result;

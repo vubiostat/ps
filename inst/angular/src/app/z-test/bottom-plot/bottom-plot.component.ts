@@ -398,6 +398,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     let g = d3.select(`#${this.mainGroup.id}`).
       attr('transform', this.translate(this.leftMargin + offset, this.topMargin));
     this.mainGroup.target = x;
+
+    this.needDraw = Draw.Hover;
   }
 
   private dragTargetEnd(): void {
@@ -459,6 +461,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     svg.select(`#${this.mainGroup.id}-left`).attr('d', leftPath);
     svg.select(`#${this.mainGroup.id}-right`).attr('d', rightPath);
     svg.select(`#${this.mainGroup.id}-center`).attr('d', centerPath);
+
+    this.needDraw = Draw.Hover;
   }
 
   private dragBarEnd(which: CIBar): void {
