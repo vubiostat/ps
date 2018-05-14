@@ -1,9 +1,8 @@
 import { Component, Directive, Input, Output, ContentChild, ViewChild, TemplateRef, ElementRef, EventEmitter, OnInit, OnChanges, SimpleChanges, AfterContentInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/filter';
+import { Subject } from 'rxjs';
+import { debounceTime, filter } from 'rxjs/operators';
 
 @Directive({selector: 'ng-template[rsLabel]'})
 export class RangeSliderLabel {
@@ -52,15 +51,15 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
   @ViewChild("range") rangeElement: ElementRef;
 
   ngOnInit(): void {
-    this.inputSubject.
-      debounceTime(400).
+    this.inputSubject.pipe(
+      debounceTime(400),
       filter(value => {
         // skip values when not dirty
         return this.dirty;
-      }).
-      subscribe(value => {
-        this.trySetValue(value);
-      });
+      })
+    ).subscribe(value => {
+      this.trySetValue(value);
+    });
   }
 
   ngAfterContentInit(): void {

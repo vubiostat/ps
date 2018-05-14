@@ -1,10 +1,6 @@
 import { Component, Input, Output, OnInit, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/filter';
+import { Observable, Subject, Subscription, merge } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import { Project } from '../project';
 import { TTest } from '../t-test';
@@ -35,8 +31,8 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
   constructor(private plotOptions: PlotOptionsService) {}
 
   ngOnInit(): void {
-    this.rangeSub = Observable.merge(
-      this.projectChangedDelay.debounceTime(400),
+    this.rangeSub = merge(
+      this.projectChangedDelay.pipe(debounceTime(400)),
       this.projectChangedImmediate
     ).subscribe(change => {
       if (change.subname) {

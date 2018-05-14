@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { filter } from 'rxjs/operators';
 
 enum MenuState {
   Main = "main",
@@ -23,7 +24,7 @@ export class MenuComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
-    this.router.events.filter(e => e instanceof NavigationEnd).
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).
       subscribe((e: NavigationEnd) => {
         this.urlChanged(e.url);
       });

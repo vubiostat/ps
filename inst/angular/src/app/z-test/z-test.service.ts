@@ -6,7 +6,7 @@ import {
   ResponseContentType
 } from '@angular/http';
 
-import 'rxjs/add/operator/toPromise';
+
 
 import { environment } from '../../environments/environment';
 import { Range } from '../range';

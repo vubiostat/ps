@@ -1,8 +1,6 @@
 import { Component, ViewChild, HostListener, OnInit, AfterViewInit } from '@angular/core';
 import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
-
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switch';
+import { Observable } from 'rxjs';
 
 import { TTest } from './t-test';
 import { Project } from './project';
@@ -11,9 +9,7 @@ import { ProjectService } from './project.service';
 import { DraggableDialogComponent } from '../draggable-dialog/draggable-dialog.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 
-// globals from webpack
-declare var __COMMITHASH__: string;
-declare var __BUILDTIMESTAMP__: string;
+import { commitHash, buildTimestamp } from '../version';
 
 @Component({
   selector: 't-test-root',
@@ -25,8 +21,8 @@ export class TTestComponent implements OnInit {
   projects: Project[] = [];
   selectedIndex: number;
   selectedProject: Project;
-  commitHash = __COMMITHASH__.substr(0, 7);
-  buildTimestamp = __BUILDTIMESTAMP__;
+  commitHash = commitHash.substr(0, 7);
+  buildTimestamp = buildTimestamp;
 
   helpTitles = {
     'overview': 'PS Overview',
