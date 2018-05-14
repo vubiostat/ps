@@ -21,7 +21,7 @@
             </ng-template>
           </ngb-tab>
           <ngb-tab *ngFor="let project of projects; let i = index"
-            title="Z-Test #{{i+1}}" id="z-test-{{i+1}}">
+            title="z-test #{{i+1}}" id="z-test-{{i+1}}">
             <ng-template ngbTabContent>
               <z-test-project name="{{i}}" [project]="project"
                 (projectChanged)="onProjectChanged()">
