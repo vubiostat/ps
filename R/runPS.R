@@ -75,7 +75,7 @@ StandaloneHandler <- setRefClass("StandaloneHandler",
         frontendPath <- "index.html"
       }
       rootPath <- system.file(package = "ps")
-      realPath <- system.file(paste("angular/dist", frontendPath, sep="/"), package = "ps")
+      realPath <- system.file(paste("angular/dist/ps", frontendPath, sep="/"), package = "ps")
       if (!nzchar(realPath)) {
         # file doesn't exist
         cat("File doesn't exist\n")
