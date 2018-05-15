@@ -62,7 +62,9 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "ps:build:production"
+              "browserTarget": "ps:build:production",
+              "baseHref": "/ps/",
+              "deployUrl": "/ps/"
             },
             "demo": {
               "browserTarget": "ps:build:demo",
