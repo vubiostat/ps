@@ -28,7 +28,7 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
   private projectChangedImmediate: Subject<ProjectChange> = new Subject();
   private rangeSub: Subscription;
 
-  constructor(private plotOptions: PlotOptionsService) {}
+  constructor(public plotOptions: PlotOptionsService) {}
 
   ngOnInit(): void {
     this.rangeSub = merge(

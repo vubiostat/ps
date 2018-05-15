@@ -48,19 +48,19 @@ export class ProjectModelComponent implements OnInit {
     this.color = this.palette.getColor(this.index, this.plotOptions.paletteTheme);
   }
 
-  private onRemoveButtonClicked(): void {
-    this.remove.emit();
-  }
-
-  private isOutput(name: string): boolean {
+  isOutput(name: string): boolean {
     return this.model.output === name;
   }
 
-  private changeModel(key: string, value: any): void {
+  changeModel(key: string, value: any): void {
     this.project.updateModel(this.index, key, value).then(() => {
       this.adjustMinMax();
       this.modelChanged.emit();
     });
+  }
+
+  private onRemoveButtonClicked(): void {
+    this.remove.emit();
   }
 
   private adjustMinMax(): void {

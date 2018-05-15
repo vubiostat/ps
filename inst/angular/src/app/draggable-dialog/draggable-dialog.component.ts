@@ -13,7 +13,7 @@ export class DraggableDialogComponent implements OnInit {
   @Input('start-y-offset') startYOffset = "20px";
   @Output('drag-start') onDragStart = new EventEmitter();
   @Output('drag-end') onDragEnd = new EventEmitter();
-  private enabled = false;
+  enabled = false;
   private dragging = false;
   private xOffset: number;
   private yOffset: number;
