@@ -149,11 +149,15 @@ ZTestPlotDataAction <- setRefClass("ZTestPlotDataAction",
         pSpaceRange = list(min = -15, max = 15)
       )
       time <- system.time(model$plotData(ranges, 50))
-      points <- as.integer(0.20 / time[1] * 50)
-      if (points < 50) {
-        points <- 50
-      } else if (points > 200) {
+      if (time[1] == 0) {
         points <- 200
+      } else {
+        points <- as.integer(0.20 / time[1] * 50)
+        if (points < 50) {
+          points <- 50
+        } else if (points > 200) {
+          points <- 200
+        }
       }
       defaultPoints <<- points
     },
