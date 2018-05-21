@@ -1,4 +1,4 @@
-import { TTest } from './t-test';
+import { TTest, TTestKind } from './t-test';
 import { Range } from '../range';
 import { Point } from '../point';
 import { TTestService, PlotDataRanges } from './t-test.service';
@@ -7,6 +7,7 @@ import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
 export class Project {
+  kind: TTestKind;
   models: TTest[] = [];
   selectedIndex: number = 0;
   changeHistory: any[] = [];

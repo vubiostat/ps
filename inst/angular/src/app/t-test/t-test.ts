@@ -1,10 +1,16 @@
 import { Point } from '../point';
 import { Range } from '../range';
 
+export enum TTestKind {
+  Paired = "paired",
+  ZTest = "ztest"
+}
+
 export class TTest {
   name: string;
 
   // params
+  kind: TTestKind;
   output: string;
   alpha: number;
   sigma: number;
@@ -26,6 +32,7 @@ export class TTest {
 
   constructor(attribs?: any) {
     if (attribs) {
+      this.kind = attribs.kind;
       this.output = attribs.output;
       this.alpha = attribs.alpha;
       this.sigma = attribs.sigma;
@@ -94,9 +101,9 @@ export class TTest {
 
   params(): any {
     let result: any = {
-      output: this.output, alpha: this.alpha, sigma: this.sigma,
-      delta: this.delta, power: this.power, n: this.n, ci: this.ci,
-      ciMode: this.ciMode, deltaMode: this.deltaMode
+      kind: this.kind, output: this.output, alpha: this.alpha,
+      sigma: this.sigma, delta: this.delta, power: this.power, n: this.n,
+      ci: this.ci, ciMode: this.ciMode, deltaMode: this.deltaMode
     };
     return result;
   }

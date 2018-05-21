@@ -1,14 +1,22 @@
-validateModelParams <- function(params) {
+ttestValidateModelParams <- function(params) {
   errors <- list()
 
   keys <- names(params)
-  expectedKeys <- c("alpha", "sigma", "n", "power", "delta", "ci", "ciMode",
-                    "deltaMode", "output", "design")
+  expectedKeys <- c("kind", "alpha", "sigma", "n", "power", "delta", "ci",
+                    "ciMode", "deltaMode", "output", "design")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {
     msg <- paste("had unexpected keys:", paste(extraKeys, collapse=", "))
     errors$base <- if (is.character(errors$base)) c(errors$base, msg) else msg
+  }
+
+  if (!("kind" %in% keys)) {
+    errors$kind <- "is required"
+  } else if (!is.character(params$kind)) {
+    errors$kind <- "must be character"
+  } else if (!(params$kind %in% c("paired", "ztest"))) {
+    errors$kind <- "is invalid"
   }
 
   if (!("alpha" %in% keys)) {
@@ -120,7 +128,7 @@ validateModelParams <- function(params) {
 TTestCalculateAction <- setRefClass("TTestCalculateAction",
   methods = list(
     validate = function(params) {
-      validateModelParams(params)
+      ttestValidateModelParams(params)
     },
 
     run = function(params) {
@@ -141,7 +149,8 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
   methods = list(
     initialize = function() {
       # try to guess a reasonable default
-      model <- TTest(list(alpha = 0.05, sigma = 10, delta = 5, n = 32, output = "power"))
+      model <- TTest(list(kind = "paired", alpha = 0.05, sigma = 10, delta = 5,
+                          n = 32, output = "power"))
       model$calculate()
       ranges <- list(
         powerRange = list(min = 0.01, max = 1),
@@ -179,7 +188,7 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
       } else {
         for (i in 1:length(params$models)) {
           modelParams <- params$models[[i]]
-          modelErrors <- validateModelParams(modelParams)
+          modelErrors <- ttestValidateModelParams(modelParams)
           if (length(modelErrors) > 0) {
             for (modelErrorName in names(modelErrors)) {
               errors[[paste0("models.", i, ".", modelErrorName)]] <-
@@ -269,8 +278,9 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
             row <- powerVsN[rowIndex, ]
 
             extraN <- seq(row$x, maxN, length.out = 10)
-            extraPower <- sapply(extraN, ttestCalculatePower, alpha = model$alpha,
-                                 delta = model$delta, sigma = model$sigma)
+            extraPower <- sapply(extraN, ttestCalculatePower, kind = "paired",
+                                 alpha = model$alpha, delta = model$delta,
+                                 sigma = model$sigma)
             extra <- data.frame(x = extraN, y = extraPower)
 
             powerVsN <- rbind(powerVsN[1:rowIndex, ], extra)

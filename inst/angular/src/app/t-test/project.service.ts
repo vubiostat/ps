@@ -2,35 +2,40 @@ import { Injectable } from '@angular/core';
 
 import { TTestService } from './t-test.service';
 import { Project } from './project';
-import { TTest } from './t-test';
+import { TTest, TTestKind } from './t-test';
 
 @Injectable()
 export class ProjectService {
-  private projects: Project[] = [];
-  private selectedIndex: number;
+  private projects: { [name: string]: Project[] } = {};
+  private selectedIndex: { [name: string]: number } = {};
 
   constructor(private ttestService: TTestService) {}
 
-  createProject(): Project {
+  createProject(kind: TTestKind): Project {
     let project = new Project(this.ttestService);
-    this.projects.push(project);
+    project.kind = kind;
+    let projects = this.getProjects(kind);
+    projects.push(project);
     return project;
   }
 
-  getProjects(): Project[] {
+  getProjects(kind: TTestKind): Project[] {
     // return reference for convenience
-    return this.projects;
+    if (this.projects[kind] === undefined) {
+      this.projects[kind] = [];
+    }
+    return this.projects[kind];
   }
 
-  numProjects(): number {
-    return this.projects.length;
+  numProjects(kind: TTestKind): number {
+    return this.getProjects(kind).length;
   }
 
-  setSelectedIndex(index): void {
-    this.selectedIndex = index;
+  setSelectedIndex(kind: TTestKind, index: number): void {
+    this.selectedIndex[kind] = index;
   }
 
-  getSelectedIndex(): number {
-    return this.selectedIndex;
+  getSelectedIndex(kind: TTestKind): number {
+    return this.selectedIndex[kind];
   }
 }

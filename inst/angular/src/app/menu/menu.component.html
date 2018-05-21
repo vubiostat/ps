@@ -8,7 +8,7 @@
     placement="bottom" triggers="">
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <a class="nav-link" href="#" (click)="setState('ttest')">t-test</a>
+        <a class="nav-link" href="#" (click)="setState('ttest'); $event.preventDefault()">t-test</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/z-test" routerLinkActive="active">z-test</a>
@@ -40,7 +40,7 @@
         <a class="nav-link disabled" href="#">Independent</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="setState('main')"><i class="fa fa-home"></i></a>
+        <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="setState('main'); $event.preventDefault()"><i class="fa fa-home"></i></a>
       </li>
     </ul>
   </div>

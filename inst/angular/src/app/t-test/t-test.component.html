@@ -12,7 +12,7 @@
         <ngb-tabset #tabset
           activeId="t-test-{{selectedIndex !== undefined ? selectedIndex + 1 : 'start'}}"
           (tabChange)="onTabChange($event)">
-          <ngb-tab title="Start" id="t-test-start">
+          <ngb-tab *ngIf="newModel" title="Start" id="t-test-start">
             <ng-template ngbTabContent>
               <t-test-start [model]="newModel"
                 (onCalculate)="calculate()"
@@ -21,7 +21,7 @@
             </ng-template>
           </ngb-tab>
           <ngb-tab *ngFor="let project of projects; let i = index"
-            title="t-test #{{i+1}}" id="t-test-{{i+1}}">
+            [title]="tabTitle(i)" id="t-test-{{i+1}}">
             <ng-template ngbTabContent>
               <t-test-project name="{{i}}" [project]="project"
                 (projectChanged)="onProjectChanged()">

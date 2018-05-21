@@ -1,8 +1,9 @@
 import { Component, ViewChild, HostListener, OnInit, AfterViewInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 
-import { TTest } from './t-test';
+import { TTest, TTestKind } from './t-test';
 import { Project } from './project';
 import { ProjectService } from './project.service';
 
@@ -17,12 +18,13 @@ import { commitHash, buildTimestamp } from '../version';
   styleUrls: ['./t-test.component.css']
 })
 export class TTestComponent implements OnInit {
-  newModel = new TTest();
+  newModel: TTest;
   projects: Project[] = [];
   selectedIndex: number;
   selectedProject: Project;
   commitHash = commitHash.substr(0, 7);
   buildTimestamp = buildTimestamp;
+  kind: TTestKind;
 
   helpTitles = {
     'overview': 'PS Overview',
@@ -37,20 +39,41 @@ export class TTestComponent implements OnInit {
   @ViewChild('tabset') tabset: NgbTabset;
   @ViewChild('outputPane') outputPane: OutputPaneComponent;
 
-  constructor(private projectService: ProjectService) {
-    this.projects = this.projectService.getProjects();
-    this.selectedIndex = this.projectService.getSelectedIndex();
-    this.selectedProject = this.projects[this.selectedIndex];
+  constructor(private projectService: ProjectService, private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    if (this.projects.length == 0) {
-      /* Add example project */
-      let model = new TTest({
-        output: 'power', alpha: 0.05, power: 0.8, delta: 5, sigma: 10, n: 33
-      });
-      this.createProject(model, false);
+    this.route.data.subscribe(data => {
+      this.kind = data.kind;
+      this.newModel = new TTest({ kind: this.kind });
+
+      this.projects = this.projectService.getProjects(this.kind);
+      this.selectedIndex = this.projectService.getSelectedIndex(this.kind);
+      this.selectedProject = this.projects[this.selectedIndex];
+
+      if (this.projects.length == 0) {
+        /* Add example project */
+        let model = new TTest({
+          kind: this.kind, output: 'power', alpha: 0.05, power: 0.8, delta: 5,
+          sigma: 10, n: 33
+        });
+        this.createProject(model, false);
+      }
+    });
+  }
+
+  tabTitle(index: number): string {
+    let result = '';
+    switch (this.kind) {
+      case TTestKind.Paired:
+        result += 't-test ';
+        break;
+      case TTestKind.ZTest:
+        result += 'z-test ';
+        break;
     }
+    result += ' #' + (index + 1).toString();
+    return result;
   }
 
   toggleHelp(topic: string): void {
@@ -85,7 +108,7 @@ export class TTestComponent implements OnInit {
   }
 
   createProject(model: TTest, select = true): void {
-    let project = this.projectService.createProject();
+    let project = this.projectService.createProject(this.kind);
     project.addModel(model).
       then(result => {
         if (select) {
@@ -105,7 +128,7 @@ export class TTestComponent implements OnInit {
       this.selectedIndex = undefined;
       this.selectedProject = undefined;
     }
-    this.projectService.setSelectedIndex(this.selectedIndex);
+    this.projectService.setSelectedIndex(this.kind, this.selectedIndex);
   }
 
   onProjectChanged(): void {

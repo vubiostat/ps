@@ -6,7 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppCommonModule } from './app-common.module';
 import { TTestModule } from './t-test/t-test.module';
-import { ZTestModule } from './z-test/z-test.module';
+//import { ZTestModule } from './z-test/z-test.module';
 import { AppComponent } from './app.component';
 import { KonamiDirective } from './konami.directive';
 
@@ -35,7 +35,7 @@ const routes: Routes = [
     NgbModule.forRoot(),
     AppCommonModule,
     TTestModule,
-    ZTestModule
+    //ZTestModule
   ],
   bootstrap: [ AppComponent ],
   providers: [

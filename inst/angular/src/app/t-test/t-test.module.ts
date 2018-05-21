@@ -20,8 +20,11 @@ import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from './export-plots/export-plots.component';
 import { ProjectModelComponent } from './project-model/project-model.component';
 
+import { TTestKind } from './t-test';
+
 const routes: Routes = [
-  { path: 't-test', component: TTestComponent },
+  { path: 't-test', component: TTestComponent, data: { kind: TTestKind.Paired } },
+  { path: 'z-test', component: TTestComponent, data: { kind: TTestKind.ZTest } }
 ];
 
 @NgModule({

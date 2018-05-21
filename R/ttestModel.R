@@ -1,56 +1,74 @@
 # Calculate sample size, given the other parameters
-ttestCalculateN <- function(alpha, delta, sigma, power, ...) {
+ttestCalculateN <- function(kind, alpha, delta, sigma, power, ...) {
   #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " power = ", power, "\n", sep = "")
   if (power == 1) {
     return(NA)
   }
 
-  result <- try(pwr.t.test(d = delta / sigma, power = power, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"),
-                silent = TRUE)
-  if (inherits(result, "try-error")) NA else result$n
+  if (kind == "paired") {
+    result <- try(pwr.t.test(d = delta / sigma, power = power, sig.level = alpha,
+                             type = "paired", alternative = "two.sided"),
+                  silent = TRUE)
+    if (inherits(result, "try-error")) NA else result$n
+  } else if (kind == "ztest") {
+    (sigma * (qnorm(1 - alpha/2) + qnorm(power)) / delta) ^ 2
+  }
 }
 
 # Calculate power, given the other parameters
-ttestCalculatePower <- function(alpha, delta, sigma, n, ...) {
+ttestCalculatePower <- function(kind, alpha, delta, sigma, n, ...) {
   #cat("alpha = ", alpha, " delta = ", delta, " sigma = ", sigma, " n = ", n, "\n", sep = "")
-  result <- try(pwr.t.test(d = delta / sigma, n = n, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"),
-                silent = TRUE)
-  if (inherits(result, "try-error")) NA else result$power
+  if (kind == "paired") {
+    result <- try(pwr.t.test(d = delta / sigma, n = n, sig.level = alpha,
+                             type = "paired", alternative = "two.sided"),
+                  silent = TRUE)
+    if (inherits(result, "try-error")) NA else result$power
+  } else if (kind == "ztest") {
+    z <- delta / sigma * sqrt(n)
+    pnorm(z - qnorm(1 - alpha/2)) + pnorm(-z - qnorm(1 - alpha/2))
+  }
 }
 
 # Calculate detectable alternative, given the other parameters
-ttestCalculateDelta <- function(alpha, sigma, n, power, ...) {
+ttestCalculateDelta <- function(kind, alpha, sigma, n, power, ...) {
   #cat("alpha = ", alpha, " sigma = ", sigma, " n = ", n, " power = ", power, "\n", sep = "")
-  result <- try(pwr.t.test(n = n, power = power, sig.level = alpha,
-                           type = "paired", alternative = "two.sided"),
-                silent = TRUE)
-  if (inherits(result, "try-error")) NA else result$d * sigma
+  if (kind == "paired") {
+    result <- try(pwr.t.test(n = n, power = power, sig.level = alpha,
+                             type = "paired", alternative = "two.sided"),
+                  silent = TRUE)
+    if (inherits(result, "try-error")) NA else result$d * sigma
+  } else if (kind == "ztest") {
+    # Note: ignores the smaller tail (typical)
+    sqrt((qnorm(1 - alpha/2) - qnorm(1 - power)) ^ 2 * (sigma ^ 2) / n)
+  }
 }
 
 # Calculate sample distribution for precision vs. effect size graph
-ttestCalculateSampDist <- function(pSpace, delta, sigma, n, ...) {
+ttestCalculateSampDist <- function(kind, pSpace, delta, sigma, n, ...) {
+  # Calculated same way for paired and ztest
   sampDist <- dnorm(pSpace, mean = delta, sd = sigma/sqrt(n))
   ifelse(sampDist < 0.01, NA, sampDist)
 }
 
 # Calculate 95% confidence interval width, given std. dev. and sample size
-ttestCalculateCI <- function(sigma, n, ...) {
+ttestCalculateCI <- function(kind, sigma, n, ...) {
+  # Calculated same way for paired and ztest
   2 * 1.96 * sigma / sqrt(n)
 }
 
 # Calculate sample size, given 95% confidence interval width and std. dev.
-ttestCalculateNFromCI <- function(sigma, ci, ...) {
+ttestCalculateNFromCI <- function(kind, sigma, ci, ...) {
+  # Calculated same way for paired and ztest
   (2 * 1.96 * sigma / ci) ** 2
 }
 
 TTest <- setRefClass("TTest",
-  fields = c("alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
+  fields = c("kind", "alpha", "power", "n", "delta", "sigma", "ci", "ciMode",
              "deltaMode", "output"),
 
   methods = list(
     initialize = function(params) {
+      kind         <<- params$kind
       alpha        <<- params$alpha
       power        <<- params$power
       n            <<- params$n
@@ -70,32 +88,33 @@ TTest <- setRefClass("TTest",
     },
     calculate = function() {
       if (output == "n") {
-        n <<- ttestCalculateN(alpha, delta, sigma, power)
-        ci <<- ttestCalculateCI(sigma, n)
+        n <<- ttestCalculateN(kind, alpha, delta, sigma, power)
+        ci <<- ttestCalculateCI(kind, sigma, n)
       } else if (output == "nByCI") {
-        n <<- ttestCalculateNFromCI(sigma, ci)
+        n <<- ttestCalculateNFromCI(kind, sigma, ci)
         if (deltaMode) {
-          power <<- ttestCalculatePower(alpha, delta, sigma, n)
+          power <<- ttestCalculatePower(kind, alpha, delta, sigma, n)
         } else {
-          delta <<- ttestCalculateDelta(alpha, sigma, n, power)
+          delta <<- ttestCalculateDelta(kind, alpha, sigma, n, power)
         }
       } else if (output == "power") {
         if (ciMode) {
-          n <<- ttestCalculateNFromCI(sigma, ci)
+          n <<- ttestCalculateNFromCI(kind, sigma, ci)
         } else {
-          ci <<- ttestCalculateCI(sigma, n)
+          ci <<- ttestCalculateCI(kind, sigma, n)
         }
-        power <<- ttestCalculatePower(alpha, delta, sigma, n)
+        power <<- ttestCalculatePower(kind, alpha, delta, sigma, n)
 
       } else if (output == "delta") {
         if (ciMode) {
-          n <<- ttestCalculateNFromCI(sigma, ci)
+          n <<- ttestCalculateNFromCI(kind, sigma, ci)
         } else {
-          ci <<- ttestCalculateCI(sigma, n)
+          ci <<- ttestCalculateCI(kind, sigma, n)
         }
-        delta <<- ttestCalculateDelta(alpha, sigma, n, power)
+        delta <<- ttestCalculateDelta(kind, alpha, sigma, n, power)
       }
       list(
+        kind      = kind,
         alpha     = alpha,
         power     = power,
         n         = n,
@@ -115,8 +134,8 @@ TTest <- setRefClass("TTest",
           n2 <- sort(c(n2, n))
         }
 
-        power2 <- sapply(n2, ttestCalculatePower, alpha = alpha, delta = delta, sigma = sigma)
-        delta2 <- sapply(n2, ttestCalculateDelta, alpha = alpha, sigma = sigma, power = power)
+        power2 <- sapply(n2, ttestCalculatePower, kind = kind, alpha = alpha, delta = delta, sigma = sigma)
+        delta2 <- sapply(n2, ttestCalculateDelta, kind = kind, alpha = alpha, sigma = sigma, power = power)
         if (delta < 0) {
           delta2 <- -delta2
         }
@@ -129,15 +148,15 @@ TTest <- setRefClass("TTest",
           power2 <- sort(c(power2, power))
         }
 
-        n2 <- sapply(power2, ttestCalculateN, alpha = alpha, delta = delta, sigma = sigma)
+        n2 <- sapply(power2, ttestCalculateN, kind = kind, alpha = alpha, delta = delta, sigma = sigma)
         result$powerVsN <- data.frame(y = power2, x = n2)
 
         delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
-        power3 <- sapply(delta2, ttestCalculatePower, alpha = alpha, sigma = sigma, n = n)
+        power3 <- sapply(delta2, ttestCalculatePower, kind = kind, alpha = alpha, sigma = sigma, n = n)
         df <- data.frame(y = power3, x = delta2)
 
         if (!(ranges$powerRange$min %in% df$power3)) {
-          delta3 <- ttestCalculateDelta(alpha, sigma, n, ranges$powerRange$min)
+          delta3 <- ttestCalculateDelta(kind, alpha, sigma, n, ranges$powerRange$min)
           extra <- data.frame(y = rep(ranges$powerRange$min, 2),
                               x = c(-delta3, delta3))
           df <- rbind(df, extra)
@@ -154,8 +173,8 @@ TTest <- setRefClass("TTest",
           delta2 <- sort(c(delta2, delta))
         }
 
-        n2 <- sapply(delta2, ttestCalculateN, alpha = alpha, sigma = sigma, power = power)
-        power2 <- sapply(delta2, ttestCalculatePower, alpha = alpha, sigma = sigma, n = n)
+        n2 <- sapply(delta2, ttestCalculateN, kind = kind, alpha = alpha, sigma = sigma, power = power)
+        power2 <- sapply(delta2, ttestCalculatePower, kind = kind, alpha = alpha, sigma = sigma, n = n)
         result$deltaVsPower <- data.frame(y = delta2, x = power2)
         result$deltaVsN <- data.frame(y = delta2, x = n2)
       }
@@ -163,7 +182,7 @@ TTest <- setRefClass("TTest",
       # Calculate data for bottom/tertiary graph
       moe <- ci / 2
       pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
-      sampDist <- ttestCalculateSampDist(pSpace, delta, sigma, n)
+      sampDist <- ttestCalculateSampDist(kind, pSpace, delta, sigma, n)
       result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
 
       result
