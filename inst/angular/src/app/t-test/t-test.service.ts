@@ -6,8 +6,6 @@ import {
   ResponseContentType
 } from '@angular/http';
 
-
-
 import { environment } from '../../environments/environment';
 import { Range } from '../range';
 import { TTest } from './t-test';

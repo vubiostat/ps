@@ -2,7 +2,7 @@ import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
-import { TTest } from '../t-test';
+import { TTest, TTestKind } from '../t-test';
 import { Project } from '../project';
 
 import * as d3 from 'd3';
@@ -44,6 +44,10 @@ export class ProjectModelComponent implements OnInit {
     this.calculateSliderRange('ci');
     this.calculateSliderRange('delta');
     this.calculateSliderRange('sigma');
+
+    if (this.model.kind === TTestKind.Independent) {
+      this.calculateSliderRange('m');
+    }
 
     this.color = this.palette.getColor(this.index, this.plotOptions.paletteTheme);
   }

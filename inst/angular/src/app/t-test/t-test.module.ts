@@ -23,8 +23,9 @@ import { ProjectModelComponent } from './project-model/project-model.component';
 import { TTestKind } from './t-test';
 
 const routes: Routes = [
-  { path: 't-test', component: TTestComponent, data: { kind: TTestKind.Paired } },
-  { path: 'z-test', component: TTestComponent, data: { kind: TTestKind.ZTest } }
+  { path: 't-test/paired', component: TTestComponent, data: { kind: TTestKind.Paired } },
+  { path: 't-test/ind',    component: TTestComponent, data: { kind: TTestKind.Independent } },
+  { path: 'z-test',        component: TTestComponent, data: { kind: TTestKind.ZTest } }
 ];
 
 @NgModule({

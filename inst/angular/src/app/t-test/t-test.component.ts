@@ -57,6 +57,9 @@ export class TTestComponent implements OnInit {
           kind: this.kind, output: 'power', alpha: 0.05, power: 0.8, delta: 5,
           sigma: 10, n: 33
         });
+        if (this.kind == TTestKind.Independent) {
+          model.m = 2;
+        }
         this.createProject(model, false);
       }
     });
@@ -66,7 +69,10 @@ export class TTestComponent implements OnInit {
     let result = '';
     switch (this.kind) {
       case TTestKind.Paired:
-        result += 't-test ';
+        result += 'Paired t-test ';
+        break;
+      case TTestKind.Independent:
+        result += 'Ind. t-test ';
         break;
       case TTestKind.ZTest:
         result += 'z-test ';

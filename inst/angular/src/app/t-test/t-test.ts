@@ -3,6 +3,7 @@ import { Range } from '../range';
 
 export enum TTestKind {
   Paired = "paired",
+  Independent = "ind",
   ZTest = "ztest"
 }
 
@@ -17,6 +18,7 @@ export class TTest {
   delta?: number;
   power?: number;
   n?: number;
+  m?: number;
   ci?: number;
   ciMode = false;
   deltaMode = false;
@@ -39,6 +41,7 @@ export class TTest {
       this.delta = attribs.delta;
       this.power = attribs.power;
       this.n = attribs.n;
+      this.m = attribs.m;
       this.ci = attribs.ci;
       this.nVsPower = attribs.nVsPower;
       this.nVsDelta = attribs.nVsDelta;
@@ -103,7 +106,7 @@ export class TTest {
     let result: any = {
       kind: this.kind, output: this.output, alpha: this.alpha,
       sigma: this.sigma, delta: this.delta, power: this.power, n: this.n,
-      ci: this.ci, ciMode: this.ciMode, deltaMode: this.deltaMode
+      m: this.m, ci: this.ci, ciMode: this.ciMode, deltaMode: this.deltaMode
     };
     return result;
   }

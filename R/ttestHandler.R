@@ -3,7 +3,7 @@ ttestValidateModelParams <- function(params) {
 
   keys <- names(params)
   expectedKeys <- c("kind", "alpha", "sigma", "n", "power", "delta", "ci",
-                    "ciMode", "deltaMode", "output", "design")
+                    "ciMode", "deltaMode", "output", "design", "m")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {
@@ -15,7 +15,7 @@ ttestValidateModelParams <- function(params) {
     errors$kind <- "is required"
   } else if (!is.character(params$kind)) {
     errors$kind <- "must be character"
-  } else if (!(params$kind %in% c("paired", "ztest"))) {
+  } else if (!(params$kind %in% c("paired", "ind", "ztest"))) {
     errors$kind <- "is invalid"
   }
 
@@ -33,6 +33,18 @@ ttestValidateModelParams <- function(params) {
     errors$sigma <- "must be numeric"
   } else if (params$sigma <= 0) {
     errors$sigma <- "must be greater than 0"
+  }
+
+  if (params$kind == "ind") {
+    if (!("m" %in% keys)) {
+      errors$m <- "is required when kind is 'ind'"
+    } else if (!is.numeric(params$m)) {
+      errors$m <- "must be numeric"
+    } else if (params$m <= 0) {
+      errors$m <- "must be greater than 0"
+    }
+  } else if ("m" %in% keys) {
+    errors$m <- "is not allowed except when kind is 'ind'"
   }
 
   if ("n" %in% keys) {

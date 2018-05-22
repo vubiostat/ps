@@ -40,6 +40,19 @@
   </div>
 </div>
 
+<div class="grow-horiz" *ngIf="model.kind == 'ind'">
+  <div class="grow-vert range-slider">
+    <app-range-slider name="m" label="Ratio of control/experimental subjects"
+      [min]="min.m" [max]="max.m" [hard-min]="0.01"
+      [ngModel]="model.m | round" (ngModelChange)="changeModel('m', $event)">
+      <ng-template rsHelp>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam enim
+        nunc, rutrum at ligula id, tempor tincidunt nunc.
+      </ng-template>
+    </app-range-slider>
+  </div>
+</div>
+
 <ng-template [ngIf]="!isOutput('nByCI')" [ngIfElse]="nByCI">
   <div class="grow-horiz" [class.output]="isOutput('delta')">
     <div class="grow-vert range-slider">

@@ -7,6 +7,7 @@ enum MenuState {
   Main = "main",
   TTest = "ttest",
   TTestPaired = "ttestPaired",
+  TTestInd = "ttestInd",
   ZTest = "ztest"
 }
 
@@ -36,8 +37,12 @@ export class MenuComponent implements OnInit {
 
   private urlChanged(url: string): void {
     switch (url) {
-      case "/t-test":
+      case "/t-test/paired":
         this.state = MenuState.TTestPaired;
+        break;
+
+      case "/t-test/ind":
+        this.state = MenuState.TTestInd;
         break;
 
       case "/z-test":

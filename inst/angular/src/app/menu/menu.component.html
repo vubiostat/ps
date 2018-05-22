@@ -30,14 +30,14 @@
       </li>
     </ul>
   </div>
-  <div *ngIf="state == 'ttest' || state == 'ttestPaired'" class="d-flex flex-row">
+  <div *ngIf="state == 'ttest' || state == 'ttestPaired' || state == 'ttestInd'" class="d-flex flex-row">
     <div class="navbar-text mr-2">t-test Design:</div>
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/t-test" routerLinkActive="active">Paired</a>
+        <a class="nav-link" routerLink="/t-test/paired" routerLinkActive="active">Paired</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Independent</a>
+        <a class="nav-link" routerLink="/t-test/ind" routerLinkActive="active">Independent</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="setState('main'); $event.preventDefault()"><i class="fa fa-home"></i></a>
