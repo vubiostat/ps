@@ -59,13 +59,12 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "ps:build",
-            "baseHref": "/"
+            "baseHref": "/ps/",
+            "deployUrl": "/ps/"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ps:build:production",
-              "baseHref": "/ps/",
-              "deployUrl": "/ps/"
+              "browserTarget": "ps:build:production"
             },
             "demo": {
               "browserTarget": "ps:build:demo",

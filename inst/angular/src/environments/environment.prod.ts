@@ -1,5 +1,4 @@
 export const environment: any = {
   production: true,
-  apiUrl: "/ps-backend",
-  baseHref: "/ps/"
+  apiUrl: "/ps-backend"
 };

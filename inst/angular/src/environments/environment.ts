@@ -5,6 +5,5 @@
 
 export const environment: any = {
   production: false,
-  apiUrl: "http://localhost:7788",
-  baseHref: "/"
+  apiUrl: "http://localhost:7788"
 };
