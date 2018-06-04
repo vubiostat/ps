@@ -7,10 +7,34 @@ export enum TTestKind {
   ZTest = "ztest"
 }
 
+export interface TTestAttribs {
+  kind: TTestKind;
+  output: string;
+  alpha: number;
+  sigma: number;
+  delta?: number;
+  power?: number;
+  n?: number;
+  m?: number;
+  ci?: number;
+  ciMode: boolean;
+  deltaMode: boolean;
+}
+
+export interface TTestPlotData {
+  nVsPower?: Point[];
+  nVsDelta?: Point[];
+  powerVsN?: Point[];
+  powerVsDelta?: Point[];
+  deltaVsPower?: Point[];
+  deltaVsN?: Point[];
+  sampDist: Point[];
+}
+
 export class TTest {
   name: string;
 
-  // params
+  // attributes
   kind: TTestKind;
   output: string;
   alpha: number;
@@ -23,7 +47,7 @@ export class TTest {
   ciMode = false;
   deltaMode = false;
 
-  // data
+  // plot data
   nVsPower?: Point[];
   nVsDelta?: Point[];
   powerVsN?: Point[];
@@ -102,7 +126,7 @@ export class TTest {
     return result.replace(/\s+/g, " ").trim();
   }
 
-  params(): any {
+  attribs(): TTestAttribs {
     let result: any = {
       kind: this.kind, output: this.output, alpha: this.alpha,
       sigma: this.sigma, delta: this.delta, power: this.power, n: this.n,

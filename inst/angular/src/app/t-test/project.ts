@@ -1,10 +1,12 @@
-import { TTest, TTestKind } from './t-test';
-import { Range } from '../range';
-import { Point } from '../point';
-import { TTestService, PlotDataRanges } from './t-test.service';
-
+import { Observable, zip } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
+
+import { TTest, TTestKind, TTestAttribs } from './t-test';
+import { Range } from '../range';
+import { Point } from '../point';
+import { TTestService, PlotDataRanges, PlotDataResponse } from './t-test.service';
 
 export class Project {
   kind: TTestKind;
@@ -36,7 +38,7 @@ export class Project {
     return '';
   }
 
-  updatePlotData(): Promise<any> {
+  updatePlotData(): Observable<any> {
     let ranges = {
       nRange: this.nRange,
       powerRange: this.powerRange,
@@ -45,7 +47,7 @@ export class Project {
     } as PlotDataRanges;
 
     return this.ttestService.plotData(this.models, ranges, this.pointsPerPlot).
-      then(result => {
+      pipe(map((result: PlotDataResponse) => {
         if (typeof(this.pointsPerPlot) === 'undefined') {
           this.pointsPerPlot = result.points;
         }
@@ -110,7 +112,7 @@ export class Project {
           deltaRange: this.deltaRange ? this.deltaRange.clone() : undefined,
           pSpaceRange: this.pSpaceRange ? this.pSpaceRange.clone() : undefined
         };
-      });
+      }));
   }
 
   resetRanges(): void {
@@ -119,9 +121,9 @@ export class Project {
     }
   }
 
-  addModel(model: TTest): Promise<any> {
+  addModel(model: TTest): Observable<any> {
     return this.ttestService.calculate(model).
-      then(result => {
+      pipe(concatMap((result: TTestAttribs) => {
         let model = new TTest(result);
         model.name = this.getModelName(this.models.length);
         this.models.push(model);
@@ -131,14 +133,14 @@ export class Project {
 
         this.changeHistory.push({
           'type': 'add', 'index': this.models.length - 1,
-          'params': model.params()
+          'params': model.attribs()
         });
 
         return this.updatePlotData();
-      });
+      }));
   }
 
-  updateModel(index: number, key: string, value: any): Promise<any> {
+  updateModel(index: number, key: string, value: any): Observable<any> {
     let model = this.models[index];
 
     let which = key;
@@ -175,25 +177,28 @@ export class Project {
     }
 
     models.forEach(m => { Object.assign(m, changes); });
-    return models.reduce((promise, model) => {
-      return promise.then(() => {
-        return this.ttestService.calculate(model);
-      }).then(result => {
-        Object.assign(model, result);
-      });
-    }, Promise.resolve()).then(() => {
-      if (!this.customRanges) {
-        this.calculateRanges();
-      }
-      this.changeHistory.push({
-        'type': 'change', 'index': index,
-        'key': key, 'params': model.params()
-      });
-      return this.updatePlotData();
+    let obs = models.map(model => {
+      return this.ttestService.calculate(model).pipe(
+        map((result: TTestAttribs) => {
+          Object.assign(model, result);
+        })
+      );
     });
+    return zip(obs).pipe(
+      concatMap(() => {
+        if (!this.customRanges) {
+          this.calculateRanges();
+        }
+        this.changeHistory.push({
+          'type': 'change', 'index': index,
+          'key': key, 'params': model.attribs()
+        });
+        return this.updatePlotData();
+      })
+    );
   }
 
-  removeModel(index: number): Promise<any> {
+  removeModel(index: number): Observable<any> {
     this.models.splice(index, 1);
     this.changeHistory.push({
       'type': 'remove', 'index': index

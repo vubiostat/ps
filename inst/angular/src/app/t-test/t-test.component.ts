@@ -115,13 +115,11 @@ export class TTestComponent implements OnInit {
 
   createProject(model: TTest, select = true): void {
     let project = this.projectService.createProject(this.kind);
-    project.addModel(model).
-      then(result => {
-        if (select) {
-          this.selectProject(this.projects.length - 1);
-        }
-      }).
-      catch(err => console.error(err));
+    project.addModel(model).subscribe(() => {
+      if (select) {
+        this.selectProject(this.projects.length - 1);
+      }
+    });
   }
 
   onTabChange(event: NgbTabChangeEvent): void {

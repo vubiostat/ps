@@ -98,7 +98,7 @@ export class ExportPlotsComponent implements OnInit {
         break;
     }
 
-    this.exportService.formats().then(response => {
+    this.exportService.formats().subscribe(response => {
       this.imageFormats = response.formats;
       let formatOk = this.imageFormats.some(format => {
         return this.imageFormat == format;
@@ -180,7 +180,7 @@ export class ExportPlotsComponent implements OnInit {
       } as PlotInfo);
     }
 
-    this.exportService.plots(this.imageFormat, plots).then(response => {
+    this.exportService.plots(this.imageFormat, plots).subscribe(response => {
       let data = atob(response.data);
       var buf = new ArrayBuffer(data.length);
       var arr = new Uint8Array(buf);

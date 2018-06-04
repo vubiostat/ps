@@ -29,7 +29,7 @@ export class ProjectComponent implements OnInit {
   }
 
   changeOutput(value: string): void {
-    this.project.updateModel(0, 'output', value).then(() => {
+    this.project.updateModel(0, 'output', value).subscribe(() => {
       this.projectChanged.emit();
     });
   }
@@ -42,7 +42,7 @@ export class ProjectComponent implements OnInit {
 
   addModel(): void {
     let model = this.selectedModel.shallowClone();
-    this.project.addModel(model).then(() => {
+    this.project.addModel(model).subscribe(() => {
       this.project.selectedIndex = this.project.models.length - 1;
       this.projectChanged.emit();
     });
@@ -53,7 +53,7 @@ export class ProjectComponent implements OnInit {
   }
 
   removeModel(index: number): void {
-    this.project.removeModel(index).then(() => {
+    this.project.removeModel(index).subscribe(() => {
       if (this.project.selectedIndex >= this.project.models.length) {
         this.project.selectedIndex--;
       }

@@ -57,7 +57,7 @@ export class ProjectModelComponent implements OnInit {
   }
 
   changeModel(key: string, value: any): void {
-    this.project.updateModel(this.index, key, value).then(() => {
+    this.project.updateModel(this.index, key, value).subscribe(() => {
       this.adjustMinMax();
       this.modelChanged.emit();
     });

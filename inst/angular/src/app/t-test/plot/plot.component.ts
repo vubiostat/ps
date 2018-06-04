@@ -584,7 +584,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     if (this.project && this.x.name) {
       this.lastDragEvent = event;
       this.project.updateModel(this.project.selectedIndex, this.x.name, this.target.x).
-        then(() => {
+        subscribe(() => {
           this.modelChanged.emit();
         });
     }

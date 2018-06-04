@@ -44,7 +44,7 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
         this.project.resetRanges();
       }
 
-      this.project.updatePlotData().then(() => {
+      this.project.updatePlotData().subscribe(() => {
         this.projectChanged.emit()
       });
     });
@@ -59,7 +59,7 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
   doReset(): void {
     this.plotOptions.reset();
     this.project.resetRanges();
-    this.project.updatePlotData().then(() => {
+    this.project.updatePlotData().subscribe(() => {
       this.reset.emit();
     });
   }

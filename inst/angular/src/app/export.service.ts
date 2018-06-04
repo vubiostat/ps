@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
-import {
-  Headers,
-  RequestOptions,
-  Http,
-  ResponseContentType
-} from '@angular/http';
-
-
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 
@@ -30,39 +25,45 @@ export interface PlotsResponse {
 export class ExportService {
   private apiUrl = `${environment.apiUrl}/export`;
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
-  formats(): Promise<FormatsResponse> {
+  formats(): Observable<FormatsResponse> {
     let url = `${this.apiUrl}/formats`;
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
+    let requestOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
 
-    let options = new RequestOptions({ headers: headers });
-
-    return this.http.
-      get(url, options).
-      toPromise().
-      then(response => response.json() as FormatsResponse).
-      catch(this.handleError);
+    return this.http.get<FormatsResponse>(url, requestOptions).
+      pipe(catchError(this.handleError));
   }
 
-  plots(format: string, plots: PlotInfo[]): Promise<PlotsResponse> {
+  plots(format: string, plots: PlotInfo[]): Observable<PlotsResponse> {
     let url = `${this.apiUrl}/plots`;
     let params: any = { format: format, plots: plots };
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-
-    let options = new RequestOptions({ headers: headers });
+    let requestOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
 
     return this.http.
-      post(url, JSON.stringify(params), options).
-      toPromise().
-      then(response => response.json() as PlotsResponse).
-      catch(this.handleError);
+      post<PlotsResponse>(url, params, requestOptions).
+      pipe(catchError(this.handleError));
   }
 
-  private handleError(error: any): Promise<any> {
-    console.error('An error occurred', error); // for demo purposes only
-    return Promise.reject(error.message || error);
+  private handleError(error: HttpErrorResponse, caught: any): Observable<any> {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was:`, error.error);
+    }
+    // return an observable with a user-facing error message
+    return throwError('Something bad happened; please try again later.');
   }
 }

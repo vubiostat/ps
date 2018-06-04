@@ -407,7 +407,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
 
     if (this.project) {
       let newDelta = this.mainGroup.target;
-      this.project.updateModel(this.project.selectedIndex, 'delta', newDelta).then(() => {
+      this.project.updateModel(this.project.selectedIndex, 'delta', newDelta).subscribe(() => {
         this.modelChanged.emit();
       });
     }
@@ -469,7 +469,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     if (this.disableDragCI) return;
 
     if (this.project) {
-      this.project.updateModel(this.project.selectedIndex, 'ci', this.ciWidth()).then(() => {
+      this.project.updateModel(this.project.selectedIndex, 'ci', this.ciWidth()).subscribe(() => {
         this.modelChanged.emit();
       });
     }
