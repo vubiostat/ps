@@ -6,7 +6,7 @@ psIndTTest <- function(alpha, sigma, m, n = NULL, power = NULL, delta = NULL) {
   if (!is.numeric(alpha) || any(0 > alpha | alpha > 1)) {
     stop(sQuote("alpha"), " must be numeric in [0, 1]")
   }
-  if (!is.numeric(delta)) {
+  if (!is.numeric(sigma)) {
     stop(sQuote("sigma"), " must be numeric")
   }
   if (!is.numeric(m) || 1e-07 > m) {
@@ -82,7 +82,7 @@ ttestCalculatePower <- function(kind, alpha, delta, sigma, n, m, ...) {
 }
 
 # Calculate detectable alternative, given the other parameters
-ttestCalculateDelta <- function(kind, alpha, sigma, n, power, ...) {
+ttestCalculateDelta <- function(kind, alpha, sigma, n, power, m, ...) {
   #cat("alpha = ", alpha, " sigma = ", sigma, " n = ", n, " power = ", power, "\n", sep = "")
   if (kind == "paired") {
     result <- try(pwr.t.test(n = n, power = power, sig.level = alpha,
@@ -101,20 +101,20 @@ ttestCalculateDelta <- function(kind, alpha, sigma, n, power, ...) {
 }
 
 # Calculate sample distribution for precision vs. effect size graph
-ttestCalculateSampDist <- function(kind, pSpace, delta, sigma, n, ...) {
+ttestCalculateSampDist <- function(kind, pSpace, delta, sigma, n, m, ...) {
   # Calculated same way for all kinds
   sampDist <- dnorm(pSpace, mean = delta, sd = sigma/sqrt(n))
   ifelse(sampDist < 0.01, NA, sampDist)
 }
 
 # Calculate 95% confidence interval width, given std. dev. and sample size
-ttestCalculateCI <- function(kind, sigma, n, ...) {
+ttestCalculateCI <- function(kind, sigma, n, m, ...) {
   # Calculated same way for all kinds
   2 * 1.96 * sigma / sqrt(n)
 }
 
 # Calculate sample size, given 95% confidence interval width and std. dev.
-ttestCalculateNFromCI <- function(kind, sigma, ci, ...) {
+ttestCalculateNFromCI <- function(kind, sigma, ci, m, ...) {
   # Calculated same way for all kinds
   (2 * 1.96 * sigma / ci) ** 2
 }
@@ -147,9 +147,9 @@ TTest <- setRefClass("TTest",
     calculate = function() {
       if (output == "n") {
         n <<- ttestCalculateN(kind, alpha, delta, sigma, power, m)
-        ci <<- ttestCalculateCI(kind, sigma, n)
+        ci <<- ttestCalculateCI(kind, sigma, n, m)
       } else if (output == "nByCI") {
-        n <<- ttestCalculateNFromCI(kind, sigma, ci)
+        n <<- ttestCalculateNFromCI(kind, sigma, ci, m)
         if (deltaMode) {
           power <<- ttestCalculatePower(kind, alpha, delta, sigma, n, m)
         } else {
@@ -157,17 +157,17 @@ TTest <- setRefClass("TTest",
         }
       } else if (output == "power") {
         if (ciMode) {
-          n <<- ttestCalculateNFromCI(kind, sigma, ci)
+          n <<- ttestCalculateNFromCI(kind, sigma, ci, m)
         } else {
-          ci <<- ttestCalculateCI(kind, sigma, n)
+          ci <<- ttestCalculateCI(kind, sigma, n, m)
         }
         power <<- ttestCalculatePower(kind, alpha, delta, sigma, n, m)
 
       } else if (output == "delta") {
         if (ciMode) {
-          n <<- ttestCalculateNFromCI(kind, sigma, ci)
+          n <<- ttestCalculateNFromCI(kind, sigma, ci, m)
         } else {
-          ci <<- ttestCalculateCI(kind, sigma, n)
+          ci <<- ttestCalculateCI(kind, sigma, n, m)
         }
         delta <<- ttestCalculateDelta(kind, alpha, sigma, n, power, m)
       }
