@@ -1,5 +1,5 @@
 import { Observable, zip } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
@@ -123,7 +123,7 @@ export class Project {
 
   addModel(model: TTest): Observable<any> {
     return this.ttestService.calculate(model).
-      pipe(concatMap((result: TTestAttribs) => {
+      pipe(mergeMap((result: TTestAttribs) => {
         let model = new TTest(result);
         model.name = this.getModelName(this.models.length);
         this.models.push(model);
@@ -177,15 +177,15 @@ export class Project {
     }
 
     models.forEach(m => { Object.assign(m, changes); });
-    let obs = models.map(model => {
+    let obs = models.map((model, i) => {
       return this.ttestService.calculate(model).pipe(
         map((result: TTestAttribs) => {
           Object.assign(model, result);
         })
       );
     });
-    return zip(obs).pipe(
-      concatMap(() => {
+    return zip(...obs).pipe(
+      mergeMap(() => {
         if (!this.customRanges) {
           this.calculateRanges();
         }
