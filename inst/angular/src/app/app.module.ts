@@ -9,6 +9,7 @@ import { TTestModule } from './t-test/t-test.module';
 import { AppComponent } from './app.component';
 import { KonamiDirective } from './konami.directive';
 
+import { ResizeService } from './resize.service';
 import { ExportService } from './export.service';
 import { PaletteService } from './palette.service';
 import { PlotOptionsService } from './plot-options.service';
@@ -38,6 +39,7 @@ const routes: Routes = [
   ],
   bootstrap: [ AppComponent ],
   providers: [
+    ResizeService,
     ExportService,
     PaletteService,
     PlotOptionsService

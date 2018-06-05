@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { TTest, TTestKind } from './t-test';
 import { Project } from './project';
 import { ProjectService } from './project.service';
+import { ResizeService } from '../resize.service';
 
 import { DraggableDialogComponent } from '../draggable-dialog/draggable-dialog.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
@@ -39,10 +40,17 @@ export class TTestComponent implements OnInit {
   @ViewChild('tabset') tabset: NgbTabset;
   @ViewChild('outputPane') outputPane: OutputPaneComponent;
 
-  constructor(private projectService: ProjectService, private route: ActivatedRoute) {
+  constructor(
+    private projectService: ProjectService,
+    private resizeService: ResizeService,
+    private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.resizeService.onResize.subscribe(() => {
+      this.outputPane.resize();
+    });
+
     this.route.data.subscribe(data => {
       this.kind = data.kind;
       this.newModel = new TTest({ kind: this.kind });
@@ -166,10 +174,5 @@ export class TTestComponent implements OnInit {
 
   onChildDragEnded(): void {
     this.blockSelection = false;
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event): void {
-    this.outputPane.resize();
   }
 }
