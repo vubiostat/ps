@@ -415,10 +415,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   }
 
   private getHoverBoxPath(above: boolean, coords: any): string {
+    let dim;
     try {
       // This will fail in Firefox if coords is hidden, and there's some race
       // condition that I can't quite figure out. Hence this try/catch.
-      let dim = coords.getBBox();
+      dim = coords.getBBox();
     } catch (err) {
       return "";
     }
@@ -454,7 +455,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
     if (this.hoverInfo != HoverInfo.Disabled && this.hoverX >= 0 && this.hoverY >= 0) {
       // draw hover info box
-      var t = d3.transition().duration(50);
+      let ht = d3.transition().duration(50);
 
       let info = svg.select(`#${this.name}-hover-info`);
       info.attr('transform', this.translate(
@@ -464,9 +465,9 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
       let box = svg.select(`#${this.name}-hover-box`);
       let coords = svg.select(`#${this.name}-hover-coords`);
-      coords.transition(t).attr('y', above ? "-2.5em" : "2.5em");
+      coords.transition(ht).attr('y', above ? "-2.5em" : "2.5em");
 
-      box.transition(t).
+      box.transition(ht).
         attrTween('d', () => {
           return (t) => this.getHoverBoxPath(above, coords.node());
         });
