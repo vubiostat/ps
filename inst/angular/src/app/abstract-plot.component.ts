@@ -25,28 +25,21 @@ export abstract class AbstractPlotComponent implements OnInit {
   innerWidth: number;
   innerHeight: number;
   margin: number = 50;
-  unitLength: number = 20;
 
   @ViewChild('plot') plotElement: ElementRef;
-  @ViewChild('unit') unitElement: ElementRef;
 
-  constructor(public plotOptions: PlotOptionsService, public palette: PaletteService) { }
+  constructor(
+    public plotOptions: PlotOptionsService,
+    public palette: PaletteService
+  ) { }
 
   ngOnInit() {
     this.setup();
   }
 
   getDimension(key: string): number {
-    let dim = this.plotElement.nativeElement[key];
-    let result = 0;
-    if ('value' in dim) {
-      result = dim.value;
-    } else if ('baseVal' in dim) {
-      result = dim.baseVal.value;
-    } else {
-      throw new Error(`can't get ${key}`);
-    }
-    return result;
+    let dim = this.plotElement.nativeElement.getBoundingClientRect();
+    return dim[key];
   }
 
   protected translate(x: number, y: number): string {
