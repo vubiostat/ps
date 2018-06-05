@@ -67,7 +67,7 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   bottomMargin: number = 50;
   yAxisWidth: number = 10;
   xAxisHeight: number = 10;
-  viewBox = "0 0 0 0";
+  viewBox: string;
   x: Param;
   y: Param;
   dataKey: string;
@@ -124,18 +124,11 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
       }
     }
 
-    if (this.hoverPoint) {
+    if (this.hoverPoint && this.hoverPoint.x && this.hoverPoint.y) {
       this.hoverX = this.xScale(this.hoverPoint.x);
       this.hoverY = this.yScale(this.hoverPoint.y);
       this.needDraw = Draw.Hover;
     }
-  }
-
-  hoverInfoY(): string {
-    if (this.hoverY < this.target.y) {
-      return "-3.5em";
-    }
-    return "1em";
   }
 
   trackByIndex(index: number, path: Path): any {
@@ -421,8 +414,15 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
     return true;
   }
 
-  private getHoverBoxPath(above: boolean, coords: any): void {
-    let dim = coords.getBBox();
+  private getHoverBoxPath(above: boolean, coords: any): string {
+    try {
+      // This will fail in Firefox if coords is hidden, and there's some race
+      // condition that I can't quite figure out. Hence this try/catch.
+      let dim = coords.getBBox();
+    } catch (err) {
+      return "";
+    }
+
     let left = dim.x - 5, right = dim.x + dim.width + 5;
     let unit = dim.width / 16;
     let lmid = left + (7 * unit) + 5, rmid = left + (9 * unit) + 5;
@@ -452,9 +452,9 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
     let svg = d3.select(this.plotElement.nativeElement);
 
-    if (this.hoverInfo != HoverInfo.Disabled) {
+    if (this.hoverInfo != HoverInfo.Disabled && this.hoverX >= 0 && this.hoverY >= 0) {
       // draw hover info box
-      let t = svg.transition().duration(50);
+      var t = d3.transition().duration(50);
 
       let info = svg.select(`#${this.name}-hover-info`);
       info.attr('transform', this.translate(
@@ -462,15 +462,14 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
 
       let above = this.hoverY >= 50;
 
-      let box = t.select(`#${this.name}-hover-box`);
-      let coords = t.select(`#${this.name}-hover-coords`);
-      coords.attr('y', above ? "-2.5em" : "2.5em");
+      let box = svg.select(`#${this.name}-hover-box`);
+      let coords = svg.select(`#${this.name}-hover-coords`);
+      coords.transition(t).attr('y', above ? "-2.5em" : "2.5em");
 
-      if (box.size() > 0 && coords.size() > 0) {
-        box.attrTween('d', () => {
-          return this.getHoverBoxPath.bind(this, above, coords.node());
+      box.transition(t).
+        attrTween('d', () => {
+          return (t) => this.getHoverBoxPath(above, coords.node());
         });
-      }
     }
 
     if (this.needDraw == Draw.Hover) {
@@ -479,40 +478,45 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
       return;
     }
 
-    let t = svg.transition();
+    let t = d3.transition();
 
     // axes (drawn by d3)
     let xAxis = d3.axisBottom(this.xScale).ticks(Math.floor(this.innerWidth / 75));
-    t.select(`#${this.name}-x-axis`).
+    svg.select(`#${this.name}-x-axis`).
+      transition(t).
       call(xAxis).
       attr("font-size", `${this.plotOptions.getAxisFontSize()}px`).
       attr("stroke-width", this.plotOptions.getAxisLineWidth());
 
     let yAxis = d3.axisLeft(this.yScale).ticks(Math.floor(this.innerHeight / 75));
-    t.select(`#${this.name}-y-axis`).
+    svg.select(`#${this.name}-y-axis`).
+      transition(t).
       call(yAxis).
       attr("font-size", `${this.plotOptions.getAxisFontSize()}px`).
       attr("stroke-width", this.plotOptions.getAxisLineWidth());
 
     // paths
     for (let i = 0, ilen = this.paths.length; i < ilen; i++) {
-      let path = t.select(`#${this.paths[i].id}`);
-      if (!path.attr("d")) {
-        path.attr("d", this.paths[i].path);
+      let path = svg.select(`#${this.paths[i].id}`);
+      if (!path.node().d) {
+        path.transition(t).attr("d", this.paths[i].path);
       } else {
-        path.attrTween("d", this.pathTween(this.paths[i].path, 4))
+        path.transition(t).attrTween("d", this.pathTween(this.paths[i].path, 4))
       }
     }
 
     // target
     let targetId = `#${this.name}-target`;
-    t.select(targetId).
+    svg.select(targetId).
+      transition(t).
       attr('cx', this.xScale(this.target.x)).
       attr('cy', this.yScale(this.target.y));
 
     // drop paths
     for (let i = 0, ilen = this.dropPaths.length; i < ilen; i++) {
-      t.select(`${targetId}-drop-${i}`).attr("d", this.dropPaths[i]);
+      svg.select(`${targetId}-drop-${i}`).
+        transition(t).
+        attr("d", this.dropPaths[i]);
     }
 
     // drag

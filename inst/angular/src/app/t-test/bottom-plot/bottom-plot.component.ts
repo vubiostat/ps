@@ -52,7 +52,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   rightMargin: number = 10;
   topMargin: number = 50;
   bottomMargin: number = 50;
-  viewBox: string = "0 0 0 0";
+  viewBox: string;
 
   yScaleSD: any;
   plotData: any[];
@@ -289,11 +289,12 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     }
 
     let svg = d3.select(this.plotElement.nativeElement);
-    let t = svg.transition();
+    let t = d3.transition();
 
     // axes (drawn by d3)
     let xAxis = d3.axisBottom(this.xScale).ticks(Math.floor(this.innerWidth / 75));
-    t.select(`#${this.name}-bottom-axis`).
+    svg.select(`#${this.name}-bottom-axis`).
+      transition(t).
       call(xAxis).
       attr("font-size", 15 * this.plotOptions.axisFontSize).
       attr("stroke-width", this.plotOptions.axisLineWidth * 1.5);
@@ -301,12 +302,15 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     // alternate groups
     this.groups.forEach((group, index) => {
       let id = `#${group.id}`;
-      t.select(id).attr('transform', this.translate(this.leftMargin, this.topMargin));
-      t.select(`${id}-dist`).attr('d', group.distPath);
-      t.select(`${id}-center`).attr('d', group.centerPath);
-      t.select(`${id}-left`).attr('d', group.leftPath);
-      t.select(`${id}-right`).attr('d', group.rightPath);
-      t.select(`${id}-target`).
+      svg.select(id).
+        transition(t).
+        attr('transform', this.translate(this.leftMargin, this.topMargin));
+      svg.select(`${id}-dist`).transition(t).attr('d', group.distPath);
+      svg.select(`${id}-center`).transition(t).attr('d', group.centerPath);
+      svg.select(`${id}-left`).transition(t).attr('d', group.leftPath);
+      svg.select(`${id}-right`).transition(t).attr('d', group.rightPath);
+      svg.select(`${id}-target`).
+        transition(t).
         attr('cx', this.xScale(group.target)).
         attr('cy', this.yScale(0.5));
     });
