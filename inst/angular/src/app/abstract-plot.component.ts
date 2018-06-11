@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
@@ -12,7 +12,7 @@ export enum Draw {
   Hover
 }
 
-export abstract class AbstractPlotComponent implements OnInit {
+export abstract class AbstractPlotComponent implements AfterViewInit {
   @Input() name: string;
   @Input('fixed-width') fixedWidth: number;
   @Input('fixed-height') fixedHeight: number;
@@ -33,8 +33,11 @@ export abstract class AbstractPlotComponent implements OnInit {
     public palette: PaletteService
   ) { }
 
-  ngOnInit() {
-    this.setup();
+  ngAfterViewInit(): void {
+    // Give browser elements enough time to have correct dimensions
+    setTimeout(() => {
+      this.setup();
+    }, 1);
   }
 
   getDimension(key: string): number {
