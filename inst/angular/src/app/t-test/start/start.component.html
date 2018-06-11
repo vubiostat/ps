@@ -71,7 +71,7 @@
              required
              [(ngModel)]="model.power" name="power">
     </div>
-    <div class="form-group">
+    <div *ngIf="needM()" class="form-group">
       <label for="t-test-start-m">
         Ratio of control/experimental subjects
       </label>

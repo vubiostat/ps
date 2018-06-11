@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-import { TTest } from '../t-test';
+import { TTest, TTestKind } from '../t-test';
 
 @Component({
   selector: 't-test-start',
@@ -36,6 +36,10 @@ export class StartComponent {
 
   needNOrCI(): boolean {
     return this.model.output !== 'n' && this.model.output !== 'nByCI';
+  }
+
+  needM(): boolean {
+    return this.model.kind === TTestKind.Independent;
   }
 
   onSubmit(): void {
