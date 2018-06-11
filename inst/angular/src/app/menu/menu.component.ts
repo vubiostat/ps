@@ -1,25 +1,71 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { filter } from 'rxjs/operators';
+import { trigger, state, style, animate, transition, keyframes } from '@angular/animations';
 
 enum MenuState {
   Main = "main",
+  MainTTest = "mainttest",
+  TTestInit = "ttestinit",
   TTest = "ttest",
-  TTestPaired = "ttestPaired",
-  TTestInd = "ttestInd",
-  ZTest = "ztest"
+  TTestMain = "ttestmain"
 }
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css']
+  styleUrls: ['./menu.component.css'],
+  animations: [
+    trigger('mainState', [
+      state('main, maininit', style({ opacity: 1, transform: 'translateX(0)' })),
+      transition('main => mainttest', [
+        animate('200ms', style({
+          opacity: 0,
+          transform: 'translateX(-100%)'
+        }))
+      ]),
+      transition('void => main', [
+        style({
+          opacity: 0,
+          transform: 'translateX(-100%)'
+        }),
+        animate('200ms')
+      ])
+    ]),
+    trigger('ttestState', [
+      state('ttest', style({
+        opacity: 1,
+        transform: 'translateX(0)',
+        flexGrow: 0
+      })),
+      state('ttestinit', style({
+        opacity: 1,
+        transform: 'translateX(0)',
+        flexGrow: 1
+      })),
+      transition('ttest => ttestmain', [
+        animate('200ms', style({
+          opacity: 0,
+          transform: 'translateX(-100%)'
+        }))
+      ]),
+      transition('ttestinit => ttest', animate('200ms')),
+      transition('void => ttest', [
+        style({
+          opacity: 0,
+          transform: 'translateX(-100%)'
+        }),
+        animate('200ms')
+      ])
+    ])
+  ]
 })
 export class MenuComponent implements OnInit {
   urlInitialized = false;
   state: MenuState = MenuState.Main;
 
+  @ViewChild('menu') menuElement: ElementRef;
   @ViewChild(NgbPopover) popoverElement: NgbPopover;
 
   constructor(private router: Router) { }
@@ -31,28 +77,59 @@ export class MenuComponent implements OnInit {
       });
   }
 
-  setState(state: MenuState): void {
-    this.state = state;
+  showTTest(): void {
+    if (this.state === MenuState.Main) {
+      this.state = MenuState.MainTTest;
+      if (this.popoverElement) {
+        this.popoverElement.close();
+      }
+    }
+  }
+
+  showMain(): void {
+    if (this.state === MenuState.TTest) {
+      this.state = MenuState.TTestMain;
+    }
+  }
+
+  mainAnimationStart(): void {
+    if (this.state === MenuState.MainTTest) {
+      let elt = this.menuElement.nativeElement;
+      let dim = elt.getBoundingClientRect();
+      elt.style.width = `${dim.width}px`;
+    }
+  }
+
+  animationDone(): void {
+    if (this.state === MenuState.MainTTest) {
+      this.state = MenuState.TTestInit;
+    } else if (this.state === MenuState.TTestMain) {
+      this.state = MenuState.Main;
+    }
+  }
+
+  isMainVisible(): boolean {
+    return this.state === MenuState.Main || this.state == MenuState.MainTTest;
+  }
+
+  isTTestVisible(): boolean {
+    return this.state === MenuState.TTest || this.state === MenuState.TTestMain || this.state === MenuState.TTestInit;
   }
 
   private urlChanged(url: string): void {
     switch (url) {
       case "/t-test/paired":
-        this.state = MenuState.TTestPaired;
-        break;
-
       case "/t-test/ind":
-        this.state = MenuState.TTestInd;
-        break;
-
-      case "/z-test":
-        this.state = MenuState.ZTest;
+        this.state = MenuState.TTest;
+        setTimeout(() => {
+          this.menuElement.nativeElement.style.width = 'auto';
+        }, 1000);
         break;
 
       default:
         this.state = MenuState.Main;
-        if (!this.urlInitialized) {
-          setTimeout(() => this.popoverElement.open(), 1);
+        if (!this.urlInitialized && this.popoverElement) {
+          setTimeout(() => this.popoverElement.open(), 200);
         }
     }
 

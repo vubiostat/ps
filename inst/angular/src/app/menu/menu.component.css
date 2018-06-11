@@ -5,3 +5,8 @@
 .nav-link.disabled {
   cursor: not-allowed;
 }
+
+.menu {
+  justify-content: end;
+  overflow: hidden;
+}

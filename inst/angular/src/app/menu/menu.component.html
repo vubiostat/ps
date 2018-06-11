@@ -3,45 +3,49 @@
     <img src="assets/ps.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
     <a routerLink="">Power and Sample Size</a>
   </div>
-  <div *ngIf="state == 'main' || state == 'ztest'" class="d-flex flex-row"
-    ngbPopover="Choose a study design to get started." container="body"
-    placement="bottom" triggers="">
-    <ul class="nav nav-pills">
-      <li class="nav-item">
-        <a class="nav-link" href="#" (click)="setState('ttest'); $event.preventDefault()">t-test</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/z-test" routerLinkActive="active">z-test</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Survival</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Dichotomous</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Regression</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Mantel-Haenszel</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><i class="fa fa-home"></i></a>
-      </li>
-    </ul>
-  </div>
-  <div *ngIf="state == 'ttest' || state == 'ttestPaired' || state == 'ttestInd'" class="d-flex flex-row">
-    <div class="navbar-text mr-2">t-test Design:</div>
-    <ul class="nav nav-pills">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/t-test/paired" routerLinkActive="active">Paired</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/t-test/ind" routerLinkActive="active">Independent</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="setState('main'); $event.preventDefault()"><i class="fa fa-home"></i></a>
-      </li>
-    </ul>
+  <div #menu class="d-flex flex-row menu">
+    <div *ngIf="isMainVisible()" class="d-flex flex-row" [@mainState]="state"
+      (@mainState.start)="mainAnimationStart()" (@mainState.done)="animationDone()"
+      ngbPopover="Choose a study design to get started." container="body"
+      placement="bottom" triggers="">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link" href="#" (click)="showTTest(); $event.preventDefault()">t-test</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/z-test" routerLinkActive="active">z-test</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Survival</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Dichotomous</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Regression</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Mantel-Haenszel</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><i class="fa fa-home"></i></a>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="isTTestVisible()" class="d-flex flex-row"
+      [@ttestState]="state" (@ttestState.done)="animationDone()">
+      <div class="navbar-text mr-2">t-test Design:</div>
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/t-test/paired" routerLinkActive="active">Paired</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/t-test/ind" routerLinkActive="active">Independent</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="showMain(); $event.preventDefault()"><i class="fa fa-home"></i></a>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
