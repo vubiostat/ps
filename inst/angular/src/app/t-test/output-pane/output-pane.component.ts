@@ -1,5 +1,6 @@
 import { Component, ViewChild, TemplateRef, Input, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
 
 import { Project } from '../project';
 import { TTest } from '../t-test';
@@ -8,14 +9,12 @@ import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
+import { CopyService } from '../../copy.service';
 
 @Component({
   selector: 't-test-output-pane',
   templateUrl: './output-pane.component.html',
-  styleUrls: ['./output-pane.component.css'],
-  host: {
-    '(document:copy)': 'onCopy($event)'
-  }
+  styleUrls: ['./output-pane.component.css']
 })
 export class OutputPaneComponent implements OnChanges {
   @Input('project') project: Project;
@@ -23,7 +22,7 @@ export class OutputPaneComponent implements OnChanges {
   @Output() modelChanged = new EventEmitter();
   model: TTest;
   showFooter = true;
-  private copyMode: string;
+  private copySub: Subscription;
 
   @ViewChild('topLeft') topLeftPlot: PlotComponent;
   @ViewChild('topRight') topRightPlot: PlotComponent;
@@ -34,7 +33,8 @@ export class OutputPaneComponent implements OnChanges {
   constructor(
     private modalService: NgbModal,
     private plotOptions: PlotOptionsService,
-    private palette: PaletteService
+    private palette: PaletteService,
+    private copyService: CopyService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -102,6 +102,9 @@ export class OutputPaneComponent implements OnChanges {
   }
 
   copyFooter(): void {
+    this.copySub = this.copyService.onCopy.subscribe(event => {
+      this.onCopy(event);
+    });
     document.execCommand('copy');
   }
 
@@ -119,6 +122,7 @@ export class OutputPaneComponent implements OnChanges {
         event.preventDefault();
         break;
     }
+    this.copySub.unsubscribe();
   }
 
   onModelChanged(): void {

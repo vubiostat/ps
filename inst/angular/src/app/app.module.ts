@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { KonamiDirective } from './konami.directive';
 
 import { ResizeService } from './resize.service';
+import { CopyService } from './copy.service';
 import { ExportService } from './export.service';
 import { PaletteService } from './palette.service';
 import { PlotOptionsService } from './plot-options.service';
@@ -42,6 +43,7 @@ const routes: Routes = [
   bootstrap: [ AppComponent ],
   providers: [
     ResizeService,
+    CopyService,
     ExportService,
     PaletteService,
     PlotOptionsService
