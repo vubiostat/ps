@@ -71,7 +71,7 @@ export class Project {
       switch (this.models[0].method) {
         case DichotMethod.ChiSquare:
           return "Uncorrected chi-square test";
-        case DichotExpressed.Fishers:
+        case DichotMethod.Fishers:
           return "Fisher's exact test";
       }
     }
