@@ -20,14 +20,14 @@
   <div class="inputs row">
     <div class="col-sm-9">
       <div class="slider">
-        <div class="min">{{floor(min)}}</div>
+        <div class="min">{{round(min)}}</div>
         <input #range name="{{name}}" type="range" step="{{step}}"
                min="{{min}}" max="{{max}}"
                [value]="value"
                [disabled]="isOutput"
                (change)="rangeChanged(range.value)"
                (input)="rangeInput(range.value)" />
-        <div class="max">{{ceil(max)}}</div>
+        <div class="max">{{round(max)}}</div>
       </div>
     </div>
     <div class="col-sm-3">

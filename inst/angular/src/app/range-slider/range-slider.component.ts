@@ -96,6 +96,13 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
     return Math.ceil(n);
   }
 
+  round(n: number, digits = 1): number {
+    let ten = 10 ** digits;
+    n = n * ten;
+    n = Math.round(n);
+    return n / ten;
+  }
+
   writeValue(value: any): void {
     this.value = value;
   }
