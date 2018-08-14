@@ -85,16 +85,15 @@ pone <- function(p0, psi, r) {
 #
 # Value:
 #
-#   c(xN, FM)
+#   xN
 #
 #   xN      Number of case patients
-#   FM      The reduction in N relative to a paired design that can be
-#           obtained by selecting M controls per case.
 #
 #  Notes:
 #   This routine was written by Dale Plummer.
 #   Designed by Dr. William Dupont.
-ssize <- function(alpha, beta, r, p0, m, psi) {
+ssize <- function(alpha, power, r, p0, m, psi) {
+  beta <- 1 - power
   zalpha <- zcrvalue(alpha / 2)
   zbeta <- zcrvalue(beta)
 
@@ -235,7 +234,8 @@ calc_phi <- function(z) {
 #   Designed by Dr. William Dupont.
 #   The LaTeX notation given in the comments is from:
 #   Dupont, Biometrics 1988;44:1157-68.
-powfcn <- function(zalpha, n, r, p0, m, psi) {
+powfcn <- function(alpha, n, r, p0, m, psi) {
+  zalpha <- zcrvalue(alpha / 2)
   psi_value <- 1
   mv <- meanandvar(p0, r, m, m, psi_value)
   mean <- mv[1]
@@ -356,8 +356,7 @@ bisec <- function(y1, y2, e, e1, f, ...) {
 # This is function to find the zero when determining the dichotomous,
 # independent detectable odds ratio.
 iterated_power_function <- function(psi, alpha, power, phi, p0, n, m) {
-  zalpha <- zcrvalue(alpha / 2)
-  spower <- powfcn(zalpha, n, phi, p0, m, psi)
+  spower <- powfcn(alpha, n, phi, p0, m, psi)
   power - spower
 }
 
@@ -444,15 +443,34 @@ moddsratio <- function(alpha, power, phi, p0, n, m) {
 #         error ALPHA
 #   NCOR  Corrected case sample size obtained by using the
 #         continuity correction of Casagrande et al.
-ipsize <- function(alpha, power, p0, p1, m, r) {
+ipsize <- function(alpha, power, p0, p1, m, r,
+                   case = c("caseControl", "prospective"),
+                   expressed = c("twoProportions", "oddsRatio"),
+                   method = c("chiSquare", "fishers")) {
+
+  if (expressed == "oddsRatio") {
+    if (case == "caseControl") {
+      p1 <- p0 * r / (1 + p0 * (r - 1))
+    }
+    else {
+      p1 <- p0 * r
+    }
+  }
+
   # Calculate the sample size.
   zalpha <- zcrvalue(alpha / 2)
   pbar <- (p1 + m * p0) / (m + 1)
   n <- nint(((zalpha * sqrt((1 + 1 / m) * pbar * (1 - pbar)) +
              zcrvalue(1 - power) * sqrt(p0 * (1 - p0) / m + p1 * (1 - p1))) ^ 2) /
             ((p0 - p1) ^ 2))
-  ncor <- nint((n / 4) * ((1 + sqrt(1 + 2 * (m + 1) / (n * m * abs(p0 - p1)))) ^ 2))
-  c(n, ncor)
+
+  if (method == "chiSquare") {
+    n
+  }
+  else if (method == "fishers") {
+    # calculate ncor
+    nint((n / 4) * ((1 + sqrt(1 + 2 * (m + 1) / (n * m * abs(p0 - p1)))) ^ 2))
+  }
 }
 
 # This function returns the (sample size-N) associated with BETA and the other
@@ -503,8 +521,16 @@ fishsizb <- function(beta, alpha, p0, p1, n, m) {
 #        hypothesis of equal event (exposure) probabilities
 #        with type I error probability ALPHA given P0, P1, N,
 #        and M defined above.
-ippower <- function(alpha, p0, p1, n, m, r, method = c("chiSquare", "fishers")) {
+ippower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective"), expressed = c("twoProportions", "oddsRatio", "relativeRisk"), method = c("chiSquare", "fishers")) {
   # Calculate a single value of POWER.
+  if (expressed != "twoProportions") {
+    if (case == "caseControl") {
+      p1 <- p0 * r / (1 + p0 * (r - 1))
+    } else {
+      p1 <- p0 * r
+    }
+  }
+
   zalpha <- zcrvalue(alpha / 2)
   pbar <- (p1 + m * p0) / (m + 1)
   qbar <- 1 - pbar
@@ -610,7 +636,11 @@ fishersiz <- function(p1, alpha, beta, p0, n, m) {
 #        detected with power POWER when CASECTL=Y
 #        True probability of event in experimantal group that can
 #        be detected with power POWER when CASECTL=N
-iprelrisk <- function(alpha, power, p0, n, m, method = c("chiSquare", "fishers")) {
+iprelrisk <- function(alpha, power, p0, n, m,
+                      case = c("caseControl", "prospective"),
+                      expressed = c("twoProportions", "relativeRisk"),
+                      method = c("chiSquare", "fishers")) {
+
   beta <- 1 - power
 
   eps <- .0001 * min(p0, 1 - p0)
@@ -672,7 +702,18 @@ iprelrisk <- function(alpha, power, p0, n, m, method = c("chiSquare", "fishers")
     q1h <- 0
     oddsh <- 0
   }
-  c(p1l, oddsl, rl, p1h, oddsh, rh)
+
+  if (expressed == "twoProportions") {
+    c(p1l, p1h)
+  }
+  else {
+    if (case == "caseControl" && expressed == "oddsRatio") {
+      c(oddsl, oddsh)
+    }
+    else if (case == "prospective" && expressed == "relativeRisk") {
+      c(rl, rh)
+    }
+  }
 }
 
 Dichot <- setRefClass("Dichot",
@@ -700,66 +741,167 @@ Dichot <- setRefClass("Dichot",
     calculate = function() {
       if (matched == "matched") {
         # case-control and prospective behave the same way
-        if (output == "n") {
-          beta <- 1 - power
-          result <- ssize(alpha, beta, phi, p0, m, psi)
-          n <<- result[1]
+        if (output == "sampleSize") {
+          n <<- ssize(alpha, power, phi, p0, m, psi)
         } else if (output == "power") {
-          zalpha <- zcrvalue(alpha / 2)
-          power <<- powfcn(zalpha, n, phi, p0, m, psi)
-        } else if (output == "psi") {
+          power <<- powfcn(alpha, n, phi, p0, m, psi)
+        } else if (output == "detAlt") {
           psi <<- moddsratio(alpha, power, phi, p0, n, m)
         }
       } else if (matched == "independent") {
-        if (output == "n") {
-          if (expressed == "oddsRatio") {
-            if (case == "caseControl") {
-              p1 <<- p0 * r / (1 + p0 * (r - 1))
-            }
-            else {
-              p1 <<- p0 * r
-            }
-          }
-          result <- ipsize(alpha, power, p0, p1, m, r)
-          if (method == "chiSquare") {
-            n <<- result[1]
-          }
-          else if (method == "fishers") {
-            n <<- result[2]
-          }
+        risk <- r
+        if (case == "caseControl" && expressed == "oddsRatio") {
+          risk <- psi
+        }
+
+        if (output == "sampleSize") {
+          n <<- ipsize(alpha, power, p0, p1, m, risk, case, expressed, method)
         }
         else if (output == "power") {
-          if (expressed == "oddsRatio" || expressed == "relativeRisk") {
-            if (case == "caseControl") {
-              r <<- psi
-              p1 <<- p0 * r / (1 + p0 * (r - 1))
-            }
-            else {
-              p1 <<- p0 * r
-            }
-          }
-          power <<- ippower(alpha, p0, p1, n, m, r, method)
+          power <<- ippower(alpha, p0, p1, n, m, risk, case, expressed, method)
         }
-        else if (output == "psi") {
-          # c(p1l, oddsl, rl, p1h, oddsh, rh)
-          result <- iprelrisk(alpha, power, p0, n, m, method)
-
+        else if (output == "detAlt") {
+          result <- iprelrisk(alpha, power, p0, n, m, case, expressed, method)
           if (expressed == "twoProportions") {
-            psi <<- result[c(1, 4)]
-          }
-          else {
-            if (case == "caseControl" && expressed == "oddsRatio") {
-              psi <<- result[c(2, 5)]
-            }
-            else if (case == "prospective" && expressed == "relativeRisk") {
-              psi <<- result[c(3, 6)]
-            }
-            else {
-              stop("invalid combination of parameters")
-            }
+            p1 <<- result
+          } else if (expressed == "oddsRatio") {
+            psi <<- result
+          } else if (expressed == "relativeRisk") {
+            r <<- result
           }
         }
       }
+
+      result <- list(
+        output    = output,
+        matched   = matched,
+        case      = case,
+        alpha     = alpha,
+        power     = power,
+        n         = n,
+        p0        = p0,
+        m         = m
+      )
+      if (matched == "matched") {
+        result$psi <- psi
+        result$phi <- phi
+      } else if (matched == "independent") {
+        result$method <- method
+        result$expressed <- expressed
+        if (case == "caseControl" && expressed == "oddsRatio") {
+          result$psi <- psi
+        }
+        if (expressed == "relativeRisk") {
+          result$r <- r
+        }
+        if (expressed == "twoProportions") {
+          result$p1 <- p1
+        }
+      }
+      result
+    },
+
+    plotData = function(ranges, points = 50) {
+      result <- list()
+      if (output == "sampleSize") {
+        range <- ranges$sampleSizeRange
+        n2 <- seq(range$min, range$max, length.out = points)
+        if (!(n %in% n2)) {
+          n2 <- sort(c(n2, n))
+        }
+
+        if (matched == "matched") {
+          power2 <- sapply(n2, powfcn, alpha = alpha, r = phi, p0 = p0, m = m, psi = psi)
+          detalt2 <- sapply(n2, moddsratio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
+        } else if (matched == "independent") {
+          power2 <- sapply(n2, ippower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = r, method = method)
+          detalt2 <- sapply(n2, iprelrisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
+        }
+
+        result$sampleSizeVsPower <- data.frame(y = n2, x = power2)
+
+        # det. alt. functions can return up to 2 values
+        df <- data.frame(y = c(n2, n2), x = c(detalt2[1,], detalt2[2,]))
+        df <- df[!is.na(df$y) & !is.na(df$x),]
+        df <- df[order(df$x),]
+        result$sampleSizeVsDetAlt <- df
+
+      } else if (output == "power") {
+        range <- ranges$powerRange
+        power2 <- seq(range$min, range$max, length.out = points)
+        if (!(power %in% power2)) {
+          power2 <- sort(c(power2, power))
+        }
+
+        if (matched == "matched") {
+          n2 <- sapply(power2, ssize, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
+          detalt2 <- sapply(power2, moddsratio, alpha = alpha, phi = phi, p0 = p0, n = n, m = m)
+        } else if (matched == "independent") {
+          n2 <- sapply(power2, ipsize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = r, case = case, expressed = expressed, method = method)
+          detalt2 <- sapply(power2, iprelrisk, alpha = alpha, p0 = p0, n = n, m = m, case = case, expressed = expressed, method = method)
+        }
+
+        result$powerVsSampleSize <- data.frame(y = power2, x = n2)
+
+        # det. alt. functions can return up to 2 values
+        df <- data.frame(y = c(power2, power2), x = c(detalt2[1,], detalt2[2,]))
+        df <- df[!is.na(df$y) & !is.na(df$x)]
+        df <- df[order(df$x),]
+        result$powerVsDetAlt <- df
+
+      } else if (output == "detAlt") {
+        range <- ranges$detAltRange
+        detalt2 <- seq(range$min, range$max, length.out = points)
+        if (matched == "matched") {
+          val <- psi
+        } else if (matched == "independent") {
+          if (expressed == "twoProportions") {
+            val <- p1
+          } else if (expressed == "oddsRatio") {
+            val <- psi
+          } else if (expressed == "relativeRisk") {
+            val <- r
+          }
+        }
+        if (!(val[1] %in% detalt2)) {
+          detalt2 <- c(detalt2, val[1])
+        }
+        if (length(val) > 1 && !(val[2] %in% detalt2)) {
+          detalt2 <- c(detalt2, val[2])
+        }
+        detalt2 <- sort(detalt2)
+
+        if (matched == "matched") {
+          # det. alt. is psi
+          n2 <- sapply(detalt2, ssize, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
+          power2 <- sapply(detalt2, powfcn, alpha = alpha, n = n, phi = phi, p0 = p0, m = m)
+        } else if (matched == "independent") {
+          if (expressed == "twoProportions") {
+            # det. alt. is p1
+            n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, m = m, r = r, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = r, method = method)
+          } else if (expressed == "oddsRatio") {
+            # det. alt. is psi (r parameter)
+            n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, method = method)
+          } else if (expressed == "relativeRisk") {
+            # det. alt. is r (same call as 'oddsRatio', repeated for readability)
+            n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, method = method)
+          }
+        }
+
+        result$detAltVsSampleSize <- data.frame(y = detalt2, x = n2)
+        result$detAltVsPower <- data.frame(y = detalt2, x = power2)
+      }
+
+      # Calculate data for bottom/tertiary graph
+      #moe <- ci / 2
+      #pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
+      #sampDist <- ttestCalculateSampDist(kind, pSpace, delta, sigma, n, m)
+      #result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
+
+      result
     }
   )
 )
