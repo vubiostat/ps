@@ -1,0 +1,41 @@
+<div class="grow-vert">
+  <p *ngIf="project.getMatched() == 'matched'">
+    Matched / {{project.describeCase()}}
+  </p>
+  <p *ngIf="project.getMatched() == 'independent'">
+    Independent / {{project.describeCase()}} / {{project.describeExpressed()}} /
+    {{project.describeMethod()}}
+  </p>
+  <div class="form-inline justify-content-between mb-2">
+    <div class="form-group">
+      <label for="dichot-project-{{name}}-output" class="mr-2">Output:</label>
+      <select id="dichot-project-{{name}}-output" class="form-control" name="output"
+        [ngModel]="project.getOutput()" (ngModelChange)="changeOutput($event)">
+        <option value="power">Power</option>
+        <option value="sampleSize">Sample size</option>
+        <option value="detAlt">Detectable alternative</option>
+      </select>
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="addModel()">
+      <i class="fa fa-plus-circle"></i> Add line
+    </button>
+  </div>
+
+  <ul *ngIf="project.models.length > 1" class="nav nav-tabs mt-2">
+    <li *ngFor="let model of project.models; index as i; trackBy: trackByIndex" class="nav-item">
+      <a class="nav-link nav-model-link" [class.active]="i == project.selectedIndex"
+        (click)="selectModel(i)">
+        <i class="fa fa-square" [style.color]="getColor(i)"></i>
+      </a>
+    </li>
+  </ul>
+
+  <div *ngFor="let model of project.models; index as i" class="project-model"
+    [class.active]="i == project.selectedIndex"
+    [class.tab]="project.models.length > 1">
+    <dichot-project-model [project]="project" [index]="i"
+      (modelChanged)="onModelChanged()" (remove)="onModelRemove(i)">
+    </dichot-project-model>
+  </div>
+</div>

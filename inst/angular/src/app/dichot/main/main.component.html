@@ -1,0 +1,79 @@
+<div id="dichot" class="d-flex flex-column h-100">
+
+  <div id="dichot-main" class="row d-flex" style="flex: 1 0 auto">
+    <div class="col-4 d-flex flex-column justify-content-between">
+      <div id="dichot-sidebar" class="d-flex flex-row" style="flex: auto">
+        <div class="overview">
+          <button type="button" class="btn btn-secondary" (click)="toggleHelp('overview')">
+            Overview <i class="fa fa-question-circle"></i>
+          </button>
+        </div>
+        <ngb-tabset #tabset
+          activeId="dichot-{{selectedIndex !== undefined ? selectedIndex + 1 : 'start'}}"
+          (tabChange)="onTabChange($event)">
+          <ngb-tab *ngIf="newModel" title="Start" id="dichot-start">
+            <ng-template ngbTabContent>
+              <dichot-start [model]="newModel"
+                (onCalculate)="calculate()"
+                (onToggleHelp)="toggleHelp('start')">
+              </dichot-start>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab *ngFor="let project of projects; let i = index"
+            [title]="tabTitle(i)" id="dichot-{{i+1}}">
+            <ng-template ngbTabContent>
+              <dichot-project name="{{i}}" [project]="project"
+                (projectChanged)="onProjectChanged()">
+              </dichot-project>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+      </div>
+
+      <div id="dichot-footer" class="d-flex flex-column">
+        <img src="assets/biostat.jpg">
+        <div class="build">
+          Build version: {{ commitHash }} ({{ buildTimestamp | date }})
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="plot-buttons" *ngIf="selectedProject">
+        <button class="btn btn-secondary" (click)="togglePlotOptions()" title="Toggle plot options">
+          <i class="fa fa-cog"></i>
+        </button>
+        <button class="btn btn-secondary" (click)="save()" title="Export plots">
+          <i class="fa fa-floppy-o"></i>
+        </button>
+        <button class="btn btn-secondary" (click)="toggleHoverBox()" title="Toggle hover box">
+          <i class="fa" [class.fa-cubes]="hoverBoxEnabled" [class.fa-cube]="!hoverBoxEnabled"></i>
+        </button>
+      </div>
+      <dichot-output-pane #outputPane
+        [project]="selectedProject"
+        [hover-disabled]="!hoverBoxEnabled"
+        (modelChanged)="onModelChanged()">
+      </dichot-output-pane>
+    </div>
+  </div>
+  <!--
+  <app-draggable-dialog #helpDialog
+    [title]="helpTitles[helpTopic]"
+    start-x-offset="33%" start-y-offset="55px"
+    (drag-start)="onChildDragStarted()"
+    (drag-end)="onChildDragEnded()">
+    <dichot-help [topic]="helpTopic"></dichot-help>
+  </app-draggable-dialog>
+  <app-draggable-dialog #plotOptionsDialog
+    title="Plot options"
+    start-x-offset="5%" start-y-offset="55px"
+    (drag-start)="onChildDragStarted()"
+    (drag-end)="onChildDragEnded()">
+    <dichot-plot-options [project]="selectedProject"
+      (optionChanged)="onPlotOptionChanged()"
+      (projectChanged)="onProjectChangedFromPlotOptions()"
+      (reset)="onPlotOptionsReset()">
+    </dichot-plot-options>
+  </app-draggable-dialog>
+  -->
+</div>

@@ -1,0 +1,78 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#dichot {
+}
+
+#dichot-main {
+  /*min-height: 85vh;*/
+}
+
+#dichot-sidebar {
+  background-color: #e5e5e5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  /*margin: 10px;*/
+  position: relative;
+}
+
+#dichot-sidebar .overview {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.plot-buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: large;
+  z-index: 99;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+}
+.plot-buttons button {
+  padding: 0.4rem 0;
+  margin: 0.2rem 0;
+  width: 2.4rem;
+}
+
+#dichot-sidebar ngb-tabset {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  /*width: 100%;*/
+}
+
+#dichot-sidebar dichot-start,
+#dichot-sidebar dichot-project {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+#dichot-footer {
+  margin: 20px 0;
+  padding: 20px;
+  text-align: center;
+}
+#dichot-footer img {
+  margin: auto;
+  display: block;
+}
+#dichot-footer div.build {
+  margin-top: 5px;
+  font-size: smaller;
+}
+
+.block-selection * {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

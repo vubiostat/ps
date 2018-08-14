@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppCommonModule } from './app-common.module';
 import { TTestModule } from './t-test/t-test.module';
+import { DichotModule } from './dichot/dichot.module';
 import { AppComponent } from './app.component';
 import { KonamiDirective } from './konami.directive';
 
@@ -38,7 +39,8 @@ const routes: Routes = [
     HttpClientModule,
     NgbModule.forRoot(),
     AppCommonModule,
-    TTestModule
+    TTestModule,
+    DichotModule
   ],
   bootstrap: [ AppComponent ],
   providers: [
