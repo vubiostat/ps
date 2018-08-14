@@ -55,15 +55,15 @@ export class DichotService {
               }
             } else if (model.matched === DichotMatched.Independent) {
               if (model.expressed === DichotExpressed.TwoProportions) {
-                if (Array.isArray(attribs.p1) {
+                if (Array.isArray(attribs.p1)) {
                   attribs.p1 = attribs.p1[0];
                 }
               } else if (model.expressed === DichotExpressed.OddsRatio) {
-                if (Array.isArray(attribs.psi) {
+                if (Array.isArray(attribs.psi)) {
                   attribs.psi = attribs.psi[0];
                 }
               } else if (model.expressed === DichotExpressed.RelativeRisk) {
-                if (Array.isArray(attribs.r) {
+                if (Array.isArray(attribs.r)) {
                   attribs.r = attribs.r[0];
                 }
               }
