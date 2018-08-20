@@ -108,7 +108,6 @@
   <div class="grow-vert range-slider">
     <app-range-slider name="phi"
       [min]="min.phi" [max]="max.phi" [hard-min]="0.01"
-      [is-output]="model.output == 'detAlt'"
       [ngModel]="model.phi | round" (ngModelChange)="changeModel('phi', $event)">
       <ng-template rsLabel>
         <div class="label">
