@@ -126,6 +126,14 @@ export class MenuComponent implements OnInit {
         }, 1000);
         break;
 
+      case "/z-test":
+      case "/dichot":
+        this.state = MenuState.Main;
+        if (this.popoverElement) {
+          this.popoverElement.close();
+        }
+        break;
+
       default:
         this.state = MenuState.Main;
         if (!this.urlInitialized && this.popoverElement) {
