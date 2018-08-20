@@ -1,3 +1,66 @@
-<p>
-  output-pane works!
-</p>
+<div id="dichot-output-pane-plots" class="plot" [class.without-footer]="!showFooter">
+  <dichot-plot #topLeft name="top-left"
+    [project]="project"
+    [hover-disabled]="hoverDisabled"
+    (modelChanged)="onModelChanged()">
+  </dichot-plot>
+  <dichot-plot #topRight name="top-right"
+    [project]="project"
+    [hover-disabled]="hoverDisabled"
+    (modelChanged)="onModelChanged()">
+  </dichot-plot>
+  <!--
+  <dichot-bottom-plot #bottom name="bottom"
+    [project]="project"
+    [disable-drag-target]="model?.output == 'delta'"
+    [disable-drag-ci]="model?.output == 'n'"
+    (modelChanged)="onModelChanged()">
+  </dichot-bottom-plot>
+  -->
+  <div class="show-footer" *ngIf="project && !showFooter">
+    <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">
+      <i class="fa fa-envelope-open-o" aria-hidden="true" title="Show footer"></i>
+      Interpretation / Log
+    </button>
+  </div>
+</div>
+<div id="dichot-output-pane-footer" class="output-footer" *ngIf="project && showFooter">
+  <div class="footer-buttons">
+    <button type="button" (click)="copyFooter()" title="Copy to clipboard">
+      <i class="fa fa-clipboard"></i>
+    </button>
+    <button type="button" (click)="toggleFooter(false)" title="Hide footer">
+      <i class="fa fa-window-minimize"></i>
+    </button>
+  </div>
+  <ngb-tabset #footerTabset type="pills">
+    <ngb-tab id="dichot-output-pane-interpretation">
+      <ng-template ngbTabTitle>
+        <i *ngIf="project.models.length > 1" class="fa fa-square"
+          [style.color]="getIndicatorColor()"></i>
+        Interpretation
+      </ng-template>
+      <ng-template ngbTabContent>
+        <!--
+        {{model?.interpretation()}}
+        -->
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="dichot-output-pane-log" title="Log">
+      <ng-template ngbTabContent>
+        <ng-template [ngIf]="!project" [ngIfElse]="changeHistory">
+          There have been no changes yet.
+        </ng-template>
+        <ng-template #changeHistory>
+          <!--
+          <ul class="log">
+            <li *ngFor="let changes of project.changeHistory"
+              [innerHTML]="project.describeChanges(changes)">
+            </li>
+          </ul>
+          -->
+        </ng-template>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>

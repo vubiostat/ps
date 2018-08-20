@@ -1,8 +1,14 @@
 import { Observable, zip, of as observableOf } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
-import { Dichot, DichotMatched, DichotCase, DichotExpressed, DichotMethod, DichotAttribs } from './dichot';
-import { DichotService } from './dichot.service';
+import * as d3 from 'd3';
+import * as stableSort from 'stable';
+
 import { Output } from '../output';
+import { Range } from '../range';
+import { Point } from '../point';
+
+import { Dichot, DichotMatched, DichotCase, DichotExpressed, DichotMethod, DichotAttribs } from './dichot';
+import { DichotService, PlotDataRanges, PlotDataResponse } from './dichot.service';
 
 export class Project {
   models: Dichot[] = [];
@@ -10,10 +16,30 @@ export class Project {
   changeHistory: any[] = [];
 
   customRanges = false;
+  sampleSizeRange?: Range;
+  powerRange?: Range;
+  detAltRange?: Range;
+  pSpaceRange?: Range;
+
+  previousRanges: {
+    sampleSizeRange?: Range;
+    powerRange?: Range;
+    detAltRange?: Range;
+    pSpaceRange?: Range;
+  };
+
+  pointsPerPlot: number;
 
   constructor(private dichotService: DichotService) {}
 
-  getOutput(): string {
+  getOutput(): Output {
+    if (this.models.length > 0) {
+      return this.models[0].output;
+    }
+    return undefined;
+  }
+
+  getOutputString(): string {
     if (this.models.length > 0) {
       return this.models[0].output.toString();
     }
@@ -150,15 +176,14 @@ export class Project {
   }
 
   updatePlotData(): Observable<any> {
-    /*
     let ranges = {
-      nRange: this.nRange,
+      sampleSizeRange: this.sampleSizeRange,
       powerRange: this.powerRange,
-      deltaRange: this.deltaRange,
+      detAltRange: this.detAltRange,
       pSpaceRange: this.pSpaceRange
     } as PlotDataRanges;
 
-    return this.ttestService.plotData(this.models, ranges, this.pointsPerPlot).
+    return this.dichotService.plotData(this.models, ranges, this.pointsPerPlot).
       pipe(map((result: PlotDataResponse) => {
         if (typeof(this.pointsPerPlot) === 'undefined') {
           this.pointsPerPlot = result.points;
@@ -171,62 +196,59 @@ export class Project {
         if (this.customRanges) return;
 
         let output = this.getOutput();
-        let nRange, powerRange, deltaRange;
+        let sampleSizeRange, powerRange, detAltRange;
         for (let i = 0, ilen = this.models.length; i < ilen; i++) {
           let model = this.models[i];
           switch (output) {
-            case "n":
-            case "nByCI":
-              powerRange = this.makeXRange(model.nVsPower, this.nRange);
+            case Output.SampleSize:
+              powerRange = this.makeXRange(model.sampleSizeVsPower, this.sampleSizeRange);
               if (i == 0) {
                 this.powerRange = powerRange;
               } else {
                 this.powerRange.combine(powerRange);
               }
 
-              deltaRange = this.makeXRange(model.nVsDelta, this.nRange);
+              detAltRange = this.makeXRange(model.sampleSizeVsDetAlt, this.sampleSizeRange);
               if (i == 0) {
-                this.deltaRange = deltaRange;
+                this.detAltRange = detAltRange;
               } else {
-                this.deltaRange.combine(deltaRange);
+                this.detAltRange.combine(detAltRange);
               }
               break;
-            case "power":
-              nRange = this.makeXRange(model.powerVsN, this.powerRange);
+            case Output.Power:
+              sampleSizeRange = this.makeXRange(model.powerVsSampleSize, this.powerRange);
               if (i == 0) {
-                this.nRange = nRange;
+                this.sampleSizeRange = sampleSizeRange;
               } else {
-                this.nRange.combine(nRange);
+                this.sampleSizeRange.combine(sampleSizeRange);
               }
               break;
 
-            case "delta":
-              powerRange = this.makeXRange(model.deltaVsPower, this.deltaRange);
+            case Output.DetectableAlternative:
+              powerRange = this.makeXRange(model.detAltVsPower, this.detAltRange);
               if (i == 0) {
                 this.powerRange = powerRange;
               } else {
                 this.powerRange.combine(powerRange);
               }
 
-              nRange = this.makeXRange(model.deltaVsN, this.deltaRange);
+              sampleSizeRange = this.makeXRange(model.detAltVsSampleSize, this.detAltRange);
               if (i == 0) {
-                this.nRange = nRange;
+                this.sampleSizeRange = sampleSizeRange;
               } else {
-                this.nRange.combine(nRange);
+                this.sampleSizeRange.combine(sampleSizeRange);
               }
               break;
           }
         }
 
         this.previousRanges = {
-          nRange: this.nRange ? this.nRange.clone() : undefined,
+          sampleSizeRange: this.sampleSizeRange ? this.sampleSizeRange.clone() : undefined,
           powerRange: this.powerRange ? this.powerRange.clone() : undefined,
-          deltaRange: this.deltaRange ? this.deltaRange.clone() : undefined,
+          detAltRange: this.detAltRange ? this.detAltRange.clone() : undefined,
           pSpaceRange: this.pSpaceRange ? this.pSpaceRange.clone() : undefined
         };
       }));
-    */
-    return observableOf('foo');
   }
 
   private getModelName(index: number): string {
@@ -256,10 +278,9 @@ export class Project {
   }
 
   calculateRanges(): void {
-    /*
-    let nRange = [];
+    let sampleSizeRange = [];
     let powerRange = [];
-    let deltaRange = [];
+    let detAltRange = [];
     let pSpaceRange = [];
 
     let output = this.getOutput();
@@ -268,67 +289,41 @@ export class Project {
       let model = this.models[i];
 
       switch (output) {
-        case "n": // fall through
-        case "nByCI":
+        case Output.SampleSize:
           // calculate n range
           values = stableSort([model.n * 0.5, model.n * 1.5], d3.ascending);
-          if (i == 0 || values[0] < nRange[0]) {
-            nRange[0] = values[0];
+          if (i == 0 || values[0] < sampleSizeRange[0]) {
+            sampleSizeRange[0] = values[0];
           }
-          if (i == 0 || values[1] > nRange[1]) {
-            nRange[1] = values[1];
+          if (i == 0 || values[1] > sampleSizeRange[1]) {
+            sampleSizeRange[1] = values[1];
           }
           break;
 
-        case "power":
+        case Output.Power:
           if (i == 0) {
             powerRange = [0.01, 1];
           }
-
-          // calculate delta range
-          values = stableSort([1.5 * model.sigma, -1.5 * model.sigma], d3.ascending);
-          if (i == 0 || values[0] < deltaRange[0]) {
-            deltaRange[0] = values[0];
-          }
-          if (i == 0 || values[1] > deltaRange[1]) {
-            deltaRange[1] = values[1];
-          }
           break;
 
-        case "delta":
-          // calculate delta range
-          values = stableSort([model.delta * 0.5, model.delta * 1.5], d3.ascending);
-          if (i == 0 || values[0] < deltaRange[0]) {
-            deltaRange[0] = values[0];
+        case Output.DetectableAlternative:
+          let param = model.getDetAltParam();
+
+          values = stableSort([model[param] * 0.5, model[param] * 1.5], d3.ascending);
+          if (i == 0 || values[0] < detAltRange[0]) {
+            detAltRange[0] = values[0];
           }
-          if (i == 0 || values[1] > deltaRange[1]) {
-            deltaRange[1] = values[1];
+          if (i == 0 || values[1] > detAltRange[1]) {
+            detAltRange[1] = values[1];
           }
           break;
-      }
-
-      // calculate parameter space range
-      values = stableSort([1.5 * model.sigma, -1.5 * model.sigma], d3.ascending);
-      if (i == 0 || values[0] < pSpaceRange[0]) {
-        pSpaceRange[0] = values[0];
-      }
-      if (i == 0 || values[1] > pSpaceRange[1]) {
-        pSpaceRange[1] = values[1];
-      }
-
-      values = [model.delta - (model.ci / 2), model.delta + (model.ci / 2)];
-      if (values[0] < pSpaceRange[0]) {
-        pSpaceRange[0] = values[0] - Math.abs(values[0] * 0.5);
-      }
-      if (values[1] > pSpaceRange[1]) {
-        pSpaceRange[1] = values[1] + Math.abs(values[1] * 0.5);
       }
     }
 
-    if (nRange.length > 0) {
-      this.nRange = new Range(nRange[0], nRange[1]);
+    if (sampleSizeRange.length > 0) {
+      this.sampleSizeRange = new Range(sampleSizeRange[0], sampleSizeRange[1]);
     } else {
-      this.nRange = undefined;
+      this.sampleSizeRange = undefined;
     }
 
     if (powerRange.length > 0) {
@@ -337,10 +332,10 @@ export class Project {
       this.powerRange = undefined;
     }
 
-    if (deltaRange.length > 0) {
-      this.deltaRange = new Range(deltaRange[0], deltaRange[1]);
+    if (detAltRange.length > 0) {
+      this.detAltRange = new Range(detAltRange[0], detAltRange[1]);
     } else {
-      this.deltaRange = undefined;
+      this.detAltRange = undefined;
     }
 
     if (pSpaceRange.length > 0) {
@@ -348,6 +343,24 @@ export class Project {
     } else {
       this.pSpaceRange = undefined;
     }
-    */
+  }
+
+  private makeXRange(data: Point[], yRange: Range): Range {
+    let minIndex = 0, maxIndex = data.length - 1;
+    for (let i = 0; i < data.length; i++) {
+      if (typeof(data[i].x) === "number" && data[i].y >= yRange.min) {
+        minIndex = i;
+        break;
+      }
+    }
+    for (let i = data.length - 1; i >= 0; i--) {
+      if (typeof(data[i].x) === "number" && data[i].y <= yRange.max) {
+        maxIndex = i;
+        break;
+      }
+    }
+
+    let values = stableSort([data[minIndex].x, data[maxIndex].x], d3.ascending);
+    return new Range(values[0], values[1]);
   }
 }

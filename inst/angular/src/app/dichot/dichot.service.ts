@@ -12,7 +12,7 @@ export interface PlotDataRanges {
   sampleSizeRange?: Range;
   powerRange?: Range;
   detAltRange?: Range;
-  //pSpaceRange?: Range;
+  pSpaceRange?: Range;
 };
 
 interface PlotDataParams {

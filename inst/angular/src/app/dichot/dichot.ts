@@ -115,4 +115,19 @@ export class Dichot {
   shallowClone(): Dichot {
     return Object.assign(new Dichot(), this);
   }
+
+  getDetAltParam(): string {
+    if (this.matched == DichotMatched.Matched) {
+      return 'psi';
+    } else if (this.matched == DichotMatched.Independent) {
+      if (this.expressed == DichotExpressed.TwoProportions) {
+        return 'p1';
+      } else if (this.expressed == DichotExpressed.OddsRatio) {
+        return 'psi';
+      } else if (this.expressed == DichotExpressed.RelativeRisk) {
+        return 'r';
+      }
+    }
+    return '';
+  }
 }
