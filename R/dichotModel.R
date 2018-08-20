@@ -447,8 +447,7 @@ ipsize <- function(alpha, power, p0, p1, m, r,
                    case = c("caseControl", "prospective"),
                    expressed = c("twoProportions", "oddsRatio"),
                    method = c("chiSquare", "fishers")) {
-
-  if (expressed == "oddsRatio") {
+  if (expressed == "oddsRatio" || expressed == "relativeRisk") {
     if (case == "caseControl") {
       p1 <- p0 * r / (1 + p0 * (r - 1))
     }
@@ -814,7 +813,7 @@ Dichot <- setRefClass("Dichot",
           power2 <- sapply(n2, powfcn, alpha = alpha, r = phi, p0 = p0, m = m, psi = psi)
           detalt2 <- sapply(n2, moddsratio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
-          power2 <- sapply(n2, ippower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = r, method = method)
+          power2 <- sapply(n2, ippower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = r, case = case, expressed = expressed, method = method)
           detalt2 <- sapply(n2, iprelrisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
         }
 
@@ -879,15 +878,15 @@ Dichot <- setRefClass("Dichot",
           if (expressed == "twoProportions") {
             # det. alt. is p1
             n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, m = m, r = r, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = r, method = method)
+            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = r, case = case, expressed = expressed, method = method)
           } else if (expressed == "oddsRatio") {
             # det. alt. is psi (r parameter)
             n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, method = method)
+            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
           } else if (expressed == "relativeRisk") {
             # det. alt. is r (same call as 'oddsRatio', repeated for readability)
             n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, method = method)
+            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
           }
         }
 
