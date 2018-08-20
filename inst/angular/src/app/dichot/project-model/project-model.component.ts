@@ -40,7 +40,6 @@ export class ProjectModelComponent implements OnInit {
     this.calculateSliderRange('n');
     this.calculateSliderRange('p0');
     this.calculateSliderRange('m');
-    console.log('r:', this.model.r);
     if (typeof(this.model.r) === 'number') {
       this.calculateSliderRange('r');
     }

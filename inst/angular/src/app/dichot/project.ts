@@ -6,6 +6,7 @@ import { Output } from '../output';
 
 export class Project {
   models: Dichot[] = [];
+  selectedIndex: number = 0;
   changeHistory: any[] = [];
 
   customRanges = false;
@@ -135,6 +136,17 @@ export class Project {
         return this.updatePlotData();
       })
     );
+  }
+
+  removeModel(index: number): Observable<any> {
+    this.models.splice(index, 1);
+    this.changeHistory.push({
+      'type': 'remove', 'index': index
+    });
+    if (!this.customRanges) {
+      this.calculateRanges();
+    }
+    return this.updatePlotData();
   }
 
   updatePlotData(): Observable<any> {
