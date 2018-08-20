@@ -6,7 +6,7 @@ import { Project } from '../project';
 import { Dichot } from '../dichot';
 import { PlotComponent } from '../plot/plot.component';
 //import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
-//import { ExportPlotsComponent } from '../export-plots/export-plots.component';
+import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 import { CopyService } from '../../copy.service';
@@ -52,7 +52,6 @@ export class OutputPaneComponent implements OnChanges {
     setTimeout(this.resize.bind(this), 1);
   }
 
-  /*
   openSaveDialog(): void {
     const modalRef = this.modalService.open(ExportPlotsComponent, { windowClass: 'export-plots' });
     let component = modalRef.componentInstance;
@@ -62,7 +61,6 @@ export class OutputPaneComponent implements OnChanges {
     component.topRightLegendXOffset = this.topRightPlot.legendXOffset;
     component.topRightLegendYOffset = this.topRightPlot.legendYOffset;
   }
-  */
 
   round(n: number): number {
     return Math.round(n * 100) / 100;
@@ -103,23 +101,20 @@ export class OutputPaneComponent implements OnChanges {
     return result.join("; ");
   }
 
-  /*
   copyFooter(): void {
     this.copySub = this.copyService.onCopy.subscribe(event => {
       this.onCopy(event);
     });
     document.execCommand('copy');
   }
-  */
 
-  /*
   onCopy(event: any): void {
     switch (this.footerTabset.activeId) {
-      case 't-test-output-pane-interpretation':
+      case 'dichot-output-pane-interpretation':
         event.clipboardData.setData('text/plain', this.model.interpretation());
         event.preventDefault();
         break;
-      case 't-test-output-pane-log':
+      case 'dichot-output-pane-log':
         let text = this.project.changeHistory.
           map(changes => this.project.describeChanges(changes, false)).
           join("\r\n");
@@ -129,7 +124,6 @@ export class OutputPaneComponent implements OnChanges {
     }
     this.copySub.unsubscribe();
   }
-  */
 
   onModelChanged(): void {
     this.modelChanged.emit();

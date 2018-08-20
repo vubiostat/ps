@@ -363,4 +363,39 @@ export class Project {
     let values = stableSort([data[minIndex].x, data[maxIndex].x], d3.ascending);
     return new Range(values[0], values[1]);
   }
+
+  private paramsToString(params: any): string {
+    let result = [];
+    for (var key in params) {
+      if (key == 'ciMode' || key == 'deltaMode') {
+        continue;
+      }
+
+      let value = params[key];
+      if (typeof(value) === 'string') {
+        result.push(`"${key}": "${params[key]}"`);
+      } else {
+        result.push(`"${key}": ${params[key]}`);
+      }
+    }
+    return `{ ${result.join(', ')} }`;
+  }
+
+  describeChanges(changes: any, html = true): string {
+    let result;
+    if (changes.type == 'add') {
+      result = `Added model #${changes.index + 1}: <span class="code">${this.paramsToString(changes.params)}</span>`;
+
+    } else if (changes.type == 'remove') {
+      result = `Removed model #${changes.index + 1}`;
+
+    } else if (changes.type == 'change') {
+      if (html) {
+        result = `Changed <span class="code">${changes.key}</span> in model #${changes.index + 1}: <span class="code">${this.paramsToString(changes.params)}</span>`;
+      } else {
+        result = `Changed ${changes.key} in model #${changes.index + 1}: ${this.paramsToString(changes.params)}`;
+      }
+    }
+    return result;
+  }
 }

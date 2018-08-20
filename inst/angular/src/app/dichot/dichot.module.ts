@@ -38,5 +38,8 @@ const routes: Routes = [
   providers: [
     DichotService
   ],
+  entryComponents: [
+    ExportPlotsComponent
+  ]
 })
 export class DichotModule { }

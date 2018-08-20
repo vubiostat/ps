@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, HostListener, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
@@ -8,6 +8,8 @@ import { Dichot, DichotMatched, DichotCase, DichotExpressed, DichotMethod } from
 import { Project } from '../project';
 import { ProjectService } from '../project.service';
 import { ResizeService } from '../../resize.service';
+
+import { DraggableDialogComponent } from '../../draggable-dialog/draggable-dialog.component';
 import { OutputPaneComponent } from '../output-pane/output-pane.component';
 
 import { commitHash, buildTimestamp } from '../../version';
@@ -25,6 +27,16 @@ export class MainComponent implements OnInit {
   commitHash = commitHash.substr(0, 7);
   buildTimestamp = buildTimestamp;
 
+  helpTitles = {
+    'overview': 'PS Overview',
+    'start': 'PS Start Tab'
+  };
+  helpTopic = 'overview';
+  blockSelection = false;
+  hoverBoxEnabled = true;
+
+  @ViewChild('plotOptionsDialog') plotOptionsDialog: DraggableDialogComponent;
+  @ViewChild('helpDialog') helpDialog: DraggableDialogComponent;
   @ViewChild('tabset') tabset: NgbTabset;
   @ViewChild('outputPane') outputPane: OutputPaneComponent;
 
@@ -72,6 +84,27 @@ export class MainComponent implements OnInit {
     return 'Dichot #' + (index + 1).toString();
   }
 
+  toggleHelp(topic: string): void {
+    if (this.helpDialog.isOpen() && this.helpTopic == topic) {
+      this.helpDialog.close();
+    } else {
+      this.helpTopic = topic;
+      this.helpDialog.open();
+    }
+  }
+
+  togglePlotOptions(): void {
+    this.plotOptionsDialog.toggle();
+  }
+
+  toggleHoverBox(): void {
+    this.hoverBoxEnabled = !this.hoverBoxEnabled;
+  }
+
+  save(): void {
+    this.outputPane.openSaveDialog();
+  }
+
   calculate(): void {
     this.createProject(this.newModel);
   }
@@ -111,5 +144,29 @@ export class MainComponent implements OnInit {
 
   onModelChanged(): void {
     this.outputPane.redrawPlots();
+  }
+
+  onPlotOptionChanged(): void {
+    this.outputPane.redrawPlots();
+  }
+
+  onPlotOptionsReset(): void {
+    this.outputPane.redrawPlots();
+  }
+
+  onProjectChangedFromPlotOptions(): void {
+    this.outputPane.redrawPlots();
+  }
+
+  onMouseUp(): void {
+    this.plotOptionsDialog.stopDragging();
+  }
+
+  onChildDragStarted(): void {
+    this.blockSelection = true;
+  }
+
+  onChildDragEnded(): void {
+    this.blockSelection = false;
   }
 }

@@ -41,9 +41,7 @@
         Interpretation
       </ng-template>
       <ng-template ngbTabContent>
-        <!--
         {{model?.interpretation()}}
-        -->
       </ng-template>
     </ngb-tab>
     <ngb-tab id="dichot-output-pane-log" title="Log">
@@ -52,13 +50,11 @@
           There have been no changes yet.
         </ng-template>
         <ng-template #changeHistory>
-          <!--
           <ul class="log">
             <li *ngFor="let changes of project.changeHistory"
               [innerHTML]="project.describeChanges(changes)">
             </li>
           </ul>
-          -->
         </ng-template>
       </ng-template>
     </ngb-tab>

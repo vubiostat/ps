@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+import { Project } from '../project';
 
 @Component({
   selector: 'dichot-plot-options',
@@ -6,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./plot-options.component.css']
 })
 export class PlotOptionsComponent implements OnInit {
+  @Input() project: Project;
 
   constructor() { }
 
