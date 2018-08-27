@@ -88,13 +88,9 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   needDraw = Draw.No;
 
   ngOnChanges(changes: SimpleChanges): void {
-    let result = this.setup();
-    if (!result && this.project) {
-      // this might happen if the browser elements aren't ready yet
-      setTimeout(() => {
-        this.setup();
-      }, 1);
-    }
+    setTimeout(() => {
+      this.setup();
+    }, 1);
   }
 
   ngAfterViewChecked(): void {
