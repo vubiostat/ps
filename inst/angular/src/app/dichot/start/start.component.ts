@@ -20,4 +20,7 @@ export class StartComponent implements OnInit {
   onSubmit(): void {
     this.onCalculate.emit();
   }
+
+  toggleHelp(): void {
+  }
 }
