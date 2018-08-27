@@ -22,5 +22,6 @@ export class StartComponent implements OnInit {
   }
 
   toggleHelp(): void {
+    this.onToggleHelp.emit();
   }
 }

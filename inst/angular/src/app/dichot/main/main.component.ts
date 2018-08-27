@@ -29,7 +29,7 @@ export class MainComponent implements OnInit {
 
   helpTitles = {
     'overview': 'PS Overview',
-    'start': 'PS Start Tab'
+    'start': 'PS Start Tab: Dichotomous Module'
   };
   helpTopic = 'overview';
   blockSelection = false;
