@@ -12,6 +12,7 @@ import { HelpComponent } from './help/help.component';
 import { MainComponent } from './main/main.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 import { PlotComponent } from './plot/plot.component';
+import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component';
 import { ProjectComponent } from './project/project.component';
 import { ProjectModelComponent } from './project-model/project-model.component';
@@ -31,9 +32,9 @@ const routes: Routes = [
     AppCommonModule
   ],
   declarations: [
-    StartComponent, OutputPaneComponent, PlotComponent, ExportPlotsComponent,
-    HelpComponent, PlotOptionsComponent, ProjectComponent,
-    ProjectModelComponent, MainComponent
+    StartComponent, OutputPaneComponent, PlotComponent, BottomPlotComponent,
+    ExportPlotsComponent, HelpComponent, PlotOptionsComponent,
+    ProjectComponent, ProjectModelComponent, MainComponent
   ],
   providers: [
     DichotService

@@ -718,9 +718,18 @@ iprelrisk <- function(alpha, power, p0, n, m,
   }
 }
 
+dichot_calc_ci <- function(p0, p1, m, n) {
+  q0 <- 1 - p0
+  q1 <- 1 - p1
+
+  x <- p1 - p0
+  y <- 1.96 * sqrt((p0 * q0 / m + p1 * q1) / n)
+  c(x - y, x + y)
+}
+
 Dichot <- setRefClass("Dichot",
-  fields = c("matched", "case", "method", "expressed", "alpha", "power", "phi",
-             "p0", "p1", "r", "n", "m", "psi", "output"),
+  fields = c("output", "matched", "case", "method", "expressed", "alpha",
+             "power", "phi", "p0", "p1", "r", "n", "m", "psi", "ci"),
 
   methods = list(
     initialize = function(params) {
@@ -772,6 +781,10 @@ Dichot <- setRefClass("Dichot",
             r <<- result
           }
         }
+
+        if (expressed == "twoProportions") {
+          ci <<- dichot_calc_ci(p0, p1, m, n)
+        }
       }
 
       result <- list(
@@ -798,6 +811,7 @@ Dichot <- setRefClass("Dichot",
         }
         if (expressed == "twoProportions") {
           result$p1 <- p1
+          result$ci <- ci
         }
       }
       result

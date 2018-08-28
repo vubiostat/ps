@@ -222,6 +222,13 @@ export class Project {
               } else {
                 this.sampleSizeRange.combine(sampleSizeRange);
               }
+
+              detAltRange = this.makeXRange(model.powerVsDetAlt, this.sampleSizeRange);
+              if (i == 0) {
+                this.detAltRange = detAltRange;
+              } else {
+                this.detAltRange.combine(detAltRange);
+              }
               break;
 
             case Output.DetectableAlternative:
@@ -317,6 +324,21 @@ export class Project {
             detAltRange[1] = values[1];
           }
           break;
+      }
+
+      if (Array.isArray(model.ci)) {
+        // NOTE: this `if` statement won't be necessary when CI is always
+        // available
+        let target = model.p1 - model.p0;
+        let diff = (model.ci[1] - target) * 2;
+        values = [model.ci[0] - diff, model.ci[1] + diff];
+
+        if (i == 0 || values[0] < pSpaceRange[0]) {
+          pSpaceRange[0] = values[0];
+        }
+        if (i == 0 || values[1] > pSpaceRange[1]) {
+          pSpaceRange[1] = values[1];
+        }
       }
     }
 

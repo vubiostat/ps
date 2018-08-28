@@ -38,6 +38,7 @@ export interface DichotAttribs {
   n: number;
   m: number;
   psi: number;
+  ci?: number[];
 }
 
 export interface DichotPlotData {
@@ -67,6 +68,7 @@ export class Dichot {
   n: number;
   m: number;
   psi: number;
+  ci?: number[];
 
   // plot data
   sampleSizeVsPower?: Point[];
@@ -93,6 +95,7 @@ export class Dichot {
       this.n = attribs.n;
       this.m = attribs.m;
       this.psi = attribs.psi;
+      this.ci = attribs.ci;
       this.sampleSizeVsPower = attribs.sampleSizeVsPower;
       this.sampleSizeVsDetAlt = attribs.sampleSizeVsDetAlt;
       this.powerVsSampleSize = attribs.powerVsSampleSize;

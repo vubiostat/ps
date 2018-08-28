@@ -17,6 +17,9 @@
     (modelChanged)="onModelChanged()">
   </dichot-bottom-plot>
   -->
+  <dichot-bottom-plot #bottom *ngIf="model?.expressed == 'twoProportions'"
+    name="bottom" [project]="project" (modelChanged)="onModelChanged()">
+  </dichot-bottom-plot>
   <div class="show-footer" *ngIf="project && !showFooter">
     <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">
       <i class="fa fa-envelope-open-o" aria-hidden="true" title="Show footer"></i>
