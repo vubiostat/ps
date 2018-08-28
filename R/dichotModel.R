@@ -839,7 +839,12 @@ Dichot <- setRefClass("Dichot",
           n2 <- sapply(power2, ssize, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
           detalt2 <- sapply(power2, moddsratio, alpha = alpha, phi = phi, p0 = p0, n = n, m = m)
         } else if (matched == "independent") {
-          n2 <- sapply(power2, ipsize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = r, case = case, expressed = expressed, method = method)
+          risk <- r
+          if (case == "caseControl" && expressed == "oddsRatio") {
+            risk <- psi
+          }
+
+          n2 <- sapply(power2, ipsize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = risk, case = case, expressed = expressed, method = method)
           detalt2 <- sapply(power2, iprelrisk, alpha = alpha, p0 = p0, n = n, m = m, case = case, expressed = expressed, method = method)
         }
 
@@ -847,7 +852,7 @@ Dichot <- setRefClass("Dichot",
 
         # det. alt. functions can return up to 2 values
         df <- data.frame(y = c(power2, power2), x = c(detalt2[1,], detalt2[2,]))
-        df <- df[!is.na(df$y) & !is.na(df$x)]
+        df <- df[!is.na(df$y) & !is.na(df$x),]
         df <- df[order(df$x),]
         result$powerVsDetAlt <- df
 
