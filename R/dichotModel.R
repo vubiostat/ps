@@ -267,7 +267,6 @@ powfcn <- function(alpha, n, r, p0, m, psi) {
   calc_phi(zl) + 1 - calc_phi(zu)
 }
 
-
 # bisection
 # This procedure evaluates a function at the end-points of a real interval.  An
 # error exit is taken if there is no change of sign.  Finds a root by iterated
@@ -382,7 +381,7 @@ moddsratio <- function(alpha, power, phi, p0, n, m) {
   a <- 0.01
   b <- 0.99
   psi_l <- try(bisec(a, b, errabs, errrel, iterated_power_function, alpha,
-                     power, phi, p0, n, m))
+                     power, phi, p0, n, m), silent = TRUE)
 
   # Find the upper solution.
   errabs <- 1.0e-3
@@ -390,7 +389,7 @@ moddsratio <- function(alpha, power, phi, p0, n, m) {
   a <- 1.01
   b <- 100000
   psi_h <- try(bisec(a, b, errabs, errrel, iterated_power_function, alpha,
-                     power, phi, p0, n, m))
+                     power, phi, p0, n, m), silent = TRUE)
 
   result <- c()
   if (!inherits(psi_l, 'try-error')) {
@@ -459,9 +458,13 @@ ipsize <- function(alpha, power, p0, p1, m, r,
   # Calculate the sample size.
   zalpha <- zcrvalue(alpha / 2)
   pbar <- (p1 + m * p0) / (m + 1)
-  n <- nint(((zalpha * sqrt((1 + 1 / m) * pbar * (1 - pbar)) +
-             zcrvalue(1 - power) * sqrt(p0 * (1 - p0) / m + p1 * (1 - p1))) ^ 2) /
-            ((p0 - p1) ^ 2))
+  x <- ((zalpha * sqrt((1 + 1 / m) * pbar * (1 - pbar)) +
+         zcrvalue(1 - power) * sqrt(p0 * (1 - p0) / m + p1 * (1 - p1))) ^ 2) /
+         ((p0 - p1) ^ 2)
+  if (is.nan(x)) {
+    return(NA)
+  }
+  n <- nint(x)
 
   if (method == "chiSquare") {
     n
@@ -557,7 +560,7 @@ ippower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective
 
     # Make the approximation.  Use bisection to find the
     # zero of the function FISHSIZB.
-    beta <- try(bisec(y1, y2, eps, e1, fishsizb, alpha, p0, p1, n, m))
+    beta <- try(bisec(y1, y2, eps, e1, fishsizb, alpha, p0, p1, n, m), silent = TRUE)
 
     if (inherits(beta, "try-error")) {
       f1 <- fishsizb(y1, alpha, p0, p1, n, m)
@@ -653,24 +656,24 @@ iprelrisk <- function(alpha, power, p0, n, m,
     y2 <- p0 - eps
 
     # Solve the equation for the lower solution.
-    p1l <- try(bisec(y1, y2, eps, e1, chisqsize, alpha, beta, p0, n, m))
+    p1l <- try(bisec(y1, y2, eps, e1, chisqsize, alpha, beta, p0, n, m), silent = TRUE)
 
     # Set initial end points for high end point.
     y1 <- p0 + eps
     y2 <- 1
 
     # Solve the equation for the upper solution.
-    p1h <- try(bisec(y1, y2, eps, e1, chisqsize, alpha, beta, p0, n, m))
+    p1h <- try(bisec(y1, y2, eps, e1, chisqsize, alpha, beta, p0, n, m), silent = TRUE)
   }
   else if (method == "fishers") {
     # Case of Fisher's exact test.
     y1 <- 0.0
     y2 <- 0.9999 * p0
-    p1l <- try(bisec(y1, y2, eps, e1, fishersiz, alpha, beta, p0, n, m))
+    p1l <- try(bisec(y1, y2, eps, e1, fishersiz, alpha, beta, p0, n, m), silent = TRUE)
 
     y1 <- 0.9999 * p0 + 0.0001
     y2 <- 1
-    p1h <- try(bisec(y1, y2, eps, e1, fishersiz, alpha, beta, p0, n, m))
+    p1h <- try(bisec(y1, y2, eps, e1, fishersiz, alpha, beta, p0, n, m), silent = TRUE)
   } else {
     stop("unknown method:", method)
   }
