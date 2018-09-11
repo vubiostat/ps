@@ -646,9 +646,9 @@ iprelrisk <- function(alpha, power, p0, n, m,
   beta <- 1 - power
 
   eps <- .0001 * min(p0, 1 - p0)
-  e1 <- .0001 * min(p0,1 - p0)
+  e1 <- .0001 * min(p0, 1 - p0)
 
-  # Use bisection with appropriate routine for Chi-squared or Fisher's exact
+  # Use uniroot with appropriate routine for Chi-squared or Fisher's exact
   # test.
   if (method == "chiSquare") {
     # Set initial end points for lower end point.
@@ -656,24 +656,32 @@ iprelrisk <- function(alpha, power, p0, n, m,
     y2 <- p0 - eps
 
     # Solve the equation for the lower solution.
-    p1l <- try(bisec(y1, y2, eps, e1, chisqsize, alpha, beta, p0, n, m), silent = TRUE)
+    p1l <- try({
+      uniroot(chisqsize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = 1)$root
+    })
 
     # Set initial end points for high end point.
     y1 <- p0 + eps
     y2 <- 1
 
     # Solve the equation for the upper solution.
-    p1h <- try(bisec(y1, y2, eps, e1, chisqsize, alpha, beta, p0, n, m), silent = TRUE)
+    p1h <- try({
+      uniroot(chisqsize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = 1)$root
+    })
   }
   else if (method == "fishers") {
     # Case of Fisher's exact test.
     y1 <- 0.0
     y2 <- 0.9999 * p0
-    p1l <- try(bisec(y1, y2, eps, e1, fishersiz, alpha, beta, p0, n, m), silent = TRUE)
+    p1l <- try({
+      uniroot(fishersiz, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = m)$root
+    })
 
     y1 <- 0.9999 * p0 + 0.0001
     y2 <- 1
-    p1h <- try(bisec(y1, y2, eps, e1, fishersiz, alpha, beta, p0, n, m), silent = TRUE)
+    p1h <- try({
+      uniroot(fishersiz, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = m)$root
+    })
   } else {
     stop("unknown method:", method)
   }
