@@ -749,6 +749,24 @@ Dichot <- setRefClass("Dichot",
       psi       <<- params$psi
     },
 
+    detAltParamName = function() {
+      if (matched == "matched") {
+        "psi"
+      } else if (matched == "independent") {
+        if (expressed == "twoProportions") {
+          "p1"
+        } else if (expressed == "oddsRatio") {
+          "psi"
+        } else if (expressed == "relativeRisk") {
+          "r"
+        }
+      }
+    },
+
+    detAltParamValue = function() {
+      .self[[detAltParamName()]]
+    },
+
     calculate = function() {
       if (matched == "matched") {
         # case-control and prospective behave the same way
@@ -773,13 +791,7 @@ Dichot <- setRefClass("Dichot",
         }
         else if (output == "detAlt") {
           result <- iprelrisk(alpha, power, p0, n, m, case, expressed, method)
-          if (expressed == "twoProportions") {
-            p1 <<- result
-          } else if (expressed == "oddsRatio") {
-            psi <<- result
-          } else if (expressed == "relativeRisk") {
-            r <<- result
-          }
+          .self[[detAltParamName()]] <- result
         }
 
         if (expressed == "twoProportions") {
@@ -828,16 +840,16 @@ Dichot <- setRefClass("Dichot",
 
         if (matched == "matched") {
           power2 <- sapply(n2, powfcn, alpha = alpha, r = phi, p0 = p0, m = m, psi = psi)
-          detalt2 <- sapply(n2, moddsratio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
+          detAlt2 <- sapply(n2, moddsratio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
           power2 <- sapply(n2, ippower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = r, case = case, expressed = expressed, method = method)
-          detalt2 <- sapply(n2, iprelrisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
+          detAlt2 <- sapply(n2, iprelrisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
         }
 
         result$sampleSizeVsPower <- data.frame(y = n2, x = power2)
 
         # det. alt. functions can return up to 2 values
-        df <- data.frame(y = c(n2, n2), x = c(detalt2[1,], detalt2[2,]))
+        df <- data.frame(y = c(n2, n2), x = c(detAlt2[1,], detAlt2[2,]))
         df <- df[!is.na(df$y) & !is.na(df$x),]
         df <- df[order(df$x),]
         result$sampleSizeVsDetAlt <- df
@@ -851,28 +863,50 @@ Dichot <- setRefClass("Dichot",
 
         if (matched == "matched") {
           n2 <- sapply(power2, ssize, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
-          detalt2 <- sapply(power2, moddsratio, alpha = alpha, phi = phi, p0 = p0, n = n, m = m)
+          detAlt2 <- sapply(power2, moddsratio, alpha = alpha, phi = phi, p0 = p0, n = n, m = m)
+
+          # det. alt. functions can return up to 2 values
+          df <- data.frame(y = c(power2, power2), x = c(detAlt2[1,], detAlt2[2,]))
+          df <- df[!is.na(df$y) & !is.na(df$x),]
+          df <- df[order(df$x),]
+          result$powerVsDetAlt <- df
         } else if (matched == "independent") {
           risk <- r
           if (case == "caseControl" && expressed == "oddsRatio") {
             risk <- psi
           }
 
+          # Calculate sample size data
           n2 <- sapply(power2, ipsize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = risk, case = case, expressed = expressed, method = method)
-          detalt2 <- sapply(power2, iprelrisk, alpha = alpha, p0 = p0, n = n, m = m, case = case, expressed = expressed, method = method)
+
+          # Calculate det. alt. range using iprelrisk, then use ippower to
+          # calculate power data for a smoother plot
+          detAlt2Max <- max(iprelrisk(alpha, 0.99, p0, n, m, case, expressed, method))
+          detAlt2Diff <- abs(detAlt2Max - p0)
+          detAlt2 <- seq(
+            from = p0 - detAlt2Diff,
+            to = detAlt2Max,
+            length.out = points
+          )
+          power3 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = risk,
+                           case = case, expressed = expressed, method = method)
+
+          # Make sure current power is in the dataset
+          df <- data.frame(y = power3, x = detAlt2)
+          if (!(power %in% df$y)) {
+            df <- rbind(df, list(y = power, x = detAltParamValue()))
+            df <- df[order(df$x),]
+          }
+
+          # Only select values from the supplied range
+          result$powerVsDetAlt <- df[df$y >= range$min & df$y <= range$max,]
         }
 
         result$powerVsSampleSize <- data.frame(y = power2, x = n2)
 
-        # det. alt. functions can return up to 2 values
-        df <- data.frame(y = c(power2, power2), x = c(detalt2[1,], detalt2[2,]))
-        df <- df[!is.na(df$y) & !is.na(df$x),]
-        df <- df[order(df$x),]
-        result$powerVsDetAlt <- df
-
       } else if (output == "detAlt") {
         range <- ranges$detAltRange
-        detalt2 <- seq(range$min, range$max, length.out = points)
+        detAlt2 <- seq(range$min, range$max, length.out = points)
         if (matched == "matched") {
           val <- psi
         } else if (matched == "independent") {
@@ -884,36 +918,36 @@ Dichot <- setRefClass("Dichot",
             val <- r
           }
         }
-        if (!(val[1] %in% detalt2)) {
-          detalt2 <- c(detalt2, val[1])
+        if (!(val[1] %in% detAlt2)) {
+          detAlt2 <- c(detAlt2, val[1])
         }
-        if (length(val) > 1 && !(val[2] %in% detalt2)) {
-          detalt2 <- c(detalt2, val[2])
+        if (length(val) > 1 && !(val[2] %in% detAlt2)) {
+          detAlt2 <- c(detAlt2, val[2])
         }
-        detalt2 <- sort(detalt2)
+        detAlt2 <- sort(detAlt2)
 
         if (matched == "matched") {
           # det. alt. is psi
-          n2 <- sapply(detalt2, ssize, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
-          power2 <- sapply(detalt2, powfcn, alpha = alpha, n = n, phi = phi, p0 = p0, m = m)
+          n2 <- sapply(detAlt2, ssize, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
+          power2 <- sapply(detAlt2, powfcn, alpha = alpha, n = n, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
           if (expressed == "twoProportions") {
             # det. alt. is p1
-            n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, m = m, r = r, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = r, case = case, expressed = expressed, method = method)
+            n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, m = m, r = r, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = r, case = case, expressed = expressed, method = method)
           } else if (expressed == "oddsRatio") {
             # det. alt. is psi (r parameter)
-            n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
+            n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
           } else if (expressed == "relativeRisk") {
             # det. alt. is r (same call as 'oddsRatio', repeated for readability)
-            n2 <- sapply(detalt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detalt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
+            n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
           }
         }
 
-        result$detAltVsSampleSize <- data.frame(y = detalt2, x = n2)
-        result$detAltVsPower <- data.frame(y = detalt2, x = power2)
+        result$detAltVsSampleSize <- data.frame(y = detAlt2, x = n2)
+        result$detAltVsPower <- data.frame(y = detAlt2, x = power2)
       }
 
       # Calculate data for bottom/tertiary graph
