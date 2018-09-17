@@ -4,7 +4,7 @@ dichotValidateModelParams <- function(params) {
   keys <- names(params)
   expectedKeys <- c("matched", "case", "method", "expressed", "alpha", "power",
                     "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
-                    "psiAlt", "output")
+                    "psiAlt", "detAltMode", "output")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {
@@ -70,6 +70,14 @@ dichotValidateModelParams <- function(params) {
     errors$output <- "must be character"
   } else if (!(params$output %in% c("sampleSize", "power", "detAlt"))) {
     errors$output <- "is invalid"
+  } else if (params$output == "detAlt") {
+    if ("detAltMode" %in% keys) {
+      if (!is.character(params$detAltMode)) {
+        errors$detAltMode <- "must be character"
+      } else if (!(params$detAltMode %in% c("lower", "upper"))) {
+        errors$detAltMode <- "is invalid"
+      }
+    }
   }
 
   # for convenience

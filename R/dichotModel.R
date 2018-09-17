@@ -738,27 +738,28 @@ dichot_calc_ci <- function(p0, p1, m, n) {
 Dichot <- setRefClass("Dichot",
   fields = c("output", "matched", "case", "method", "expressed", "alpha",
              "power", "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
-             "psiAlt", "ci"),
+             "psiAlt", "ci", "detAltMode"),
 
   methods = list(
     initialize = function(params) {
-      output    <<- params$output
-      matched   <<- params$matched
-      case      <<- params$case
-      method    <<- params$method
-      expressed <<- params$expressed
-      alpha     <<- params$alpha
-      power     <<- params$power
-      phi       <<- params$phi
-      p0        <<- params$p0
-      p1        <<- params$p1
-      p1Alt     <<- params$p1Alt
-      r         <<- params$r
-      rAlt      <<- params$rAlt
-      n         <<- params$n
-      m         <<- params$m
-      psi       <<- params$psi
-      psiAlt    <<- params$psiAlt
+      output     <<- params$output
+      matched    <<- params$matched
+      case       <<- params$case
+      method     <<- params$method
+      expressed  <<- params$expressed
+      alpha      <<- params$alpha
+      power      <<- params$power
+      phi        <<- params$phi
+      p0         <<- params$p0
+      p1         <<- params$p1
+      p1Alt      <<- params$p1Alt
+      r          <<- params$r
+      rAlt       <<- params$rAlt
+      n          <<- params$n
+      m          <<- params$m
+      psi        <<- params$psi
+      psiAlt     <<- params$psiAlt
+      detAltMode <<- params$detAltMode
     },
 
     detAltParamName = function() {
@@ -787,7 +788,7 @@ Dichot <- setRefClass("Dichot",
         } else if (output == "power") {
           power <<- powfcn(alpha, n, phi, p0, m, psi)
         } else if (output == "detAlt") {
-          psi <<- moddsratio(alpha, power, phi, p0, n, m)
+          detAlt <- moddsratio(alpha, power, phi, p0, n, m)
         }
       } else if (matched == "independent") {
         risk <- r
@@ -803,13 +804,24 @@ Dichot <- setRefClass("Dichot",
         }
         else if (output == "detAlt") {
           detAlt <- iprelrisk(alpha, power, p0, n, m, case, expressed, method)
-          param <- detAltParamName()
-          .self[[param]] <- detAlt[1]
-          if (length(detAlt) > 1) {
-            .self[[paste0(param, "Alt")]] <- detAlt[2]
-          }
+        }
+      }
+
+      # split det. alt. result into lower and upper
+      if (output == "detAlt") {
+        param <- detAltParamName()
+        .self[[param]] <- detAlt[1]
+        if (length(detAlt) > 1) {
+          .self[[paste0(param, "Alt")]] <- detAlt[2]
         }
 
+        if (is.null(detAltMode)) {
+          detAltMode <<- "lower"
+        }
+      }
+
+      # calculate confidence interval
+      if (matched == "independent") {
         if (expressed == "twoProportions") {
           ci <<- dichot_calc_ci(p0, p1, m, n)
         }
@@ -826,8 +838,9 @@ Dichot <- setRefClass("Dichot",
         m         = m
       )
       if (matched == "matched") {
-        result$psi <- psi
         result$phi <- phi
+        result$psi <- psi
+        result$psiAlt <- psiAlt
       } else if (matched == "independent") {
         result$method <- method
         result$expressed <- expressed
@@ -844,6 +857,9 @@ Dichot <- setRefClass("Dichot",
           result$p1Alt <- p1Alt
           result$ci <- ci
         }
+      }
+      if (output == "detAlt") {
+        result$detAltMode <- detAltMode
       }
       result
     },
@@ -926,22 +942,16 @@ Dichot <- setRefClass("Dichot",
       } else if (output == "detAlt") {
         range <- ranges$detAltRange
         detAlt2 <- seq(range$min, range$max, length.out = points)
-        if (matched == "matched") {
-          val <- psi
-        } else if (matched == "independent") {
-          if (expressed == "twoProportions") {
-            val <- p1
-          } else if (expressed == "oddsRatio") {
-            val <- psi
-          } else if (expressed == "relativeRisk") {
-            val <- r
-          }
+
+        # pick lower or upper value based on detAltMode
+        param <- detAltParamName()
+        if (!is.null(detAltMode) && detAltMode == "upper") {
+          param <- paste0(param, "Alt")
         }
-        if (!(val[1] %in% detAlt2)) {
-          detAlt2 <- c(detAlt2, val[1])
-        }
-        if (length(val) > 1 && !(val[2] %in% detAlt2)) {
-          detAlt2 <- c(detAlt2, val[2])
+        val <- .self[[param]]
+
+        if (!(val %in% detAlt2)) {
+          detAlt2 <- c(detAlt2, val)
         }
         detAlt2 <- sort(detAlt2)
 
