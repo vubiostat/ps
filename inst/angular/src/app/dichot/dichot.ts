@@ -1,5 +1,6 @@
 import { Output } from '../output';
 import { Point } from '../point';
+import { DetAltMode } from '../det-alt-mode';
 
 export enum DichotMatched {
   Matched = "matched",
@@ -42,6 +43,7 @@ export interface DichotAttribs {
   psi: number;
   psiAlt?: number;
   ci?: number[];
+  detAltMode?: DetAltMode;
 }
 
 export interface DichotPlotData {
@@ -75,6 +77,7 @@ export class Dichot {
   psi: number;
   psiAlt?: number;
   ci?: number[];
+  detAltMode?: DetAltMode;
 
   // plot data
   sampleSizeVsPower?: Point[];
@@ -105,6 +108,7 @@ export class Dichot {
       this.psi = attribs.psi;
       this.psiAlt = attribs.psiAlt;
       this.ci = attribs.ci;
+      this.detAltMode = attribs.detAltMode;
       this.sampleSizeVsPower = attribs.sampleSizeVsPower;
       this.sampleSizeVsDetAlt = attribs.sampleSizeVsDetAlt;
       this.powerVsSampleSize = attribs.powerVsSampleSize;
@@ -120,7 +124,7 @@ export class Dichot {
       method: this.method, expressed: this.expressed, alpha: this.alpha,
       power: this.power, phi: this.phi, p0: this.p0, p1: this.p1,
       p1Alt: this.p1Alt, r: this.r, rAlt: this.rAlt, n: this.n, m: this.m,
-      psi: this.psi, psiAlt: this.psiAlt
+      psi: this.psi, psiAlt: this.psiAlt, detAltMode: this.detAltMode
     };
     return result;
   }
@@ -130,18 +134,22 @@ export class Dichot {
   }
 
   getDetAltParam(): string {
+    let result = '';
     if (this.matched == DichotMatched.Matched) {
-      return 'psi';
+      result = 'psi';
     } else if (this.matched == DichotMatched.Independent) {
       if (this.expressed == DichotExpressed.TwoProportions) {
-        return 'p1';
+        result = 'p1';
       } else if (this.expressed == DichotExpressed.OddsRatio) {
-        return 'psi';
+        result = 'psi';
       } else if (this.expressed == DichotExpressed.RelativeRisk) {
-        return 'r';
+        result = 'r';
       }
     }
-    return '';
+    if (result.length > 0 && this.detAltMode === DetAltMode.Upper) {
+      result = `${result}Alt`;
+    }
+    return result;
   }
 
   interpretation(): string {

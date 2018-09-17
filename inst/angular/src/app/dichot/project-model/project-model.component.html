@@ -1,7 +1,7 @@
 <div *ngIf="project.models.length > 1" class="form-inline justify-content-between mb-2">
   <div class="form-group">
-    <label for="dichot-project-{{name}}-model-{{index}}-name" class="mr-2">Name:</label>
-    <input id="dichot-project-{{name}}-model-{{index}}-name" class="form-control"
+    <label for="dichot-project-model-{{index}}-name" class="mr-2">Name:</label>
+    <input id="dichot-project-model-{{index}}-name" class="form-control"
       name="name" type="text" [(ngModel)]="model.name" />
   </div>
 
@@ -60,8 +60,9 @@
   </div>
 </div>
 
-<div *ngIf="model.matched == 'independent' && model.expressed == 'twoProportions'" class="grow-horiz">
-  <div class="grow-vert range-slider">
+<div *ngIf="model.matched == 'independent' && model.expressed == 'twoProportions'"
+  class="grow-horiz">
+  <div *ngIf="!isOutput('detAlt')" class="grow-vert range-slider">
     <app-range-slider name="p1"
       [min]="min.p1" [max]="max.p1" [hard-min]="0.01"
       [ngModel]="model.p1 | round" (ngModelChange)="changeModel('p1', $event)">
@@ -71,6 +72,33 @@
         </div>
       </ng-template>
     </app-range-slider>
+  </div>
+  <div *ngIf="isOutput('detAlt')" class="grow-vert output">
+    <div class="det-alt p-1">
+      <div class="label">
+        Probability of the outcome for an experimental patient (<i>p<sub>1</sub></i>)
+        <strong>(Computed value)</strong>
+      </div>
+      <div class="d-flex flex-row mt-2">
+        <div class="ml-2 mr-4">
+          <input id="dichot-project-model-{{index}}-det-alt-which-lower"
+            type="radio" value="lower" [(ngModel)]="model.detAltMode"
+            (ngModelChange)="changeModel('detAltMode', $event)" />
+          <label class="pl-1"
+            for="dichot-project-model-{{index}}-det-alt-which-lower">
+            {{model.p1}} (lower)
+          </label>
+        </div>
+        <div>
+          <input id="dichot-project-model-{{index}}-det-alt-which-upper"
+            type="radio" value="upper" [(ngModel)]="model.detAltMode"
+            (ngModelChange)="changeModel('detAltMode', $event)" />
+          <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
+            {{model.p1Alt}} (upper)
+          </label>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

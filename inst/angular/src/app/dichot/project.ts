@@ -6,6 +6,7 @@ import * as stableSort from 'stable';
 import { Output } from '../output';
 import { Range } from '../range';
 import { Point } from '../point';
+import { DetAltMode } from '../det-alt-mode';
 
 import { Dichot, DichotMatched, DichotCase, DichotExpressed, DichotMethod, DichotAttribs } from './dichot';
 import { DichotService, PlotDataRanges, PlotDataResponse } from './dichot.service';
@@ -309,14 +310,21 @@ export class Project {
 
         case Output.Power:
           if (i == 0) {
-            powerRange = [0.01, 1];
+            powerRange = [0.01, 1.0];
           }
           break;
 
         case Output.DetectableAlternative:
           let param = model.getDetAltParam();
+          let value = model[param];
 
-          values = stableSort([model[param] * 0.5, model[param] * 1.5], d3.ascending);
+          let diff = Math.abs(model.p0 - value);
+          if (model.detAltMode === DetAltMode.Upper) {
+            values = [model.p0 + 0.1, value + diff];
+          } else {
+            values = [value - diff, model.p0 - 0.1];
+          }
+
           if (i == 0 || values[0] < detAltRange[0]) {
             detAltRange[0] = values[0];
           }
@@ -369,20 +377,21 @@ export class Project {
 
   private makeXRange(data: Point[], yRange: Range): Range {
     let minIndex = 0, maxIndex = data.length - 1;
-    for (let i = 0; i < data.length; i++) {
-      if (typeof(data[i].x) === "number" && data[i].y >= yRange.min) {
+    let sorted = stableSort(data, (a, b) => a.x - b.x);
+    for (let i = 0; i < sorted.length; i++) {
+      if (typeof(sorted[i].x) === "number" && sorted[i].y >= yRange.min) {
         minIndex = i;
         break;
       }
     }
-    for (let i = data.length - 1; i >= 0; i--) {
-      if (typeof(data[i].x) === "number" && data[i].y <= yRange.max) {
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      if (typeof(sorted[i].x) === "number" && sorted[i].y <= yRange.max) {
         maxIndex = i;
         break;
       }
     }
 
-    let values = stableSort([data[minIndex].x, data[maxIndex].x], d3.ascending);
+    let values = stableSort([sorted[minIndex].x, sorted[maxIndex].x], d3.ascending);
     return new Range(values[0], values[1]);
   }
 

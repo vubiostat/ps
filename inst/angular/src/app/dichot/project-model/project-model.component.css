@@ -2,7 +2,8 @@
   order: 1;
 }
 
-.output .range-slider {
+.output .range-slider,
+.output .det-alt {
   background-color: #d8ecf3;
   border-radius: 0.5em;
 }
