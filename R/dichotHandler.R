@@ -2,8 +2,9 @@ dichotValidateModelParams <- function(params) {
   errors <- list()
 
   keys <- names(params)
-  expectedKeys <- c("matched", "case", "method", "expressed", "alpha", "power", "phi",
-                    "p0", "p1", "r", "n", "m", "psi", "output")
+  expectedKeys <- c("matched", "case", "method", "expressed", "alpha", "power",
+                    "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
+                    "psiAlt", "output")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {

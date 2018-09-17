@@ -34,10 +34,13 @@ export interface DichotAttribs {
   phi: number;
   p0: number;
   p1: number;
+  p1Alt?: number;
   r: number;
+  rAlt?: number;
   n: number;
   m: number;
   psi: number;
+  psiAlt?: number;
   ci?: number[];
 }
 
@@ -64,10 +67,13 @@ export class Dichot {
   phi: number;
   p0: number;
   p1: number;
+  p1Alt?: number;
   r: number;
+  rAlt?: number;
   n: number;
   m: number;
   psi: number;
+  psiAlt?: number;
   ci?: number[];
 
   // plot data
@@ -91,10 +97,13 @@ export class Dichot {
       this.phi = attribs.phi;
       this.p0 = attribs.p0;
       this.p1 = attribs.p1;
+      this.p1Alt = attribs.p1Alt;
       this.r = attribs.r;
+      this.rAlt = attribs.rAlt;
       this.n = attribs.n;
       this.m = attribs.m;
       this.psi = attribs.psi;
+      this.psiAlt = attribs.psiAlt;
       this.ci = attribs.ci;
       this.sampleSizeVsPower = attribs.sampleSizeVsPower;
       this.sampleSizeVsDetAlt = attribs.sampleSizeVsDetAlt;
@@ -109,8 +118,9 @@ export class Dichot {
     let result: DichotAttribs = {
       output: this.output, matched: this.matched, case: this.case,
       method: this.method, expressed: this.expressed, alpha: this.alpha,
-      power: this.power, phi: this.phi, p0: this.p0, p1: this.p1, r: this.r,
-      n: this.n, m: this.m, psi: this.psi
+      power: this.power, phi: this.phi, p0: this.p0, p1: this.p1,
+      p1Alt: this.p1Alt, r: this.r, rAlt: this.rAlt, n: this.n, m: this.m,
+      psi: this.psi, psiAlt: this.psiAlt
     };
     return result;
   }

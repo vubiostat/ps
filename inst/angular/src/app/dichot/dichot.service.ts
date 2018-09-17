@@ -45,34 +45,7 @@ export class DichotService {
     };
     return this.http.
       post<DichotAttribs>(url, attribs, requestOptions).
-      pipe(
-        map(attribs => {
-          if (model.output === Output.DetectableAlternative) {
-            // FIXME: properly handle upper/lower bounds for det. alt.
-            if (model.matched === DichotMatched.Matched) {
-              if (Array.isArray(attribs.psi)) {
-                attribs.psi = attribs.psi[0];
-              }
-            } else if (model.matched === DichotMatched.Independent) {
-              if (model.expressed === DichotExpressed.TwoProportions) {
-                if (Array.isArray(attribs.p1)) {
-                  attribs.p1 = attribs.p1[0];
-                }
-              } else if (model.expressed === DichotExpressed.OddsRatio) {
-                if (Array.isArray(attribs.psi)) {
-                  attribs.psi = attribs.psi[0];
-                }
-              } else if (model.expressed === DichotExpressed.RelativeRisk) {
-                if (Array.isArray(attribs.r)) {
-                  attribs.r = attribs.r[0];
-                }
-              }
-            }
-          }
-          return attribs;
-        }),
-        catchError(this.handleError)
-      );
+      pipe(catchError(this.handleError));
   }
 
   plotData(models: Dichot[], ranges: PlotDataRanges, pointsPerPlot?: number): Observable<PlotDataResponse> {

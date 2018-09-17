@@ -737,7 +737,8 @@ dichot_calc_ci <- function(p0, p1, m, n) {
 
 Dichot <- setRefClass("Dichot",
   fields = c("output", "matched", "case", "method", "expressed", "alpha",
-             "power", "phi", "p0", "p1", "r", "n", "m", "psi", "ci"),
+             "power", "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
+             "psiAlt", "ci"),
 
   methods = list(
     initialize = function(params) {
@@ -751,10 +752,13 @@ Dichot <- setRefClass("Dichot",
       phi       <<- params$phi
       p0        <<- params$p0
       p1        <<- params$p1
+      p1Alt     <<- params$p1Alt
       r         <<- params$r
+      rAlt      <<- params$rAlt
       n         <<- params$n
       m         <<- params$m
       psi       <<- params$psi
+      psiAlt    <<- params$psiAlt
     },
 
     detAltParamName = function() {
@@ -798,8 +802,12 @@ Dichot <- setRefClass("Dichot",
           power <<- ippower(alpha, p0, p1, n, m, risk, case, expressed, method)
         }
         else if (output == "detAlt") {
-          result <- iprelrisk(alpha, power, p0, n, m, case, expressed, method)
-          .self[[detAltParamName()]] <- result
+          detAlt <- iprelrisk(alpha, power, p0, n, m, case, expressed, method)
+          param <- detAltParamName()
+          .self[[param]] <- detAlt[1]
+          if (length(detAlt) > 1) {
+            .self[[paste0(param, "Alt")]] <- detAlt[2]
+          }
         }
 
         if (expressed == "twoProportions") {
@@ -825,12 +833,15 @@ Dichot <- setRefClass("Dichot",
         result$expressed <- expressed
         if (case == "caseControl" && expressed == "oddsRatio") {
           result$psi <- psi
+          result$psiAlt <- psiAlt
         }
         if (expressed == "relativeRisk") {
           result$r <- r
+          result$rAlt <- rAlt
         }
         if (expressed == "twoProportions") {
           result$p1 <- p1
+          result$p1Alt <- p1Alt
           result$ci <- ci
         }
       }
