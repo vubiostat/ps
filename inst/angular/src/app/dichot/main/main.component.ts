@@ -61,11 +61,14 @@ export class MainComponent implements OnInit {
       }
 
       if (this.projects.length == 0) {
-        /* Add example project */
-        let model = new Dichot({
-          output: Output.SampleSize, matched: DichotMatched.Matched,
-          case: DichotCase.CaseControl, alpha: 0.05, power: 0.8, phi: 0.7,
-          p0: 0.3, m: 1, psi: 2
+        /* Add example projects */
+        let model;
+
+        model = new Dichot({
+          output: Output.DetectableAlternative,
+          matched: DichotMatched.Independent, case: DichotCase.Prospective,
+          expressed: DichotExpressed.TwoProportions, method: DichotMethod.ChiSquare,
+          alpha: 0.05, n: 100, p0: 0.3, power: 0.8, m: 1
         });
         this.createProject(model, false);
 
@@ -73,7 +76,15 @@ export class MainComponent implements OnInit {
           output: Output.DetectableAlternative,
           matched: DichotMatched.Independent, case: DichotCase.Prospective,
           expressed: DichotExpressed.RelativeRisk, method: DichotMethod.ChiSquare,
-          alpha: 0.05, power: 0.8, n: 200, p0: 0.3, m: 1
+          alpha: 0.05, n: 100, p0: 0.3, power: 0.8, m: 1
+        });
+        this.createProject(model, false);
+
+        model = new Dichot({
+          output: Output.DetectableAlternative,
+          matched: DichotMatched.Independent, case: DichotCase.CaseControl,
+          expressed: DichotExpressed.OddsRatio, method: DichotMethod.ChiSquare,
+          alpha: 0.05, n: 100, p0: 0.3, m: 1, power: 0.8
         });
         this.createProject(model, false);
       }

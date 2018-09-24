@@ -318,11 +318,26 @@ export class Project {
           let param = model.getDetAltParam();
           let value = model[param];
 
-          let diff = Math.abs(model.p0 - value);
-          if (model.detAltMode === DetAltMode.Upper) {
-            values = [model.p0 + 0.1, value + diff];
+          if (model.expressed === DichotExpressed.RelativeRisk) {
+            values = [model.r, model.rAlt];
+            if (model.detAltMode === DetAltMode.Upper) {
+              values = [1.2, model.rAlt + (model.rAlt - 1.0)];
+            } else {
+              values = [model.r - (1.0 - model.r), 0.8];
+            }
+          } else if (model.expressed === DichotExpressed.OddsRatio) {
+            values = [model.psi, model.psiAlt];
+            if (model.detAltMode === DetAltMode.Upper) {
+              values = [1.2, model.psiAlt + (model.psiAlt - 1.0)];
+            } else {
+              values = [model.psi - (1.0 - model.psi), 0.8];
+            }
           } else {
-            values = [value - diff, model.p0 - 0.1];
+            if (model.detAltMode === DetAltMode.Upper) {
+              values = [model.p0 + 0.1, model.p1Alt + (model.p1Alt - model.p0)];
+            } else {
+              values = [model.p1 - (model.p0 - model.p1), model.p0 - 0.1];
+            }
           }
 
           if (i == 0 || values[0] < detAltRange[0]) {

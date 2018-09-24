@@ -117,11 +117,10 @@
 </div>
 
 <div *ngIf="model.matched == 'independent' && model.expressed == 'relativeRisk'"
-  class="grow-horiz" [class.output]="isOutput('detAlt')">
-  <div class="grow-vert range-slider">
+  class="grow-horiz">
+  <div *ngIf="!isOutput('detAlt')" class="grow-vert range-slider">
     <app-range-slider name="r"
       [min]="min.r" [max]="max.r" [hard-min]="0.01"
-      [is-output]="model.output == 'detAlt'"
       [ngModel]="model.r | round" (ngModelChange)="changeModel('r', $event)">
       <ng-template rsLabel>
         <div class="label">
@@ -129,6 +128,33 @@
         </div>
       </ng-template>
     </app-range-slider>
+  </div>
+  <div *ngIf="isOutput('detAlt')" class="grow-vert output">
+    <div class="det-alt p-1">
+      <div class="label">
+        Relative risk of failure for experimental subjects relative to controls (<i>R</i>)
+        <strong>(Computed value)</strong>
+      </div>
+      <div class="d-flex flex-row mt-2">
+        <div class="ml-2 mr-4">
+          <input id="dichot-project-model-{{index}}-det-alt-which-lower"
+            type="radio" value="lower" [(ngModel)]="model.detAltMode"
+            (ngModelChange)="changeModel('detAltMode', $event)" />
+          <label class="pl-1"
+            for="dichot-project-model-{{index}}-det-alt-which-lower">
+            {{model.r}} (lower)
+          </label>
+        </div>
+        <div>
+          <input id="dichot-project-model-{{index}}-det-alt-which-upper"
+            type="radio" value="upper" [(ngModel)]="model.detAltMode"
+            (ngModelChange)="changeModel('detAltMode', $event)" />
+          <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
+            {{model.rAlt}} (upper)
+          </label>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -147,11 +173,10 @@
 </div>
 
 <div *ngIf="model.matched == 'matched' || (model.case == 'caseControl' && model.expressed == 'oddsRatio')"
-  class="grow-horiz" [class.output]="isOutput('detAlt')">
-  <div class="grow-vert range-slider">
+  class="grow-horiz">
+  <div *ngIf="!isOutput('detAlt')" class="grow-vert range-slider">
     <app-range-slider name="psi"
       [min]="min.psi" [max]="max.psi" [hard-min]="0.01"
-      [is-output]="model.output == 'detAlt'"
       [ngModel]="model.psi | round" (ngModelChange)="changeModel('psi', $event)">
       <ng-template rsLabel>
         <div class="label">
@@ -159,5 +184,31 @@
         </div>
       </ng-template>
     </app-range-slider>
+  </div>
+  <div *ngIf="isOutput('detAlt')" class="grow-vert output">
+    <div class="det-alt p-1">
+      <div class="label">
+        Odds ratio of exposure (&psi;) <strong>(Computed value)</strong>
+      </div>
+      <div class="d-flex flex-row mt-2">
+        <div class="ml-2 mr-4">
+          <input id="dichot-project-model-{{index}}-det-alt-which-lower"
+            type="radio" value="lower" [(ngModel)]="model.detAltMode"
+            (ngModelChange)="changeModel('detAltMode', $event)" />
+          <label class="pl-1"
+            for="dichot-project-model-{{index}}-det-alt-which-lower">
+            {{model.psi}} (lower)
+          </label>
+        </div>
+        <div>
+          <input id="dichot-project-model-{{index}}-det-alt-which-upper"
+            type="radio" value="upper" [(ngModel)]="model.detAltMode"
+            (ngModelChange)="changeModel('detAltMode', $event)" />
+          <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
+            {{model.psiAlt}} (upper)
+          </label>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

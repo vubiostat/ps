@@ -791,16 +791,16 @@ Dichot <- setRefClass("Dichot",
           detAlt <- moddsratio(alpha, power, phi, p0, n, m)
         }
       } else if (matched == "independent") {
-        risk <- r
+        rArg <- r
         if (case == "caseControl" && expressed == "oddsRatio") {
-          risk <- psi
+          rArg <- psi
         }
 
         if (output == "sampleSize") {
-          n <<- ipsize(alpha, power, p0, p1, m, risk, case, expressed, method)
+          n <<- ipsize(alpha, power, p0, p1, m, rArg, case, expressed, method)
         }
         else if (output == "power") {
-          power <<- ippower(alpha, p0, p1, n, m, risk, case, expressed, method)
+          power <<- ippower(alpha, p0, p1, n, m, rArg, case, expressed, method)
         }
         else if (output == "detAlt") {
           detAlt <- iprelrisk(alpha, power, p0, n, m, case, expressed, method)
@@ -906,29 +906,63 @@ Dichot <- setRefClass("Dichot",
           df <- df[order(df$x),]
           result$powerVsDetAlt <- df
         } else if (matched == "independent") {
-          risk <- r
-          if (case == "caseControl" && expressed == "oddsRatio") {
-            risk <- psi
-          }
-
           # Calculate sample size data
-          n2 <- sapply(power2, ipsize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = risk, case = case, expressed = expressed, method = method)
+          rArg <- r
+          if (case == "caseControl" && expressed == "oddsRatio") {
+            rArg <- psi
+          }
+          n2 <- sapply(power2, ipsize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
 
-          # Calculate det. alt. range using iprelrisk, then use ippower to
-          # calculate power data for a smoother plot
           detAlt2Max <- max(iprelrisk(alpha, 0.99, p0, n, m, case, expressed, method))
-          detAlt2Diff <- abs(detAlt2Max - p0)
-          detAlt2 <- seq(
-            from = p0 - detAlt2Diff,
-            to = detAlt2Max,
-            length.out = points
-          )
-          power3 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = risk,
-                           case = case, expressed = expressed, method = method)
+          if (expressed == "twoProportions") {
+            detAlt2 <- seq(
+              from = p0 - (detAlt2Max - p0),
+              to = detAlt2Max,
+              length.out = points
+            )
+            power3 <- sapply(detAlt2, function(p1) {
+              result <- try(ippower(alpha, p0, p1, n, m, r, case, expressed, method), silent = TRUE)
+              if (inherits(result, 'try-error')) {
+                NA
+              } else {
+                result
+              }
+            })
+          } else if (expressed == "relativeRisk") {
+            detAlt2 <- seq(
+              from = 1 - (detAlt2Max - 1),
+              to = detAlt2Max,
+              length.out = points
+            )
+            power3 <- sapply(detAlt2, function(r) {
+              result <- try(ippower(alpha, p0, p1, n, m, r, case, expressed, method), silent = TRUE)
+              if (inherits(result, 'try-error')) {
+                NA
+              } else {
+                result
+              }
+            })
+          } else if (expressed == "oddsRatio") {
+            detAlt2 <- seq(
+              from = 1 - (detAlt2Max - 1),
+              to = detAlt2Max,
+              length.out = points
+            )
+            power3 <- sapply(detAlt2, function(psi) {
+              result <- try(ippower(alpha, p0, p1, n, m, psi, case, expressed, method), silent = TRUE)
+              if (inherits(result, 'try-error')) {
+                NA
+              } else {
+                result
+              }
+            })
+          }
 
           # Make sure current power is in the dataset
           df <- data.frame(y = power3, x = detAlt2)
           if (!(power %in% df$y)) {
+            # NOTE: only add one of the possible values of det. alt.; the other
+            # may need to be added later
             df <- rbind(df, list(y = power, x = detAltParamValue()))
             df <- df[order(df$x),]
           }

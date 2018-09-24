@@ -632,10 +632,13 @@ export class PlotComponent extends AbstractPlotComponent implements OnChanges, A
   private getDetAltSym(param: string): string {
     switch (param) {
       case 'psi':
+      case 'psiAlt':
         return 'ψ';
       case 'p1':
+      case 'p1Alt':
         return 'p₁';
       case 'r':
+      case 'rAlt':
         return 'R';
     }
     return '';
