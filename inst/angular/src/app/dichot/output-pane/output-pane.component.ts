@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { Project } from '../project';
 import { Dichot } from '../dichot';
 import { PlotComponent } from '../plot/plot.component';
-//import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
+import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
@@ -26,7 +26,7 @@ export class OutputPaneComponent implements OnChanges {
 
   @ViewChild('topLeft') topLeftPlot: PlotComponent;
   @ViewChild('topRight') topRightPlot: PlotComponent;
-  //@ViewChild('bottom') bottomPlot: BottomPlotComponent;
+  @ViewChild('bottom') bottomPlot: BottomPlotComponent;
   //@ViewChild('saveDialog') saveDialog: TemplateRef<any>;
   @ViewChild('footerTabset') footerTabset: NgbTabset;
 
@@ -49,7 +49,7 @@ export class OutputPaneComponent implements OnChanges {
 
   toggleFooter(value: boolean): void {
     this.showFooter = value;
-    setTimeout(this.resize.bind(this), 1);
+    this.resize();
   }
 
   openSaveDialog(): void {
@@ -85,7 +85,7 @@ export class OutputPaneComponent implements OnChanges {
     setTimeout(() => {
       this.topLeftPlot.redraw();
       this.topRightPlot.redraw();
-      //this.bottomPlot.redraw();
+      this.bottomPlot.redraw();
     }, 1);
   }
 

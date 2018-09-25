@@ -43,6 +43,7 @@ export interface DichotAttribs {
   psi: number;
   psiAlt?: number;
   ci?: number[];
+  ciAlt?: number[];
   detAltMode?: DetAltMode;
 }
 
@@ -77,6 +78,7 @@ export class Dichot {
   psi: number;
   psiAlt?: number;
   ci?: number[];
+  ciAlt?: number[];
   detAltMode?: DetAltMode;
 
   // plot data
@@ -108,6 +110,7 @@ export class Dichot {
       this.psi = attribs.psi;
       this.psiAlt = attribs.psiAlt;
       this.ci = attribs.ci;
+      this.ciAlt = attribs.ciAlt;
       this.detAltMode = attribs.detAltMode;
       this.sampleSizeVsPower = attribs.sampleSizeVsPower;
       this.sampleSizeVsDetAlt = attribs.sampleSizeVsDetAlt;
@@ -150,6 +153,40 @@ export class Dichot {
       result = `${result}Alt`;
     }
     return result;
+  }
+
+  getCITarget(): number {
+    let target = NaN;
+    if (this.matched === DichotMatched.Independent) {
+      let p1;
+      if (this.output === Output.DetectableAlternative &&
+          this.detAltMode === DetAltMode.Upper) {
+        p1 = this.p1Alt;
+      } else {
+        p1 = this.p1;
+      }
+
+      if (this.expressed === DichotExpressed.TwoProportions) {
+        target = p1 - this.p0;
+      } else if (this.expressed === DichotExpressed.OddsRatio) {
+        // p1 is calculated from psi and p0 on the backend
+        target = Math.exp(Math.log(p1) + Math.log(1 - this.p0) -
+          Math.log(this.p0) - Math.log(1 - p1));
+      } else if (this.expressed === DichotExpressed.RelativeRisk) {
+        // p1 is calculated from r and p0 on the backend
+        target = Math.exp(Math.log(p1) - Math.log(this.p0));
+      }
+    }
+    return target;
+  }
+
+  getCI(): number[] {
+    if (this.output === Output.DetectableAlternative &&
+        this.detAltMode === DetAltMode.Upper) {
+      return this.ciAlt;
+    } else {
+      return this.ci;
+    }
   }
 
   interpretation(): string {

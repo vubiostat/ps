@@ -9,16 +9,9 @@
     [hover-disabled]="hoverDisabled"
     (modelChanged)="onModelChanged()">
   </dichot-plot>
-  <!--
-  <dichot-bottom-plot #bottom name="bottom"
-    [project]="project"
-    [disable-drag-target]="model?.output == 'delta'"
-    [disable-drag-ci]="model?.output == 'n'"
-    (modelChanged)="onModelChanged()">
-  </dichot-bottom-plot>
-  -->
-  <dichot-bottom-plot #bottom *ngIf="model?.expressed == 'twoProportions'"
-    name="bottom" [project]="project" (modelChanged)="onModelChanged()">
+  <dichot-bottom-plot #bottom name="bottom" [project]="project"
+    (modelChanged)="onModelChanged()" [disable-drag-target]="true"
+    [disable-drag-ci]="true">
   </dichot-bottom-plot>
   <div class="show-footer" *ngIf="project && !showFooter">
     <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">

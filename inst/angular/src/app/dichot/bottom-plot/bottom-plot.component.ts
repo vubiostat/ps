@@ -77,13 +77,9 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    let result = this.setup();
-    if (!result && this.project) {
-      // this might happen if the browser elements aren't ready yet
-      setTimeout(() => {
-        this.setup();
-      }, 1);
-    }
+    setTimeout(() => {
+      this.setup();
+    }, 1);
   }
 
   ngAfterViewChecked(): void {
@@ -149,7 +145,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
         return false;
       }
     }
-
     // margin
     this.topMargin = this.plotOptions.getFontSize() + 20;
     this.bottomMargin = 10 + this.plotOptions.getFontSize() +
@@ -166,7 +161,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   protected setup(): boolean {
-    if (!this.project) {
+    if (!this.project || !this.project.pSpaceRange) {
       return false;
     }
 
@@ -213,14 +208,16 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
 
   private setupGroups(): void {
     this.groups = this.project.models.map((model, i) => {
+      let ci = model.getCI();
+
       // main lines
-      let leftLimit = model.ci[0];
+      let leftLimit = ci[0];
       let leftPath = this.getPath([
         { x: leftLimit, y: 0.40 },
         { x: leftLimit, y: 0.60 }
       ], 'x', 'y', false);
 
-      let rightLimit = model.ci[1];
+      let rightLimit = ci[1];
       let rightPath = this.getPath([
         { x: rightLimit, y: 0.40 },
         { x: rightLimit, y: 0.60 }
@@ -234,7 +231,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       // sample distribution
       //let distPath = this.getArea(this.plotData[i], 'x', 'y');
 
-      let target = model.p1 - model.p0;
+      let target = model.getCITarget();
       let result = {
         index: i,
         id: `${this.name}-group-${i}`,

@@ -523,7 +523,9 @@ fishsizb <- function(beta, alpha, p0, p1, n, m) {
 #        hypothesis of equal event (exposure) probabilities
 #        with type I error probability ALPHA given P0, P1, N,
 #        and M defined above.
-ippower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective"), expressed = c("twoProportions", "oddsRatio", "relativeRisk"), method = c("chiSquare", "fishers")) {
+ippower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective"),
+                    expressed = c("twoProportions", "oddsRatio", "relativeRisk"),
+                    method = c("chiSquare", "fishers")) {
   # Calculate a single value of POWER.
   if (expressed != "twoProportions") {
     if (case == "caseControl") {
@@ -726,19 +728,44 @@ iprelrisk <- function(alpha, power, p0, n, m,
   }
 }
 
-dichot_calc_ci <- function(p0, p1, m, n) {
+dichot_calc_ci <- function(p0, p1, m, n, matched = c("matched", "independent"),
+                           case = c("caseControl", "prospective"),
+                           expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
+
+  if (matched == "matched") {
+    # TODO
+    return(NULL)
+  }
+
   q0 <- 1 - p0
   q1 <- 1 - p1
+  if (expressed == "twoProportions") {
+    x <- p1 - p0
+    y <- 1.96 * sqrt((p0 * q0 / m + p1 * q1) / n)
+    c(x - y, x + y)
+  } else if (expressed == "oddsRatio") {
+    # log(psi)
+    x <- log(p1) + log(q0) - log(p0) - log(q1)
 
-  x <- p1 - p0
-  y <- 1.96 * sqrt((p0 * q0 / m + p1 * q1) / n)
-  c(x - y, x + y)
+    # 1.96 * sqrt(var(log(psi)))
+    y <- 1.96 * sqrt((1 / n * p1) + (1 / n * q1) + (1 / n * m * p0) + (1 / n * m * q0))
+
+    exp(c(x - y, x + y))
+  } else if (expressed == "relativeRisk") {
+    # log(R)
+    x <- log(p1) - log(p0)
+
+    # 1.96 * sqrt(var(log(R)))
+    y <- 1.96 * sqrt(1 / n * ((q1 / p1) + (1 / m) * (q0 / p0)))
+
+    exp(c(x - y, x + y))
+  }
 }
 
 Dichot <- setRefClass("Dichot",
   fields = c("output", "matched", "case", "method", "expressed", "alpha",
              "power", "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
-             "psiAlt", "ci", "detAltMode"),
+             "psiAlt", "ci", "ciAlt", "detAltMode"),
 
   methods = list(
     initialize = function(params) {
@@ -759,6 +786,7 @@ Dichot <- setRefClass("Dichot",
       m          <<- params$m
       psi        <<- params$psi
       psiAlt     <<- params$psiAlt
+      ci         <<- params$ci
       detAltMode <<- params$detAltMode
     },
 
@@ -823,7 +851,22 @@ Dichot <- setRefClass("Dichot",
       # calculate confidence interval
       if (matched == "independent") {
         if (expressed == "twoProportions") {
-          ci <<- dichot_calc_ci(p0, p1, m, n)
+          # p1 is p1
+        } else if (expressed == "oddsRatio") {
+          p1 <<- p0 * psi / (1 + p0 * (psi - 1))
+          if (output == "detAlt") {
+            p1Alt <<- p0 * psiAlt / (1 + p0 * (psiAlt - 1))
+          }
+        } else if (expressed == "relativeRisk") {
+          p1 <<- p0 * r
+          if (output == "detAlt") {
+            p1Alt <<- p0 * rAlt
+          }
+        }
+
+        ci <<- dichot_calc_ci(p0, p1, m, n, matched, case, expressed)
+        if (output == "detAlt") {
+          ciAlt <<- dichot_calc_ci(p0, p1Alt, m, n, matched, case, expressed)
         }
       }
 
@@ -844,6 +887,10 @@ Dichot <- setRefClass("Dichot",
       } else if (matched == "independent") {
         result$method <- method
         result$expressed <- expressed
+        result$p1 <- p1
+        result$p1Alt <- p1Alt
+        result$ci <- ci
+        result$ciAlt <- ciAlt
         if (case == "caseControl" && expressed == "oddsRatio") {
           result$psi <- psi
           result$psiAlt <- psiAlt
@@ -851,11 +898,6 @@ Dichot <- setRefClass("Dichot",
         if (expressed == "relativeRisk") {
           result$r <- r
           result$rAlt <- rAlt
-        }
-        if (expressed == "twoProportions") {
-          result$p1 <- p1
-          result$p1Alt <- p1Alt
-          result$ci <- ci
         }
       }
       if (output == "detAlt") {

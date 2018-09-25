@@ -349,13 +349,13 @@ export class Project {
           break;
       }
 
-      if (Array.isArray(model.ci)) {
-        // NOTE: this `if` statement won't be necessary when CI is always
-        // available
-        let target = model.p1 - model.p0;
-        let diff = (model.ci[1] - target) * 2;
-        values = [model.ci[0] - diff, model.ci[1] + diff];
-
+      // Calculate pSpaceRange based on confidence interval, but only for
+      // independent studies for now.
+      if (model.matched === DichotMatched.Independent) {
+        let ci = model.getCI();
+        let target = model.getCITarget();
+        let diff = Math.abs(ci[1] - target) * 2;
+        values = [ci[0] - diff, ci[1] + diff];
         if (i == 0 || values[0] < pSpaceRange[0]) {
           pSpaceRange[0] = values[0];
         }
