@@ -410,7 +410,9 @@ DichotHandler <- setRefClass("DichotHandler",
       }
 
       action <- route$action
-      result <- try(action$run(params))
+      result <- try({
+        withCallingHandlers(action$run(params), error = function(e) print(sys.calls()))
+      })
       if (inherits(result, "try-error")) {
         print(result)
         return(fail(list(errors = list(base = as.character(result)))))

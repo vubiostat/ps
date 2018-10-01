@@ -19,7 +19,7 @@ interface Group {
   leftPath: string;
   centerPath: string;
   rightPath: string;
-  //distPath: string;
+  distPath: string;
   left: number;
   originalTarget: number;
   target: number;
@@ -54,7 +54,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   bottomMargin: number = 50;
   viewBox: string;
 
-  //yScaleSD: any;
+  yScaleSD: any;
   plotData: any[];
   mainGroup: Group;
   groups: Group[];
@@ -183,7 +183,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   private setupPlotData(): void {
-    //this.plotData = this.project.models.map(m => m.sampDist);
+    this.plotData = this.project.models.map(m => m.sampDist);
   }
 
   private setupScales(): void {
@@ -196,14 +196,14 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       domain([0, 0.7]).
       range([0, this.innerHeight]);
 
-    //let sampDistExtent = this.plotData.reduce((arr, sampDist) => {
-      //let extent = d3.extent(sampDist, d => d.y);
-      //return d3.extent(arr.concat(extent));
-    //}, []);
-    //this.yScaleSD = d3.scaleLinear().
-      //domain(sampDistExtent.reverse()).
-      //range([0, this.yScale(0.5)]).
-      //clamp(true);
+    let sampDistExtent = this.plotData.reduce((arr, sampDist) => {
+      let extent = d3.extent(sampDist, d => d.y);
+      return d3.extent(arr.concat(extent));
+    }, []);
+    this.yScaleSD = d3.scaleLinear().
+      domain(sampDistExtent.reverse()).
+      range([0, this.yScale(0.5)]).
+      clamp(true);
   }
 
   private setupGroups(): void {
@@ -229,7 +229,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       ], 'x', 'y', false);
 
       // sample distribution
-      //let distPath = this.getArea(this.plotData[i], 'x', 'y');
+      let distPath = this.getArea(this.plotData[i], 'x', 'y');
 
       let target = model.getCITarget();
       let result = {
@@ -238,7 +238,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
         leftPath: leftPath,
         centerPath: centerPath,
         rightPath: rightPath,
-        //distPath: distPath,
+        distPath: distPath,
         left: leftLimit,
         originalTarget: target,
         target: target,
@@ -301,7 +301,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       svg.select(id).
         transition(t).
         attr('transform', this.translate(this.leftMargin, this.topMargin));
-      //svg.select(`${id}-dist`).transition(t).attr('d', group.distPath);
+      svg.select(`${id}-dist`).transition(t).attr('d', group.distPath);
       svg.select(`${id}-center`).transition(t).attr('d', group.centerPath);
       svg.select(`${id}-left`).transition(t).attr('d', group.leftPath);
       svg.select(`${id}-right`).transition(t).attr('d', group.rightPath);
@@ -364,14 +364,14 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     return Math.abs(this.mainGroup.right - this.mainGroup.left);
   }
 
-  //private getArea(points: any[], xName: string, yName: string): string {
-    //let area = d3.area().curve(d3.curveBasis).
-      //x((d, i) => this.xScale(d[xName])).
-      //y0(this.yScaleSD(0)).
-      //y1((d, i) => this.yScaleSD(d[yName]));
+  private getArea(points: any[], xName: string, yName: string): string {
+    let area = d3.area().curve(d3.curveBasis).
+      x((d, i) => this.xScale(d[xName])).
+      y0(this.yScaleSD(0)).
+      y1((d, i) => this.yScaleSD(d[yName]));
 
-    //return area(points);
-  //}
+    return area(points);
+  }
 
   private dragTargetStart(): void {
     if (this.disableDragTarget) return;

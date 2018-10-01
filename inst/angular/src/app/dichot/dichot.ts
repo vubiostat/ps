@@ -54,6 +54,7 @@ export interface DichotPlotData {
   powerVsDetAlt?: Point[];
   detAltVsSampleSize?: Point[];
   detAltVsPower?: Point[];
+  sampDist?: Point[];
 }
 
 export class Dichot {
@@ -88,6 +89,7 @@ export class Dichot {
   powerVsDetAlt?: Point[];
   detAltVsSampleSize?: Point[];
   detAltVsPower?: Point[];
+  sampDist?: Point[];
 
   constructor(attribs?: any) {
     if (attribs) {
@@ -118,6 +120,7 @@ export class Dichot {
       this.powerVsDetAlt = attribs.powerVsDetAlt;
       this.detAltVsSampleSize = attribs.detAltVsSampleSize;
       this.detAltVsPower = attribs.detAltVsPower;
+      this.sampDist = attribs.sampDist;
     }
   }
 

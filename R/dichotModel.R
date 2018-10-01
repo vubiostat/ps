@@ -762,6 +762,32 @@ dichot_calc_ci <- function(p0, p1, m, n, matched = c("matched", "independent"),
   }
 }
 
+dichot_calc_samp_dist <- function(pSpace, p0, p1, m, n, matched = c("matched", "independent"),
+                                  case = c("caseControl", "prospective"),
+                                  expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
+  if (matched == "matched") {
+    # TODO
+    return(NULL)
+  }
+
+  q0 <- 1 - p0
+  q1 <- 1 - p1
+  if (expressed == "twoProportions") {
+    mean <- p1 - p0
+    sd <- sqrt((p0 * q0 / m + p1 * q1) / n)
+    result <- dnorm(pSpace, mean = mean, sd = sd)
+  } else if (expressed == "oddsRatio") {
+    mean <- (log(p1) + log(q0) - log(p0) - log(q1))
+    sd <- (sqrt((1 / n * p1) + (1 / n * q1) + (1 / n * m * p0) + (1 / n * m * q0)))
+    result <- dlnorm(pSpace, mean = mean, sd = sd)
+  } else if (expressed == "relativeRisk") {
+    mean <- (log(p1) - log(p0))
+    sd <- (sqrt(1 / n * ((q1 / p1) + (1 / m) * (q0 / p0))))
+    result <- dlnorm(pSpace, mean = mean, sd = sd)
+  }
+  ifelse(result < 0.01, NA, result)
+}
+
 Dichot <- setRefClass("Dichot",
   fields = c("output", "matched", "case", "method", "expressed", "alpha",
              "power", "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
@@ -787,6 +813,7 @@ Dichot <- setRefClass("Dichot",
       psi        <<- params$psi
       psiAlt     <<- params$psiAlt
       ci         <<- params$ci
+      ciAlt      <<- params$ciAlt
       detAltMode <<- params$detAltMode
     },
 
@@ -919,7 +946,12 @@ Dichot <- setRefClass("Dichot",
           power2 <- sapply(n2, powfcn, alpha = alpha, r = phi, p0 = p0, m = m, psi = psi)
           detAlt2 <- sapply(n2, moddsratio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
-          power2 <- sapply(n2, ippower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = r, case = case, expressed = expressed, method = method)
+          if (case == "caseControl" && expressed == "oddsRatio") {
+            rArg <- psi
+          } else {
+            rArg <- r
+          }
+          power2 <- sapply(n2, ippower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
           detAlt2 <- sapply(n2, iprelrisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
         }
 
@@ -1056,10 +1088,15 @@ Dichot <- setRefClass("Dichot",
       }
 
       # Calculate data for bottom/tertiary graph
-      #moe <- ci / 2
-      #pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
-      #sampDist <- ttestCalculateSampDist(kind, pSpace, delta, sigma, n, m)
-      #result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
+      if ("pSpaceRange" %in% names(ranges)) {
+        pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
+        if (output == "detAlt" && detAltMode == "upper") {
+          sampDist <- dichot_calc_samp_dist(pSpace, p0, p1Alt, m, n, matched, case, expressed)
+        } else {
+          sampDist <- dichot_calc_samp_dist(pSpace, p0, p1, m, n, matched, case, expressed)
+        }
+        result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
+      }
 
       result
     }
