@@ -838,17 +838,19 @@ Dichot <- setRefClass("Dichot",
     calculate = function() {
       if (matched == "matched") {
         # case-control and prospective behave the same way
+        rArg <- phi
         if (output == "sampleSize") {
-          n <<- ssize(alpha, power, phi, p0, m, psi)
+          n <<- ssize(alpha, power, rArg, p0, m, psi)
         } else if (output == "power") {
-          power <<- powfcn(alpha, n, phi, p0, m, psi)
+          power <<- powfcn(alpha, n, rArg, p0, m, psi)
         } else if (output == "detAlt") {
           detAlt <- moddsratio(alpha, power, phi, p0, n, m)
         }
       } else if (matched == "independent") {
-        rArg <- r
         if (case == "caseControl" && expressed == "oddsRatio") {
           rArg <- psi
+        } else {
+          rArg <- r
         }
 
         if (output == "sampleSize") {
@@ -935,6 +937,17 @@ Dichot <- setRefClass("Dichot",
 
     plotData = function(ranges, points = 50) {
       result <- list()
+
+      # Set rArg
+      if (matched == "matched") {
+        rArg <- phi
+      } else if (case == "caseControl" && expressed == "oddsRatio") {
+        rArg <- psi
+      } else {
+        rArg <- r
+      }
+
+      # Calculate plot data
       if (output == "sampleSize") {
         range <- ranges$sampleSizeRange
         n2 <- seq(range$min, range$max, length.out = points)
@@ -943,14 +956,9 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (matched == "matched") {
-          power2 <- sapply(n2, powfcn, alpha = alpha, r = phi, p0 = p0, m = m, psi = psi)
+          power2 <- sapply(n2, powfcn, alpha = alpha, r = rArg, p0 = p0, m = m, psi = psi)
           detAlt2 <- sapply(n2, moddsratio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
-          if (case == "caseControl" && expressed == "oddsRatio") {
-            rArg <- psi
-          } else {
-            rArg <- r
-          }
           power2 <- sapply(n2, ippower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
           detAlt2 <- sapply(n2, iprelrisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
         }
@@ -971,8 +979,15 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (matched == "matched") {
-          n2 <- sapply(power2, ssize, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
-          detAlt2 <- sapply(power2, moddsratio, alpha = alpha, phi = phi, p0 = p0, n = n, m = m)
+          n2 <- sapply(power2, ssize, alpha = alpha, r = rArg, p0 = p0, m = m, psi = psi)
+          detAlt2 <- sapply(power2, function(power) {
+            result <- try(moddsratio(alpha, power, phi, p0, n, m), silent = TRUE)
+            if (inherits(result, "try-error")) {
+              c(NA, NA)
+            } else {
+              result
+            }
+          })
 
           # det. alt. functions can return up to 2 values
           df <- data.frame(y = c(power2, power2), x = c(detAlt2[1,], detAlt2[2,]))
@@ -981,10 +996,6 @@ Dichot <- setRefClass("Dichot",
           result$powerVsDetAlt <- df
         } else if (matched == "independent") {
           # Calculate sample size data
-          rArg <- r
-          if (case == "caseControl" && expressed == "oddsRatio") {
-            rArg <- psi
-          }
           n2 <- sapply(power2, ipsize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
 
           detAlt2Max <- max(iprelrisk(alpha, 0.99, p0, n, m, case, expressed, method))
@@ -995,7 +1006,7 @@ Dichot <- setRefClass("Dichot",
               length.out = points
             )
             power3 <- sapply(detAlt2, function(p1) {
-              result <- try(ippower(alpha, p0, p1, n, m, r, case, expressed, method), silent = TRUE)
+              result <- try(ippower(alpha, p0, p1, n, m, rArg, case, expressed, method), silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
               } else {
@@ -1065,13 +1076,13 @@ Dichot <- setRefClass("Dichot",
 
         if (matched == "matched") {
           # det. alt. is psi
-          n2 <- sapply(detAlt2, ssize, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
-          power2 <- sapply(detAlt2, powfcn, alpha = alpha, n = n, phi = phi, p0 = p0, m = m)
+          n2 <- sapply(detAlt2, ssize, alpha = alpha, power = power, r = rArg, p0 = p0, m = m)
+          power2 <- sapply(detAlt2, powfcn, alpha = alpha, n = n, r = rArg, p0 = p0, m = m)
         } else if (matched == "independent") {
           if (expressed == "twoProportions") {
             # det. alt. is p1
-            n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, m = m, r = r, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = r, case = case, expressed = expressed, method = method)
+            n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, m = m, r = rArg, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = rArg, case = case, expressed = expressed, method = method)
           } else if (expressed == "oddsRatio") {
             # det. alt. is psi (r parameter)
             n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
