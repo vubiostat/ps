@@ -59,35 +59,6 @@ export class MainComponent implements OnInit {
       if (this.selectedIndex !== undefined) {
         this.selectedProject = this.projects[this.selectedIndex];
       }
-
-      if (this.projects.length == 0) {
-        /* Add example projects */
-        let model;
-
-        model = new Dichot({
-          output: Output.DetectableAlternative,
-          matched: DichotMatched.Independent, case: DichotCase.Prospective,
-          expressed: DichotExpressed.TwoProportions, method: DichotMethod.ChiSquare,
-          alpha: 0.05, n: 100, p0: 0.3, power: 0.8, m: 1
-        });
-        this.createProject(model, false);
-
-        model = new Dichot({
-          output: Output.DetectableAlternative,
-          matched: DichotMatched.Independent, case: DichotCase.Prospective,
-          expressed: DichotExpressed.RelativeRisk, method: DichotMethod.ChiSquare,
-          alpha: 0.05, n: 100, p0: 0.3, power: 0.8, m: 1
-        });
-        this.createProject(model, false);
-
-        model = new Dichot({
-          output: Output.DetectableAlternative,
-          matched: DichotMatched.Independent, case: DichotCase.CaseControl,
-          expressed: DichotExpressed.OddsRatio, method: DichotMethod.ChiSquare,
-          alpha: 0.05, n: 100, p0: 0.3, m: 1, power: 0.8
-        });
-        this.createProject(model, false);
-      }
     });
   }
 
@@ -122,7 +93,7 @@ export class MainComponent implements OnInit {
 
   selectProject(index: number): void {
     setTimeout(() => {
-      this.tabset.select(`t-test-${index + 1}`);
+      this.tabset.select(`dichot-${index + 1}`);
     }, 1);
   }
 

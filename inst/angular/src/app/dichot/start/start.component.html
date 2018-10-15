@@ -1,10 +1,24 @@
 <form (ngSubmit)="onSubmit()" #startForm="ngForm">
-  <div class="form-group">
-    <label for="dichot-start-output">
-      What do you want to know?
-      <button type="button" class="btn btn-secondary fa fa-question-circle"
-        (click)="toggleHelp()"></button>
-    </label>
+  <div class="form-group mt-2">
+    <div class="d-flex flex-row justify-content-between align-items-end w-100 mb-2">
+      <div class="d-flex flex-grow-1">
+        <label class="mb-0" for="dichot-start-output">
+          What do you want to know?
+          <button type="button" class="btn btn-secondary fa fa-question-circle p-1"
+            (click)="toggleHelp()"></button>
+        </label>
+      </div>
+      <div class="d-flex flex-shrink-1">
+        <select #example class="form-control" id="dichot-start-example"
+          (change)="useExample(example.value)">
+          <option value="">Use an example:</option>
+          <option value="matched">Matched / Case Control</option>
+          <option value="ind-1">Indep. / Prospective / Two Prop.</option>
+          <option value="ind-2">Indep. / Prospective / Rel. Risk</option>
+          <option value="ind-3">Indep. / Case Control / Odds Ratio</option>
+        </select>
+      </div>
+    </div>
     <select class="form-control" id="dichot-start-output"
             required
             [(ngModel)]="model.output" name="output">
