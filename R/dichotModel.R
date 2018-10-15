@@ -985,7 +985,7 @@ Dichot <- setRefClass("Dichot",
             if (inherits(result, "try-error")) {
               c(NA, NA)
             } else {
-              result
+              ifelse(result > 1000, NA, result)
             }
           })
 
