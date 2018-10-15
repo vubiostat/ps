@@ -444,4 +444,10 @@ export class Project {
     }
     return result;
   }
+
+  resetRanges(): void {
+    if (this.previousRanges) {
+      Object.assign(this, this.previousRanges);
+    }
+  }
 }
