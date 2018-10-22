@@ -1,3 +1,211 @@
-<p>
-  export-plots works!
-</p>
+<div class="modal-header">
+  <h4 class="modal-title">Export graphs</h4>
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div id="dichot-export-plots-modal-body" class="modal-body grow-vert h-100">
+  <div class="d-flex flex-column h-100">
+    <ngb-tabset [destroyOnHide]="false">
+      <ngb-tab [title]="topLeftTitle">
+        <ng-template ngbTabContent>
+          <div class="left">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox"
+                  [(ngModel)]="includeTopLeft">
+                  Export this graph
+              </label>
+            </div>
+            <ng-template [ngIf]="includeTopLeft">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"
+                    [(ngModel)]="topLeftDropLines">
+                    Show drop lines
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"
+                    [(ngModel)]="topLeftTarget">
+                    Show target
+                </label>
+              </div>
+              <label>
+                Dimensions
+                <select class="form-control" name="topLeftDim"
+                  [(ngModel)]="topLeftDim" (ngModelChange)="setDim('topLeft', $event)">
+                  <option value="640x480">640 by 480</option>
+                  <option value="800x600">800 by 600</option>
+                  <option value="1024x768">1024 by 768</option>
+                  <option value="other">Custom</option>
+                </select>
+              </label>
+              <div *ngIf="topLeftDim == 'other'" class="form-group">
+                <label>
+                  Width
+                  <input class="form-control" type="number"
+                    [(ngModel)]="topLeftWidth">
+                </label>
+              </div>
+              <div *ngIf="topLeftDim == 'other'" class="form-group">
+                <label>
+                  Height
+                  <input class="form-control" type="number"
+                    [(ngModel)]="topLeftHeight">
+                </label>
+              </div>
+            </ng-template>
+          </div>
+          <div class="right">
+            <dichot-plot #topLeftPlot name="top-left-export"
+              [project]="project" [hover-disabled]="true"
+              [disable-drag]="true"
+              [hide-drop-lines]="!topLeftDropLines"
+              [hide-target]="!topLeftTarget"
+              [fixed-width]="topLeftWidth" [fixed-height]="topLeftHeight"
+              [legend-x-offset]="topLeftLegendXOffset"
+              [legend-y-offset]="topLeftLegendYOffset">
+            </dichot-plot>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab [title]="topRightTitle">
+        <ng-template ngbTabContent>
+          <div class="left">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox"
+                  [(ngModel)]="includeTopRight">
+                  Export this graph
+              </label>
+            </div>
+            <ng-template [ngIf]="includeTopRight">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"
+                    [(ngModel)]="topRightDropLines">
+                    Show drop lines
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox"
+                    [(ngModel)]="topRightTarget">
+                    Show target
+                </label>
+              </div>
+              <label>
+                Dimensions
+                <select class="form-control" name="topRightDim"
+                  [(ngModel)]="topRightDim" (ngModelChange)="setDim('topRight', $event)">
+                  <option value="640x480">640 by 480</option>
+                  <option value="800x600">800 by 600</option>
+                  <option value="1024x768">1024 by 768</option>
+                  <option value="other">Custom</option>
+                </select>
+              </label>
+              <div *ngIf="topRightDim == 'other'" class="form-group">
+                <label>
+                  Width
+                  <input class="form-control" type="number"
+                    [(ngModel)]="topRightWidth">
+                </label>
+              </div>
+              <div *ngIf="topRightDim == 'other'" class="form-group">
+                <label>
+                  Height
+                  <input class="form-control" type="number"
+                    [(ngModel)]="topRightHeight">
+                </label>
+              </div>
+            </ng-template>
+          </div>
+          <div class="right">
+            <dichot-plot #topRightPlot name="top-right-export"
+              [project]="project" [hover-disabled]="true"
+              [disable-drag]="true"
+              [hide-drop-lines]="!topRightDropLines"
+              [hide-target]="!topRightTarget"
+              [fixed-width]="topRightWidth" [fixed-height]="topRightHeight"
+              [legend-x-offset]="topRightLegendXOffset"
+              [legend-y-offset]="topRightLegendYOffset">
+            </dichot-plot>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab [title]="bottomTitle">
+        <ng-template ngbTabContent>
+          <div class="left">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox"
+                  [(ngModel)]="includeBottom">
+                  Export this graph
+              </label>
+            </div>
+            <ng-template [ngIf]="includeBottom">
+              <label>
+                Dimensions
+                <select class="form-control" name="bottomDim"
+                  [(ngModel)]="bottomDim" (ngModelChange)="setDim('bottom', $event)">
+                  <option value="640x160">640 by 160</option>
+                  <option value="800x200">800 by 200</option>
+                  <option value="1024x256">1024 by 256</option>
+                  <option value="other">Custom</option>
+                </select>
+              </label>
+              <div *ngIf="bottomDim == 'other'" class="form-group">
+                <label>
+                  Width
+                  <input class="form-control" type="number"
+                    [(ngModel)]="bottomWidth">
+                </label>
+              </div>
+              <div *ngIf="bottomDim == 'other'" class="form-group">
+                <label>
+                  Height
+                  <input class="form-control" type="number"
+                    [(ngModel)]="bottomHeight">
+                </label>
+              </div>
+            </ng-template>
+          </div>
+          <div class="right">
+            <dichot-bottom-plot #bottomPlot name="bottom-export"
+              [project]="project"
+              [disable-drag-target]="true" [disable-drag-ci]="true"
+              [fixed-width]="bottomWidth" [fixed-height]="bottomHeight">
+            </dichot-bottom-plot>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="d-flex-inline flex-row">
+    <div class="form-inline">
+      <label for="export-image-format" class="mr-sm-2">Image format:</label>
+      <select id="export-image-format" class="form-control" name="imageFormat"
+        [ngModel]="imageFormat" (ngModelChange)="imageFormat = $event">
+        <option *ngFor="let format of imageFormats"
+          [selected]="imageFormat == format">{{format}}</option>
+      </select>
+    </div>
+  </div>
+  <p>
+    The graphs you have chosen will be packaged in a ZIP file.
+    <a #downloadLink style="display: none"></a>
+  </p>
+  <div class="d-flex flex-row align-items-center">
+    <button type="button" class="btn btn-secondary m-1" (click)="save()"
+      [disabled]="!includeTopLeft && !includeTopRight && !includeBottom">
+      <i class="fa fa-floppy-o"></i> Save
+    </button>
+    <button type="button" class="btn btn-secondary m-1" (click)="cancel()">
+      <i class="fa fa-circle-x"></i> Close
+    </button>
+  </div>
+</div>
