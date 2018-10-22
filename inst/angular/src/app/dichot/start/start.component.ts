@@ -32,6 +32,8 @@ export class StartComponent implements OnInit {
         this.model.output = DichotOutput.Power;
         this.model.matched = DichotMatched.Matched;
         this.model.case = DichotCase.CaseControl;
+        this.model.expressed = undefined;
+        this.model.method = undefined;
         this.model.alpha = 0.05;
         this.model.n = 400;
         this.model.p0 = 0.3;
