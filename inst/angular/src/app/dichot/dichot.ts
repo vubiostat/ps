@@ -157,7 +157,10 @@ export class Dichot {
       }
     }
     if (result.length > 0 && this.detAltMode === DetAltMode.Upper) {
-      result = `${result}Alt`;
+      let name = `${result}Alt`;
+      if (typeof(this[name]) === 'number') {
+        result = name;
+      }
     }
     return result;
   }
