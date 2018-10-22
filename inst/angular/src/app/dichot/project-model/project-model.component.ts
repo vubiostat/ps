@@ -3,7 +3,7 @@ import * as stableSort from 'stable';
 import * as d3 from 'd3';
 
 import { Project } from '../project';
-import { Dichot } from '../dichot';
+import { Dichot, DichotMatched, DichotExpressed } from '../dichot';
 import { PaletteService } from '../../palette.service';
 
 @Component({
@@ -28,30 +28,13 @@ export class ProjectModelComponent implements OnInit {
 
   ngOnInit(): void {
     this.model = this.project.getModel(this.index);
-    this.min = new Dichot(this.model);
-    this.max = new Dichot(this.model);
-
-    this.min.alpha = 0.01;
-    this.max.alpha = 0.99;
-
-    this.min.power = 0.01;
-    this.max.power = 0.99;
-
-    this.calculateSliderRange('n');
-    this.calculateSliderRange('p0');
-    this.calculateSliderRange('m');
-    if (typeof(this.model.r) === 'number') {
-      this.calculateSliderRange('r');
-    }
-    //this.calculateSliderRange('delta');
-    //this.calculateSliderRange('sigma');
-
     this.color = this.palette.getColor(this.index);
+    this.initializeSliderRanges();
   }
 
   changeModel(key: string, value: any): void {
     this.project.updateModel(this.index, key, value).subscribe(() => {
-      this.adjustMinMax();
+      this.updateSliderRanges();
       this.modelChanged.emit();
     });
   }
@@ -64,18 +47,66 @@ export class ProjectModelComponent implements OnInit {
     this.remove.emit();
   }
 
-  private adjustMinMax(): void {
-    if (this.model.n < this.min.n) {
-      this.min.n = Math.floor(this.model.n);
-    } else if (this.model.n > this.max.n) {
-      this.max.n = Math.ceil(this.model.n);
+  private initializeSliderRanges(): void {
+    this.min = new Dichot(this.model);
+    this.max = new Dichot(this.model);
+
+    this.min.alpha = 0.01;
+    this.max.alpha = 0.99;
+
+    this.min.power = 0.01;
+    this.max.power = 0.99;
+
+    this.initializeSliderRange('n');
+    this.initializeSliderRange('p0');
+    this.initializeSliderRange('m');
+
+    if (this.model.matched === DichotMatched.Matched) {
+      this.initializeSliderRange('phi');
+      this.initializeSliderRange('psi');
+    } else if (this.model.matched === DichotMatched.Independent) {
+      if (this.model.expressed === DichotExpressed.TwoProportions) {
+        this.initializeSliderRange('p1');
+      } else if (this.model.expressed === DichotExpressed.RelativeRisk) {
+        this.initializeSliderRange('r');
+      } else if (this.model.expressed === DichotExpressed.OddsRatio) {
+        this.initializeSliderRange('psi');
+      }
     }
   }
 
-  private calculateSliderRange(name: string): void {
+  private initializeSliderRange(name: string): void {
     let value = this.model[name];
     let range = stableSort([value * 0.5, value * 1.5], d3.ascending);
     this.min[name] = range[0];
     this.max[name] = range[1];
+  }
+
+  private updateSliderRanges(): void {
+    this.updateSliderRange('n');
+    this.updateSliderRange('p0');
+    this.updateSliderRange('m');
+
+    if (this.model.matched === DichotMatched.Matched) {
+      this.updateSliderRange('phi');
+      this.updateSliderRange('psi');
+    } else if (this.model.matched === DichotMatched.Independent) {
+      if (this.model.expressed === DichotExpressed.TwoProportions) {
+        this.updateSliderRange('p1');
+      } else if (this.model.expressed === DichotExpressed.RelativeRisk) {
+        this.updateSliderRange('r');
+      } else if (this.model.expressed === DichotExpressed.OddsRatio) {
+        this.updateSliderRange('psi');
+      }
+    }
+  }
+
+  private updateSliderRange(name: string): void {
+    let value = this.model[name];
+    if (value < this.min[name]) {
+      this.min[name] = Math.floor(value);
+    } else if (value > this.max[name]) {
+      this.max[name] = Math.ceil(value);
+    }
   }
 }
