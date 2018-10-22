@@ -122,6 +122,10 @@ export class Dichot {
       this.detAltVsPower = attribs.detAltVsPower;
       this.sampDist = attribs.sampDist;
     }
+
+    if (this.detAltMode === undefined || this.detAltMode === null) {
+      this.detAltMode = DetAltMode.Upper;
+    }
   }
 
   attribs(): DichotAttribs {
