@@ -177,7 +177,7 @@ export class Dichot {
       }
 
       if (this.expressed === DichotExpressed.TwoProportions) {
-        target = p1 - this.p0;
+        target = p1;
       } else if (this.expressed === DichotExpressed.OddsRatio) {
         // p1 is calculated from psi and p0 on the backend
         target = Math.exp(Math.log(p1) + Math.log(1 - this.p0) -

@@ -740,7 +740,7 @@ dichot_calc_ci <- function(p0, p1, m, n, matched = c("matched", "independent"),
   q0 <- 1 - p0
   q1 <- 1 - p1
   if (expressed == "twoProportions") {
-    x <- p1 - p0
+    x <- p1
     y <- 1.96 * sqrt((p0 * q0 / m + p1 * q1) / n)
     c(x - y, x + y)
   } else if (expressed == "oddsRatio") {
@@ -773,7 +773,7 @@ dichot_calc_samp_dist <- function(pSpace, p0, p1, m, n, matched = c("matched", "
   q0 <- 1 - p0
   q1 <- 1 - p1
   if (expressed == "twoProportions") {
-    mean <- p1 - p0
+    mean <- p1
     sd <- sqrt((p0 * q0 / m + p1 * q1) / n)
     result <- dnorm(pSpace, mean = mean, sd = sd)
   } else if (expressed == "oddsRatio") {
