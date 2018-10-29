@@ -47,6 +47,13 @@ export class Project {
     return '';
   }
 
+  getDetAltParam(): string {
+    if (this.models.length > 0) {
+      return this.models[0].getDetAltParam();
+    }
+    return '';
+  }
+
   getMatched(): string {
     if (this.models.length > 0) {
       return this.models[0].matched.toString();

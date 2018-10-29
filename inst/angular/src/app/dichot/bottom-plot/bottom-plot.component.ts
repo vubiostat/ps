@@ -9,6 +9,7 @@ import * as stableSort from 'stable';
 
 import { AbstractPlotComponent, Draw } from '../../abstract-plot.component';
 import { Project } from '../project';
+import { DichotExpressed } from '../dichot';
 import { Range } from '../../range';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
@@ -47,6 +48,9 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   @Input('disable-drag-target') disableDragTarget = false;
   @Input('disable-drag-ci') disableDragCI = false;
   @Output() modelChanged = new EventEmitter();
+
+  xAxisTitle = "Parameter Space";
+  nullValue: number;
 
   leftMargin: number = 10;
   rightMargin: number = 10;
@@ -172,6 +176,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     this.setupPlotData();
     this.setupScales();
     this.setupGroups();
+    this.setupNullValue();
     this.resetDragging();
 
     this.needDraw = Draw.Yes;
@@ -179,7 +184,25 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   }
 
   private setupTitle(): void {
-    this.title = `Precision (95% Confidence Interval) vs. Effect Size`;
+    this.title = `Precision (95% Confidence Interval) and Effect Size`;
+
+    let param = this.project.getDetAltParam();
+    switch (param) {
+      case 'psi':
+      case 'psiAlt':
+        this.xAxisTitle = "Odds ratio of exposure (ψ)";
+        break;
+
+      case 'p1':
+      case 'p1Alt':
+        this.xAxisTitle = "Probability of the outcome for an experimental patient (p₁)";
+        break;
+
+      case 'r':
+      case 'rAlt':
+        this.xAxisTitle = "Relative risk of failure for experimental subjects relative to controls (R)";
+        break;
+    }
   }
 
   private setupPlotData(): void {
@@ -263,6 +286,23 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       }
     );
     this.mainGroup = this.groups[this.groups.length - 1];
+  }
+
+  private setupNullValue(): void {
+    let model = this.project.getModel(0);
+    switch (model.expressed) {
+      case DichotExpressed.TwoProportions:
+        this.nullValue = model.p0
+        break;
+
+      case DichotExpressed.OddsRatio:
+      case DichotExpressed.RelativeRisk:
+        this.nullValue = 1;
+        break;
+
+      default:
+        this.nullValue = undefined;
+    }
   }
 
   private resetDragging(): void {

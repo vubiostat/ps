@@ -9,7 +9,7 @@
     <text text-anchor="middle"
       [attr.x]="innerWidth / 2 + leftMargin"
       [attr.y]="height - 5">
-      Parameter Space
+      {{xAxisTitle}}
     </text>
     <text text-anchor="middle" font-weight="bold"
       [attr.x]="innerWidth / 2 + leftMargin"
@@ -17,11 +17,9 @@
       {{title}}
     </text>
 
-    <!--
-    <circle r="5" [attr.cx]="xScale(0)" [attr.cy]="yScale(0.5)"
+    <circle *ngIf="nullValue" r="5" [attr.cx]="xScale(nullValue)" [attr.cy]="yScale(0.5)"
       [attr.transform]="translate(leftMargin, topMargin)"
       fill="darkseagreen" />
-    -->
 
     <g *ngFor="let group of groups; let i = index; trackBy: trackByGroupId"
       [id]="group.id">
