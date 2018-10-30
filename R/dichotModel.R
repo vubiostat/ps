@@ -867,13 +867,18 @@ Dichot <- setRefClass("Dichot",
       # split det. alt. result into lower and upper
       if (output == "detAlt") {
         param <- detAltParamName()
-        .self[[param]] <- detAlt[1]
+
+        # set alternate variable to lower value
+        .self[[paste0(param, "Alt")]] <- detAlt[1]
+
         if (length(detAlt) > 1) {
-          .self[[paste0(param, "Alt")]] <- detAlt[2]
+          .self[[param]] <- detAlt[2]
+        } else {
+          .self[[param]] <- detAlt[1]
         }
 
         if (is.null(detAltMode)) {
-          detAltMode <<- "lower"
+          detAltMode <<- "upper"
         }
       }
 
@@ -942,9 +947,17 @@ Dichot <- setRefClass("Dichot",
       if (matched == "matched") {
         rArg <- phi
       } else if (case == "caseControl" && expressed == "oddsRatio") {
-        rArg <- psi
+        if (output == "detAlt" && detAltMode == "lower") {
+          rArg <- psiAlt
+        } else {
+          rArg <- psi
+        }
       } else {
-        rArg <- r
+        if (output == "detAlt" && detAltMode == "lower") {
+          rArg <- rAlt
+        } else {
+          rArg <- r
+        }
       }
 
       # Calculate plot data
@@ -1005,7 +1018,29 @@ Dichot <- setRefClass("Dichot",
               to = detAlt2Max,
               length.out = points
             )
-            power3 <- sapply(detAlt2, function(p1) {
+            power3 <- sapply(detAlt2, function(p1Arg) {
+              result <- try(ippower(alpha, p0, p1Arg, n, m, rArg, case, expressed, method), silent = TRUE)
+              if (inherits(result, 'try-error')) {
+                NA
+              } else {
+                result
+              }
+            })
+
+            # Make sure current power and det. alt. is in the dataset
+            df <- data.frame(y = power3, x = detAlt2)
+            if (!(p1 %in% df$x)) {
+              df <- rbind(df, data.frame(y = power, x = p1))
+              df <- df[order(df$x),]
+            }
+          } else if (expressed == "relativeRisk") {
+            detAlt2 <- seq(
+              from = 1 - (detAlt2Max - 1),
+              to = detAlt2Max,
+              length.out = points
+            )
+
+            power3 <- sapply(detAlt2, function(rArg) {
               result <- try(ippower(alpha, p0, p1, n, m, rArg, case, expressed, method), silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
@@ -1013,43 +1048,35 @@ Dichot <- setRefClass("Dichot",
                 result
               }
             })
-          } else if (expressed == "relativeRisk") {
-            detAlt2 <- seq(
-              from = 1 - (detAlt2Max - 1),
-              to = detAlt2Max,
-              length.out = points
-            )
-            power3 <- sapply(detAlt2, function(r) {
-              result <- try(ippower(alpha, p0, p1, n, m, r, case, expressed, method), silent = TRUE)
-              if (inherits(result, 'try-error')) {
-                NA
-              } else {
-                result
-              }
-            })
+
+            # Make sure current power is in the dataset
+            df <- data.frame(y = power3, x = detAlt2)
+            if (!(power %in% df$y)) {
+              df <- rbind(df, data.frame(y = power, x = detAltParamValue()))
+              df <- df[order(df$x),]
+            }
           } else if (expressed == "oddsRatio") {
             detAlt2 <- seq(
               from = 1 - (detAlt2Max - 1),
               to = detAlt2Max,
               length.out = points
             )
-            power3 <- sapply(detAlt2, function(psi) {
-              result <- try(ippower(alpha, p0, p1, n, m, psi, case, expressed, method), silent = TRUE)
+
+            power3 <- sapply(detAlt2, function(psiArg) {
+              result <- try(ippower(alpha, p0, p1, n, m, psiArg, case, expressed, method), silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
               } else {
                 result
               }
             })
-          }
 
-          # Make sure current power is in the dataset
-          df <- data.frame(y = power3, x = detAlt2)
-          if (!(power %in% df$y)) {
-            # NOTE: only add one of the possible values of det. alt.; the other
-            # may need to be added later
-            df <- rbind(df, list(y = power, x = detAltParamValue()))
-            df <- df[order(df$x),]
+            # Make sure current power is in the dataset
+            df <- data.frame(y = power3, x = detAlt2)
+            if (!(power %in% df$y)) {
+              df <- rbind(df, data.frame(y = power, x = detAltParamValue()))
+              df <- df[order(df$x),]
+            }
           }
 
           # Only select values from the supplied range
@@ -1064,7 +1091,7 @@ Dichot <- setRefClass("Dichot",
 
         # pick lower or upper value based on detAltMode
         param <- detAltParamName()
-        if (!is.null(detAltMode) && detAltMode == "upper") {
+        if (detAltMode == "lower") {
           param <- paste0(param, "Alt")
         }
         val <- .self[[param]]
@@ -1101,11 +1128,13 @@ Dichot <- setRefClass("Dichot",
       # Calculate data for bottom/tertiary graph
       if ("pSpaceRange" %in% names(ranges)) {
         pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
-        if (output == "detAlt" && detAltMode == "upper") {
-          sampDist <- dichot_calc_samp_dist(pSpace, p0, p1Alt, m, n, matched, case, expressed)
-        } else {
-          sampDist <- dichot_calc_samp_dist(pSpace, p0, p1, m, n, matched, case, expressed)
+
+        p1Arg <- p1
+        if (output == "detAlt" && detAltMode == "lower") {
+          p1Arg <- p1Alt
         }
+        sampDist <- dichot_calc_samp_dist(pSpace, p0, p1Arg, m, n, matched, case, expressed)
+
         result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
       }
 

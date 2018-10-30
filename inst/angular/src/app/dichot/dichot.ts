@@ -156,7 +156,7 @@ export class Dichot {
         result = 'r';
       }
     }
-    if (result.length > 0 && this.detAltMode === DetAltMode.Upper) {
+    if (result.length > 0 && this.detAltMode === DetAltMode.Lower) {
       let name = `${result}Alt`;
       if (typeof(this[name]) === 'number') {
         result = name;
@@ -170,7 +170,7 @@ export class Dichot {
     if (this.matched === DichotMatched.Independent) {
       let p1;
       if (this.output === Output.DetectableAlternative &&
-          this.detAltMode === DetAltMode.Upper) {
+          this.detAltMode === DetAltMode.Lower) {
         p1 = this.p1Alt;
       } else {
         p1 = this.p1;
@@ -192,7 +192,7 @@ export class Dichot {
 
   getCI(): number[] {
     if (this.output === Output.DetectableAlternative &&
-        this.detAltMode === DetAltMode.Upper) {
+        this.detAltMode === DetAltMode.Lower) {
       return this.ciAlt;
     } else {
       return this.ci;
@@ -277,7 +277,7 @@ export class Dichot {
           probability of exposure among controls is ${p0} and the correlation
           coefficient for exposure between matched cases and controls is
           ${phi}.  We will be able to detect true odds ratios for disease of
-          ${psi} or ${psiAlt} in exposed subjects relative to unexposed
+          ${psiAlt} or ${psi} in exposed subjects relative to unexposed
           subjects with probability (power) ${power}.  The Type I error
           probability associated with this test of the null hypothesis that
           this odds ratio equals 1 is ${alpha}.
@@ -314,7 +314,7 @@ export class Dichot {
               We are planning a study with ${n} experimental subjects and ${n2}
               control subjects.  Prior data indicate that the probability of
               exposure among controls is ${p0}.  We will be able to detect true
-              probabilities of exposure among cases of ${p1} or ${p1Alt} with
+              probabilities of exposure among cases of ${p1Alt} or ${p1} with
               probability (power) ${power}.  The Type I error probability
               associated with this test of the null hypothesis that the
               exposure rates for case and controls are equal is ${alpha}.
@@ -349,7 +349,7 @@ export class Dichot {
               We are planning a study with ${n} case patients and ${n2} control
               patients.  Prior data indicate that the probability of exposure
               among controls is ${p0}.  We will be able to detect true odds
-              ratios for disease of ${psi} or ${psiAlt} in exposed subjects
+              ratios for disease of ${psiAlt} or ${psi} in exposed subjects
               relative to unexposed subjects with probability (power) ${power}.
               The Type I error probability associated with this test of the
               null hypothesis that this odds ratio equals 1 is ${alpha}.
@@ -386,7 +386,7 @@ export class Dichot {
               We are planning a study with ${n} experimental subjects and ${n2}
               control subjects.  Prior data indicate that the failure rate
               among controls is ${p0}.  We will be able to detect true failure
-              rates of ${p1} or ${p1Alt} in exposed subjects with probability (power)
+              rates of ${p1Alt} or ${p1} in exposed subjects with probability (power)
               ${power}.  The Type I error probability associated with this test of
               the null hypothesis that the failure rates for experimental and
               control subjects are equal is ${alpha}.
@@ -422,7 +422,7 @@ export class Dichot {
               We are planning a study with ${n} experimental subjects and ${n2}
               control subjects.  Prior data indicate that the failure rate
               among controls is ${p0}.  We will be able to detect true relative
-              risks of ${r} or ${rAlt} in exposed subjects relative to unexposed
+              risks of ${rAlt} or ${r} in exposed subjects relative to unexposed
               subjects with probability (power) ${power}.  The Type I error
               probability associated with this test of the null hypothesis that
               this relative risk equals 1 is ${alpha}.

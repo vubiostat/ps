@@ -326,24 +326,24 @@ export class Project {
           let value = model[param];
 
           if (model.expressed === DichotExpressed.RelativeRisk) {
-            values = [model.r, model.rAlt];
-            if (model.detAltMode === DetAltMode.Upper) {
-              values = [1.2, model.rAlt + (model.rAlt - 1.0)];
+            values = [model.rAlt, model.r];
+            if (model.detAltMode === DetAltMode.Lower) {
+              values = [model.rAlt - (1.0 - model.rAlt), 0.8];
             } else {
-              values = [model.r - (1.0 - model.r), 0.8];
+              values = [1.2, model.r + (model.r - 1.0)];
             }
           } else if (model.expressed === DichotExpressed.OddsRatio) {
-            values = [model.psi, model.psiAlt];
-            if (model.detAltMode === DetAltMode.Upper) {
-              values = [1.2, model.psiAlt + (model.psiAlt - 1.0)];
+            values = [model.psiAlt, model.psi];
+            if (model.detAltMode === DetAltMode.Lower) {
+              values = [model.psiAlt - (1.0 - model.psiAlt), 0.8];
             } else {
-              values = [model.psi - (1.0 - model.psi), 0.8];
+              values = [1.2, model.psi + (model.psi - 1.0)];
             }
           } else {
-            if (model.detAltMode === DetAltMode.Upper) {
-              values = [model.p0 + 0.1, model.p1Alt + (model.p1Alt - model.p0)];
+            if (model.detAltMode === DetAltMode.Lower) {
+              values = [model.p1Alt - (model.p0 - model.p1Alt), model.p0 - 0.1];
             } else {
-              values = [model.p1 - (model.p0 - model.p1), model.p0 - 0.1];
+              values = [model.p0 + 0.1, model.p1 + (model.p1 - model.p0)];
             }
           }
 
