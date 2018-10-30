@@ -34,8 +34,7 @@ ngb-modal-window.export-plots .modal-content {
 
 /* Add non-encapsulated styles for ngb-tabsets */
 #t-test-sidebar > ngb-tabset,
-#z-test-sidebar > ngb-tabset,
-#dichot-sidebar > ngb-tabset {
+#z-test-sidebar > ngb-tabset {
   display: flex;
   flex-direction: column;
   flex: auto;
@@ -43,39 +42,32 @@ ngb-modal-window.export-plots .modal-content {
 }
 
 #t-test-export-plots-modal-body ngb-tabset,
-#z-test-export-plots-modal-body ngb-tabset,
-#dichot-export-plots-modal-body ngb-tabset {
+#z-test-export-plots-modal-body ngb-tabset {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 #t-test-output-pane-footer ngb-tabset > ul.nav,
-#z-test-output-pane-footer ngb-tabset > ul.nav,
-#dichot-output-pane-footer ngb-tabset > ul.nav {
+#z-test-output-pane-footer ngb-tabset > ul.nav {
   padding: 5px;
 }
 
 #t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item,
-#z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item,
-#dichot-output-pane-footer ngb-tabset > ul.nav > li.nav-item {
+#z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item {
   margin-right: 5px;
 }
 
-
 #t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #z-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link,
-#dichot-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link,
-#z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link,
-#dichot-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link {
+#z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link {
   border-color: #bbb #bbb #888;
   background-color: #eee;
 }
 
 #t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link,
-#z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link,
-#dichot-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link {
+#z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link {
   border-color: #868e96;
   background-color: #868e96;
   color: white;
@@ -83,10 +75,8 @@ ngb-modal-window.export-plots .modal-content {
 
 #t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
 #z-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
-#dichot-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
-#z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
-#dichot-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover {
+#z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover {
   border-color: #888;
   background-color: #f5f5f5;
   color: #0275d8;
@@ -94,60 +84,50 @@ ngb-modal-window.export-plots .modal-content {
 
 #t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
 #z-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
-#dichot-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
-#z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
-#dichot-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
+#z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
   border-color: #888 #888 #fff;
   background-color: #fff;
 }
 
 #t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
-#z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
-#dichot-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
+#z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
   background-color: #007bff;
   border-color: #007bff;
 }
 
 #t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
 #z-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
-#dichot-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
-#z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
-#dichot-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover {
+#z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover {
   color: #464a4c;
 }
 
 #t-test-sidebar > ngb-tabset > ul.nav,
 #z-test-sidebar > ngb-tabset > ul.nav,
-#dichot-sidebar > ngb-tabset > ul.nav,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav,
-#z-test-export-plots-modal-body ngb-tabset > ul.nav,
-#dichot-export-plots-modal-body ngb-tabset > ul.nav {
+#z-test-export-plots-modal-body ngb-tabset > ul.nav {
   /*display: flex;*/
   flex: 0 0 auto;
   border-bottom: 1px solid #888;
 }
 
 #t-test-sidebar > ngb-tabset > .tab-content,
-#z-test-sidebar > ngb-tabset > .tab-content,
-#dichot-sidebar > ngb-tabset > .tab-content {
+#z-test-sidebar > ngb-tabset > .tab-content {
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
 }
 
 #t-test-export-plots-modal-body ngb-tabset > .tab-content,
-#z-test-export-plots-modal-body ngb-tabset > .tab-content,
-#dichot-export-plots-modal-body ngb-tabset > .tab-content {
+#z-test-export-plots-modal-body ngb-tabset > .tab-content {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 #t-test-sidebar > ngb-tabset > .tab-content > .tab-pane,
-#z-test-sidebar > ngb-tabset > .tab-content > .tab-pane,
-#dichot-sidebar > ngb-tabset > .tab-content > .tab-pane {
+#z-test-sidebar > ngb-tabset > .tab-content > .tab-pane {
   /*display: flex;*/
   /*flex-direction: column;*/
   flex: 1 0 auto;
@@ -159,8 +139,7 @@ ngb-modal-window.export-plots .modal-content {
 }
 
 #t-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane,
-#z-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane,
-#dichot-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane {
+#z-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane {
   border: 1px solid #888;
   border-top: 0;
   overflow: auto;
@@ -168,22 +147,19 @@ ngb-modal-window.export-plots .modal-content {
 }
 
 #t-test-output-pane-footer ngb-tabset > .tab-content > .tab-pane,
-#z-test-output-pane-footer ngb-tabset > .tab-content > .tab-pane,
-#dichot-output-pane-footer ngb-tabset > .tab-content > .tab-pane {
+#z-test-output-pane-footer ngb-tabset > .tab-content > .tab-pane {
   padding: 10px;
   overflow: auto;
   height: 10vh;
 }
 
 #t-test-sidebar > ngb-tabset > .tab-content > .tab-pane.active,
-#z-test-sidebar > ngb-tabset > .tab-content > .tab-pane.active,
-#dichot-sidebar > ngb-tabset > .tab-content > .tab-pane.active {
+#z-test-sidebar > ngb-tabset > .tab-content > .tab-pane.active {
   background: white;
 }
 
 #t-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane.active,
-#z-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane.active,
-#dichot-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane.active {
+#z-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane.active {
   display: flex;
   flex-direction: row;
   flex: 1;
@@ -191,8 +167,7 @@ ngb-modal-window.export-plots .modal-content {
 }
 
 #t-test-output-pane-footer ngb-tabset span.code,
-#z-test-output-pane-footer ngb-tabset span.code,
-#dichot-output-pane-footer ngb-tabset span.code {
+#z-test-output-pane-footer ngb-tabset span.code {
   display: inline-block;
   font-family: monospace;
   border: 1px solid #e0e0e0;

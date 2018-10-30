@@ -25,6 +25,39 @@ div.show-footer {
   margin-bottom: 5px;
 }
 
+.output-footer ngb-tabset > ul.nav {
+  padding: 5px;
+}
+
+.output-footer ngb-tabset > ul.nav > li.nav-item {
+  margin-right: 5px;
+}
+
+.output-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link {
+  border-color: #868e96;
+  background-color: #868e96;
+  color: white;
+}
+
+.output-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.output-footer ngb-tabset > .tab-content > .tab-pane {
+  padding: 10px;
+  overflow: auto;
+  height: 10vh;
+}
+
+.output-footer ngb-tabset span.code {
+  display: inline-block;
+  font-family: monospace;
+  border: 1px solid #e0e0e0;
+  padding: 2px;
+  background-color: #d5d5d5;
+}
+
 .footer-buttons {
   position: absolute;
   top: 5px;
