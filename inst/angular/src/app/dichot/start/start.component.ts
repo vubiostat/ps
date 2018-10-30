@@ -79,4 +79,14 @@ export class StartComponent implements OnInit {
         break;
     }
   }
+
+  showCalculateButton(): boolean {
+    return this.model.output !== undefined && (
+      (this.model.matched === DichotMatched.Matched && this.model.case !== undefined) ||
+      (
+        this.model.matched === DichotMatched.Independent && this.model.case !== undefined &&
+        this.model.expressed !== undefined && this.model.method !== undefined
+      )
+    );
+  }
 }

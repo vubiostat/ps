@@ -1,0 +1,15 @@
+:host {
+  height: 100%;
+}
+
+.form-controls {
+  padding: 5px;
+  overflow: auto;
+  /* size of tab pane minus room for calculate button */
+  max-height: calc(70vh - 80px);
+}
+
+.calculate-button {
+  padding-top: 10px;
+  border-top: 2px solid #888;
+}
