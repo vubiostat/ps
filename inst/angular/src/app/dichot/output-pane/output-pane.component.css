@@ -25,32 +25,32 @@ div.show-footer {
   margin-bottom: 5px;
 }
 
-.output-footer ngb-tabset > ul.nav {
+.output-footer ngb-tabset ::ng-deep > ul.nav {
   padding: 5px;
 }
 
-.output-footer ngb-tabset > ul.nav > li.nav-item {
+.output-footer ngb-tabset ::ng-deep > ul.nav > li.nav-item {
   margin-right: 5px;
 }
 
-.output-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link {
+.output-footer ngb-tabset ::ng-deep > ul.nav > li.nav-item > a.nav-link {
   border-color: #868e96;
   background-color: #868e96;
   color: white;
 }
 
-.output-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
+.output-footer ngb-tabset ::ng-deep > ul.nav > li.nav-item > a.nav-link.active {
   background-color: #007bff;
   border-color: #007bff;
 }
 
-.output-footer ngb-tabset > .tab-content > .tab-pane {
+.output-footer ngb-tabset ::ng-deep > .tab-content > .tab-pane {
   padding: 10px;
   overflow: auto;
   height: 10vh;
 }
 
-.output-footer ngb-tabset span.code {
+.output-footer ngb-tabset ::ng-deep span.code {
   display: inline-block;
   font-family: monospace;
   border: 1px solid #e0e0e0;
