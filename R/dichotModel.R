@@ -748,7 +748,7 @@ dichot_calc_ci <- function(p0, p1, m, n, matched = c("matched", "independent"),
     x <- log(p1) + log(q0) - log(p0) - log(q1)
 
     # 1.96 * sqrt(var(log(psi)))
-    y <- 1.96 * sqrt((1 / n * p1) + (1 / n * q1) + (1 / n * m * p0) + (1 / n * m * q0))
+    y <- 1.96 * sqrt((1 / (n * p1)) + (1 / (n * q1)) + (1 / (n * m * p0)) + (1 / (n * m * q0)))
 
     exp(c(x - y, x + y))
   } else if (expressed == "relativeRisk") {
@@ -784,7 +784,7 @@ dichot_calc_samp_dist <- function(pSpace, p0, p1, m, n, psi, r,
     sd <- sqrt((1 / n) * ((q1 / p1) + (1 / m) * (q0 / p0)))
     result <- dnorm(log(pSpace), mean = log(r), sd = sd) / pSpace
   }
-  ifelse(result < 0.01, NA, result)
+  ifelse(result < 0.001, NA, result)
 }
 
 Dichot <- setRefClass("Dichot",
