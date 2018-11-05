@@ -762,7 +762,8 @@ dichot_calc_ci <- function(p0, p1, m, n, matched = c("matched", "independent"),
   }
 }
 
-dichot_calc_samp_dist <- function(pSpace, p0, p1, m, n, matched = c("matched", "independent"),
+dichot_calc_samp_dist <- function(pSpace, p0, p1, m, n, psi, r,
+                                  matched = c("matched", "independent"),
                                   case = c("caseControl", "prospective"),
                                   expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
   if (matched == "matched") {
@@ -777,13 +778,11 @@ dichot_calc_samp_dist <- function(pSpace, p0, p1, m, n, matched = c("matched", "
     sd <- sqrt((p0 * q0 / m + p1 * q1) / n)
     result <- dnorm(pSpace, mean = mean, sd = sd)
   } else if (expressed == "oddsRatio") {
-    mean <- (log(p1) + log(q0) - log(p0) - log(q1))
-    sd <- (sqrt((1 / n * p1) + (1 / n * q1) + (1 / n * m * p0) + (1 / n * m * q0)))
-    result <- dlnorm(pSpace, mean = mean, sd = sd)
+    sd <- sqrt((1 / (n * p1)) + (1 / (n * q1)) + (1 / (n * m * p0)) + (1 / (n * m * q0)))
+    result <- dnorm(log(pSpace), mean = log(psi), sd = sd) / pSpace
   } else if (expressed == "relativeRisk") {
-    mean <- (log(p1) - log(p0))
-    sd <- (sqrt(1 / n * ((q1 / p1) + (1 / m) * (q0 / p0))))
-    result <- dlnorm(pSpace, mean = mean, sd = sd)
+    sd <- sqrt((1 / n) * ((q1 / p1) + (1 / m) * (q0 / p0)))
+    result <- dnorm(log(pSpace), mean = log(r), sd = sd) / pSpace
   }
   ifelse(result < 0.01, NA, result)
 }
@@ -1130,10 +1129,15 @@ Dichot <- setRefClass("Dichot",
         pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
 
         p1Arg <- p1
+        psiArg <- psi
+        rArg <- r
         if (output == "detAlt" && detAltMode == "lower") {
           p1Arg <- p1Alt
+          psiArg <- psiAlt
+          rArg <- rAlt
         }
-        sampDist <- dichot_calc_samp_dist(pSpace, p0, p1Arg, m, n, matched, case, expressed)
+
+        sampDist <- dichot_calc_samp_dist(pSpace, p0, p1Arg, m, n, psiArg, rArg, matched, case, expressed)
 
         result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
       }

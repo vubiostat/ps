@@ -361,7 +361,7 @@ export class Project {
       if (model.matched === DichotMatched.Independent) {
         let ci = model.getCI();
         let target = model.getCITarget();
-        let diff = Math.abs(ci[1] - target) * 2;
+        let diff = Math.abs(ci[1] - target) * 3;
         values = [ci[0] - diff, ci[1] + diff];
         if (i == 0 || values[0] < pSpaceRange[0]) {
           pSpaceRange[0] = values[0];
