@@ -30,6 +30,7 @@ interface Group {
   fillOpacity: number;
   strokeOpacity: number;
   primary: boolean;
+  sym: string;
 };
 
 enum CIBar {
@@ -254,6 +255,24 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       // sample distribution
       let distPath = this.getArea(this.plotData[i], 'x', 'y');
 
+      let param = this.project.getDetAltParam();
+      let sym = "";
+      switch (param) {
+        case 'psi':
+        case 'psiAlt':
+          sym = "ψ";
+          break;
+        case 'p1':
+        case 'p1Alt':
+          sym = "p₁";
+          break;
+
+        case 'r':
+        case 'rAlt':
+          sym = "R";
+          break;
+      }
+
       let target = model.getCITarget();
       let result = {
         index: i,
@@ -270,7 +289,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
         color: this.getColor(i),
         fillOpacity: 0.5,
         strokeOpacity: 0.9,
-        primary: this.project.selectedIndex == i
+        primary: this.project.selectedIndex == i,
+        sym: sym
       } as Group;
       return result;
     });
@@ -446,8 +466,9 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     if (this.disableDragTarget) return;
 
     if (this.project) {
-      let newDelta = this.mainGroup.target;
-      this.project.updateModel(this.project.selectedIndex, 'delta', newDelta).subscribe(() => {
+      let param = this.project.getDetAltParam();
+      let newDetAlt = this.mainGroup.target;
+      this.project.updateModel(this.project.selectedIndex, param, newDetAlt).subscribe(() => {
         this.modelChanged.emit();
       });
     }

@@ -10,7 +10,8 @@
     (modelChanged)="onModelChanged()">
   </dichot-plot>
   <dichot-bottom-plot #bottom name="bottom" [project]="project"
-    (modelChanged)="onModelChanged()" [disable-drag-target]="true"
+    (modelChanged)="onModelChanged()"
+    [disable-drag-target]="model?.output == 'detAlt'"
     [disable-drag-ci]="true">
   </dichot-bottom-plot>
   <div class="show-footer" *ngIf="project && !showFooter">
