@@ -328,16 +328,16 @@ export class Project {
           if (model.expressed === DichotExpressed.RelativeRisk) {
             values = [model.rAlt, model.r];
             if (model.detAltMode === DetAltMode.Lower) {
-              values = [model.rAlt - (1.0 - model.rAlt), 0.8];
+              values = [0.1, 0.9];
             } else {
-              values = [1.2, model.r + (model.r - 1.0)];
+              values = [1.1, model.r + (model.r - 1.0)];
             }
           } else if (model.expressed === DichotExpressed.OddsRatio) {
             values = [model.psiAlt, model.psi];
             if (model.detAltMode === DetAltMode.Lower) {
-              values = [model.psiAlt - (1.0 - model.psiAlt), 0.8];
+              values = [0.1, 0.9];
             } else {
-              values = [1.2, model.psi + (model.psi - 1.0)];
+              values = [1.1, model.psi + (model.psi - 1.0)];
             }
           } else {
             if (model.detAltMode === DetAltMode.Lower) {
@@ -362,7 +362,19 @@ export class Project {
         let ci = model.getCI();
         let target = model.getCITarget();
         let diff = Math.abs(ci[1] - target) * 3;
-        values = [ci[0] - diff, ci[1] + diff];
+
+        if (model.expressed === DichotExpressed.RelativeRisk ||
+            model.expressed === DichotExpressed.OddsRatio) {
+          values = [0.0, 7.0];
+
+          let upper = ci[1] + 1;
+          if (upper > values[1]) {
+            values[1] = upper;
+          }
+        } else {
+          values = [ci[0] - diff, ci[1] + diff];
+        }
+
         if (i == 0 || values[0] < pSpaceRange[0]) {
           pSpaceRange[0] = values[0];
         }
