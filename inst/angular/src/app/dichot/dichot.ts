@@ -45,6 +45,7 @@ export interface DichotAttribs {
   ci?: number[];
   ciAlt?: number[];
   detAltMode?: DetAltMode;
+  ciMode?: boolean;
 }
 
 export interface DichotPlotData {
@@ -81,6 +82,7 @@ export class Dichot {
   ci?: number[];
   ciAlt?: number[];
   detAltMode?: DetAltMode;
+  ciMode?: boolean;
 
   // plot data
   sampleSizeVsPower?: Point[];
@@ -114,6 +116,7 @@ export class Dichot {
       this.ci = attribs.ci;
       this.ciAlt = attribs.ciAlt;
       this.detAltMode = attribs.detAltMode;
+      this.ciMode = attribs.ciMode;
       this.sampleSizeVsPower = attribs.sampleSizeVsPower;
       this.sampleSizeVsDetAlt = attribs.sampleSizeVsDetAlt;
       this.powerVsSampleSize = attribs.powerVsSampleSize;
@@ -134,7 +137,8 @@ export class Dichot {
       method: this.method, expressed: this.expressed, alpha: this.alpha,
       power: this.power, phi: this.phi, p0: this.p0, p1: this.p1,
       p1Alt: this.p1Alt, r: this.r, rAlt: this.rAlt, n: this.n, m: this.m,
-      psi: this.psi, psiAlt: this.psiAlt, detAltMode: this.detAltMode
+      psi: this.psi, psiAlt: this.psiAlt, ciMode: this.ciMode, ci: this.ci,
+      detAltMode: this.detAltMode
     };
     return result;
   }

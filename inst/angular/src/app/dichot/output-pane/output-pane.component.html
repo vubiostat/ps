@@ -12,7 +12,7 @@
   <dichot-bottom-plot #bottom name="bottom" [project]="project"
     (modelChanged)="onModelChanged()"
     [disable-drag-target]="model?.output == 'detAlt'"
-    [disable-drag-ci]="true">
+    [disable-drag-ci]="model?.output != 'power'">
   </dichot-bottom-plot>
   <div class="show-footer" *ngIf="project && !showFooter">
     <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">

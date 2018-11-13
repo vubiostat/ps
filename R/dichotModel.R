@@ -762,6 +762,28 @@ dichotCalcCI <- function(p0, p1, m, n, matched = c("matched", "independent"),
   }
 }
 
+dichotCalcNFromCI <- function(p0, p1, m, psi, r, ci, matched = c("matched", "independent"),
+                              case = c("caseControl", "prospective"),
+                              expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
+
+  if (matched == "matched") {
+    # TODO
+    return(NULL)
+  }
+
+  ciWidth <- ci[2] - ci[1]
+  if (expressed == "twoProportions") {
+    n <- 4 * 3.8416 * ((p0 * (1 - p0) / m) + (p1 * (1 - p1))) / (ciWidth ^ 2)
+  } else if (expressed == "oddsRatio") {
+    p1 <- p0 * psi / (1 + p0 * (psi - 1))
+    n <- 4 * 3.8416 * ((1 / p1) + (1 / (1 - p1)) + (1 / (m * p0)) + (1 / (m * (1 - p0)))) / (log(ciWidth) ^ 2)
+  } else if (expressed == "relativeRisk") {
+    p1 <- p0 * r
+    n <- 4 * 3.8416 * (((1 - p1) / p1) + (1 / m) * ((1 - p0) / p0)) / (log(ciWidth) ^ 2)
+  }
+  n
+}
+
 dichotCalcSampDist <- function(pSpace, p0, p1, m, n, psi, r,
                                   matched = c("matched", "independent"),
                                   case = c("caseControl", "prospective"),
@@ -790,7 +812,7 @@ dichotCalcSampDist <- function(pSpace, p0, p1, m, n, psi, r,
 Dichot <- setRefClass("Dichot",
   fields = c("output", "matched", "case", "method", "expressed", "alpha",
              "power", "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
-             "psiAlt", "ci", "ciAlt", "detAltMode"),
+             "psiAlt", "ci", "ciAlt", "detAltMode", "ciMode"),
 
   methods = list(
     initialize = function(params) {
@@ -814,6 +836,14 @@ Dichot <- setRefClass("Dichot",
       ci         <<- params$ci
       ciAlt      <<- params$ciAlt
       detAltMode <<- params$detAltMode
+      ciMode     <<- params$ciMode
+
+      if (is.null(detAltMode)) {
+        detAltMode <<- "upper"
+      }
+      if (is.null(ciMode)) {
+        ciMode <<- FALSE
+      }
     },
 
     detAltParamName = function() {
@@ -856,6 +886,10 @@ Dichot <- setRefClass("Dichot",
           n <<- dichotIPSize(alpha, power, p0, p1, m, rArg, case, expressed, method)
         }
         else if (output == "power") {
+          if (ciMode) {
+            n <<- dichotCalcNFromCI(p0, p1, m, psi, r, ci, matched, case, expressed)
+            cat("ci: ", capture.output(dput(ci)), " n: ", n, "\n", sep="")
+          }
           power <<- dichotIPPower(alpha, p0, p1, n, m, rArg, case, expressed, method)
         }
         else if (output == "detAlt") {
@@ -874,10 +908,6 @@ Dichot <- setRefClass("Dichot",
           .self[[param]] <- detAlt[2]
         } else {
           .self[[param]] <- detAlt[1]
-        }
-
-        if (is.null(detAltMode)) {
-          detAltMode <<- "upper"
         }
       }
 

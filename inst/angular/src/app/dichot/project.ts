@@ -148,6 +148,8 @@ export class Project {
       // reset the flag to keep ranges.
       models = this.models;
       this.customRanges = false;
+    } else if (key === "ci") {
+      changes.ciMode = true;
     }
 
     models.forEach(m => { Object.assign(m, changes); });

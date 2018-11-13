@@ -420,6 +420,10 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     }
   }
 
+  ci(): number[] {
+    return [this.mainGroup.left, this.mainGroup.right];
+  }
+
   ciWidth(): number {
     return Math.abs(this.mainGroup.right - this.mainGroup.left);
   }
@@ -530,7 +534,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     if (this.disableDragCI) return;
 
     if (this.project) {
-      this.project.updateModel(this.project.selectedIndex, 'ci', this.ciWidth()).subscribe(() => {
+      this.project.updateModel(this.project.selectedIndex, 'ci', this.ci()).subscribe(() => {
         this.modelChanged.emit();
       });
     }

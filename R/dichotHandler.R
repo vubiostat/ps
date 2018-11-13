@@ -4,7 +4,7 @@ dichotValidateModelParams <- function(params) {
   keys <- names(params)
   expectedKeys <- c("matched", "case", "method", "expressed", "alpha", "power",
                     "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
-                    "psiAlt", "detAltMode", "output")
+                    "psiAlt", "detAltMode", "ci", "ciMode", "output")
   extraKeys <- setdiff(keys, expectedKeys)
 
   if (length(extraKeys) > 0) {
@@ -197,16 +197,47 @@ dichotValidateModelParams <- function(params) {
     }
   }
 
+  if ("ciMode" %in% keys) {
+    if (!is.logical(params$ciMode)) {
+      errors$ciMode <- "must be boolean"
+    } else if (params$ciMode) {
+      if (matched != "independent") {
+        errors$ciMode <- "cannot be true unless matched is 'independent'"
+      } else if (output != "power") {
+        errors$ciMode <- "cannot be true unless output is 'power'"
+      } else if (!("ci" %in% keys)) {
+        errors$ci <- "is required when ciMode is true"
+      } else if (!is.numeric(params$ci)) {
+        errors$ci <- paste0("must be numeric (was ", class(params$ci), ")")
+      } else if (length(params$ci) != 2) {
+        errors$ci <- "must contain 2 elements"
+      } else if (params$ci[1] > params$ci[2]) {
+        errors$ci <- "must be ordered"
+      }
+    }
+  }
+
   errors
 }
 
 DichotCalculateAction <- setRefClass("DichotCalculateAction",
   methods = list(
+    process = function(params) {
+      if ("ci" %in% names(params)) {
+        ci <- params$ci
+        if (is.list(ci) && length(ci) == 2 && is.numeric(ci[[1]]) && is.numeric(ci[[2]])) {
+          params$ci <- as.numeric(ci)
+        }
+      }
+      params
+    },
+
     validate = function(params) {
       dichotValidateModelParams(params)
     },
 
     run = function(params) {
+      params <- process(params)
       errors <- validate(params)
       if (length(errors) > 0) {
         return(list(errors = errors))
@@ -254,6 +285,27 @@ DichotPlotDataAction <- setRefClass("DichotPlotDataAction",
       }
       defaultPoints <<- points
     },
+
+    process = function(params) {
+      if ("models" %in% names(params)) {
+        if (is.list(params$models)) {
+          modelsParams <- params$models
+          for (i in 1:length(modelsParams)) {
+            modelParams <- modelsParams[[i]]
+            if ("ci" %in% names(modelParams)) {
+              ci <- modelParams$ci
+              if (is.list(ci) && length(ci) == 2 && is.numeric(ci[[1]]) && is.numeric(ci[[2]])) {
+                modelParams$ci <- as.numeric(ci)
+              }
+            }
+            modelsParams[[i]] <- modelParams
+          }
+          params$models <- modelsParams
+        }
+      }
+      params
+    },
+
     validate = function(params) {
       errors <- list()
       expectedKeys <- c("models", "ranges", "points")
@@ -329,6 +381,7 @@ DichotPlotDataAction <- setRefClass("DichotPlotDataAction",
     },
 
     run = function(params) {
+      params <- process(params)
       errors <- validate(params)
       if (length(errors) > 0) {
         return(list(errors = errors))
