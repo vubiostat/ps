@@ -1,4 +1,4 @@
-nint <- function(a) {
+dichotNInt <- function(a) {
   if (a > 0) {
     trunc(a + 0.5)
   } else if (a == 0) {
@@ -8,7 +8,7 @@ nint <- function(a) {
   }
 }
 
-zcrvalue <- function(alph) {
+dichotZcrValue <- function(alph) {
   c0 <- 2.515517
   c1 <- 0.802853
   c2 <- 0.010328
@@ -47,7 +47,7 @@ zcrvalue <- function(alph) {
 #
 # An error is thrown if a valid matched table does not exist for P0, PSI, and R
 #
-pone <- function(p0, psi, r) {
+dichotPOne <- function(p0, psi, r) {
   q0 <- 1 - p0
   temp1 <- 2 * (psi ^ 2) * (p0 ^ 2) + 2 * psi * p0 * q0 + ((psi - 1) ^ 2) * p0 * q0 * (r ^ 2)
   temp2 <- (psi - 1) * p0 * q0 * r * sqrt((r ^ 2) * ((psi - 1) ^ 2) + 4 * psi)
@@ -92,13 +92,13 @@ pone <- function(p0, psi, r) {
 #  Notes:
 #   This routine was written by Dale Plummer.
 #   Designed by Dr. William Dupont.
-ssize <- function(alpha, power, r, p0, m, psi) {
+dichotSSize <- function(alpha, power, r, p0, m, psi) {
   beta <- 1 - power
-  zalpha <- zcrvalue(alpha / 2)
-  zbeta <- zcrvalue(beta)
+  zalpha <- dichotZcrValue(alpha / 2)
+  zbeta <- dichotZcrValue(beta)
 
   psi_value <- 1
-  mv <- meanandvar(p0, r, m, m, psi_value)
+  mv <- dichotMeanVar(p0, r, m, m, psi_value)
   mean <- mv[1]
   var <- mv[2]
 
@@ -108,7 +108,7 @@ ssize <- function(alpha, power, r, p0, m, psi) {
   v1 <- var
 
   psi_value <- psi
-  mv <- meanandvar(p0, r, m, m, psi_value)
+  mv <- dichotMeanVar(p0, r, m, m, psi_value)
   mean <- mv[1]
   var <- mv[2]
 
@@ -132,11 +132,11 @@ ssize <- function(alpha, power, r, p0, m, psi) {
 #  When the null hypothesis is true (\psi=1)
 #  then it calculates e_1 and v_1
 #
-meanandvar <- function(p0, r, m, rm, psi, mean, var) {
+dichotMeanVar <- function(p0, r, m, rm, psi, mean, var) {
   t <- vector("numeric", 1000)
 
   # Calculate P1 = p_1.
-  p1 <- pone(p0, psi, r)
+  p1 <- dichotPOne(p0, psi, r)
 
   # Q1=q_1 Probability that a case patient is not exposed.
   q1 <- 1 - p1
@@ -185,12 +185,12 @@ meanandvar <- function(p0, r, m, rm, psi, mean, var) {
 }
 
 # Compute the error function (from the VGAM package)
-erf <- function(x) {
+dichotErf <- function(x) {
   2 * pnorm(x * sqrt(2)) - 1
 }
 
 # Compute the complement of the error function (from the VGAM package)
-erfc <- function(x) {
+dichotErfc <- function(x) {
   2 * pnorm(x * sqrt(2), lower.tail = FALSE)
 }
 
@@ -200,11 +200,11 @@ erfc <- function(x) {
 # Notes:
 #   This routine was written by Dale Plummer
 #   This routine was designed by William Dupont
-calc_phi <- function(z) {
+dichotCalcPhi <- function(z) {
   if (z >= 0) {
-    (1 + erf(z / sqrt(2))) / 2
+    (1 + dichotErf(z / sqrt(2))) / 2
   } else {
-    erfc(-z / sqrt(2)) / 2
+    dichotErfc(-z / sqrt(2)) / 2
   }
 }
 
@@ -234,10 +234,10 @@ calc_phi <- function(z) {
 #   Designed by Dr. William Dupont.
 #   The LaTeX notation given in the comments is from:
 #   Dupont, Biometrics 1988;44:1157-68.
-powfcn <- function(alpha, n, r, p0, m, psi) {
-  zalpha <- zcrvalue(alpha / 2)
+dichotPowFcn <- function(alpha, n, r, p0, m, psi) {
+  zalpha <- dichotZcrValue(alpha / 2)
   psi_value <- 1
-  mv <- meanandvar(p0, r, m, m, psi_value)
+  mv <- dichotMeanVar(p0, r, m, m, psi_value)
   mean <- mv[1]
   var <- mv[2]
 
@@ -249,7 +249,7 @@ powfcn <- function(alpha, n, r, p0, m, psi) {
   s1 <- sqrt(n * var)
 
   psi_value <- psi
-  mv <- meanandvar(p0, r, m, m, psi_value)
+  mv <- dichotMeanVar(p0, r, m, m, psi_value)
   mean <- mv[1]
   var <- mv[2]
 
@@ -264,7 +264,7 @@ powfcn <- function(alpha, n, r, p0, m, psi) {
   zu <- (e1y - epsiy + zalpha * s1) / spsi
 
   # The following is equation (6) in Dupont (Biometrics, 1988; 44:1157-1168)
-  calc_phi(zl) + 1 - calc_phi(zu)
+  dichotCalcPhi(zl) + 1 - dichotCalcPhi(zu)
 }
 
 # bisection
@@ -286,7 +286,7 @@ powfcn <- function(alpha, n, r, p0, m, psi) {
 # Reference:
 #   "Bisection Routine", _Collected Algorithms from ACM_, vol I,
 #   Algorithm 4, 1980.
-bisec <- function(y1, y2, e, e1, f, ...) {
+dichotBisec <- function(y1, y2, e, e1, f, ...) {
   i <- 1
   j <- 1
   k <- 1
@@ -354,8 +354,8 @@ bisec <- function(y1, y2, e, e1, f, ...) {
 
 # This is function to find the zero when determining the dichotomous,
 # independent detectable odds ratio.
-iterated_power_function <- function(psi, alpha, power, phi, p0, n, m) {
-  spower <- powfcn(alpha, n, phi, p0, m, psi)
+dichotIteratedPower <- function(psi, alpha, power, phi, p0, n, m) {
+  spower <- dichotPowFcn(alpha, n, phi, p0, m, psi)
   power - spower
 }
 
@@ -374,13 +374,13 @@ iterated_power_function <- function(psi, alpha, power, phi, p0, n, m) {
 #   Reference:
 #     Dupont, WD: "Power Calculations for Matched Case-Control
 #     Studies", Biometrics, 1988; 44:1157-1168
-moddsratio <- function(alpha, power, phi, p0, n, m) {
+dichotOddsRatio <- function(alpha, power, phi, p0, n, m) {
   # Find the lower solution
   errabs <- 1.0e-3
   errrel <- 1.0e-3
   a <- 0.01
   b <- 0.99
-  psi_l <- try(bisec(a, b, errabs, errrel, iterated_power_function, alpha,
+  psi_l <- try(dichotBisec(a, b, errabs, errrel, dichotIteratedPower, alpha,
                      power, phi, p0, n, m), silent = TRUE)
 
   # Find the upper solution.
@@ -388,7 +388,7 @@ moddsratio <- function(alpha, power, phi, p0, n, m) {
   errrel <- 1.0e-3
   a <- 1.01
   b <- 100000
-  psi_h <- try(bisec(a, b, errabs, errrel, iterated_power_function, alpha,
+  psi_h <- try(dichotBisec(a, b, errabs, errrel, dichotIteratedPower, alpha,
                      power, phi, p0, n, m), silent = TRUE)
 
   result <- c()
@@ -442,7 +442,7 @@ moddsratio <- function(alpha, power, phi, p0, n, m) {
 #         error ALPHA
 #   NCOR  Corrected case sample size obtained by using the
 #         continuity correction of Casagrande et al.
-ipsize <- function(alpha, power, p0, p1, m, r,
+dichotIPSize <- function(alpha, power, p0, p1, m, r,
                    case = c("caseControl", "prospective"),
                    expressed = c("twoProportions", "oddsRatio"),
                    method = c("chiSquare", "fishers")) {
@@ -456,22 +456,22 @@ ipsize <- function(alpha, power, p0, p1, m, r,
   }
 
   # Calculate the sample size.
-  zalpha <- zcrvalue(alpha / 2)
+  zalpha <- dichotZcrValue(alpha / 2)
   pbar <- (p1 + m * p0) / (m + 1)
   x <- ((zalpha * sqrt((1 + 1 / m) * pbar * (1 - pbar)) +
-         zcrvalue(1 - power) * sqrt(p0 * (1 - p0) / m + p1 * (1 - p1))) ^ 2) /
+         dichotZcrValue(1 - power) * sqrt(p0 * (1 - p0) / m + p1 * (1 - p1))) ^ 2) /
          ((p0 - p1) ^ 2)
   if (is.nan(x)) {
     return(NA)
   }
-  n <- nint(x)
+  n <- dichotNInt(x)
 
   if (method == "chiSquare") {
     n
   }
   else if (method == "fishers") {
     # calculate ncor
-    nint((n / 4) * ((1 + sqrt(1 + 2 * (m + 1) / (n * m * abs(p0 - p1)))) ^ 2))
+    dichotNInt((n / 4) * ((1 + sqrt(1 + 2 * (m + 1) / (n * m * abs(p0 - p1)))) ^ 2))
   }
 }
 
@@ -483,9 +483,9 @@ ipsize <- function(alpha, power, p0, p1, m, r,
 #
 # This formula should be used for studies that are analyzed with Fisher's Exact
 # test.
-fishsizb <- function(beta, alpha, p0, p1, n, m) {
-  zalpha <- zcrvalue(alpha / 2)
-  zbeta <- zcrvalue(beta)
+dichotFishSizB <- function(beta, alpha, p0, p1, n, m) {
+  zalpha <- dichotZcrValue(alpha / 2)
+  zbeta <- dichotZcrValue(beta)
   p <- (n * p1 + m * n * p0) / (m * n + n)
   q <- 1 - p
   q1 <- 1 - p1
@@ -523,7 +523,7 @@ fishsizb <- function(beta, alpha, p0, p1, n, m) {
 #        hypothesis of equal event (exposure) probabilities
 #        with type I error probability ALPHA given P0, P1, N,
 #        and M defined above.
-ippower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective"),
+dichotIPPower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective"),
                     expressed = c("twoProportions", "oddsRatio", "relativeRisk"),
                     method = c("chiSquare", "fishers")) {
   # Calculate a single value of POWER.
@@ -535,15 +535,15 @@ ippower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective
     }
   }
 
-  zalpha <- zcrvalue(alpha / 2)
+  zalpha <- dichotZcrValue(alpha / 2)
   pbar <- (p1 + m * p0) / (m + 1)
   qbar <- 1 - pbar
   q1 <- 1 - p1
   q0 <- 1 - p0
   s1 <- sqrt(pbar * qbar * (1 + 1 / m) / n)
   s2 <- sqrt((p0 * q0 / m + p1 * q1) / n)
-  beta <- calc_phi((zalpha * s1 - (p0 - p1)) / s2) -
-    calc_phi((-zalpha * s1 - (p0 - p1)) / s2)
+  beta <- dichotCalcPhi((zalpha * s1 - (p0 - p1)) / s2) -
+    dichotCalcPhi((-zalpha * s1 - (p0 - p1)) / s2)
 
   # If the test type is Fisher's exact then use the
   # uncorrected beta as a starting point and find
@@ -562,11 +562,11 @@ ippower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective
 
     # Make the approximation.  Use bisection to find the
     # zero of the function FISHSIZB.
-    beta <- try(bisec(y1, y2, eps, e1, fishsizb, alpha, p0, p1, n, m), silent = TRUE)
+    beta <- try(dichotBisec(y1, y2, eps, e1, dichotFishSizB, alpha, p0, p1, n, m), silent = TRUE)
 
     if (inherits(beta, "try-error")) {
-      f1 <- fishsizb(y1, alpha, p0, p1, n, m)
-      f2 <- fishsizb(y2, alpha, p0, p1, n, m)
+      f1 <- dichotFishSizB(y1, alpha, p0, p1, n, m)
+      f2 <- dichotFishSizB(y2, alpha, p0, p1, n, m)
       if (f1 > 0 && f1 > 0) {
         stop("continuity correction is invalid when the power is very low")
       }
@@ -580,9 +580,9 @@ ippower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective
 #    This function returns the sample size associated with P1 and the
 #    other input parameters.  This formula should be used for studies that
 #    are analyzed with an uncorrected chi-squared test.
-chisqsize <- function(p1, alpha, beta, p0, n, m) {
-  zalpha <- zcrvalue(alpha / 2)
-  zbeta <- zcrvalue(beta)
+dichotChiSqSize <- function(p1, alpha, beta, p0, n, m) {
+  zalpha <- dichotZcrValue(alpha / 2)
+  zbeta <- dichotZcrValue(beta)
   p <- (n * p1 + m * n * p0) / (m * n + n)
   q <- 1 - p
   q1 <- 1 - p1
@@ -596,9 +596,9 @@ chisqsize <- function(p1, alpha, beta, p0, n, m) {
 # This function returns the sample size associated with P1 and the
 # other input parameters.  This formula should be used for studies that
 # are analyzed with Fisher's Exact test.
-fishersiz <- function(p1, alpha, beta, p0, n, m) {
-  zalpha <- zcrvalue(alpha / 2)
-  zbeta <- zcrvalue(beta)
+dichotFisherSiz <- function(p1, alpha, beta, p0, n, m) {
+  zalpha <- dichotZcrValue(alpha / 2)
+  zbeta <- dichotZcrValue(beta)
   p <- (n * p1 + m * n * p0) / (m * n + n)
   q <- 1 - p
   q1 <- 1 - p1
@@ -640,7 +640,7 @@ fishersiz <- function(p1, alpha, beta, p0, n, m) {
 #        detected with power POWER when CASECTL=Y
 #        True probability of event in experimantal group that can
 #        be detected with power POWER when CASECTL=N
-iprelrisk <- function(alpha, power, p0, n, m,
+dichotIPRelRisk <- function(alpha, power, p0, n, m,
                       case = c("caseControl", "prospective"),
                       expressed = c("twoProportions", "relativeRisk"),
                       method = c("chiSquare", "fishers")) {
@@ -659,7 +659,7 @@ iprelrisk <- function(alpha, power, p0, n, m,
 
     # Solve the equation for the lower solution.
     p1l <- try({
-      uniroot(chisqsize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = 1)$root
+      uniroot(dichotChiSqSize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = 1)$root
     })
 
     # Set initial end points for high end point.
@@ -668,7 +668,7 @@ iprelrisk <- function(alpha, power, p0, n, m,
 
     # Solve the equation for the upper solution.
     p1h <- try({
-      uniroot(chisqsize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = 1)$root
+      uniroot(dichotChiSqSize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = 1)$root
     })
   }
   else if (method == "fishers") {
@@ -676,13 +676,13 @@ iprelrisk <- function(alpha, power, p0, n, m,
     y1 <- 0.0
     y2 <- 0.9999 * p0
     p1l <- try({
-      uniroot(fishersiz, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = m)$root
+      uniroot(dichotFisherSiz, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = m)$root
     })
 
     y1 <- 0.9999 * p0 + 0.0001
     y2 <- 1
     p1h <- try({
-      uniroot(fishersiz, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = m)$root
+      uniroot(dichotFisherSiz, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = m)$root
     })
   } else {
     stop("unknown method:", method)
@@ -728,7 +728,7 @@ iprelrisk <- function(alpha, power, p0, n, m,
   }
 }
 
-dichot_calc_ci <- function(p0, p1, m, n, matched = c("matched", "independent"),
+dichotCalcCI <- function(p0, p1, m, n, matched = c("matched", "independent"),
                            case = c("caseControl", "prospective"),
                            expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
 
@@ -762,7 +762,7 @@ dichot_calc_ci <- function(p0, p1, m, n, matched = c("matched", "independent"),
   }
 }
 
-dichot_calc_samp_dist <- function(pSpace, p0, p1, m, n, psi, r,
+dichotCalcSampDist <- function(pSpace, p0, p1, m, n, psi, r,
                                   matched = c("matched", "independent"),
                                   case = c("caseControl", "prospective"),
                                   expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
@@ -839,11 +839,11 @@ Dichot <- setRefClass("Dichot",
         # case-control and prospective behave the same way
         rArg <- phi
         if (output == "sampleSize") {
-          n <<- ssize(alpha, power, rArg, p0, m, psi)
+          n <<- dichotSSize(alpha, power, rArg, p0, m, psi)
         } else if (output == "power") {
-          power <<- powfcn(alpha, n, rArg, p0, m, psi)
+          power <<- dichotPowFcn(alpha, n, rArg, p0, m, psi)
         } else if (output == "detAlt") {
-          detAlt <- moddsratio(alpha, power, phi, p0, n, m)
+          detAlt <- dichotOddsRatio(alpha, power, phi, p0, n, m)
         }
       } else if (matched == "independent") {
         if (case == "caseControl" && expressed == "oddsRatio") {
@@ -853,13 +853,13 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (output == "sampleSize") {
-          n <<- ipsize(alpha, power, p0, p1, m, rArg, case, expressed, method)
+          n <<- dichotIPSize(alpha, power, p0, p1, m, rArg, case, expressed, method)
         }
         else if (output == "power") {
-          power <<- ippower(alpha, p0, p1, n, m, rArg, case, expressed, method)
+          power <<- dichotIPPower(alpha, p0, p1, n, m, rArg, case, expressed, method)
         }
         else if (output == "detAlt") {
-          detAlt <- iprelrisk(alpha, power, p0, n, m, case, expressed, method)
+          detAlt <- dichotIPRelRisk(alpha, power, p0, n, m, case, expressed, method)
         }
       }
 
@@ -897,9 +897,9 @@ Dichot <- setRefClass("Dichot",
           }
         }
 
-        ci <<- dichot_calc_ci(p0, p1, m, n, matched, case, expressed)
+        ci <<- dichotCalcCI(p0, p1, m, n, matched, case, expressed)
         if (output == "detAlt") {
-          ciAlt <<- dichot_calc_ci(p0, p1Alt, m, n, matched, case, expressed)
+          ciAlt <<- dichotCalcCI(p0, p1Alt, m, n, matched, case, expressed)
         }
       }
 
@@ -968,11 +968,11 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (matched == "matched") {
-          power2 <- sapply(n2, powfcn, alpha = alpha, r = rArg, p0 = p0, m = m, psi = psi)
-          detAlt2 <- sapply(n2, moddsratio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
+          power2 <- sapply(n2, dichotPowFcn, alpha = alpha, r = rArg, p0 = p0, m = m, psi = psi)
+          detAlt2 <- sapply(n2, dichotOddsRatio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
-          power2 <- sapply(n2, ippower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
-          detAlt2 <- sapply(n2, iprelrisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
+          power2 <- sapply(n2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
+          detAlt2 <- sapply(n2, dichotIPRelRisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
         }
 
         result$sampleSizeVsPower <- data.frame(y = n2, x = power2)
@@ -991,9 +991,9 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (matched == "matched") {
-          n2 <- sapply(power2, ssize, alpha = alpha, r = rArg, p0 = p0, m = m, psi = psi)
+          n2 <- sapply(power2, dichotSSize, alpha = alpha, r = rArg, p0 = p0, m = m, psi = psi)
           detAlt2 <- sapply(power2, function(power) {
-            result <- try(moddsratio(alpha, power, phi, p0, n, m), silent = TRUE)
+            result <- try(dichotOddsRatio(alpha, power, phi, p0, n, m), silent = TRUE)
             if (inherits(result, "try-error")) {
               c(NA, NA)
             } else {
@@ -1008,9 +1008,9 @@ Dichot <- setRefClass("Dichot",
           result$powerVsDetAlt <- df
         } else if (matched == "independent") {
           # Calculate sample size data
-          n2 <- sapply(power2, ipsize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
+          n2 <- sapply(power2, dichotIPSize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
 
-          detAlt2Max <- max(iprelrisk(alpha, 0.99, p0, n, m, case, expressed, method))
+          detAlt2Max <- max(dichotIPRelRisk(alpha, 0.99, p0, n, m, case, expressed, method))
           if (expressed == "twoProportions") {
             detAlt2 <- seq(
               from = p0 - (detAlt2Max - p0),
@@ -1018,7 +1018,7 @@ Dichot <- setRefClass("Dichot",
               length.out = points
             )
             power3 <- sapply(detAlt2, function(p1Arg) {
-              result <- try(ippower(alpha, p0, p1Arg, n, m, rArg, case, expressed, method), silent = TRUE)
+              result <- try(dichotIPPower(alpha, p0, p1Arg, n, m, rArg, case, expressed, method), silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
               } else {
@@ -1040,7 +1040,7 @@ Dichot <- setRefClass("Dichot",
             )
 
             power3 <- sapply(detAlt2, function(rArg) {
-              result <- try(ippower(alpha, p0, p1, n, m, rArg, case, expressed, method), silent = TRUE)
+              result <- try(dichotIPPower(alpha, p0, p1, n, m, rArg, case, expressed, method), silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
               } else {
@@ -1062,7 +1062,7 @@ Dichot <- setRefClass("Dichot",
             )
 
             power3 <- sapply(detAlt2, function(psiArg) {
-              result <- try(ippower(alpha, p0, p1, n, m, psiArg, case, expressed, method), silent = TRUE)
+              result <- try(dichotIPPower(alpha, p0, p1, n, m, psiArg, case, expressed, method), silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
               } else {
@@ -1102,21 +1102,21 @@ Dichot <- setRefClass("Dichot",
 
         if (matched == "matched") {
           # det. alt. is psi
-          n2 <- sapply(detAlt2, ssize, alpha = alpha, power = power, r = rArg, p0 = p0, m = m)
-          power2 <- sapply(detAlt2, powfcn, alpha = alpha, n = n, r = rArg, p0 = p0, m = m)
+          n2 <- sapply(detAlt2, dichotSSize, alpha = alpha, power = power, r = rArg, p0 = p0, m = m)
+          power2 <- sapply(detAlt2, dichotPowFcn, alpha = alpha, n = n, r = rArg, p0 = p0, m = m)
         } else if (matched == "independent") {
           if (expressed == "twoProportions") {
             # det. alt. is p1
-            n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, m = m, r = rArg, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, n = n, m = m, r = rArg, case = case, expressed = expressed, method = method)
+            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, m = m, r = rArg, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0, n = n, m = m, r = rArg, case = case, expressed = expressed, method = method)
           } else if (expressed == "oddsRatio") {
             # det. alt. is psi (r parameter)
-            n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
+            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
           } else if (expressed == "relativeRisk") {
             # det. alt. is r (same call as 'oddsRatio', repeated for readability)
-            n2 <- sapply(detAlt2, ipsize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detAlt2, ippower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
+            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
+            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
           }
         }
 
@@ -1137,7 +1137,7 @@ Dichot <- setRefClass("Dichot",
           rArg <- rAlt
         }
 
-        sampDist <- dichot_calc_samp_dist(pSpace, p0, p1Arg, m, n, psiArg, rArg, matched, case, expressed)
+        sampDist <- dichotCalcSampDist(pSpace, p0, p1Arg, m, n, psiArg, rArg, matched, case, expressed)
 
         result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
       }
