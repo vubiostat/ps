@@ -149,8 +149,12 @@ export class Project {
       // reset the flag to keep ranges.
       models = this.models;
       this.customRanges = false;
-    } else if (key === "ci") {
+    }
+
+    if (key === "ci") {
       changes.ciMode = true;
+    } else if (model.ciMode) {
+      changes.ciMode = false;
     }
 
     models.forEach(m => { Object.assign(m, changes); });
@@ -329,14 +333,12 @@ export class Project {
           let value = model[param];
 
           if (model.expressed === DichotExpressed.RelativeRisk) {
-            values = [model.rAlt, model.r];
             if (model.detAltMode === DetAltMode.Lower) {
               values = [0.1, 0.9];
             } else {
               values = [1.1, model.r + (model.r - 1.0)];
             }
           } else if (model.expressed === DichotExpressed.OddsRatio) {
-            values = [model.psiAlt, model.psi];
             if (model.detAltMode === DetAltMode.Lower) {
               values = [0.1, 0.9];
             } else {
