@@ -48,6 +48,12 @@ export interface DichotAttribs {
   ciMode?: boolean;
 }
 
+export interface DichotCI {
+  n: number;
+  ci1: number;
+  ci2: number;
+}
+
 export interface DichotPlotData {
   sampleSizeVsPower?: Point[];
   sampleSizeVsDetAlt?: Point[];
@@ -56,6 +62,7 @@ export interface DichotPlotData {
   detAltVsSampleSize?: Point[];
   detAltVsPower?: Point[];
   sampDist?: Point[];
+  confidenceIntervals?: DichotCI[];
 }
 
 export class Dichot {
@@ -92,6 +99,7 @@ export class Dichot {
   detAltVsSampleSize?: Point[];
   detAltVsPower?: Point[];
   sampDist?: Point[];
+  confidenceIntervals?: DichotCI[];
 
   constructor(attribs?: any) {
     if (attribs) {

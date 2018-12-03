@@ -9,7 +9,7 @@ import * as stableSort from 'stable';
 
 import { AbstractPlotComponent, Draw } from '../../abstract-plot.component';
 import { Project } from '../project';
-import { DichotExpressed } from '../dichot';
+import { DichotExpressed, DichotCI } from '../dichot';
 import { Range } from '../../range';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
@@ -31,6 +31,9 @@ interface Group {
   strokeOpacity: number;
   primary: boolean;
   sym: string;
+  leftCI?: DichotCI[];
+  rightCI?: DichotCI[];
+  newN: number;
 };
 
 enum CIBar {
@@ -60,7 +63,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   viewBox: string;
 
   yScaleSD: any;
-  plotData: any[];
   mainGroup: Group;
   groups: Group[];
   needDraw = Draw.No;
@@ -174,7 +176,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     if (!this.setupDimensions()) {
       return false;
     }
-    this.setupPlotData();
     this.setupScales();
     this.setupGroups();
     this.setupNullValue();
@@ -206,10 +207,6 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     }
   }
 
-  private setupPlotData(): void {
-    this.plotData = this.project.models.map(m => m.sampDist);
-  }
-
   private setupScales(): void {
     let pSpaceRange = this.project.pSpaceRange;
     this.xScale = d3.scaleLinear().
@@ -220,8 +217,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       domain([0, 0.7]).
       range([0, this.innerHeight]);
 
-    let sampDistExtent = this.plotData.reduce((arr, sampDist) => {
-      let extent = d3.extent(sampDist, d => d.y);
+    let sampDistExtent = this.project.models.reduce((arr, model) => {
+      let extent = d3.extent(model.sampDist, d => d.y);
       return d3.extent(arr.concat(extent));
     }, []);
     this.yScaleSD = d3.scaleLinear().
@@ -253,7 +250,7 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
       ], 'x', 'y', false);
 
       // sample distribution
-      let distPath = this.getArea(this.plotData[i], 'x', 'y');
+      let distPath = this.getArea(model.sampDist, 'x', 'y');
 
       let param = this.project.getDetAltParam();
       let sym = "";
@@ -290,7 +287,15 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
         fillOpacity: 0.5,
         strokeOpacity: 0.9,
         primary: this.project.selectedIndex == i,
-        sym: sym
+        sym: sym,
+        leftCI: stableSort(
+          model.confidenceIntervals,
+          (a, b) => d3.ascending(a.ci1, b.ci1)
+        ),
+        rightCI: stableSort(
+          model.confidenceIntervals,
+          (a, b) => d3.ascending(a.ci2, b.ci2)
+        )
       } as Group;
       return result;
     });
@@ -491,20 +496,30 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
     let mouseX = d3.event.x - this.leftMargin;
     let x = this.xScale.invert(mouseX);
 
-    let diff = 0;
+    let bisector, ciData;
     switch (which) {
       case CIBar.Left:
-        let leftBarX = this.xScale(this.mainGroup.left);
-        diff = x - this.mainGroup.left;
+        ciData = this.mainGroup.leftCI;
+        bisector = d3.bisector(data => data.ci1).left;
         break;
 
       case CIBar.Right:
-        let rightBarX = this.xScale(this.mainGroup.right);
-        diff = this.mainGroup.right - x;
+        ciData = this.mainGroup.rightCI;
+        bisector = d3.bisector(data => data.ci2).left;
         break;
     }
-    this.mainGroup.left += diff;
-    this.mainGroup.right -= diff;
+    let index = bisector(ciData, x);
+    if (!index) return;
+    if (index >= ciData.length) {
+      index = ciData.length - 1;
+    }
+
+    let ci = ciData[index];
+    this.mainGroup.left = ci.ci1;
+    this.mainGroup.right = ci.ci2;
+    this.mainGroup.newN = ci.n;
+    let model = this.project.getModel(this.project.selectedIndex);
+    model.n = ci.n;
 
     // redraw lines
     let leftPath = this.getPath([
@@ -533,8 +548,8 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
   private dragBarEnd(which: CIBar): void {
     if (this.disableDragCI) return;
 
-    if (this.project) {
-      this.project.updateModel(this.project.selectedIndex, 'ci', this.ci()).subscribe(() => {
+    if (this.project && this.mainGroup.newN) {
+      this.project.updateModel(this.project.selectedIndex, 'n', this.mainGroup.newN).subscribe(() => {
         this.modelChanged.emit();
       });
     }

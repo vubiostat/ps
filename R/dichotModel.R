@@ -1167,8 +1167,20 @@ Dichot <- setRefClass("Dichot",
         }
 
         sampDist <- dichotCalcSampDist(pSpace, p0, p1Arg, m, n, psiArg, rArg, matched, case, expressed)
-
         result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
+
+        # Calculate confidence interval/sample size pairs
+        if (output == "power") {
+          n2 <- ceiling(seq(n / 4, n * 4, length.out = points))
+          if (!(n %in% n2)) {
+            n2 <- sort(c(n2, n))
+          }
+          ci2 <- sapply(n2, dichotCalcCI, p0 = p0, p1 = p1, m = m,
+                        matched = matched, case = case, expressed = expressed)
+          df <- as.data.frame(cbind(n2, t(ci2)))
+          names(df) <- c("n", "ci1", "ci2")
+          result$confidenceIntervals <- df
+        }
       }
 
       result
