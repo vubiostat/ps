@@ -17,6 +17,7 @@ export class Project {
   changeHistory: any[] = [];
 
   customRanges = false;
+  fixedPSpace = true;
   sampleSizeRange?: Range;
   powerRange?: Range;
   detAltRange?: Range;
@@ -365,8 +366,9 @@ export class Project {
         let target = model.getCITarget();
         let diff = Math.abs(ci[1] - target) * 3;
 
-        if (model.expressed === DichotExpressed.RelativeRisk ||
-            model.expressed === DichotExpressed.OddsRatio) {
+        if (this.fixedPSpace &&
+            (model.expressed === DichotExpressed.RelativeRisk ||
+             model.expressed === DichotExpressed.OddsRatio)) {
           values = [0.0, 7.0];
 
           let upper = ci[1] + 1;

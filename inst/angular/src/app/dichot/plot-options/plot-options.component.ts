@@ -43,6 +43,9 @@ export class PlotOptionsComponent implements OnInit, OnChanges {
       if (change.name == 'customRanges' && !change.value) {
         this.project.resetRanges();
       }
+      if (change.name == 'fixedPSpace') {
+        this.project.calculateRanges();
+      }
 
       this.project.updatePlotData().subscribe(() => {
         this.projectChanged.emit()

@@ -105,6 +105,14 @@
     </app-range-slider>
     <div class="form-check">
       <label class="form-check-label">
+        <input #fixedPSpace class="form-check-input" type="checkbox"
+          [checked]="project.fixedPSpace"
+          (change)="setProjectAttribute('fixedPSpace', fixedPSpace.checked)" />
+        Fixed parameter space
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
         <input #customRanges class="form-check-input" type="checkbox"
           [checked]="project.customRanges"
           (change)="setProjectAttribute('customRanges', customRanges.checked)" />
