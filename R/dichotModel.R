@@ -888,7 +888,6 @@ Dichot <- setRefClass("Dichot",
         else if (output == "power") {
           if (ciMode) {
             n <<- dichotCalcNFromCI(p0, p1, m, psi, r, ci, matched, case, expressed)
-            cat("ci: ", capture.output(dput(ci)), " n: ", n, "\n", sep="")
           }
           power <<- dichotIPPower(alpha, p0, p1, n, m, rArg, case, expressed, method)
         }
