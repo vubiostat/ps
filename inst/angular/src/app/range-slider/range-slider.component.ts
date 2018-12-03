@@ -52,7 +52,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
 
   ngOnInit(): void {
     this.inputSubject.pipe(
-      debounceTime(400),
+      debounceTime(800),
       filter(value => {
         // skip values when not dirty
         return this.dirty;
