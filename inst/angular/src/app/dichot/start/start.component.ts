@@ -42,7 +42,7 @@ export class StartComponent implements OnInit {
         this.model.psi = 2;
         break;
       case "ind-1":
-        this.model.output = DichotOutput.DetectableAlternative;
+        this.model.output = DichotOutput.Power;
         this.model.matched = DichotMatched.Independent;
         this.model.case = DichotCase.Prospective;
         this.model.expressed = DichotExpressed.TwoProportions;
@@ -50,11 +50,11 @@ export class StartComponent implements OnInit {
         this.model.alpha = 0.05;
         this.model.n = 100;
         this.model.p0 = 0.3;
-        this.model.power = 0.8;
+        this.model.p1 = 0.5;
         this.model.m = 1;
         break;
       case "ind-2":
-        this.model.output = DichotOutput.DetectableAlternative;
+        this.model.output = DichotOutput.Power;
         this.model.matched = DichotMatched.Independent;
         this.model.case = DichotCase.Prospective;
         this.model.expressed = DichotExpressed.RelativeRisk;
@@ -62,11 +62,11 @@ export class StartComponent implements OnInit {
         this.model.alpha = 0.05;
         this.model.n = 100;
         this.model.p0 = 0.3;
-        this.model.power = 0.8;
+        this.model.r = 0.5;
         this.model.m = 1;
         break;
       case "ind-3":
-        this.model.output = DichotOutput.DetectableAlternative;
+        this.model.output = DichotOutput.Power;
         this.model.matched = DichotMatched.Independent;
         this.model.case = DichotCase.CaseControl;
         this.model.expressed = DichotExpressed.OddsRatio;
@@ -74,8 +74,8 @@ export class StartComponent implements OnInit {
         this.model.alpha = 0.05;
         this.model.n = 100;
         this.model.p0 = 0.3;
+        this.model.psi = 0.5;
         this.model.m = 1;
-        this.model.power = 0.8;
         break;
     }
   }
