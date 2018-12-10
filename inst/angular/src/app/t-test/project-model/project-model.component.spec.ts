@@ -10,7 +10,7 @@ import { RangeSliderComponent } from '../../range-slider/range-slider.component'
 import { Project } from '../project';
 import { ProjectModelComponent } from './project-model.component';
 
-describe('ProjectModelComponent', () => {
+describe('t-test.ProjectModelComponent', () => {
   let component: ProjectModelComponent;
   let fixture: ComponentFixture<ProjectModelComponent>;
 

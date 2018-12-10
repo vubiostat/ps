@@ -1,6 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModule, NgbTabsetConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Project } from './project';
 import { ProjectService } from './project.service';
@@ -36,11 +37,14 @@ class PlotOptionsStubComponent {
   @Input() project: Project;
 }
 
-describe('TTestComponent', () => {
+describe('t-test.TTestComponent', () => {
   let projectServiceStub = {
     getProjects: () => [],
     getSelectedIndex: () => undefined
   };
+  let routeStub = {
+    data: new EventEmitter()
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -56,6 +60,7 @@ describe('TTestComponent', () => {
       ],
       providers: [
         { provide: ProjectService, useValue: projectServiceStub },
+        { provide: ActivatedRoute, useValue: routeStub },
         NgbTabsetConfig
       ]
     }).compileComponents();

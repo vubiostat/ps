@@ -15,7 +15,7 @@ class RangeSliderStubComponent {
   @Input() ngModel: any;
 }
 
-describe('PlotOptionsComponent', () => {
+describe('t-test.PlotOptionsComponent', () => {
   let component: PlotOptionsComponent;
   let fixture: ComponentFixture<PlotOptionsComponent>;
 

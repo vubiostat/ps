@@ -30,14 +30,19 @@ class BottomPlotStubComponent {
   @Input('fixed-height') fixedHeight: number;
 }
 
-describe('ExportPlotsComponent', () => {
+describe('t-test.ExportPlotsComponent', () => {
   let component: ExportPlotsComponent;
   let fixture: ComponentFixture<ExportPlotsComponent>;
 
   // dependencies
   let ngbActiveModalStub = {};
+  let formatsStub = {
+    subscribe: function(callback) {
+      callback({ formats: ["PNG"] });
+    }
+  };
   let exportServiceStub = {
-    formats: () => Promise.resolve({ formats: ["PNG"] })
+    formats: () => formatsStub
   };
 
   // inputs

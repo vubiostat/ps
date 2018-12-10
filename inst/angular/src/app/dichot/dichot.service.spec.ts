@@ -1,11 +1,17 @@
 import { TestBed, inject } from '@angular/core/testing';
 
+import { HttpClient } from '@angular/common/http';
 import { DichotService } from './dichot.service';
 
-describe('DichotService', () => {
+describe('dichot.DichotService', () => {
   beforeEach(() => {
+    let httpClientStub = {};
+
     TestBed.configureTestingModule({
-      providers: [DichotService]
+      providers: [
+        { provide: HttpClient, useValue: httpClientStub },
+        DichotService
+      ]
     });
   });
 

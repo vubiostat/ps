@@ -13,7 +13,7 @@ class ProjectModelStubComponent {
   @Input() index: number;
 }
 
-describe('ProjectComponent', () => {
+describe('t-test.ProjectComponent', () => {
   let component: ProjectComponent;
   let fixture: ComponentFixture<ProjectComponent>;
 

@@ -5,7 +5,7 @@ import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 import { PlotComponent } from './plot.component';
 
-describe('PlotComponent', () => {
+describe('t-test.PlotComponent', () => {
   let component: PlotComponent;
   let fixture: ComponentFixture<PlotComponent>;
 

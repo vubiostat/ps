@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { ResizeService } from './resize.service';
 
-describe('ResizeService', () => {
+describe('app.ResizeService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ResizeService]

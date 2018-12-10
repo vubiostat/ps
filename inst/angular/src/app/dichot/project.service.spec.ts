@@ -1,11 +1,17 @@
 import { TestBed, inject } from '@angular/core/testing';
 
+import { DichotService } from './dichot.service';
 import { ProjectService } from './project.service';
 
-describe('ProjectService', () => {
+describe('dichot.ProjectService', () => {
+  let dichotServiceStub = {};
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ProjectService]
+      providers: [
+        { provide: DichotService, useValue: dichotServiceStub },
+        ProjectService
+      ]
     });
   });
 

@@ -5,7 +5,7 @@ import { FormatFixedPipe } from '../../format-fixed.pipe';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 
-describe('BottomPlotComponent', () => {
+describe('dichot.BottomPlotComponent', () => {
   let component: BottomPlotComponent;
   let fixture: ComponentFixture<BottomPlotComponent>;
   let plotOptionsServiceStub = {};

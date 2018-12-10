@@ -1,6 +1,6 @@
 import { DichotModule } from './dichot.module';
 
-describe('DichotModule', () => {
+describe('dichot.DichotModule', () => {
   let dichotModule: DichotModule;
 
   beforeEach(() => {

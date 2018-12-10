@@ -1,6 +1,6 @@
 import { KonamiDirective } from './konami.directive';
 
-describe('KonamiDirective', () => {
+describe('app.KonamiDirective', () => {
   it('should create an instance', () => {
     const directive = new KonamiDirective();
     expect(directive).toBeTruthy();

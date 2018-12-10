@@ -3,7 +3,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { ProjectService } from './project.service';
 import { TTestService } from './t-test.service';
 
-describe('ProjectService', () => {
+describe('t-test.ProjectService', () => {
   let ttestServiceStub = {};
 
   beforeEach(() => {

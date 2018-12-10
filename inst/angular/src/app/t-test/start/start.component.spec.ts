@@ -5,7 +5,7 @@ import { NgbModule, NgbPopoverConfig } from '@ng-bootstrap/ng-bootstrap';
 import { TTest } from '../t-test';
 import { StartComponent } from './start.component';
 
-describe('StartComponent', () => {
+describe('t-test.StartComponent', () => {
   let component: StartComponent;
   let fixture: ComponentFixture<StartComponent>;
 

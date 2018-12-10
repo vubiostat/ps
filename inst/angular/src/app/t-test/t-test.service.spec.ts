@@ -1,21 +1,21 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { TTestService } from './t-test.service';
 
-describe('TTestService', () => {
-  let httpStub = {};
+describe('t-test.TTestService', () => {
+  let httpClientStub = {};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: Http, useValue: httpStub },
+        { provide: HttpClient, useValue: httpClientStub },
         TTestService
       ]
     });
   });
 
-  it('should ...', inject([TTestService], (service: TTestService) => {
+  it('should be created', inject([TTestService], (service: TTestService) => {
     expect(service).toBeTruthy();
   }));
 });

@@ -1,6 +1,6 @@
 import { RoundPipe } from './round.pipe';
 
-describe('RoundPipe', () => {
+describe('app.RoundPipe', () => {
   it('create an instance', () => {
     const pipe = new RoundPipe();
     expect(pipe).toBeTruthy();

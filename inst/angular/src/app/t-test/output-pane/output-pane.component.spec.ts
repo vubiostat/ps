@@ -29,7 +29,7 @@ class BottomPlotStubComponent {
   @Input('fixed-height') fixedHeight: number;
 }
 
-describe('OutputPaneComponent', () => {
+describe('t-test.OutputPaneComponent', () => {
   let component: OutputPaneComponent;
   let fixture: ComponentFixture<OutputPaneComponent>;
 
