@@ -5,12 +5,11 @@ import { NgbModule, NgbActiveModal, NgbTabsetConfig } from '@ng-bootstrap/ng-boo
 import { FormsModule } from '@angular/forms';
 import { ExportService } from '../../export.service';
 import { FormatFixedPipe } from '../../format-fixed.pipe';
-import { Project } from '../project';
 import { ExportPlotsComponent } from './export-plots.component';
 
-@Component({selector: 't-test-plot', template: ''})
-class PlotStubComponent {
-  @Input() project: Project;
+@Component({selector: 'app-line-plot', template: ''})
+class LinePlotStubComponent {
+  @Input() handler: any;
   @Input('hover-disabled') hoverDisabled: boolean;
   @Input('disable-drag') disableDrag: boolean;
   @Input('hide-drop-lines') hideDropLines: boolean;
@@ -54,7 +53,7 @@ describe('t-test.ExportPlotsComponent', () => {
       imports: [ NgbModule, FormsModule ],
       declarations: [
         FormatFixedPipe,
-        PlotStubComponent,
+        LinePlotStubComponent,
         BottomPlotStubComponent,
         ExportPlotsComponent
       ],

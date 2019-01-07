@@ -59,15 +59,15 @@
             </ng-template>
           </div>
           <div class="right">
-            <t-test-plot #topLeftPlot name="top-left-export"
-              [project]="project" [hover-disabled]="true"
+            <app-line-plot #topLeftPlot name="top-left-export"
+              [handler]="getHandler()" [hover-disabled]="true"
               [disable-drag]="true"
               [hide-drop-lines]="!topLeftDropLines"
               [hide-target]="!topLeftTarget"
               [fixed-width]="topLeftWidth" [fixed-height]="topLeftHeight"
               [legend-x-offset]="topLeftLegendXOffset"
               [legend-y-offset]="topLeftLegendYOffset">
-            </t-test-plot>
+            </app-line-plot>
           </div>
         </ng-template>
       </ngb-tab>
@@ -123,15 +123,15 @@
             </ng-template>
           </div>
           <div class="right">
-            <t-test-plot #topRightPlot name="top-right-export"
-              [project]="project" [hover-disabled]="true"
+            <app-line-plot #topRightPlot name="top-right-export"
+              [handler]="getHandler()" [hover-disabled]="true"
               [disable-drag]="true"
               [hide-drop-lines]="!topRightDropLines"
               [hide-target]="!topRightTarget"
               [fixed-width]="topRightWidth" [fixed-height]="topRightHeight"
               [legend-x-offset]="topRightLegendXOffset"
               [legend-y-offset]="topRightLegendYOffset">
-            </t-test-plot>
+            </app-line-plot>
           </div>
         </ng-template>
       </ngb-tab>

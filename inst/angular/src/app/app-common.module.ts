@@ -9,6 +9,7 @@ import { FormatFixedPipe } from './format-fixed.pipe';
 
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
 import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range-slider/range-slider.component';
+import { LinePlotComponent } from './line-plot/line-plot.component';
 
 @NgModule({
   imports: [ CommonModule, NgbModule ],
@@ -21,6 +22,7 @@ import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range
     RangeSliderComponent,
     RangeSliderLabel,
     RangeSliderHelp,
+    LinePlotComponent,
   ],
   exports: [
     RoundPipe,
@@ -31,6 +33,7 @@ import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range
     RangeSliderComponent,
     RangeSliderLabel,
     RangeSliderHelp,
+    LinePlotComponent,
   ],
 })
 export class AppCommonModule { }

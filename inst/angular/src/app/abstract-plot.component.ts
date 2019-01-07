@@ -4,7 +4,6 @@ import * as stableSort from 'stable';
 
 import { PlotOptionsService } from './plot-options.service';
 import { PaletteService } from './palette.service';
-import { Range } from './range';
 
 export enum Draw {
   No,
@@ -13,10 +12,12 @@ export enum Draw {
 }
 
 export abstract class AbstractPlotComponent implements AfterViewInit {
+  /* User-specified properties */
   @Input() name: string;
   @Input('fixed-width') fixedWidth: number;
   @Input('fixed-height') fixedHeight: number;
 
+  /* Calculated properties */
   title: string;
   xScale: any;
   yScale: any;
@@ -24,7 +25,6 @@ export abstract class AbstractPlotComponent implements AfterViewInit {
   height: number;
   innerWidth: number;
   innerHeight: number;
-  margin: number = 50;
 
   @ViewChild('plot') plotElement: ElementRef;
 
@@ -43,6 +43,56 @@ export abstract class AbstractPlotComponent implements AfterViewInit {
   getDimension(key: string): number {
     let dim = this.plotElement.nativeElement.getBoundingClientRect();
     return dim[key];
+  }
+
+  getHeight(): number {
+    return this.getDimension('height');
+  }
+
+  getWidth(): number {
+    return this.getDimension('width');
+  }
+
+  getFontFamily(): string {
+    return this.plotOptions.getFontFamily();
+  }
+
+  getFontSize(): number {
+    return this.plotOptions.getFontSize();
+  }
+
+  getFontSizePx(): string {
+    return `${this.getFontSize()}px`;
+  }
+
+  getAxisLineWidth(): number {
+    return this.plotOptions.getAxisLineWidth();
+  }
+
+  getAxisFontSize(): number {
+    return this.plotOptions.getAxisFontSize();
+  }
+
+  getPathColor(index: number): string {
+    return this.palette.getColor(index, this.plotOptions.paletteTheme);
+  }
+
+  getDashArray(index: number): string {
+    let pattern = this.palette.getPattern(index, this.plotOptions.paletteTheme);
+    return this.plotOptions.dashArray(pattern);
+  }
+
+  getLineCap(index: number): string {
+    let pattern = this.palette.getPattern(index, this.plotOptions.paletteTheme);
+    return this.plotOptions.lineCap(pattern);
+  }
+
+  getLineWidth(): number {
+    return this.plotOptions.getLineWidth();
+  }
+
+  isLegendBoxVisible(): boolean {
+    return this.plotOptions.showLegendBox;
   }
 
   protected translate(x: number, y: number): string {

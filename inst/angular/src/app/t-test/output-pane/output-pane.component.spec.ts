@@ -4,12 +4,11 @@ import { Component, Input } from '@angular/core';
 import { NgbModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
-import { Project } from '../project';
 import { OutputPaneComponent } from './output-pane.component';
 
-@Component({selector: 't-test-plot', template: ''})
-class PlotStubComponent {
-  @Input() project: Project;
+@Component({selector: 'app-line-plot', template: ''})
+class LinePlotStubComponent {
+  @Input() handler: any;
   @Input('hover-disabled') hoverDisabled: boolean;
   @Input('disable-drag') disableDrag: boolean;
   @Input('hide-drop-lines') hideDropLines: boolean;
@@ -41,7 +40,7 @@ describe('t-test.OutputPaneComponent', () => {
     TestBed.configureTestingModule({
       imports: [ NgbModule ],
       declarations: [
-        PlotStubComponent,
+        LinePlotStubComponent,
         BottomPlotStubComponent,
         OutputPaneComponent
       ],

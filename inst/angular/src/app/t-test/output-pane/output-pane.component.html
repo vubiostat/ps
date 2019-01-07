@@ -1,14 +1,14 @@
 <div id="t-test-output-pane-plots" class="plot" [class.without-footer]="!showFooter">
-  <t-test-plot #topLeft name="top-left"
-    [project]="project"
+  <app-line-plot #topLeft name="top-left"
+    [handler]="handler"
     [hover-disabled]="hoverDisabled"
     (modelChanged)="onModelChanged()">
-  </t-test-plot>
-  <t-test-plot #topRight name="top-right"
-    [project]="project"
+  </app-line-plot>
+  <app-line-plot #topRight name="top-right"
+    [handler]="handler"
     [hover-disabled]="hoverDisabled"
     (modelChanged)="onModelChanged()">
-  </t-test-plot>
+  </app-line-plot>
   <t-test-bottom-plot #bottom name="bottom"
     [project]="project"
     [disable-drag-target]="model?.output == 'delta'"
