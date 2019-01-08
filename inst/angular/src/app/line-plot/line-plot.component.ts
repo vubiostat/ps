@@ -72,13 +72,10 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    let result = this.setup();
-    if (!result && this.handler) {
-      // this might happen if the browser elements aren't ready yet
-      setTimeout(() => {
-        this.setup();
-      }, 1);
-    }
+    setTimeout(() => {
+      // give browser a tick to be ready
+      this.setup();
+    }, 1);
   }
 
   ngAfterViewChecked(): void {
