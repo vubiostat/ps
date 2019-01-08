@@ -332,23 +332,31 @@ export class Project {
           let param = model.getDetAltParam();
           let value = model[param];
 
-          if (model.expressed === DichotExpressed.RelativeRisk) {
-            if (model.detAltMode === DetAltMode.Lower) {
-              values = [0.1, 0.9];
-            } else {
-              values = [1.1, model.r + (model.r - 1.0)];
-            }
-          } else if (model.expressed === DichotExpressed.OddsRatio) {
+          if (model.case === DichotCase.CaseControl) {
             if (model.detAltMode === DetAltMode.Lower) {
               values = [0.1, 0.9];
             } else {
               values = [1.1, model.psi + (model.psi - 1.0)];
             }
           } else {
-            if (model.detAltMode === DetAltMode.Lower) {
-              values = [model.p1Alt - (model.p0 - model.p1Alt), model.p0 - 0.1];
+            if (model.expressed === DichotExpressed.RelativeRisk) {
+              if (model.detAltMode === DetAltMode.Lower) {
+                values = [0.1, 0.9];
+              } else {
+                values = [1.1, model.r + (model.r - 1.0)];
+              }
+            } else if (model.expressed === DichotExpressed.OddsRatio) {
+              if (model.detAltMode === DetAltMode.Lower) {
+                values = [0.1, 0.9];
+              } else {
+                values = [1.1, model.psi + (model.psi - 1.0)];
+              }
             } else {
-              values = [model.p0 + 0.1, model.p1 + (model.p1 - model.p0)];
+              if (model.detAltMode === DetAltMode.Lower) {
+                values = [model.p1Alt - (model.p0 - model.p1Alt), model.p0 - 0.1];
+              } else {
+                values = [model.p0 + 0.1, model.p1 + (model.p1 - model.p0)];
+              }
             }
           }
 
