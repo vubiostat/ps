@@ -30,46 +30,46 @@
   flex: 1;
 }
 
-.modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link {
+.modal-body ngb-tabset ::ng-deep > ul.nav > li.nav-item > a.nav-link {
   border-color: #bbb #bbb #888;
   background-color: #eee;
 }
 
-.modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover {
+.modal-body ngb-tabset ::ng-deep > ul.nav > li.nav-item > a.nav-link:hover {
   border-color: #888;
   background-color: #f5f5f5;
   color: #0275d8;
 }
 
-.modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
+.modal-body ngb-tabset ::ng-deep > ul.nav > li.nav-item > a.nav-link.active {
   border-color: #888 #888 #fff;
   background-color: #fff;
 }
 
-.modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover {
+.modal-body ngb-tabset ::ng-deep > ul.nav > li.nav-item > a.nav-link.active:hover {
   color: #464a4c;
 }
 
-.modal-body ngb-tabset > ul.nav {
+.modal-body ngb-tabset ::ng-deep > ul.nav {
   /*display: flex;*/
   flex: 0 0 auto;
   border-bottom: 1px solid #888;
 }
 
-.modal-body ngb-tabset > .tab-content {
+.modal-body ngb-tabset ::ng-deep > .tab-content {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-.modal-body ngb-tabset > .tab-content > .tab-pane {
+.modal-body ngb-tabset ::ng-deep > .tab-content > .tab-pane {
   border: 1px solid #888;
   border-top: 0;
   overflow: auto;
   max-height: 73vh;
 }
 
-.modal-body ngb-tabset > .tab-content > .tab-pane.active {
+.modal-body ngb-tabset ::ng-deep > .tab-content > .tab-pane.active {
   display: flex;
   flex-direction: row;
   flex: 1;
