@@ -4,7 +4,8 @@ import { Subscription } from 'rxjs';
 
 import { Project } from '../project';
 import { Dichot } from '../dichot';
-import { PlotComponent } from '../plot/plot.component';
+import { DichotLinePlotHandler } from '../dichot-line-plot-handler';
+import { LinePlotComponent } from '../../line-plot/line-plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
 import { PlotOptionsService } from '../../plot-options.service';
@@ -21,11 +22,12 @@ export class OutputPaneComponent implements OnChanges {
   @Input('hover-disabled') hoverDisabled = false;
   @Output() modelChanged = new EventEmitter();
   model: Dichot;
+  handler: DichotLinePlotHandler;
   showFooter = true;
   private copySub: Subscription;
 
-  @ViewChild('topLeft') topLeftPlot: PlotComponent;
-  @ViewChild('topRight') topRightPlot: PlotComponent;
+  @ViewChild('topLeft') topLeftPlot: LinePlotComponent;
+  @ViewChild('topRight') topRightPlot: LinePlotComponent;
   @ViewChild('bottom') bottomPlot: BottomPlotComponent;
   //@ViewChild('saveDialog') saveDialog: TemplateRef<any>;
   @ViewChild('footerTabset') footerTabset: NgbTabset;
@@ -41,8 +43,10 @@ export class OutputPaneComponent implements OnChanges {
     if (!('project' in changes)) return;
 
     if (this.project) {
+      this.handler = new DichotLinePlotHandler(this.project);
       this.model = this.project.getModel(this.project.selectedIndex);
     } else {
+      this.handler = undefined;
       this.model = undefined;
     }
   }

@@ -4,8 +4,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Output } from '../../output';
 import { Project } from '../project';
+import { DichotLinePlotHandler } from '../dichot-line-plot-handler';
 import { AbstractPlotComponent } from '../../abstract-plot.component';
-import { PlotComponent } from '../plot/plot.component';
+import { LinePlotComponent } from '../../line-plot/line-plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../../export.service'
 
@@ -47,6 +48,8 @@ export class ExportPlotsComponent implements OnInit {
   @Input('top-right-legend-x-offset') topRightLegendXOffset: number;
   @Input('top-right-legend-y-offset') topRightLegendYOffset: number;
 
+  handler: DichotLinePlotHandler;
+
   includeTopLeft = true;
   topLeftTitle: string;
   topLeftDim: string = "640x480";
@@ -72,8 +75,8 @@ export class ExportPlotsComponent implements OnInit {
   imageFormats: string[] = [];
   imageFormat: string;
 
-  @ViewChild('topLeftPlot') topLeftPlot: PlotComponent;
-  @ViewChild('topRightPlot') topRightPlot: PlotComponent;
+  @ViewChild('topLeftPlot') topLeftPlot: LinePlotComponent;
+  @ViewChild('topRightPlot') topRightPlot: LinePlotComponent;
   @ViewChild('bottomPlot') bottomPlot: BottomPlotComponent;
   @ViewChild('downloadLink') downloadLink: ElementRef;
 
@@ -138,6 +141,13 @@ export class ExportPlotsComponent implements OnInit {
     }
 
     return Platform.Other;
+  }
+
+  getHandler(): DichotLinePlotHandler {
+    if (this.handler === undefined) {
+      this.handler = new DichotLinePlotHandler(this.project);
+    }
+    return this.handler;
   }
 
   setDim(which: string, value: string): void {

@@ -7,10 +7,10 @@ import { PaletteService } from '../../palette.service';
 import { CopyService } from '../../copy.service';
 import { OutputPaneComponent } from './output-pane.component';
 
-@Component({selector: 'dichot-plot', template: ''})
-class DichotPlotStubComponent {
+@Component({selector: 'app-line-plot', template: ''})
+class LinePlotStubComponent {
   @Input() name: any;
-  @Input('project') project: any;
+  @Input('handler') handler: any;
   @Input('hover-disabled') hoverDisabled: any;
 }
 
@@ -33,7 +33,7 @@ describe('dichot.OutputPaneComponent', () => {
     TestBed.configureTestingModule({
       imports: [ NgbModule ],
       declarations: [
-        DichotPlotStubComponent,
+        LinePlotStubComponent,
         DichotBottomPlotStubComponent,
         OutputPaneComponent
       ],

@@ -6,9 +6,9 @@ import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportService } from '../../export.service';
 import { ExportPlotsComponent } from './export-plots.component';
 
-@Component({selector: 'dichot-plot', template: ''})
-class DichotPlotStubComponent {
-  @Input() project: any;
+@Component({selector: 'app-line-plot', template: ''})
+class LinePlotStubComponent {
+  @Input() handler: any;
   @Input('hover-disabled') hoverDisabled: any;
   @Input('disable-drag') disableDrag: any;
   @Input('hide-drop-lines') hideDropLines: any;
@@ -50,7 +50,7 @@ describe('dichot.ExportPlotsComponent', () => {
         NgbModule
       ],
       declarations: [
-        DichotPlotStubComponent,
+        LinePlotStubComponent,
         DichotBottomPlotStubComponent,
         ExportPlotsComponent
       ],
