@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Range } from '../range';
@@ -42,7 +42,20 @@ export class TTestService {
     };
     return this.http.
       post<TTestAttribs>(url, attribs, requestOptions).
-      pipe(catchError(this.handleError));
+      pipe(
+        catchError(this.handleError),
+        map((result: any) => {
+          if (typeof(result) !== 'object' || result === null) {
+            return result;
+          }
+          for (let key in result) {
+            if (result[key] === "NaN") {
+              result[key] = undefined;
+            }
+          }
+          return result;
+        })
+      );
   }
 
   plotData(models: TTest[], ranges: PlotDataRanges, pointsPerPlot?: number): Observable<PlotDataResponse> {
