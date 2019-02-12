@@ -179,6 +179,7 @@ export class TTest {
       sigma: this.sigma, delta: this.delta, power: this.power, n: this.n,
       m: this.m, ci: this.ci, ciMode: this.ciMode, deltaMode: this.deltaMode
     };
+    console.log("TTestAttribs:", result);
     return result;
   }
 
