@@ -179,7 +179,14 @@ export class Dichot {
 
   getCITarget(): number {
     let target = NaN;
-    if (this.matched === DichotMatched.Independent) {
+    if (this.matched === DichotMatched.Matched) {
+      if (this.output === Output.DetectableAlternative &&
+          this.detAltMode === DetAltMode.Lower) {
+        target = this.psiAlt;
+      } else {
+        target = this.psi;
+      }
+    } else if (this.matched === DichotMatched.Independent) {
       let p1;
       if (this.output === Output.DetectableAlternative &&
           this.detAltMode === DetAltMode.Lower) {

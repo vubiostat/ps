@@ -728,15 +728,9 @@ dichotIPRelRisk <- function(alpha, power, p0, n, m,
   }
 }
 
-dichotCalcCI <- function(p0, p1, m, n, matched = c("matched", "independent"),
-                           case = c("caseControl", "prospective"),
-                           expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
-
-  if (matched == "matched") {
-    # TODO
-    return(NULL)
-  }
-
+# calculate confidence interval for independent studies
+dichotCalcIndCI <- function(p0, p1, m, n,
+                            expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
   q0 <- 1 - p0
   q1 <- 1 - p1
   if (expressed == "twoProportions") {
@@ -762,14 +756,10 @@ dichotCalcCI <- function(p0, p1, m, n, matched = c("matched", "independent"),
   }
 }
 
-dichotCalcNFromCI <- function(p0, p1, m, psi, r, ci, matched = c("matched", "independent"),
-                              case = c("caseControl", "prospective"),
-                              expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
-
-  if (matched == "matched") {
-    # TODO
-    return(NULL)
-  }
+# calculate sample size from confidence interval for independent studies
+dichotCalcIndNFromCI <- function(p0, p1, m, psi, r, ci,
+                                 case = c("caseControl", "prospective"),
+                                 expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
 
   ciWidth <- ci[2] - ci[1]
   if (expressed == "twoProportions") {
@@ -784,17 +774,117 @@ dichotCalcNFromCI <- function(p0, p1, m, psi, r, ci, matched = c("matched", "ind
   n
 }
 
-dichotCalcSampDist <- function(pSpace, p0, p1, m, n, psi, r,
-                                  matched = c("matched", "independent"),
-                                  case = c("caseControl", "prospective"),
-                                  expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
-  if (matched == "matched") {
-    # TODO
-    return(NULL)
+# create probability density function for matched studies
+dichotMatchedSampDistPDF <- function(p0, p1, m, n, psi, phi, delta = 0.001) {
+  # Q1=q_1 Probability that a case patient is not exposed.
+  q1 <- 1 - p1
+
+  # Q0=q_0 Probability that a control is not exposed.
+  q0 <- 1 - p0
+
+  # P01 = p_{o+}
+  # Probability that a control is exposed given that his matched case
+  # is exposed.
+  p01 <- p0 + phi * sqrt(q1 * p0 * q0 / p1)
+
+  # P00 = p_{o-}
+  # Probability that a control is exposed given that his matched case
+  # is NOT exposed.
+  p00 <- p0 - phi * sqrt(p1 * p0 * q0 / q1)
+  q01 <- 1 - p01
+  q00 <- 1 - p00
+
+  c1 <- 1
+  c2 <- m
+
+  # The index I is denoted "m" in Dupont 1988.
+  # T(I) = T(m) = t_m is the probability of
+  # observing m exposed subjects among a case
+  # and his M matched controls.
+  t <- vector("numeric", m)
+  for (i in 1:m) {
+    t[i] <- p1 * c1 * (p01 ^ (i-1)) * (q01 ^ (m-i+1)) +
+      q1 * c2 * (p00 ^ i) * (q00 ^ (m-i))
+    c1 <- c2
+    c2 <- c2 * (m - i) / (i + 1)
   }
 
-  q0 <- 1 - p0
+  e.psi <- function(psi) {
+    mean <- 0
+    for (i in 1:m) {
+      mean <- mean + (i * t[i] * psi / (i * psi + m - i + 1))
+    }
+    mean
+  }
+  v.psi <- function(psi) {
+    var <- 0
+    for (i in 1:m) {
+      var <- var + (i * t[i] * psi * (m - i + 1) / ((i * psi + m - i + 1) ^ 2))
+    }
+    var
+  }
+
+  norm.mean <- n * e.psi(psi)
+  norm.sd <- sqrt(n * v.psi(psi))
+
+  pdf <- function(x) {
+    dnorm(n * e.psi(x), mean = norm.mean, sd = norm.sd) * n *
+      abs((e.psi(x + delta) - e.psi(x - delta)) / (2 * delta))
+  }
+  return(pdf)
+}
+
+# calculate confidence interval for matched studies
+dichotCalcMatchedCI <- function(pdf, psi, delta) {
+  x <- seq(delta, psi + (delta * 400), by = delta)
+  y <- pdf(x)
+  sampDist <- data.frame(x = x, y = y)
+
+  cdf <- function(i) {
+    if (i < 2) stop("i must be >= 2")
+    sum(delta * (y[1:(i-1)] + y[2:i]) / 2)
+  }
+  len <- length(y)
+  diff <- 1000
+  ci.min.index <- NA
+  for (i in 2:len) {
+    val <- abs(0.025 - cdf(i))
+    if (val <= diff) {
+      diff <- val
+      ci.min.index <- i
+    } else {
+      break
+    }
+  }
+  ci.min <- x[ci.min.index]
+
+  diff <- 1000
+  ci.max.index <- NA
+  for (i in len:2) {
+    val <- abs(0.925 - cdf(i))
+    if (val <= diff) {
+      diff <- val
+      ci.max.index <- i
+    } else {
+      break
+    }
+  }
+  ci.max <- x[ci.max.index]
+
+  list(sampDist = sampDist, ci = c(ci.min, ci.max))
+}
+
+# calculate sample distribution for independent studies
+dichotCalcIndSampDist <- function(pSpace, p0, p1, m, n, psi, r,
+                                  case = c("caseControl", "prospective"),
+                                  expressed = c("twoProportions", "oddsRatio", "relativeRisk")) {
+
+  # Q1=q_1 Probability that a case patient is not exposed.
   q1 <- 1 - p1
+
+  # Q0=q_0 Probability that a control is not exposed.
+  q0 <- 1 - p0
+
   if (expressed == "twoProportions") {
     mean <- p1
     sd <- sqrt((p0 * q0 / m + p1 * q1) / n)
@@ -812,7 +902,8 @@ dichotCalcSampDist <- function(pSpace, p0, p1, m, n, psi, r,
 Dichot <- setRefClass("Dichot",
   fields = c("output", "matched", "case", "method", "expressed", "alpha",
              "power", "phi", "p0", "p1", "p1Alt", "r", "rAlt", "n", "m", "psi",
-             "psiAlt", "ci", "ciAlt", "detAltMode", "ciMode"),
+             "psiAlt", "ci", "ciAlt", "detAltMode", "ciMode", "pdf", "pdfAlt",
+             "sampDist", "sampDistAlt"),
 
   methods = list(
     initialize = function(params) {
@@ -844,6 +935,11 @@ Dichot <- setRefClass("Dichot",
       if (is.null(ciMode)) {
         ciMode <<- FALSE
       }
+
+      pdf <<- NULL
+      pdfAlt <<- NULL
+      sampDist <<- NULL
+      sampDistAlt <<- NULL
     },
 
     detAltParamName = function() {
@@ -887,7 +983,11 @@ Dichot <- setRefClass("Dichot",
         }
         else if (output == "power") {
           if (ciMode) {
-            n <<- dichotCalcNFromCI(p0, p1, m, psi, r, ci, matched, case, expressed)
+            if (matched == "independent") {
+              n <<- dichotCalcIndNFromCI(p0, p1, m, psi, r, ci, case, expressed)
+            } else {
+              n <<- NULL
+            }
           }
           power <<- dichotIPPower(alpha, p0, p1, n, m, rArg, case, expressed, method)
         }
@@ -911,7 +1011,26 @@ Dichot <- setRefClass("Dichot",
       }
 
       # calculate confidence interval
-      if (matched == "independent") {
+      if (matched == "matched") {
+        delta <- 0.01
+        p1 <<- dichotPOne(p0, psi, rArg)
+        pdf <<- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
+
+        # calculating CI requires calculating the sample distribution for
+        # matched studies
+        result <- dichotCalcMatchedCI(pdf, psi, delta)
+        sampDist <<- result$sampDist
+        ci <<- result$ci
+
+        if (output == "detAlt") {
+          p1Alt <<- dichotPOne(p0, psiAlt, rArg)
+          pdfAlt <<- dichotMatchedSampDistPDF(p0, p1Alt, m, n, psiAlt, phi, delta)
+
+          result <- dichotCalcMatchedCI(pdfAlt, psiAlt, delta)
+          sampDistAlt <<- result$sampDist
+          ciAlt <<- result$ci
+        }
+      } else if (matched == "independent") {
         if (expressed == "twoProportions") {
           # p1 is p1
         } else if (expressed == "oddsRatio") {
@@ -925,10 +1044,9 @@ Dichot <- setRefClass("Dichot",
             p1Alt <<- p0 * rAlt
           }
         }
-
-        ci <<- dichotCalcCI(p0, p1, m, n, matched, case, expressed)
+        ci <<- dichotCalcIndCI(p0, p1, m, n, case, expressed)
         if (output == "detAlt") {
-          ciAlt <<- dichotCalcCI(p0, p1Alt, m, n, matched, case, expressed)
+          ciAlt <<- dichotCalcIndCI(p0, p1Alt, m, n, case, expressed)
         }
       }
 
@@ -940,7 +1058,9 @@ Dichot <- setRefClass("Dichot",
         power     = power,
         n         = n,
         p0        = p0,
-        m         = m
+        m         = m,
+        ci        = ci,
+        ciAlt     = ciAlt
       )
       if (matched == "matched") {
         result$phi <- phi
@@ -951,8 +1071,6 @@ Dichot <- setRefClass("Dichot",
         result$expressed <- expressed
         result$p1 <- p1
         result$p1Alt <- p1Alt
-        result$ci <- ci
-        result$ciAlt <- ciAlt
         if (case == "caseControl" && expressed == "oddsRatio") {
           result$psi <- psi
           result$psiAlt <- psiAlt
@@ -1155,31 +1273,58 @@ Dichot <- setRefClass("Dichot",
 
       # Calculate data for bottom/tertiary graph
       if ("pSpaceRange" %in% names(ranges)) {
-        pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
+        if (matched == "matched") {
+          if (is.null(sampDist)) {
+            delta <- 0.01
+            p1 <<- dichotPOne(p0, psi, rArg)
+            pdf <<- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
 
-        p1Arg <- p1
-        psiArg <- psi
-        rArg <- r
-        if (output == "detAlt" && detAltMode == "lower") {
-          p1Arg <- p1Alt
-          psiArg <- psiAlt
-          rArg <- rAlt
-        }
+            # calculating CI requires calculating the sample distribution for
+            # matched studies
+            ciResult <- dichotCalcMatchedCI(pdf, psi, delta)
+            sampDist <<- ciResult$sampDist
+            ci <<- ciResult$ci
 
-        sampDist <- dichotCalcSampDist(pSpace, p0, p1Arg, m, n, psiArg, rArg, matched, case, expressed)
-        result$sampDist <- subset(data.frame(y = sampDist, x = pSpace), !is.na(y))
+            if (output == "detAlt") {
+              p1Alt <<- dichotPOne(p0, psiAlt, rArg)
+              pdfAlt <<- dichotMatchedSampDistPDF(p0, p1Alt, m, n, psiAlt, phi, delta)
 
-        # Calculate confidence interval/sample size pairs
-        if (output == "power") {
-          n2 <- ceiling(seq(n / 4, n * 4, length.out = points))
-          if (!(n %in% n2)) {
-            n2 <- sort(c(n2, n))
+              ciResult <- dichotCalcMatchedCI(pdfAlt, psiAlt, delta)
+              sampDistAlt <<- ciResult$sampDist
+              ciAlt <<- ciResult$ci
+            }
           }
-          ci2 <- sapply(n2, dichotCalcCI, p0 = p0, p1 = p1, m = m,
-                        matched = matched, case = case, expressed = expressed)
-          df <- as.data.frame(cbind(n2, t(ci2)))
-          names(df) <- c("n", "ci1", "ci2")
-          result$confidenceIntervals <- df
+          result$sampDist <- sampDist
+
+          # FIXME
+          result$confidenceIntervals <- data.frame(n = n, ci1 = ci[1], ci2 = ci[2])
+        } else if (matched == "independent") {
+          pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
+
+          p1Arg <- p1
+          psiArg <- psi
+          rArg <- r
+          if (output == "detAlt" && detAltMode == "lower") {
+            p1Arg <- p1Alt
+            psiArg <- psiAlt
+            rArg <- rAlt
+          }
+
+          x <- dichotCalcIndSampDist(pSpace, p0, p1Arg, m, n, psiArg, rArg, case, expressed)
+          result$sampDist <- subset(data.frame(y = x, x = pSpace), !is.na(y))
+
+          # Calculate confidence interval/sample size pairs
+          if (output == "power") {
+            n2 <- ceiling(seq(n / 4, n * 4, length.out = points))
+            if (!(n %in% n2)) {
+              n2 <- sort(c(n2, n))
+            }
+            ci2 <- sapply(n2, dichotCalcIndCI, p0 = p0, p1 = p1, m = m,
+                          case = case, expressed = expressed)
+            df <- as.data.frame(cbind(n2, t(ci2)))
+            names(df) <- c("n", "ci1", "ci2")
+            result$confidenceIntervals <- df
+          }
         }
       }
 

@@ -369,32 +369,30 @@ export class Project {
           break;
       }
 
-      // Calculate pSpaceRange based on confidence interval, but only for
-      // independent studies for now.
-      if (model.matched === DichotMatched.Independent) {
-        let ci = model.getCI();
+      // Calculate pSpaceRange based on confidence interval
+      let ci = model.getCI();
+
+      if (this.fixedPSpace &&
+          (model.matched === DichotMatched.Matched ||
+           model.expressed === DichotExpressed.RelativeRisk ||
+           model.expressed === DichotExpressed.OddsRatio)) {
+        values = [0.0, 7.0];
+
+        let upper = ci[1] + 1;
+        if (upper > values[1]) {
+          values[1] = upper;
+        }
+      } else {
         let target = model.getCITarget();
         let diff = Math.abs(ci[1] - target) * 3;
+        values = [ci[0] - diff, ci[1] + diff];
+      }
 
-        if (this.fixedPSpace &&
-            (model.expressed === DichotExpressed.RelativeRisk ||
-             model.expressed === DichotExpressed.OddsRatio)) {
-          values = [0.0, 7.0];
-
-          let upper = ci[1] + 1;
-          if (upper > values[1]) {
-            values[1] = upper;
-          }
-        } else {
-          values = [ci[0] - diff, ci[1] + diff];
-        }
-
-        if (i == 0 || values[0] < pSpaceRange[0]) {
-          pSpaceRange[0] = values[0];
-        }
-        if (i == 0 || values[1] > pSpaceRange[1]) {
-          pSpaceRange[1] = values[1];
-        }
+      if (i == 0 || values[0] < pSpaceRange[0]) {
+        pSpaceRange[0] = values[0];
+      }
+      if (i == 0 || values[1] > pSpaceRange[1]) {
+        pSpaceRange[1] = values[1];
       }
     }
 
