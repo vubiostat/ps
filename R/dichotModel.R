@@ -1044,9 +1044,9 @@ Dichot <- setRefClass("Dichot",
             p1Alt <<- p0 * rAlt
           }
         }
-        ci <<- dichotCalcIndCI(p0, p1, m, n, case, expressed)
+        ci <<- dichotCalcIndCI(p0, p1, m, n, expressed)
         if (output == "detAlt") {
-          ciAlt <<- dichotCalcIndCI(p0, p1Alt, m, n, case, expressed)
+          ciAlt <<- dichotCalcIndCI(p0, p1Alt, m, n, expressed)
         }
       }
 
@@ -1320,7 +1320,7 @@ Dichot <- setRefClass("Dichot",
               n2 <- sort(c(n2, n))
             }
             ci2 <- sapply(n2, dichotCalcIndCI, p0 = p0, p1 = p1, m = m,
-                          case = case, expressed = expressed)
+                          expressed = expressed)
             df <- as.data.frame(cbind(n2, t(ci2)))
             names(df) <- c("n", "ci1", "ci2")
             result$confidenceIntervals <- df
