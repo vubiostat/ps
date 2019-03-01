@@ -70,7 +70,7 @@
             stroke="black" stroke-opacity="1" />
       <g id="{{name}}-legend-labels">
         <g *ngFor="let modelName of handler.getModelNames(); index as i; trackBy: trackByIndex"
-           [attr.transform]="translate(5, 20 * getFontSize() * i)">
+           [attr.transform]="translate(5, getFontSize() * i)">
           <path
             d="m0,0 l45,0"
             [attr.stroke]="getPathColor(i)"
