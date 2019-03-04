@@ -92,7 +92,8 @@ dichotPOne <- function(p0, psi, r) {
 #  Notes:
 #   This routine was written by Dale Plummer.
 #   Designed by Dr. William Dupont.
-dichotSSize <- function(alpha, power, r, p0, m, psi) {
+dichotSSize <- function(alpha, power, phi, p0, m, psi) {
+  r <- phi
   beta <- 1 - power
   zalpha <- dichotZcrValue(alpha / 2)
   zbeta <- dichotZcrValue(beta)
@@ -234,7 +235,8 @@ dichotCalcPhi <- function(z) {
 #   Designed by Dr. William Dupont.
 #   The LaTeX notation given in the comments is from:
 #   Dupont, Biometrics 1988;44:1157-68.
-dichotPowFcn <- function(alpha, n, r, p0, m, psi) {
+dichotPowFcn <- function(alpha, n, phi, p0, m, psi) {
+  r <- phi
   zalpha <- dichotZcrValue(alpha / 2)
   psi_value <- 1
   mv <- dichotMeanVar(p0, r, m, m, psi_value)
@@ -965,9 +967,9 @@ Dichot <- setRefClass("Dichot",
         # case-control and prospective behave the same way
         rArg <- phi
         if (output == "sampleSize") {
-          n <<- dichotSSize(alpha, power, rArg, p0, m, psi)
+          n <<- dichotSSize(alpha, power, phi, p0, m, psi)
         } else if (output == "power") {
-          power <<- dichotPowFcn(alpha, n, rArg, p0, m, psi)
+          power <<- dichotPowFcn(alpha, n, phi, p0, m, psi)
         } else if (output == "detAlt") {
           detAlt <- dichotOddsRatio(alpha, power, phi, p0, n, m)
         }
@@ -1115,7 +1117,7 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (matched == "matched") {
-          power2 <- sapply(n2, dichotPowFcn, alpha = alpha, r = rArg, p0 = p0, m = m, psi = psi)
+          power2 <- sapply(n2, dichotPowFcn, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
           detAlt2 <- sapply(n2, dichotOddsRatio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
           power2 <- sapply(n2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
@@ -1138,7 +1140,7 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (matched == "matched") {
-          n2 <- sapply(power2, dichotSSize, alpha = alpha, r = rArg, p0 = p0, m = m, psi = psi)
+          n2 <- sapply(power2, dichotSSize, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
           detAlt2 <- sapply(power2, function(power) {
             result <- try(dichotOddsRatio(alpha, power, phi, p0, n, m), silent = TRUE)
             if (inherits(result, "try-error")) {
@@ -1249,8 +1251,8 @@ Dichot <- setRefClass("Dichot",
 
         if (matched == "matched") {
           # det. alt. is psi
-          n2 <- sapply(detAlt2, dichotSSize, alpha = alpha, power = power, r = rArg, p0 = p0, m = m)
-          power2 <- sapply(detAlt2, dichotPowFcn, alpha = alpha, n = n, r = rArg, p0 = p0, m = m)
+          n2 <- sapply(detAlt2, dichotSSize, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
+          power2 <- sapply(detAlt2, dichotPowFcn, alpha = alpha, n = n, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
           if (expressed == "twoProportions") {
             # det. alt. is p1
