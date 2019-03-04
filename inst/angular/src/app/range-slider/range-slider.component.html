@@ -5,7 +5,7 @@
   <ng-template #standardLabel>
     <div class="label" *ngIf="label">
       {{label}}
-      <span *ngIf="isOutput">(Computed value)</span>
+      <span *ngIf="isOutput">(Computed value) </span>
       <ng-template [ngIf]="helpTpl">
         <i class="fa fa-info-circle" aria-hidden="true"
           [ngbPopover]="rsHelp" popoverTitle="{{label}}"
