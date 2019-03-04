@@ -197,12 +197,33 @@ TTest <- setRefClass("TTest",
         }
 
         power2 <- sapply(n2, ttestCalculatePower, kind = kind, alpha = alpha, delta = delta, sigma = sigma, m = m)
-        delta2 <- sapply(n2, ttestCalculateDelta, kind = kind, alpha = alpha, sigma = sigma, power = power, m = m)
-        if (delta < 0) {
-          delta2 <- -delta2
-        }
         result$nVsPower <- data.frame(y = n2, x = power2)
-        result$nVsDelta <- data.frame(y = n2, x = delta2)
+
+        if ("deltaRange" %in% names(ranges)) {
+          # calculate nVsDelta 'backwards' in order to properly show negative delta values
+          delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
+          n3 <- sapply(delta2, ttestCalculateN, kind = kind, alpha = alpha, sigma = sigma, power = power, m = m)
+          df <- data.frame(y = n3, x = delta2)
+
+          if (!(ranges$nRange$min %in% df$y)) {
+            delta3 <- ttestCalculateDelta(kind, alpha, sigma, ranges$nRange$min, power, m)
+            extra <- data.frame(y = rep(ranges$nRange$min, 2),
+                                x = c(-delta3, delta3))
+            df <- rbind(df, extra)
+            df <- df[order(df$x), ]
+          }
+
+          # exclude points that are off the plot (large values of n)
+          df[df$y > ranges$nRange$max, "y"] <- NA
+
+          result$nVsDelta <- df
+        } else {
+          delta2 <- sapply(n2, ttestCalculateDelta, kind = kind, alpha = alpha, sigma = sigma, power = power, m = m)
+          if (delta < 0) {
+            delta2 <- -delta2
+          }
+          result$nVsDelta <- data.frame(y = n2, x = delta2)
+        }
 
       } else if (output == "power") {
         power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = points)
