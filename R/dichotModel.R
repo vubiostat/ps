@@ -47,15 +47,15 @@ dichotZcrValue <- function(alph) {
 #
 # An error is thrown if a valid matched table does not exist for P0, PSI, and R
 #
-dichotPOne <- function(p0, psi, r) {
+dichotPOne <- function(p0, psi, phi) {
   q0 <- 1 - p0
-  temp1 <- 2 * (psi ^ 2) * (p0 ^ 2) + 2 * psi * p0 * q0 + ((psi - 1) ^ 2) * p0 * q0 * (r ^ 2)
-  temp2 <- (psi - 1) * p0 * q0 * r * sqrt((r ^ 2) * ((psi - 1) ^ 2) + 4 * psi)
-  temp3 <- 2 * ((psi * p0 + q0) ^ 2 + (r ^ 2) * ((psi - 1) ^ 2) * p0 * q0)
+  temp1 <- 2 * (psi ^ 2) * (p0 ^ 2) + 2 * psi * p0 * q0 + ((psi - 1) ^ 2) * p0 * q0 * (phi ^ 2)
+  temp2 <- (psi - 1) * p0 * q0 * phi * sqrt((phi ^ 2) * ((psi - 1) ^ 2) + 4 * psi)
+  temp3 <- 2 * ((psi * p0 + q0) ^ 2 + (phi ^ 2) * ((psi - 1) ^ 2) * p0 * q0)
   p1 <- (temp1 - temp2) / temp3
   q1 <- 1 - p1
   q0 <- 1 - p0
-  temp4 <- r * sqrt(p1 * p0 * q0 * q1)
+  temp4 <- phi * sqrt(p1 * p0 * q0 * q1)
 
   # The 4 possible outcomes for a matched pair have the following
   # probabilities.  P11,...,P00 are equations (2) through (5) of Dupont
@@ -93,13 +93,12 @@ dichotPOne <- function(p0, psi, r) {
 #   This routine was written by Dale Plummer.
 #   Designed by Dr. William Dupont.
 dichotSSize <- function(alpha, power, phi, p0, m, psi) {
-  r <- phi
   beta <- 1 - power
   zalpha <- dichotZcrValue(alpha / 2)
   zbeta <- dichotZcrValue(beta)
 
   psi_value <- 1
-  mv <- dichotMeanVar(p0, r, m, m, psi_value)
+  mv <- dichotMeanVar(p0, phi, m, m, psi_value)
   mean <- mv[1]
   var <- mv[2]
 
@@ -109,7 +108,7 @@ dichotSSize <- function(alpha, power, phi, p0, m, psi) {
   v1 <- var
 
   psi_value <- psi
-  mv <- dichotMeanVar(p0, r, m, m, psi_value)
+  mv <- dichotMeanVar(p0, phi, m, m, psi_value)
   mean <- mv[1]
   var <- mv[2]
 
@@ -133,11 +132,11 @@ dichotSSize <- function(alpha, power, phi, p0, m, psi) {
 #  When the null hypothesis is true (\psi=1)
 #  then it calculates e_1 and v_1
 #
-dichotMeanVar <- function(p0, r, m, rm, psi, mean, var) {
+dichotMeanVar <- function(p0, phi, m, rm, psi, mean, var) {
   t <- vector("numeric", 1000)
 
   # Calculate P1 = p_1.
-  p1 <- dichotPOne(p0, psi, r)
+  p1 <- dichotPOne(p0, psi, phi)
 
   # Q1=q_1 Probability that a case patient is not exposed.
   q1 <- 1 - p1
@@ -148,12 +147,12 @@ dichotMeanVar <- function(p0, r, m, rm, psi, mean, var) {
   # P01 = p_{o+}
   # Probability that a control is exposed given that his matched case
   # is exposed.
-  p01 <- p0 + r * sqrt(q1 * p0 * q0 / p1)
+  p01 <- p0 + phi * sqrt(q1 * p0 * q0 / p1)
 
   # P00 = p_{o-}
   # Probability that a control is exposed given that his matched case
   # is NOT exposed.
-  p00 <- p0 - r * sqrt(p1 * p0 * q0 / q1)
+  p00 <- p0 - phi * sqrt(p1 * p0 * q0 / q1)
   q01 <- 1 - p01
   q00 <- 1 - p00
   im <- m
@@ -236,10 +235,9 @@ dichotCalcPhi <- function(z) {
 #   The LaTeX notation given in the comments is from:
 #   Dupont, Biometrics 1988;44:1157-68.
 dichotPowFcn <- function(alpha, n, phi, p0, m, psi) {
-  r <- phi
   zalpha <- dichotZcrValue(alpha / 2)
   psi_value <- 1
-  mv <- dichotMeanVar(p0, r, m, m, psi_value)
+  mv <- dichotMeanVar(p0, phi, m, m, psi_value)
   mean <- mv[1]
   var <- mv[2]
 
@@ -251,7 +249,7 @@ dichotPowFcn <- function(alpha, n, phi, p0, m, psi) {
   s1 <- sqrt(n * var)
 
   psi_value <- psi
-  mv <- dichotMeanVar(p0, r, m, m, psi_value)
+  mv <- dichotMeanVar(p0, phi, m, m, psi_value)
   mean <- mv[1]
   var <- mv[2]
 
@@ -1015,7 +1013,7 @@ Dichot <- setRefClass("Dichot",
       # calculate confidence interval
       if (matched == "matched") {
         delta <- 0.01
-        p1 <<- dichotPOne(p0, psi, rArg)
+        p1 <<- dichotPOne(p0, psi, phi)
         pdf <<- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
 
         # calculating CI requires calculating the sample distribution for
@@ -1025,7 +1023,7 @@ Dichot <- setRefClass("Dichot",
         ci <<- result$ci
 
         if (output == "detAlt") {
-          p1Alt <<- dichotPOne(p0, psiAlt, rArg)
+          p1Alt <<- dichotPOne(p0, psiAlt, phi)
           pdfAlt <<- dichotMatchedSampDistPDF(p0, p1Alt, m, n, psiAlt, phi, delta)
 
           result <- dichotCalcMatchedCI(pdfAlt, psiAlt, delta)
@@ -1278,7 +1276,7 @@ Dichot <- setRefClass("Dichot",
         if (matched == "matched") {
           if (is.null(sampDist)) {
             delta <- 0.01
-            p1 <<- dichotPOne(p0, psi, rArg)
+            p1 <<- dichotPOne(p0, psi, phi)
             pdf <<- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
 
             # calculating CI requires calculating the sample distribution for
@@ -1288,7 +1286,7 @@ Dichot <- setRefClass("Dichot",
             ci <<- ciResult$ci
 
             if (output == "detAlt") {
-              p1Alt <<- dichotPOne(p0, psiAlt, rArg)
+              p1Alt <<- dichotPOne(p0, psiAlt, phi)
               pdfAlt <<- dichotMatchedSampDistPDF(p0, p1Alt, m, n, psiAlt, phi, delta)
 
               ciResult <- dichotCalcMatchedCI(pdfAlt, psiAlt, delta)
