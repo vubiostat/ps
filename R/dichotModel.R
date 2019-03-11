@@ -442,17 +442,23 @@ dichotOddsRatio <- function(alpha, power, phi, p0, n, m) {
 #         error ALPHA
 #   NCOR  Corrected case sample size obtained by using the
 #         continuity correction of Casagrande et al.
-dichotIPSize <- function(alpha, power, p0, p1, m, r,
+dichotIPSize <- function(alpha, power, p0, p1, m, psi, r,
                    case = c("caseControl", "prospective"),
                    expressed = c("twoProportions", "oddsRatio"),
                    method = c("chiSquare", "fishers")) {
-  if (expressed == "oddsRatio" || expressed == "relativeRisk") {
-    if (case == "caseControl") {
-      p1 <- p0 * r / (1 + p0 * (r - 1))
-    }
-    else {
-      p1 <- p0 * r
-    }
+
+  # recalculate p1 under certain circumstances
+  if (case == "caseControl" && expressed == "oddsRatio") {
+    p1 <- p0 * psi / (1 + p0 * (psi - 1))
+
+  } else if (case == "caseControl" && expressed == "relativeRisk") {
+    p1 <- p0 * r / (1 + p0 * (r - 1))
+
+  } else if (case == "prospective" && expressed == "relativeRisk") {
+    p1 <- p0 * r
+
+  } else {
+    # use p1 as supplied
   }
 
   # Calculate the sample size.
@@ -523,16 +529,18 @@ dichotFishSizB <- function(beta, alpha, p0, p1, n, m) {
 #        hypothesis of equal event (exposure) probabilities
 #        with type I error probability ALPHA given P0, P1, N,
 #        and M defined above.
-dichotIPPower <- function(alpha, p0, p1, n, m, r, case = c("caseControl", "prospective"),
+dichotIPPower <- function(alpha, p0, p1, n, m, psi, r, case = c("caseControl", "prospective"),
                     expressed = c("twoProportions", "oddsRatio", "relativeRisk"),
                     method = c("chiSquare", "fishers")) {
   # Calculate a single value of POWER.
-  if (expressed != "twoProportions") {
-    if (case == "caseControl") {
-      p1 <- p0 * r / (1 + p0 * (r - 1))
-    } else {
-      p1 <- p0 * r
-    }
+  if (case == "caseControl" && expressed == "oddsRatio") {
+    p1 <- p0 * psi / (1 + p0 * (psi - 1))
+
+  } else if (case == "prospective" && expressed == "relativeRisk") {
+    p1 <- p0 * r
+
+  } else {
+    # use supplied p1
   }
 
   zalpha <- dichotZcrValue(alpha / 2)
@@ -979,7 +987,7 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (output == "sampleSize") {
-          n <<- dichotIPSize(alpha, power, p0, p1, m, rArg, case, expressed, method)
+          n <<- dichotIPSize(alpha, power, p0, p1, m, psi, r, case, expressed, method)
         }
         else if (output == "power") {
           if (ciMode) {
@@ -989,7 +997,7 @@ Dichot <- setRefClass("Dichot",
               n <<- NULL
             }
           }
-          power <<- dichotIPPower(alpha, p0, p1, n, m, rArg, case, expressed, method)
+          power <<- dichotIPPower(alpha, p0, p1, n, m, psi, r, case, expressed, method)
         }
         else if (output == "detAlt") {
           detAlt <- dichotIPRelRisk(alpha, power, p0, n, m, case, expressed, method)
@@ -1089,21 +1097,16 @@ Dichot <- setRefClass("Dichot",
     plotData = function(ranges, points = 50) {
       result <- list()
 
-      # Set rArg
-      if (matched == "matched") {
-        rArg <- phi
-      } else if (case == "caseControl" && expressed == "oddsRatio") {
-        if (output == "detAlt" && detAltMode == "lower") {
-          rArg <- psiAlt
-        } else {
-          rArg <- psi
-        }
+      if (output == "detAlt" && detAltMode == "lower") {
+        psiArg <- psiAlt
       } else {
-        if (output == "detAlt" && detAltMode == "lower") {
-          rArg <- rAlt
-        } else {
-          rArg <- r
-        }
+        psiArg <- psi
+      }
+
+      if (output == "detAlt" && detAltMode == "lower") {
+        rArg <- rAlt
+      } else {
+        rArg <- r
       }
 
       # Calculate plot data
@@ -1118,7 +1121,10 @@ Dichot <- setRefClass("Dichot",
           power2 <- sapply(n2, dichotPowFcn, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
           detAlt2 <- sapply(n2, dichotOddsRatio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
         } else if (matched == "independent") {
-          power2 <- sapply(n2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
+          power2 <- sapply(n2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1,
+                           m = m, psi = psiArg, r = rArg, case = case,
+                           expressed = expressed, method = method)
+
           detAlt2 <- sapply(n2, dichotIPRelRisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
         }
 
@@ -1155,7 +1161,9 @@ Dichot <- setRefClass("Dichot",
           result$powerVsDetAlt <- df
         } else if (matched == "independent") {
           # Calculate sample size data
-          n2 <- sapply(power2, dichotIPSize, alpha = alpha, p0 = p0, p1 = p1, m = m, r = rArg, case = case, expressed = expressed, method = method)
+          n2 <- sapply(power2, dichotIPSize, alpha = alpha, p0 = p0, p1 = p1,
+                       m = m, psi = psiArg, r = rArg, case = case,
+                       expressed = expressed, method = method)
 
           detAlt2Max <- max(dichotIPRelRisk(alpha, 0.99, p0, n, m, case, expressed, method))
           if (expressed == "twoProportions") {
@@ -1165,7 +1173,9 @@ Dichot <- setRefClass("Dichot",
               length.out = points
             )
             power3 <- sapply(detAlt2, function(p1Arg) {
-              result <- try(dichotIPPower(alpha, p0, p1Arg, n, m, rArg, case, expressed, method), silent = TRUE)
+              result <- try(dichotIPPower(alpha, p0, p1Arg, n, m, psiArg, rArg,
+                                          case, expressed, method),
+                            silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
               } else {
@@ -1187,7 +1197,9 @@ Dichot <- setRefClass("Dichot",
             )
 
             power3 <- sapply(detAlt2, function(rArg) {
-              result <- try(dichotIPPower(alpha, p0, p1, n, m, rArg, case, expressed, method), silent = TRUE)
+              result <- try(dichotIPPower(alpha, p0, p1, n, m, psiArg, rArg,
+                                          case, expressed, method),
+                            silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
               } else {
@@ -1209,7 +1221,9 @@ Dichot <- setRefClass("Dichot",
             )
 
             power3 <- sapply(detAlt2, function(psiArg) {
-              result <- try(dichotIPPower(alpha, p0, p1, n, m, psiArg, case, expressed, method), silent = TRUE)
+              result <- try(dichotIPPower(alpha, p0, p1, n, m, psiArg, rArg,
+                                          case, expressed, method),
+                            silent = TRUE)
               if (inherits(result, 'try-error')) {
                 NA
               } else {
@@ -1254,16 +1268,33 @@ Dichot <- setRefClass("Dichot",
         } else if (matched == "independent") {
           if (expressed == "twoProportions") {
             # det. alt. is p1
-            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, m = m, r = rArg, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0, n = n, m = m, r = rArg, case = case, expressed = expressed, method = method)
+            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power,
+                         p0 = p0, m = m, psi = psiArg, r = rArg, case = case,
+                         expressed = expressed, method = method)
+
+            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0,
+                             n = n, m = m, psi = psiArg, r = rArg, case = case,
+                             expressed = expressed, method = method)
+
           } else if (expressed == "oddsRatio") {
-            # det. alt. is psi (r parameter)
-            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
+            # det. alt. is psi
+            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power,
+                         p0 = p0, p1 = p1, m = m, r = rArg, case = case,
+                         expressed = expressed, method = method)
+
+            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0,
+                             p1 = p1, n = n, m = m, r = rArg, case = case,
+                             expressed = expressed, method = method)
+
           } else if (expressed == "relativeRisk") {
-            # det. alt. is r (same call as 'oddsRatio', repeated for readability)
-            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, p1 = p1, m = m, case = case, expressed = expressed, method = method)
-            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1, n = n, m = m, case = case, expressed = expressed, method = method)
+            # det. alt. is r
+            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power,
+                         p0 = p0, p1 = p1, m = m, psi = psiArg, case = case,
+                         expressed = expressed, method = method)
+
+            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0,
+                             p1 = p1, n = n, m = m, psi = psiArg, case = case,
+                             expressed = expressed, method = method)
           }
         }
 
