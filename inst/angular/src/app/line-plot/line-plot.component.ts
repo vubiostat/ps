@@ -17,6 +17,7 @@ interface PathInfo {
   lineCap: string;
   opacity: number;
   primary: boolean;
+  points: Point[];
 }
 
 enum HoverInfo {
@@ -219,7 +220,7 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
 
     // Prepare main data for bisection during target point dragging.
     this.mainData = stableSort(
-      this.plotData[0],
+      this.plotData[0].filter(p => Number.isFinite(p.x) && Number.isFinite(p.y)),
       (a, b) => d3.ascending(a.x, b.x)
     );
     this.xBisector = d3.bisector(point => point.x).left;
@@ -251,7 +252,8 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
       let primary = this.handler.getSelectedIndex() == i;
       let result = {
         index: i, id: id, path: path, color: color, dashArray: dashArray,
-        lineCap: lineCap, opacity: primary ? 1 : 0.7, primary: primary
+        lineCap: lineCap, opacity: primary ? 1 : 0.7, primary: primary,
+        points: d
       } as PathInfo;
       return result;
     });

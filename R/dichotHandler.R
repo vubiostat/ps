@@ -308,7 +308,7 @@ DichotPlotDataAction <- setRefClass("DichotPlotDataAction",
 
     validate = function(params) {
       errors <- list()
-      expectedKeys <- c("models", "ranges", "points")
+      expectedKeys <- c("models", "ranges", "points", "smoothingPasses")
       keys <- names(params)
       extraKeys <- setdiff(keys, expectedKeys)
 
@@ -377,6 +377,23 @@ DichotPlotDataAction <- setRefClass("DichotPlotDataAction",
           errors$points <- "must be in the range (50, 200)"
         }
       }
+
+      if ("smoothingPasses" %in% keys) {
+        if (is.numeric(params$smoothingPasses)) {
+          if (is.numeric(params$smoothingPasses) &&
+              floor(params$smoothingPasses) != params$smoothingPasses) {
+            errors$smoothingPasses <- "must be an integer"
+          }
+        } else if (!is.integer(params$smoothingPasses)) {
+          errors$smoothingPasses <- "must be an integer"
+        }
+
+        if (is.null(errors$smoothingPasses) &&
+            (params$smoothingPasses < 0 || params$smoothingPasses > 3)) {
+          errors$smoothingPasses <- "must be in the range (0, 3)"
+        }
+      }
+
       errors
     },
 
@@ -390,8 +407,9 @@ DichotPlotDataAction <- setRefClass("DichotPlotDataAction",
       models <- lapply(params$models, Dichot)
       ranges <- params$ranges
       points <- if (is.null(params$points)) defaultPoints else params$points
+      smoothingPasses <- if (is.null(params$smoothingPasses)) 0 else params$smoothingPasses
       output <- models[[1]]$output
-      result <- lapply(models, function(m) m$plotData(ranges, points))
+      result <- lapply(models, function(m) m$plotData(ranges, points, smoothingPasses))
 
       list(data = result, points = unbox(points))
     }

@@ -19,6 +19,7 @@ interface PlotDataParams {
   models: DichotAttribs[];
   ranges: PlotDataRanges;
   points?: number;
+  smoothingPasses?: number;
 }
 
 export interface PlotDataResponse {
@@ -48,7 +49,7 @@ export class DichotService {
       pipe(catchError(this.handleError));
   }
 
-  plotData(models: Dichot[], ranges: PlotDataRanges, pointsPerPlot?: number): Observable<PlotDataResponse> {
+  plotData(models: Dichot[], ranges: PlotDataRanges, pointsPerPlot?: number, smoothingPasses?: number): Observable<PlotDataResponse> {
     let url = `${this.apiUrl}/plotData`;
     let params: PlotDataParams = {
       models: models.map(m => m.attribs()),
@@ -56,6 +57,9 @@ export class DichotService {
     };
     if (typeof(pointsPerPlot) === 'number') {
       params.points = pointsPerPlot;
+    }
+    if (typeof(smoothingPasses) === 'number') {
+      params.smoothingPasses = smoothingPasses;
     }
 
     let requestOptions = {

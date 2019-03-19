@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { Observable, zip, of as observableOf } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import * as d3 from 'd3';
@@ -31,6 +32,9 @@ export class Project {
   };
 
   pointsPerPlot: number;
+  smoothingPasses = 0;
+
+  updatingPlots = new EventEmitter();
 
   constructor(private dichotService: DichotService) {}
 
@@ -191,6 +195,7 @@ export class Project {
   }
 
   updatePlotData(): Observable<any> {
+    this.updatingPlots.emit();
     let ranges = {
       sampleSizeRange: this.sampleSizeRange,
       powerRange: this.powerRange,
@@ -198,7 +203,8 @@ export class Project {
       pSpaceRange: this.pSpaceRange
     } as PlotDataRanges;
 
-    return this.dichotService.plotData(this.models, ranges, this.pointsPerPlot).
+    return this.dichotService.
+      plotData(this.models, ranges, this.pointsPerPlot, this.smoothingPasses).
       pipe(map((result: PlotDataResponse) => {
         if (typeof(this.pointsPerPlot) === 'undefined') {
           this.pointsPerPlot = result.points;
