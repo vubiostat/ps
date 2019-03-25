@@ -93,7 +93,6 @@ dichotPOne <- function(p0, psi, phi) {
 #   This routine was written by Dale Plummer.
 #   Designed by Dr. William Dupont.
 dichotSSize <- function(alpha, power, phi, p0, m, psi) {
-  #cat("dichotSSize(alpha = ", alpha, ", power = ", power, ", phi = ", phi, ", p0 = ", p0, ", m = ", m, ", psi = ", psi, ")\n", sep="")
   beta <- 1 - power
   zalpha <- dichotZcrValue(alpha / 2)
   zbeta <- dichotZcrValue(beta)
@@ -236,7 +235,6 @@ dichotCalcPhi <- function(z) {
 #   The LaTeX notation given in the comments is from:
 #   Dupont, Biometrics 1988;44:1157-68.
 dichotPowFcn <- function(alpha, n, phi, p0, m, psi) {
-  #cat("dichotPowFcn(alpha = ", alpha, ", n = ", n, ", phi = ", phi, ", p0 = ", p0, ", m = ", m, ", psi = ", psi, ")\n", sep="")
   zalpha <- dichotZcrValue(alpha / 2)
   psi_value <- 1
   mv <- dichotMeanVar(p0, phi, m, m, psi_value)
@@ -377,8 +375,6 @@ dichotIteratedPower <- function(psi, alpha, power, phi, p0, n, m) {
 #     Dupont, WD: "Power Calculations for Matched Case-Control
 #     Studies", Biometrics, 1988; 44:1157-1168
 dichotOddsRatio <- function(alpha, power, phi, p0, n, m) {
-  #cat("dichotOddsRatio(alpha = ", alpha, ", power = ", power, ", phi = ", phi, ", p0 = ", p0, ", n = ", n, ", m = ", m, ")\n", sep="")
-
   # Find the lower solution
   errabs <- 1.0e-3
   errrel <- 1.0e-3
@@ -1098,7 +1094,7 @@ Dichot <- setRefClass("Dichot",
       result
     },
 
-    plotData = function(ranges, points = 50, smoothingPasses = 0) {
+    plotData = function(ranges, points = 50) {
       result <- list()
 
       if (output == "detAlt" && detAltMode == "lower") {
@@ -1148,43 +1144,27 @@ Dichot <- setRefClass("Dichot",
         }
 
         if (matched == "matched") {
-          sampleSizeRange <- ranges$sampleSizeRange
-          if (is.null(sampleSizeRange)) {
-            sampleSizeRange <- list(min = 1, max = dichotSSize(alpha, 0.99, phi, p0, m, psi))
-          }
-          n2 <- seq(sampleSizeRange$min, sampleSizeRange$max, length.out = points)
-          result$powerVsSampleSize <-
-            smoothPlot(given = "x", passes = smoothingPasses,
-                       threshold = abs(sampleSizeRange$max - sampleSizeRange$min) / 10,
-                       values = n2, fun = dichotPowFcn, alpha = alpha,
-                       phi = phi, p0 = p0, m = m, psi = psi)
-
-          if (!(power %in% result$powerVsSampleSize$y)) {
-            df <- rbind(result$powerVsSampleSize, c(x = n, y = power))
-            result$powerVsSampleSize <- df[order(df$x),]
-          }
+          n2 <- sapply(power2, dichotSSize, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
 
           detAltRange <- ranges$detAltRange
           if (is.null(detAltRange)) {
             detAltRange <- list(min = 0, max = max(dichotOddsRatio(alpha, 0.99, phi, p0, n, m)))
           }
           detAlt2 <- seq(detAltRange$min, detAltRange$max, length.out = points)
-          result$powerVsDetAlt <-
-            smoothPlot(given = "x", passes = smoothingPasses,
-                       threshold = abs(detAltRange$max - detAltRange$min) / 10,
-                       values = detAlt2, fun = dichotPowFcn, alpha = alpha,
-                       n = n, phi = phi, p0 = p0, m = m)
-          if (!(power %in% result$powerVsDetAlt$y)) {
-            df <- rbind(result$powerVsDetAlt, c(x = psi, y = power))
-            result$powerVsDetAlt <- df[order(df$x),]
-          }
+          power3 <- sapply(detAlt2, dichotPowFcn, alpha = alpha, n = n,
+                           phi = phi, p0 = p0, m = m)
 
+          df <- data.frame(x = detAlt2, y = power3)
+          if (!(power %in% df$y)) {
+            df <- rbind(df, list(x = psi, y = power))
+            df <- df[order(df$x),]
+          }
+          result$powerVsDetAlt <- df
         } else if (matched == "independent") {
           # Calculate sample size data
           n2 <- sapply(power2, dichotIPSize, alpha = alpha, p0 = p0, p1 = p1,
                        m = m, psi = psiArg, r = rArg, case = case,
                        expressed = expressed, method = method)
-          result$powerVsSampleSize <- data.frame(y = power2, x = n2)
 
           detAlt2Max <- max(dichotIPRelRisk(alpha, 0.99, p0, n, m, case, expressed, method))
           if (expressed == "twoProportions") {
@@ -1263,6 +1243,8 @@ Dichot <- setRefClass("Dichot",
           # Only select values from the supplied range
           result$powerVsDetAlt <- df[df$y >= powerRange$min & df$y <= powerRange$max,]
         }
+
+        result$powerVsSampleSize <- data.frame(y = power2, x = n2)
 
       } else if (output == "detAlt") {
         range <- ranges$detAltRange
@@ -1378,7 +1360,6 @@ Dichot <- setRefClass("Dichot",
         }
       }
 
-      #save(result, file = "result.Rdata")
       result
     }
   )

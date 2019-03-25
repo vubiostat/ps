@@ -103,16 +103,6 @@
         number of points to use by default is calculated based on host speed.
       </ng-template>
     </app-range-slider>
-    <app-range-slider name="projectSmoothingPasses" label="Plot smoothing passes"
-      [min]="0" [max]="3" [hard-min]="0" [hard-max]="3" [step]="1"
-      [ngModel]="project.smoothingPasses"
-      (ngModelChange)="setProjectNumberAttribute('smoothingPasses', $event)">
-      <ng-template rsHelp>
-        The number of times to run the plot smoothing algorithm. This algorithm
-        attempts to increase the number of points in the plot at strategic
-        places in order to make plots smoother.
-      </ng-template>
-    </app-range-slider>
     <div class="form-check">
       <label class="form-check-label">
         <input #fixedPSpace class="form-check-input" type="checkbox"

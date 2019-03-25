@@ -32,7 +32,6 @@ export class Project {
   };
 
   pointsPerPlot: number;
-  smoothingPasses = 0;
 
   updatingPlots = new EventEmitter();
 
@@ -203,8 +202,7 @@ export class Project {
       pSpaceRange: this.pSpaceRange
     } as PlotDataRanges;
 
-    return this.dichotService.
-      plotData(this.models, ranges, this.pointsPerPlot, this.smoothingPasses).
+    return this.dichotService.plotData(this.models, ranges, this.pointsPerPlot).
       pipe(map((result: PlotDataResponse) => {
         if (typeof(this.pointsPerPlot) === 'undefined') {
           this.pointsPerPlot = result.points;

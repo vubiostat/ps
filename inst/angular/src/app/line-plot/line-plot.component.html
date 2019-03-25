@@ -31,13 +31,6 @@
         [attr.stroke-linecap]="path.lineCap"
         [attr.stroke-opacity]="path.opacity"
         fill="none" />
-
-      <!--
-      <circle *ngFor="let point of path.points" r="1"
-        [attr.stroke]="path.color" [attr.stroke-width]="getLineWidth() * 1.1"
-        [attr.fill]="path.color" [attr.cx]="xScale(point.x)"
-        [attr.cy]="yScale(point.y)" />
-      -->
     </g>
 
     <g id="{{name}}-x-axis"

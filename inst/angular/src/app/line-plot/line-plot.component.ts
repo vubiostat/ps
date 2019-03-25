@@ -17,7 +17,6 @@ interface PathInfo {
   lineCap: string;
   opacity: number;
   primary: boolean;
-  points: Point[];
 }
 
 enum HoverInfo {
