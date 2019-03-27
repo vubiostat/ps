@@ -1328,8 +1328,18 @@ Dichot <- setRefClass("Dichot",
           }
           result$sampDist <- sampDist
 
-          # FIXME
-          result$confidenceIntervals <- data.frame(n = n, ci1 = ci[1], ci2 = ci[2])
+          # Calculate confidence interval/sample size pairs
+          if (output == "power") {
+            n2 <- ceiling(seq(n / 4, n * 4, length.out = points))
+            ci2 <- sapply(n2, function(n) {
+              pdf2 <- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
+              ciResult <- dichotCalcMatchedCI(pdf2, psi, delta)
+              ciResult$ci
+            })
+            df <- as.data.frame(cbind(n2, t(ci2)))
+            names(df) <- c("n", "ci1", "ci2")
+            result$confidenceIntervals <- df
+          }
         } else if (matched == "independent") {
           pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
 
