@@ -95,6 +95,10 @@ export abstract class AbstractPlotComponent implements AfterViewInit {
     return this.plotOptions.showLegendBox;
   }
 
+  trackByIndex(index: number, obj: any): number {
+    return index;
+  }
+
   protected translate(x: number, y: number): string {
     if (isNaN(x) || isNaN(y)) {
       return null;

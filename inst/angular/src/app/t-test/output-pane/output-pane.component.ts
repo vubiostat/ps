@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { Project } from '../project';
 import { TTest } from '../t-test';
 import { TTestLinePlotHandler } from '../t-test-line-plot-handler';
+import { TTestCIPlotHandler } from '../t-test-ci-plot-handler';
 import { PlotComponent } from '../plot/plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
@@ -22,7 +23,8 @@ export class OutputPaneComponent implements OnChanges {
   @Input('hover-disabled') hoverDisabled = false;
   @Output() modelChanged = new EventEmitter();
   model: TTest;
-  handler: TTestLinePlotHandler;
+  linePlotHandler: TTestLinePlotHandler;
+  ciPlotHandler: TTestCIPlotHandler;
   showFooter = true;
   private copySub: Subscription;
 
@@ -43,7 +45,8 @@ export class OutputPaneComponent implements OnChanges {
     if (!('project' in changes)) return;
 
     if (this.project) {
-      this.handler = new TTestLinePlotHandler(this.project);
+      this.linePlotHandler = new TTestLinePlotHandler(this.project);
+      this.ciPlotHandler = new TTestCIPlotHandler(this.project);
       this.model = this.project.getModel(this.project.selectedIndex);
     } else {
       this.model = undefined;

@@ -1,20 +1,28 @@
 <div id="t-test-output-pane-plots" class="plot" [class.without-footer]="!showFooter">
   <app-line-plot #topLeft name="top-left"
-    [handler]="handler"
+    [handler]="linePlotHandler"
     [hover-disabled]="hoverDisabled"
     (modelChanged)="onModelChanged()">
   </app-line-plot>
   <app-line-plot #topRight name="top-right"
-    [handler]="handler"
+    [handler]="linePlotHandler"
     [hover-disabled]="hoverDisabled"
     (modelChanged)="onModelChanged()">
   </app-line-plot>
+  <app-ci-plot #bottom name="bottom"
+    [handler]="ciPlotHandler"
+    [disable-drag-target]="model?.output == 'delta'"
+    [disable-drag-ci]="model?.output == 'n'"
+    (modelChanged)="onModelChanged()">
+  </app-ci-plot>
+  <!--
   <t-test-bottom-plot #bottom name="bottom"
     [project]="project"
     [disable-drag-target]="model?.output == 'delta'"
     [disable-drag-ci]="model?.output == 'n'"
     (modelChanged)="onModelChanged()">
   </t-test-bottom-plot>
+  -->
   <div class="show-footer" *ngIf="project && !showFooter">
     <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">
       <i class="fa fa-envelope-open-o" aria-hidden="true" title="Show footer"></i>
