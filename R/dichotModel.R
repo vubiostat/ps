@@ -1337,8 +1337,8 @@ Dichot <- setRefClass("Dichot",
               ciResult$ci
             })
             df <- as.data.frame(cbind(n2, t(ci2)))
-            names(df) <- c("n", "ci1", "ci2")
-            result$confidenceIntervals <- df
+            names(df) <- c("n", "lower", "upper")
+            result$ciValues <- df
           }
         } else if (matched == "independent") {
           pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
@@ -1364,8 +1364,8 @@ Dichot <- setRefClass("Dichot",
             ci2 <- sapply(n2, dichotCalcIndCI, p0 = p0, p1 = p1, m = m,
                           expressed = expressed)
             df <- as.data.frame(cbind(n2, t(ci2)))
-            names(df) <- c("n", "ci1", "ci2")
-            result$confidenceIntervals <- df
+            names(df) <- c("n", "lower", "upper")
+            result$ciValues <- df
           }
         }
       }

@@ -1,6 +1,7 @@
 import { Output } from '../output';
 import { Point } from '../point';
 import { DetAltMode } from '../det-alt-mode';
+import { CI } from '../ci';
 
 export enum DichotMatched {
   Matched = "matched",
@@ -48,12 +49,6 @@ export interface DichotAttribs {
   ciMode?: boolean;
 }
 
-export interface DichotCI {
-  n: number;
-  ci1: number;
-  ci2: number;
-}
-
 export interface DichotPlotData {
   sampleSizeVsPower?: Point[];
   sampleSizeVsDetAlt?: Point[];
@@ -62,7 +57,7 @@ export interface DichotPlotData {
   detAltVsSampleSize?: Point[];
   detAltVsPower?: Point[];
   sampDist?: Point[];
-  confidenceIntervals?: DichotCI[];
+  ciValues?: CI[];
 }
 
 export class Dichot {
@@ -99,7 +94,7 @@ export class Dichot {
   detAltVsSampleSize?: Point[];
   detAltVsPower?: Point[];
   sampDist?: Point[];
-  confidenceIntervals?: DichotCI[];
+  ciValues?: CI[];
 
   constructor(attribs?: any) {
     if (attribs) {

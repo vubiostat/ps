@@ -9,8 +9,9 @@ import * as stableSort from 'stable';
 
 import { AbstractPlotComponent, Draw } from '../../abstract-plot.component';
 import { Project } from '../project';
-import { DichotExpressed, DichotCI } from '../dichot';
+import { DichotExpressed } from '../dichot';
 import { Range } from '../../range';
+import { CI } from '../../ci';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 
@@ -31,8 +32,8 @@ interface Group {
   strokeOpacity: number;
   primary: boolean;
   sym: string;
-  leftCI?: DichotCI[];
-  rightCI?: DichotCI[];
+  leftCI?: CI[];
+  rightCI?: CI[];
   newN: number;
 };
 
@@ -289,12 +290,12 @@ export class BottomPlotComponent extends AbstractPlotComponent implements OnChan
         primary: this.project.selectedIndex == i,
         sym: sym,
         leftCI: stableSort(
-          model.confidenceIntervals,
-          (a, b) => d3.ascending(a.ci1, b.ci1)
+          model.ciValues,
+          (a, b) => d3.ascending(a.lower, b.lower)
         ),
         rightCI: stableSort(
-          model.confidenceIntervals,
-          (a, b) => d3.ascending(a.ci2, b.ci2)
+          model.ciValues,
+          (a, b) => d3.ascending(a.upper, b.upper)
         )
       } as Group;
       return result;

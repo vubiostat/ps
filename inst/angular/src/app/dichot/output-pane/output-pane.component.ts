@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Project } from '../project';
 import { Dichot } from '../dichot';
 import { DichotLinePlotHandler } from '../dichot-line-plot-handler';
+import { DichotCIPlotHandler } from '../dichot-ci-plot-handler';
 import { LinePlotComponent } from '../../line-plot/line-plot.component';
 import { BottomPlotComponent } from '../bottom-plot/bottom-plot.component';
 import { ExportPlotsComponent } from '../export-plots/export-plots.component';
@@ -34,7 +35,8 @@ export class OutputPaneComponent implements OnChanges {
   @Input('hover-disabled') hoverDisabled = false;
   @Output() modelChanged = new EventEmitter();
   model: Dichot;
-  handler: DichotLinePlotHandler;
+  linePlotHandler: DichotLinePlotHandler;
+  ciPlotHandler: DichotCIPlotHandler;
   showFooter = true;
   updatingPlots = false;
   private copySub: Subscription;
@@ -62,13 +64,15 @@ export class OutputPaneComponent implements OnChanges {
     }
 
     if (this.project) {
-      this.handler = new DichotLinePlotHandler(this.project);
+      this.linePlotHandler = new DichotLinePlotHandler(this.project);
+      this.ciPlotHandler = new DichotCIPlotHandler(this.project);
       this.model = this.project.getModel(this.project.selectedIndex);
       this.updatingSub = this.project.updatingPlots.subscribe(event => {
         this.updatingPlots = true;
       });
     } else {
-      this.handler = undefined;
+      this.linePlotHandler = undefined;
+      this.ciPlotHandler = undefined;
       this.model = undefined;
     }
   }

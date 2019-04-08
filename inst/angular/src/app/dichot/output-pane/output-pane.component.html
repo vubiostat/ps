@@ -5,20 +5,28 @@
     <div class="aligner-bottom"></div>
   </div>
   <app-line-plot #topLeft name="top-left"
-    [handler]="handler"
+    [handler]="linePlotHandler"
     [hover-disabled]="hoverDisabled"
     (modelChanged)="onModelChanged()">
   </app-line-plot>
   <app-line-plot #topRight name="top-right"
-    [handler]="handler"
+    [handler]="linePlotHandler"
     [hover-disabled]="hoverDisabled"
     (modelChanged)="onModelChanged()">
   </app-line-plot>
+  <app-ci-plot #bottom name="bottom"
+    [handler]="ciPlotHandler"
+    [disable-drag-target]="model?.output == 'detAlt'"
+    [disable-drag-ci]="model?.output != 'power'"
+    (modelChanged)="onModelChanged()">
+  </app-ci-plot>
+  <!--
   <dichot-bottom-plot #bottom name="bottom" [project]="project"
     (modelChanged)="onModelChanged()"
     [disable-drag-target]="model?.output == 'detAlt'"
     [disable-drag-ci]="model?.output != 'power'">
   </dichot-bottom-plot>
+  -->
   <div class="show-footer" *ngIf="project && !showFooter">
     <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">
       <i class="fa fa-envelope-open-o" aria-hidden="true" title="Show footer"></i>
