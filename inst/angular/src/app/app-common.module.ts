@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { RoundPipe } from './round.pipe';
@@ -11,9 +12,15 @@ import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.co
 import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range-slider/range-slider.component';
 import { LinePlotComponent } from './line-plot/line-plot.component';
 import { CIPlotComponent } from './ci-plot/ci-plot.component';
+import { OutputPaneComponent } from './output-pane/output-pane.component';
+import { ExportPlotsComponent } from './export-plots/export-plots.component';
 
 @NgModule({
-  imports: [ CommonModule, NgbModule ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgbModule
+  ],
   declarations: [
     RoundPipe,
     CeilPipe,
@@ -25,6 +32,8 @@ import { CIPlotComponent } from './ci-plot/ci-plot.component';
     RangeSliderHelp,
     LinePlotComponent,
     CIPlotComponent,
+    OutputPaneComponent,
+    ExportPlotsComponent
   ],
   exports: [
     RoundPipe,
@@ -36,7 +45,11 @@ import { CIPlotComponent } from './ci-plot/ci-plot.component';
     RangeSliderLabel,
     RangeSliderHelp,
     LinePlotComponent,
-    CIPlotComponent
+    CIPlotComponent,
+    OutputPaneComponent
   ],
+  entryComponents: [
+    ExportPlotsComponent
+  ]
 })
 export class AppCommonModule { }

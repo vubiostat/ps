@@ -50,11 +50,11 @@
           <i class="fa" [class.fa-cubes]="hoverBoxEnabled" [class.fa-cube]="!hoverBoxEnabled"></i>
         </button>
       </div>
-      <t-test-output-pane #outputPane
+      <app-output-pane #outputPane
         [project]="selectedProject"
         [hover-disabled]="!hoverBoxEnabled"
         (modelChanged)="onModelChanged()">
-      </t-test-output-pane>
+      </app-output-pane>
     </div>
   </div>
   <app-draggable-dialog #helpDialog

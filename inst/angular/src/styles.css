@@ -41,6 +41,7 @@ ngb-modal-window.export-plots .modal-content {
   /*width: 100%;*/
 }
 
+#export-plots-modal-body ngb-tabset,
 #t-test-export-plots-modal-body ngb-tabset,
 #z-test-export-plots-modal-body ngb-tabset {
   display: flex;
@@ -48,11 +49,13 @@ ngb-modal-window.export-plots .modal-content {
   flex: 1;
 }
 
+#output-pane-footer ngb-tabset > ul.nav,
 #t-test-output-pane-footer ngb-tabset > ul.nav,
 #z-test-output-pane-footer ngb-tabset > ul.nav {
   padding: 5px;
 }
 
+#output-pane-footer ngb-tabset > ul.nav > li.nav-item,
 #t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item,
 #z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item {
   margin-right: 5px;
@@ -60,12 +63,14 @@ ngb-modal-window.export-plots .modal-content {
 
 #t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #z-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link,
+#export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link {
   border-color: #bbb #bbb #888;
   background-color: #eee;
 }
 
+#output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link,
 #z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link {
   border-color: #868e96;
@@ -75,6 +80,7 @@ ngb-modal-window.export-plots .modal-content {
 
 #t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
 #z-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
+#export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover,
 #z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link:hover {
   border-color: #888;
@@ -84,12 +90,14 @@ ngb-modal-window.export-plots .modal-content {
 
 #t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
 #z-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
+#export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
 #z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
   border-color: #888 #888 #fff;
   background-color: #fff;
 }
 
+#output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
 #t-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active,
 #z-test-output-pane-footer ngb-tabset > ul.nav > li.nav-item > a.nav-link.active {
   background-color: #007bff;
@@ -98,6 +106,7 @@ ngb-modal-window.export-plots .modal-content {
 
 #t-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
 #z-test-sidebar > ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
+#export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover,
 #z-test-export-plots-modal-body ngb-tabset > ul.nav > li.nav-item > a.nav-link.active:hover {
   color: #464a4c;
@@ -105,6 +114,7 @@ ngb-modal-window.export-plots .modal-content {
 
 #t-test-sidebar > ngb-tabset > ul.nav,
 #z-test-sidebar > ngb-tabset > ul.nav,
+#export-plots-modal-body ngb-tabset > ul.nav,
 #t-test-export-plots-modal-body ngb-tabset > ul.nav,
 #z-test-export-plots-modal-body ngb-tabset > ul.nav {
   /*display: flex;*/
@@ -119,6 +129,7 @@ ngb-modal-window.export-plots .modal-content {
   flex: 1 0 auto;
 }
 
+#export-plots-modal-body ngb-tabset > .tab-content,
 #t-test-export-plots-modal-body ngb-tabset > .tab-content,
 #z-test-export-plots-modal-body ngb-tabset > .tab-content {
   display: flex;
@@ -138,6 +149,7 @@ ngb-modal-window.export-plots .modal-content {
   max-height: 70vh;
 }
 
+#export-plots-modal-body ngb-tabset > .tab-content > .tab-pane,
 #t-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane,
 #z-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane {
   border: 1px solid #888;
@@ -146,6 +158,7 @@ ngb-modal-window.export-plots .modal-content {
   max-height: 73vh;
 }
 
+#output-pane-footer ngb-tabset > .tab-content > .tab-pane,
 #t-test-output-pane-footer ngb-tabset > .tab-content > .tab-pane,
 #z-test-output-pane-footer ngb-tabset > .tab-content > .tab-pane {
   padding: 10px;
@@ -158,6 +171,7 @@ ngb-modal-window.export-plots .modal-content {
   background: white;
 }
 
+#export-plots-modal-body ngb-tabset > .tab-content > .tab-pane.active,
 #t-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane.active,
 #z-test-export-plots-modal-body ngb-tabset > .tab-content > .tab-pane.active {
   display: flex;
@@ -166,6 +180,7 @@ ngb-modal-window.export-plots .modal-content {
   background: white;
 }
 
+#output-pane-footer ngb-tabset span.code,
 #t-test-output-pane-footer ngb-tabset span.code,
 #z-test-output-pane-footer ngb-tabset span.code {
   display: inline-block;
@@ -176,6 +191,7 @@ ngb-modal-window.export-plots .modal-content {
 }
 
 /* Add non-encapsulated styles for plots */
+#output-pane-plots svg.top-left,
 #t-test-output-pane-plots svg.top-left,
 #z-test-output-pane-plots svg.top-left,
 #dichot-output-pane-plots svg.top-left {
@@ -184,11 +200,13 @@ ngb-modal-window.export-plots .modal-content {
   width: 50%;
   height: 70%;
 }
+#output-pane-plots.without-footer svg.top-left,
 #t-test-output-pane-plots.without-footer svg.top-left,
 #z-test-output-pane-plots.without-footer svg.top-left,
 #dichot-output-pane-plots.without-footer svg.top-left {
   height: 68%;
 }
+#output-pane-plots svg.top-right,
 #t-test-output-pane-plots svg.top-right,
 #z-test-output-pane-plots svg.top-right,
 #dichot-output-pane-plots svg.top-right {
@@ -197,11 +215,13 @@ ngb-modal-window.export-plots .modal-content {
   width: 50%;
   height: 70%;
 }
+#output-pane-plots.without-footer svg.top-right,
 #t-test-output-pane-plots.without-footer svg.top-right,
 #z-test-output-pane-plots.without-footer svg.top-right,
 #dichot-output-pane-plots.without-footer svg.top-right {
   height: 68%;
 }
+#output-pane-plots svg.bottom,
 #t-test-output-pane-plots svg.bottom,
 #z-test-output-pane-plots svg.bottom,
 #dichot-output-pane-plots svg.bottom {
@@ -210,6 +230,7 @@ ngb-modal-window.export-plots .modal-content {
   height: 28%;
   width: 100%;
 }
+#output-pane-plots.without-footer svg.bottom,
 #t-test-output-pane-plots.without-footer svg.bottom,
 #z-test-output-pane-plots.without-footer svg.bottom,
 #dichot-output-pane-plots.without-footer svg.bottom {

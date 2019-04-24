@@ -1,0 +1,30 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modal-body {
+}
+
+.modal-body .left {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  border-right: 1px solid #888;
+  padding: 10px;
+}
+
+.modal-body .right {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: 10px;
+  overflow: auto;
+  padding: 10px;
+}
+
+.modal-footer {
+  align-items: center;
+  justify-content: space-between;
+}

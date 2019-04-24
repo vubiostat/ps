@@ -3,12 +3,17 @@ import { map, mergeMap } from 'rxjs/operators';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
-import { TTest, TTestKind, TTestAttribs } from './t-test';
 import { Range } from '../range';
 import { Point } from '../point';
+import { AbstractProject } from '../abstract-project';
+import { LinePlotHandler } from '../line-plot-handler';
+import { CIPlotHandler } from '../ci-plot-handler';
+import { TTest, TTestKind, TTestAttribs } from './t-test';
 import { TTestService, PlotDataRanges, PlotDataResponse } from './t-test.service';
+import { TTestLinePlotHandler } from './t-test-line-plot-handler';
+import { TTestCIPlotHandler } from './t-test-ci-plot-handler';
 
-export class Project {
+export class Project extends AbstractProject {
   kind: TTestKind;
   models: TTest[] = [];
   selectedIndex: number = 0;
@@ -29,7 +34,9 @@ export class Project {
 
   pointsPerPlot: number;
 
-  constructor(private ttestService: TTestService) {}
+  constructor(private ttestService: TTestService) {
+    super();
+  }
 
   getOutput(): string {
     if (this.models.length > 0) {
@@ -309,6 +316,34 @@ export class Project {
     } else {
       this.pSpaceRange = undefined;
     }
+  }
+
+  getLinePlotHandler(): LinePlotHandler {
+    return new TTestLinePlotHandler(this);
+  }
+
+  getCIPlotHandler(): CIPlotHandler {
+    return new TTestCIPlotHandler(this);
+  }
+
+  getSelectedIndex(): number {
+    return this.selectedIndex;
+  }
+
+  getChangeHistory(): any[] {
+    return this.changeHistory;
+  }
+
+  getModelCount(): number {
+    return this.models.length;
+  }
+
+  getModelInterpretation(): string {
+    return this.models[this.selectedIndex].interpretation();
+  }
+
+  getModelOutput(): string {
+    return this.models[this.selectedIndex].output;
   }
 
   describeChanges(changes: any, html = true): string {

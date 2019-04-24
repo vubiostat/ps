@@ -1,0 +1,68 @@
+<div id="output-pane-plots" class="plot" [class.without-footer]="!showFooter">
+  <app-line-plot #topLeft name="top-left"
+    [handler]="linePlotHandler"
+    [hover-disabled]="hoverDisabled"
+    (modelChanged)="onModelChanged()">
+  </app-line-plot>
+  <app-line-plot #topRight name="top-right"
+    [handler]="linePlotHandler"
+    [hover-disabled]="hoverDisabled"
+    (modelChanged)="onModelChanged()">
+  </app-line-plot>
+  <app-ci-plot #bottom name="bottom"
+    [handler]="ciPlotHandler"
+    [disable-drag-target]="project?.getModelOutput() == 'delta'"
+    [disable-drag-ci]="project?.getModelOutput() == 'n'"
+    (modelChanged)="onModelChanged()">
+  </app-ci-plot>
+  <div class="show-footer" *ngIf="project && !showFooter">
+    <button type="button" class="btn btn-secondary" (click)="toggleFooter(true)">
+      <i class="fa fa-envelope-open-o" aria-hidden="true" title="Show footer"></i>
+      Interpretation / Log
+    </button>
+  </div>
+</div>
+<div id="output-pane-footer" class="output-footer" *ngIf="project && showFooter">
+  <div class="footer-buttons">
+    <button type="button" (click)="copyFooter()" title="Copy to clipboard">
+      <i class="fa fa-clipboard"></i>
+    </button>
+    <button type="button" (click)="toggleFooter(false)" title="Hide footer">
+      <i class="fa fa-window-minimize"></i>
+    </button>
+  </div>
+  <ngb-tabset #footerTabset type="pills">
+    <ngb-tab id="output-pane-interpretation">
+      <ng-template ngbTabTitle>
+        <i *ngIf="project.getModelCount() > 1" class="fa fa-square"
+          [style.color]="getIndicatorColor()"></i>
+        Interpretation
+      </ng-template>
+      <ng-template ngbTabContent>
+        {{project.getModelInterpretation()}}
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="output-pane-log" title="Log">
+      <ng-template ngbTabContent>
+        <ng-template [ngIf]="!project" [ngIfElse]="changeHistory">
+          There have not been any changes yet.
+        </ng-template>
+        <ng-template #changeHistory>
+          <ul class="log" #log>
+            <li *ngFor="let changes of project.getChangeHistory(); index as i">
+              <ng-template [ngIf]="changes.type == 'add'">
+                Added model {{i + 1}}: <span class="code">{{ changes.params | json }}</span>
+              </ng-template>
+              <ng-template [ngIf]="changes.type == 'remove'">
+                Removed model {{i + 1}}
+              </ng-template>
+              <ng-template [ngIf]="changes.type == 'change'">
+                Changed <span class="code">{{changes.key}}</span> in model {{i + 1}}: <span class="code">{{changes.params | json }}</span>
+              </ng-template>
+            </li>
+          </ul>
+        </ng-template>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>
