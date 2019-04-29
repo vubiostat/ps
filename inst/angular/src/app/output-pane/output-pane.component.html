@@ -1,4 +1,9 @@
 <div id="output-pane-plots" class="plot" [class.without-footer]="!showFooter">
+  <div *ngIf="updatingPlots" @overlay id="output-pane-overlay">
+    <div class="aligner-top"></div>
+    <div class="loader"></div>
+    <div class="aligner-bottom"></div>
+  </div>
   <app-line-plot #topLeft name="top-left"
     [handler]="linePlotHandler"
     [hover-disabled]="hoverDisabled"

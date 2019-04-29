@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, Input, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 
@@ -15,7 +16,18 @@ import { CopyService } from '../copy.service';
 @Component({
   selector: 'app-output-pane',
   templateUrl: './output-pane.component.html',
-  styleUrls: ['./output-pane.component.css']
+  styleUrls: ['./output-pane.component.css'],
+  animations: [
+    trigger('overlay', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('1s 0.8s', style({ opacity: 0.7 }))
+      ]),
+      transition(':leave', [
+        animate('0.5s', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class OutputPaneComponent implements OnChanges {
   @Input('project') project: AbstractProject;
@@ -24,7 +36,9 @@ export class OutputPaneComponent implements OnChanges {
   linePlotHandler: LinePlotHandler;
   ciPlotHandler: CIPlotHandler;
   showFooter = true;
+  updatingPlots = false;
   private copySub: Subscription;
+  private updatingSub: Subscription;
 
   @ViewChild('topLeft') topLeftPlot: LinePlotComponent;
   @ViewChild('topRight') topRightPlot: LinePlotComponent;
@@ -42,9 +56,17 @@ export class OutputPaneComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (!('project' in changes)) return;
 
+    if (this.updatingSub) {
+      this.updatingSub.unsubscribe();
+      this.updatingSub = undefined;
+    }
+
     if (this.project) {
       this.linePlotHandler = this.project.getLinePlotHandler();
       this.ciPlotHandler = this.project.getCIPlotHandler();
+      this.updatingSub = this.project.updatingPlotData.subscribe(event => {
+        this.updatingPlots = true;
+      });
     } else {
       this.linePlotHandler = undefined;
       this.ciPlotHandler = undefined;
@@ -72,6 +94,7 @@ export class OutputPaneComponent implements OnChanges {
 
   redrawPlots(): void {
     // Set a timeout here to let the UI resize if needed
+    this.updatingPlots = false;
     setTimeout(() => {
       this.topLeftPlot.redraw();
       this.topRightPlot.redraw();
