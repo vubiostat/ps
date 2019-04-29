@@ -32,6 +32,8 @@ import { CopyService } from '../copy.service';
 export class OutputPaneComponent implements OnChanges {
   @Input('project') project: AbstractProject;
   @Input('hover-disabled') hoverDisabled = false;
+  @Input('disable-drag-ci-target') disableDragCITarget = false;
+  @Input('disable-drag-ci-bounds') disableDragCIBounds = false;
   @Output() modelChanged = new EventEmitter();
   linePlotHandler: LinePlotHandler;
   ciPlotHandler: CIPlotHandler;

@@ -16,8 +16,8 @@
   </app-line-plot>
   <app-ci-plot #bottom name="bottom"
     [handler]="ciPlotHandler"
-    [disable-drag-target]="project?.getModelOutput() == 'delta'"
-    [disable-drag-ci]="project?.getModelOutput() == 'n'"
+    [disable-drag-target]="disableDragCITarget"
+    [disable-drag-ci]="disableDragCIBounds"
     (modelChanged)="onModelChanged()">
   </app-ci-plot>
   <div class="show-footer" *ngIf="project && !showFooter">
