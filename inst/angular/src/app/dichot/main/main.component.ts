@@ -120,7 +120,6 @@ export class MainComponent implements OnInit {
   }
 
   onProjectChanged(): void {
-    this.outputPane.updateProject();
     this.outputPane.redrawPlots();
   }
 

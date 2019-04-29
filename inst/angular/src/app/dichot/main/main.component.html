@@ -49,11 +49,13 @@
           <i class="fa" [class.fa-cubes]="hoverBoxEnabled" [class.fa-cube]="!hoverBoxEnabled"></i>
         </button>
       </div>
-      <dichot-output-pane #outputPane
+      <app-output-pane #outputPane
         [project]="selectedProject"
         [hover-disabled]="!hoverBoxEnabled"
+        [disable-drag-ci-target]="project?.getModelOutput() == 'detAlt'"
+        [disable-drag-ci-bounds]="project?.getModelOutput() != 'power'"
         (modelChanged)="onModelChanged()">
-      </dichot-output-pane>
+      </app-output-pane>
     </div>
   </div>
   <app-draggable-dialog #helpDialog

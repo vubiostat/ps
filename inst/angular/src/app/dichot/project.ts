@@ -1,4 +1,3 @@
-import { EventEmitter } from '@angular/core';
 import { Observable, zip, of as observableOf } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import * as d3 from 'd3';
@@ -8,11 +7,16 @@ import { Output } from '../output';
 import { Range } from '../range';
 import { Point } from '../point';
 import { DetAltMode } from '../det-alt-mode';
+import { AbstractProject } from '../abstract-project';
+import { LinePlotHandler } from '../line-plot-handler';
+import { CIPlotHandler } from '../ci-plot-handler';
 
 import { Dichot, DichotMatched, DichotCase, DichotExpressed, DichotMethod, DichotAttribs } from './dichot';
 import { DichotService, PlotDataRanges, PlotDataResponse } from './dichot.service';
+import { DichotLinePlotHandler } from './dichot-line-plot-handler';
+import { DichotCIPlotHandler } from './dichot-ci-plot-handler';
 
-export class Project {
+export class Project extends AbstractProject {
   models: Dichot[] = [];
   selectedIndex: number = 0;
   changeHistory: any[] = [];
@@ -33,9 +37,37 @@ export class Project {
 
   pointsPerPlot: number;
 
-  updatingPlots = new EventEmitter();
+  constructor(private dichotService: DichotService) {
+    super();
+  }
 
-  constructor(private dichotService: DichotService) {}
+  getLinePlotHandler(): LinePlotHandler {
+    return new DichotLinePlotHandler(this);
+  }
+
+  getCIPlotHandler(): CIPlotHandler {
+    return new DichotCIPlotHandler(this);
+  }
+
+  getSelectedIndex(): number {
+    return this.selectedIndex;
+  }
+
+  getChangeHistory(): any[] {
+    return this.changeHistory;
+  }
+
+  getModelOutput(): string {
+    return this.models[this.selectedIndex].output;
+  }
+
+  getModelInterpretation(): string {
+    return this.models[this.selectedIndex].interpretation();
+  }
+
+  getModelCount(): number {
+    return this.models.length;
+  }
 
   getOutput(): Output {
     if (this.models.length > 0) {
@@ -194,7 +226,7 @@ export class Project {
   }
 
   updatePlotData(): Observable<any> {
-    this.updatingPlots.emit();
+    this.updatingPlotData.emit();
     let ranges = {
       sampleSizeRange: this.sampleSizeRange,
       powerRange: this.powerRange,
