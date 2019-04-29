@@ -46,6 +46,7 @@ export class Project extends AbstractProject {
   }
 
   updatePlotData(): Observable<any> {
+    this.updatingPlotData.emit();
     let ranges = {
       nRange: this.nRange,
       powerRange: this.powerRange,
