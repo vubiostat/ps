@@ -29,7 +29,8 @@ export class TTestComponent implements OnInit {
 
   helpTitles = {
     'overview': 'PS Overview',
-    'start': 'PS Start Tab'
+    't-test-start': 'PS Start Tab: T-Test',
+    'z-test-start': 'PS Start Tab: Z-Test'
   };
   helpTopic = 'overview';
   blockSelection = false;
@@ -91,6 +92,18 @@ export class TTestComponent implements OnInit {
   }
 
   toggleHelp(topic: string): void {
+    if (topic == 'start') {
+      switch (this.kind) {
+        case TTestKind.Paired:
+        case TTestKind.Independent:
+          topic = 't-test-start';
+          break;
+        case TTestKind.ZTest:
+          topic = 'z-test-start';
+          break;
+      }
+    }
+
     if (this.helpDialog.isOpen() && this.helpTopic == topic) {
       this.helpDialog.close();
     } else {
