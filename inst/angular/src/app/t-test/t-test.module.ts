@@ -12,12 +12,7 @@ import { ProjectService } from './project.service';
 import { MainComponent } from './main/main.component';
 import { StartComponent } from './start/start.component';
 import { ProjectComponent } from './project/project.component';
-import { OutputPaneComponent } from './output-pane/output-pane.component';
-import { HelpComponent } from './help/help.component';
 import { PlotOptionsComponent } from './plot-options/plot-options.component';
-import { PlotComponent } from './plot/plot.component';
-import { BottomPlotComponent } from './bottom-plot/bottom-plot.component';
-import { ExportPlotsComponent } from './export-plots/export-plots.component';
 import { ProjectModelComponent } from './project-model/project-model.component';
 
 import { TTestKind } from './t-test';
@@ -33,12 +28,7 @@ const routes: Routes = [
     MainComponent,
     StartComponent,
     ProjectComponent,
-    OutputPaneComponent,
-    HelpComponent,
     PlotOptionsComponent,
-    PlotComponent,
-    BottomPlotComponent,
-    ExportPlotsComponent,
     ProjectModelComponent,
   ],
   imports: [
@@ -52,9 +42,6 @@ const routes: Routes = [
   providers: [
     TTestService,
     ProjectService
-  ],
-  entryComponents: [
-    ExportPlotsComponent
   ]
 })
 export class TTestModule { }
