@@ -8,6 +8,7 @@ import { CeilPipe } from './ceil.pipe';
 import { ReversePipe } from './reverse.pipe';
 import { FormatFixedPipe } from './format-fixed.pipe';
 
+import { HelpComponent } from './help/help.component';
 import { DraggableDialogComponent } from './draggable-dialog/draggable-dialog.component';
 import { RangeSliderComponent, RangeSliderLabel, RangeSliderHelp } from './range-slider/range-slider.component';
 import { LinePlotComponent } from './line-plot/line-plot.component';
@@ -26,6 +27,7 @@ import { ExportPlotsComponent } from './export-plots/export-plots.component';
     CeilPipe,
     ReversePipe,
     FormatFixedPipe,
+    HelpComponent,
     DraggableDialogComponent,
     RangeSliderComponent,
     RangeSliderLabel,
@@ -40,6 +42,7 @@ import { ExportPlotsComponent } from './export-plots/export-plots.component';
     CeilPipe,
     ReversePipe,
     FormatFixedPipe,
+    HelpComponent,
     DraggableDialogComponent,
     RangeSliderComponent,
     RangeSliderLabel,
