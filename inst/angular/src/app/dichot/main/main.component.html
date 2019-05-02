@@ -15,7 +15,7 @@
             <ng-template ngbTabContent>
               <dichot-start [model]="newModel"
                 (onCalculate)="calculate()"
-                (onToggleHelp)="toggleHelp('start')">
+                (onToggleHelp)="toggleHelp('dichot-start')">
               </dichot-start>
             </ng-template>
           </ngb-tab>
@@ -63,7 +63,7 @@
     start-x-offset="33%" start-y-offset="55px"
     (drag-start)="onChildDragStarted()"
     (drag-end)="onChildDragEnded()">
-    <dichot-help [topic]="helpTopic"></dichot-help>
+    <app-help [topic]="helpTopic"></app-help>
   </app-draggable-dialog>
   <app-draggable-dialog #plotOptionsDialog
     title="Plot options"
