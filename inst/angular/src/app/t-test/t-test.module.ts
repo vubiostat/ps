@@ -9,7 +9,7 @@ import { AppCommonModule } from '../app-common.module';
 import { TTestService } from './t-test.service';
 import { ProjectService } from './project.service';
 
-import { TTestComponent } from './t-test.component';
+import { MainComponent } from './main/main.component';
 import { StartComponent } from './start/start.component';
 import { ProjectComponent } from './project/project.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
@@ -23,14 +23,14 @@ import { ProjectModelComponent } from './project-model/project-model.component';
 import { TTestKind } from './t-test';
 
 const routes: Routes = [
-  { path: 't-test/paired', component: TTestComponent, data: { kind: TTestKind.Paired } },
-  { path: 't-test/ind',    component: TTestComponent, data: { kind: TTestKind.Independent } },
-  { path: 'z-test',        component: TTestComponent, data: { kind: TTestKind.ZTest } }
+  { path: 't-test/paired', component: MainComponent, data: { kind: TTestKind.Paired } },
+  { path: 't-test/ind',    component: MainComponent, data: { kind: TTestKind.Independent } },
+  { path: 'z-test',        component: MainComponent, data: { kind: TTestKind.ZTest } }
 ];
 
 @NgModule({
   declarations: [
-    TTestComponent,
+    MainComponent,
     StartComponent,
     ProjectComponent,
     OutputPaneComponent,

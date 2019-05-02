@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModule, NgbTabsetConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Project } from './project';
 import { ProjectService } from './project.service';
-import { TTestComponent } from './t-test.component';
+import { MainComponent } from './main.component';
 
 @Component({selector: 't-test-start', template: ''})
 class StartStubComponent {
@@ -37,7 +37,7 @@ class PlotOptionsStubComponent {
   @Input() project: Project;
 }
 
-describe('t-test.TTestComponent', () => {
+describe('t-test.MainComponent', () => {
   let projectServiceStub = {
     getProjects: () => [],
     getSelectedIndex: () => undefined
@@ -56,7 +56,7 @@ describe('t-test.TTestComponent', () => {
         HelpStubComponent,
         DraggableDialogStubComponent,
         PlotOptionsStubComponent,
-        TTestComponent
+        MainComponent
       ],
       providers: [
         { provide: ProjectService, useValue: projectServiceStub },
@@ -67,7 +67,7 @@ describe('t-test.TTestComponent', () => {
   }));
 
   it('should create', async(() => {
-    const fixture = TestBed.createComponent(TTestComponent);
+    const fixture = TestBed.createComponent(MainComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));

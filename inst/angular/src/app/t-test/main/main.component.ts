@@ -3,22 +3,22 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 
-import { TTest, TTestKind } from './t-test';
-import { Project } from './project';
-import { ProjectService } from './project.service';
-import { ResizeService } from '../resize.service';
+import { TTest, TTestKind } from '../t-test';
+import { Project } from '../project';
+import { ProjectService } from '../project.service';
+import { ResizeService } from '../../resize.service';
 
-import { DraggableDialogComponent } from '../draggable-dialog/draggable-dialog.component';
-import { OutputPaneComponent } from './output-pane/output-pane.component';
+import { DraggableDialogComponent } from '../../draggable-dialog/draggable-dialog.component';
+import { OutputPaneComponent } from '../../output-pane/output-pane.component';
 
-import { commitHash, buildTimestamp } from '../version';
+import { commitHash, buildTimestamp } from '../../version';
 
 @Component({
-  selector: 't-test-root',
-  templateUrl: './t-test.component.html',
-  styleUrls: ['./t-test.component.css']
+  selector: 't-test-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.css']
 })
-export class TTestComponent implements OnInit {
+export class MainComponent implements OnInit {
   newModel: TTest;
   projects: Project[] = [];
   selectedIndex: number;
