@@ -10,7 +10,7 @@ import { ProjectService } from '../project.service';
 import { ResizeService } from '../../resize.service';
 
 import { DraggableDialogComponent } from '../../draggable-dialog/draggable-dialog.component';
-import { OutputPaneComponent } from '../output-pane/output-pane.component';
+import { OutputPaneComponent } from '../../output-pane/output-pane.component';
 
 import { commitHash, buildTimestamp } from '../../version';
 
