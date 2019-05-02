@@ -52,8 +52,8 @@
       <app-output-pane #outputPane
         [project]="selectedProject"
         [hover-disabled]="!hoverBoxEnabled"
-        [disable-drag-ci-target]="project?.getModelOutput() == 'detAlt'"
-        [disable-drag-ci-bounds]="project?.getModelOutput() != 'power'"
+        [disable-drag-ci-target]="selectedProject?.getModelOutput() == 'detAlt'"
+        [disable-drag-ci-bounds]="selectedProject?.getModelOutput() != 'power'"
         (modelChanged)="onModelChanged()">
       </app-output-pane>
     </div>

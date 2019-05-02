@@ -67,7 +67,7 @@ export class OutputPaneComponent implements OnChanges {
       this.linePlotHandler = new DichotLinePlotHandler(this.project);
       this.ciPlotHandler = new DichotCIPlotHandler(this.project);
       this.model = this.project.getModel(this.project.selectedIndex);
-      this.updatingSub = this.project.updatingPlots.subscribe(event => {
+      this.updatingSub = this.project.updatingPlotData.subscribe(event => {
         this.updatingPlots = true;
       });
     } else {

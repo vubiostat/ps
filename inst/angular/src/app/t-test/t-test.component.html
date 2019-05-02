@@ -53,8 +53,8 @@
       <app-output-pane #outputPane
         [project]="selectedProject"
         [hover-disabled]="!hoverBoxEnabled"
-        [disable-drag-ci-target]="project?.getModelOutput() == 'delta'"
-        [disable-drag-ci-bounds]="project?.getModelOutput() == 'n'"
+        [disable-drag-ci-target]="selectedProject?.getModelOutput() == 'delta'"
+        [disable-drag-ci-bounds]="selectedProject?.getModelOutput() == 'n'"
         (modelChanged)="onModelChanged()">
       </app-output-pane>
     </div>
