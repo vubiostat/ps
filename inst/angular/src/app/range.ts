@@ -1,4 +1,6 @@
 export class Range {
+  description: string;
+
   constructor(public min: number, public max: number) {}
 
   combine(other: Range): void {

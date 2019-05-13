@@ -71,10 +71,10 @@
     start-x-offset="5%" start-y-offset="55px"
     (drag-start)="onChildDragStarted()"
     (drag-end)="onChildDragEnded()">
-    <t-test-plot-options [project]="selectedProject"
+    <app-plot-options [project]="selectedProject"
       (optionChanged)="onPlotOptionChanged()"
       (projectChanged)="onProjectChangedFromPlotOptions()"
       (reset)="onPlotOptionsReset()">
-    </t-test-plot-options>
+    </app-plot-options>
   </app-draggable-dialog>
 </div>

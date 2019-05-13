@@ -351,10 +351,12 @@ DichotPlotDataAction <- setRefClass("DichotPlotDataAction",
         for (name in expectedRangesKeys) {
           if (name %in% rangesKeys) {
             value <- ranges[[name]]
+            extraRangeKeys <- setdiff(names(value), c("max", "min", "description"))
+
             if (!is.list(value)) {
               errors[[paste0("ranges.", name)]] <- "must be a list"
-            } else if (!all.equal(sort(names(value)), c("max", "min"))) {
-              errors[[paste0("ranges.", name)]] <- "must only contain min and max"
+            } else if (length(extraRangeKeys) > 0) {
+              errors[[paste0("ranges.", name)]] <- paste("had unexpected keys:", paste(extraRangeKeys, collapse=", "))
             } else if (!is.numeric(value$min)) {
               errors[[paste0("ranges.", name, ".min")]] <- "must be numeric"
             } else if (!is.numeric(value$max)) {

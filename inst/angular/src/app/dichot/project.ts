@@ -7,7 +7,7 @@ import { Output } from '../output';
 import { Range } from '../range';
 import { Point } from '../point';
 import { DetAltMode } from '../det-alt-mode';
-import { AbstractProject } from '../abstract-project';
+import { AbstractProject, FixedPSpace } from '../abstract-project';
 import { LinePlotHandler } from '../line-plot-handler';
 import { CIPlotHandler } from '../ci-plot-handler';
 
@@ -22,7 +22,6 @@ export class Project extends AbstractProject {
   changeHistory: any[] = [];
 
   customRanges = false;
-  fixedPSpace = true;
   sampleSizeRange?: Range;
   powerRange?: Range;
   detAltRange?: Range;
@@ -35,10 +34,9 @@ export class Project extends AbstractProject {
     pSpaceRange?: Range;
   };
 
-  pointsPerPlot: number;
-
   constructor(private dichotService: DichotService) {
     super();
+    this.fixedPSpace = FixedPSpace.Fixed;
   }
 
   getLinePlotHandler(): LinePlotHandler {
@@ -67,6 +65,89 @@ export class Project extends AbstractProject {
 
   getModelCount(): number {
     return this.models.length;
+  }
+
+  // per-project plot options
+  getTopYRange(): Range {
+    let output = this.getOutput();
+    switch (output) {
+      case Output.SampleSize:
+        return this.sampleSizeRange;
+      case Output.Power:
+        return this.powerRange;
+      case Output.DetectableAlternative:
+        return this.detAltRange;
+    }
+  }
+  setTopYRange(range: Range): void {
+    let output = this.getOutput();
+    switch (output) {
+      case Output.SampleSize:
+        this.sampleSizeRange = range;
+        break;
+      case Output.Power:
+        this.powerRange = range;
+        break;
+      case Output.DetectableAlternative:
+        this.detAltRange = range;
+        break;
+    }
+  }
+  getTopLeftXRange(): Range {
+    let output = this.getOutput();
+    switch (output) {
+      case Output.SampleSize:
+        return this.powerRange;
+      case Output.Power:
+        return this.sampleSizeRange;
+      case Output.DetectableAlternative:
+        return this.sampleSizeRange;
+    }
+  }
+  setTopLeftXRange(range: Range): void {
+    let output = this.getOutput();
+    switch (output) {
+      case Output.SampleSize:
+        this.powerRange = range;
+        break;
+      case Output.Power:
+        this.sampleSizeRange = range;
+        break;
+      case Output.DetectableAlternative:
+        this.sampleSizeRange = range;
+        break;
+    }
+  }
+  getTopRightXRange(): Range {
+    let output = this.getOutput();
+    switch (output) {
+      case Output.SampleSize:
+        return this.detAltRange;
+      case Output.Power:
+        return this.detAltRange;
+      case Output.DetectableAlternative:
+        return this.powerRange;
+    }
+  }
+  setTopRightXRange(range: Range): void { 
+    let output = this.getOutput();
+    switch (output) {
+      case Output.SampleSize:
+        this.detAltRange = range;
+        break;
+      case Output.Power:
+        this.detAltRange = range;
+        break;
+      case Output.DetectableAlternative:
+        this.powerRange = range;
+        break;
+    }
+  }
+  getBottomXRange(): Range {
+    return this.pSpaceRange;
+  }
+  setBottomXRange(range: Range): void {
+    this.pSpaceRange = range;
   }
 
   getOutput(): Output {
@@ -253,6 +334,7 @@ export class Project extends AbstractProject {
           switch (output) {
             case Output.SampleSize:
               powerRange = this.makeXRange(model.sampleSizeVsPower, this.sampleSizeRange);
+              powerRange.description = "Power";
               if (i == 0) {
                 this.powerRange = powerRange;
               } else {
@@ -260,6 +342,7 @@ export class Project extends AbstractProject {
               }
 
               detAltRange = this.makeXRange(model.sampleSizeVsDetAlt, this.sampleSizeRange);
+              detAltRange.description = "Detectable Alternative";
               if (i == 0) {
                 this.detAltRange = detAltRange;
               } else {
@@ -268,6 +351,7 @@ export class Project extends AbstractProject {
               break;
             case Output.Power:
               sampleSizeRange = this.makeXRange(model.powerVsSampleSize, this.powerRange);
+              sampleSizeRange.description = "Sample Size";
               if (i == 0) {
                 this.sampleSizeRange = sampleSizeRange;
               } else {
@@ -275,6 +359,7 @@ export class Project extends AbstractProject {
               }
 
               detAltRange = this.makeXRange(model.powerVsDetAlt, this.sampleSizeRange);
+              detAltRange.description = "Detectable Alternative";
               if (i == 0) {
                 this.detAltRange = detAltRange;
               } else {
@@ -284,6 +369,7 @@ export class Project extends AbstractProject {
 
             case Output.DetectableAlternative:
               powerRange = this.makeXRange(model.detAltVsPower, this.detAltRange);
+              powerRange.description = "Power";
               if (i == 0) {
                 this.powerRange = powerRange;
               } else {
@@ -291,6 +377,7 @@ export class Project extends AbstractProject {
               }
 
               sampleSizeRange = this.makeXRange(model.detAltVsSampleSize, this.detAltRange);
+              sampleSizeRange.description = "Sample Size";
               if (i == 0) {
                 this.sampleSizeRange = sampleSizeRange;
               } else {
@@ -408,7 +495,7 @@ export class Project extends AbstractProject {
       // Calculate pSpaceRange based on confidence interval
       let ci = model.getCI();
 
-      if (this.fixedPSpace &&
+      if (this.fixedPSpace === FixedPSpace.Fixed &&
           (model.matched === DichotMatched.Matched ||
            model.expressed === DichotExpressed.RelativeRisk ||
            model.expressed === DichotExpressed.OddsRatio)) {
@@ -434,24 +521,28 @@ export class Project extends AbstractProject {
 
     if (sampleSizeRange.length > 0) {
       this.sampleSizeRange = new Range(sampleSizeRange[0], sampleSizeRange[1]);
+      this.sampleSizeRange.description = "Sample Size";
     } else {
       this.sampleSizeRange = undefined;
     }
 
     if (powerRange.length > 0) {
       this.powerRange = new Range(powerRange[0], powerRange[1]);
+      this.powerRange.description = "Power";
     } else {
       this.powerRange = undefined;
     }
 
     if (detAltRange.length > 0) {
       this.detAltRange = new Range(detAltRange[0], detAltRange[1]);
+      this.detAltRange.description = "Detectable Alternative";
     } else {
       this.detAltRange = undefined;
     }
 
     if (pSpaceRange.length > 0) {
       this.pSpaceRange = new Range(pSpaceRange[0], pSpaceRange[1]);
+      this.pSpaceRange.description = "Parameter Space";
     } else {
       this.pSpaceRange = undefined;
     }

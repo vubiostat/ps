@@ -15,6 +15,7 @@ import { LinePlotComponent } from './line-plot/line-plot.component';
 import { CIPlotComponent } from './ci-plot/ci-plot.component';
 import { OutputPaneComponent } from './output-pane/output-pane.component';
 import { ExportPlotsComponent } from './export-plots/export-plots.component';
+import { PlotOptionsComponent } from './plot-options/plot-options.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { ExportPlotsComponent } from './export-plots/export-plots.component';
     LinePlotComponent,
     CIPlotComponent,
     OutputPaneComponent,
-    ExportPlotsComponent
+    ExportPlotsComponent,
+    PlotOptionsComponent,
   ],
   exports: [
     RoundPipe,
@@ -49,7 +51,8 @@ import { ExportPlotsComponent } from './export-plots/export-plots.component';
     RangeSliderHelp,
     LinePlotComponent,
     CIPlotComponent,
-    OutputPaneComponent
+    OutputPaneComponent,
+    PlotOptionsComponent,
   ],
   entryComponents: [
     ExportPlotsComponent

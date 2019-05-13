@@ -19,7 +19,6 @@ export class Project extends AbstractProject {
   selectedIndex: number = 0;
   changeHistory: any[] = [];
 
-  customRanges = false;
   nRange?: Range;
   powerRange?: Range;
   deltaRange?: Range;
@@ -31,8 +30,6 @@ export class Project extends AbstractProject {
     deltaRange?: Range;
     pSpaceRange?: Range;
   };
-
-  pointsPerPlot: number;
 
   constructor(private ttestService: TTestService) {
     super();
@@ -74,6 +71,7 @@ export class Project extends AbstractProject {
             case "n":
             case "nByCI":
               powerRange = this.makeXRange(model.nVsPower, this.nRange);
+              powerRange.description = "Power";
               if (i == 0) {
                 this.powerRange = powerRange;
               } else {
@@ -81,6 +79,7 @@ export class Project extends AbstractProject {
               }
 
               deltaRange = this.makeXRange(model.nVsDelta, this.nRange);
+              deltaRange.description = "Detectable Alternative";
               if (i == 0) {
                 this.deltaRange = deltaRange;
               } else {
@@ -89,6 +88,7 @@ export class Project extends AbstractProject {
               break;
             case "power":
               nRange = this.makeXRange(model.powerVsN, this.powerRange);
+              nRange.description = "Sample Size";
               if (i == 0) {
                 this.nRange = nRange;
               } else {
@@ -98,6 +98,7 @@ export class Project extends AbstractProject {
 
             case "delta":
               powerRange = this.makeXRange(model.deltaVsPower, this.deltaRange);
+              powerRange.description = "Power";
               if (i == 0) {
                 this.powerRange = powerRange;
               } else {
@@ -105,6 +106,7 @@ export class Project extends AbstractProject {
               }
 
               nRange = this.makeXRange(model.deltaVsN, this.deltaRange);
+              nRange.description = "Sample Size";
               if (i == 0) {
                 this.nRange = nRange;
               } else {
@@ -225,7 +227,7 @@ export class Project extends AbstractProject {
     return this.models.length;
   }
 
-  calculateRanges(): any {
+  calculateRanges(): void {
     let nRange = [];
     let powerRange = [];
     let deltaRange = [];
@@ -296,24 +298,28 @@ export class Project extends AbstractProject {
 
     if (nRange.length > 0) {
       this.nRange = new Range(nRange[0], nRange[1]);
+      this.nRange.description = "Sample Size";
     } else {
       this.nRange = undefined;
     }
 
     if (powerRange.length > 0) {
       this.powerRange = new Range(powerRange[0], powerRange[1]);
+      this.powerRange.description = "Power";
     } else {
       this.powerRange = undefined;
     }
 
     if (deltaRange.length > 0) {
       this.deltaRange = new Range(deltaRange[0], deltaRange[1]);
+      this.deltaRange.description = "Detectable Alternative";
     } else {
       this.deltaRange = undefined;
     }
 
     if (pSpaceRange.length > 0) {
       this.pSpaceRange = new Range(pSpaceRange[0], pSpaceRange[1]);
+      this.pSpaceRange.description = "Parameter Space";
     } else {
       this.pSpaceRange = undefined;
     }
@@ -345,6 +351,95 @@ export class Project extends AbstractProject {
 
   getModelOutput(): string {
     return this.models[this.selectedIndex].output;
+  }
+
+  // per-project plot options
+  getTopYRange(): Range {
+    let output = this.getOutput();
+    switch (output) {
+      case "n":
+      case "nByCI":
+        return this.nRange;
+      case "power":
+        return this.powerRange;
+      case "delta":
+        return this.deltaRange;
+    }
+  }
+  setTopYRange(range: Range): void {
+    let output = this.getOutput();
+    switch (output) {
+      case "n":
+      case "nByCI":
+        this.nRange = range;
+        break;
+      case "power":
+        this.powerRange = range;
+        break;
+      case "delta":
+        this.deltaRange = range;
+        break;
+    }
+  }
+  getTopLeftXRange(): Range {
+    let output = this.getOutput();
+    switch (output) {
+      case "n":
+      case "nByCI":
+        return this.powerRange;
+      case "power":
+        return this.nRange;
+      case "delta":
+        return this.nRange;
+    }
+  }
+  setTopLeftXRange(range: Range): void {
+    let output = this.getOutput();
+    switch (output) {
+      case "n":
+      case "nByCI":
+        this.powerRange = range;
+        break;
+      case "power":
+        this.nRange = range;
+        break;
+      case "delta":
+        this.nRange = range;
+        break;
+    }
+  }
+  getTopRightXRange(): Range {
+    let output = this.getOutput();
+    switch (output) {
+      case "n":
+      case "nByCI":
+        return this.deltaRange;
+      case "power":
+        return this.deltaRange;
+      case "delta":
+        return this.powerRange;
+    }
+  }
+  setTopRightXRange(range: Range): void {
+    let output = this.getOutput();
+    switch (output) {
+      case "n":
+      case "nByCI":
+        this.deltaRange = range;
+        break;
+      case "power":
+        this.deltaRange = range;
+        break;
+      case "delta":
+        this.powerRange = range;
+        break;
+    }
+  }
+  getBottomXRange(): Range {
+    return this.pSpaceRange;
+  }
+  setBottomXRange(range: Range): void {
+    this.pSpaceRange = range;
   }
 
   describeChanges(changes: any, html = true): string {
