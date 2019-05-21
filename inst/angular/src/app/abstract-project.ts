@@ -56,4 +56,6 @@ export abstract class AbstractProject {
   abstract setTopRightXRange(range: Range): void;
   abstract getBottomXRange(): Range;
   abstract setBottomXRange(range: Range): void;
+  abstract isCITargetDraggable(): boolean;
+  abstract isCIBoundsDraggable(): boolean;
 }

@@ -150,6 +150,13 @@ export class Project extends AbstractProject {
     this.pSpaceRange = range;
   }
 
+  isCITargetDraggable(): boolean {
+    return this.getModelOutput() === 'delta';
+  }
+  isCIBoundsDraggable(): boolean {
+    return this.getModelOutput() === 'n';
+  }
+
   getOutput(): Output {
     if (this.models.length > 0) {
       return this.models[0].output;

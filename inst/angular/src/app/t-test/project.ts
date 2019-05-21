@@ -442,6 +442,13 @@ export class Project extends AbstractProject {
     this.pSpaceRange = range;
   }
 
+  isCITargetDraggable(): boolean {
+    return this.getModelOutput() === 'detAlt';
+  }
+  isCIBoundsDraggable(): boolean {
+    return this.getModelOutput() !== 'power';
+  }
+
   describeChanges(changes: any, html = true): string {
     let result;
     if (changes.type == 'add') {

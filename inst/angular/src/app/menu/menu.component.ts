@@ -137,7 +137,12 @@ export class MenuComponent implements OnInit {
       default:
         this.state = MenuState.Main;
         if (!this.urlInitialized && this.popoverElement) {
-          setTimeout(() => this.popoverElement.open(), 200);
+          setTimeout(() => {
+            // this excessive checking is apparently necessary
+            if (this.popoverElement) {
+              this.popoverElement.open();
+            }
+          }, 200);
         }
     }
 

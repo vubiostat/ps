@@ -37,7 +37,7 @@ import { PlotOptionsComponent } from './plot-options/plot-options.component';
     CIPlotComponent,
     OutputPaneComponent,
     ExportPlotsComponent,
-    PlotOptionsComponent,
+    PlotOptionsComponent
   ],
   exports: [
     RoundPipe,
@@ -52,7 +52,7 @@ import { PlotOptionsComponent } from './plot-options/plot-options.component';
     LinePlotComponent,
     CIPlotComponent,
     OutputPaneComponent,
-    PlotOptionsComponent,
+    PlotOptionsComponent
   ],
   entryComponents: [
     ExportPlotsComponent

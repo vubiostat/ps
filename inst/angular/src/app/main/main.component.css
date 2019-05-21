@@ -1,0 +1,87 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#sidebar {
+  background-color: #e5e5e5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  /*margin: 10px;*/
+  position: relative;
+}
+
+#sidebar .overview {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#sidebar > .tabset {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  /*width: 100%;*/
+}
+#sidebar > .tabset > ul.nav {
+  /*display: flex;*/
+  flex: 0 0 auto;
+  border-bottom: 1px solid #888;
+}
+#sidebar > .tabset > ul.nav > li.nav-item > a.nav-link {
+  border-color: #bbb #bbb #888;
+  background-color: #eee;
+}
+#sidebar > .tabset > ul.nav > li.nav-item > a.nav-link:hover {
+  border-color: #888;
+  background-color: #f5f5f5;
+  color: #0275d8;
+}
+#sidebar > .tabset > ul.nav > li.nav-item > a.nav-link.active {
+  border-color: #888 #888 #fff;
+  background-color: #fff;
+}
+#sidebar > .tabset > ul.nav > li.nav-item > a.nav-link.active:hover {
+  color: #464a4c;
+}
+#sidebar > .tabset > .tab-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+#sidebar > .tabset > .tab-content > .tab-pane {
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  flex: 1 0 auto;
+  padding: 10px;
+  border: 1px solid #888;
+  border-top: 0;
+  overflow: auto;
+  max-height: 70vh;
+}
+#sidebar > .tabset > .tab-content > .tab-pane.active {
+  background: white;
+}
+
+#footer {
+  margin: 20px 0;
+  padding: 20px;
+  text-align: center;
+}
+#footer img {
+  margin: auto;
+  display: block;
+}
+#footer div.build {
+  margin-top: 5px;
+  font-size: smaller;
+}
+
+.block-selection * {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

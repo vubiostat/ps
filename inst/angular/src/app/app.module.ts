@@ -16,10 +16,12 @@ import { CopyService } from './copy.service';
 import { ExportService } from './export.service';
 import { PaletteService } from './palette.service';
 import { PlotOptionsService } from './plot-options.service';
+import { AbstractProjectService } from './abstract-project.service';
 
 import { environment } from '../environments/environment';
 import { MenuComponent } from './menu/menu.component';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { MainComponent } from './main/main.component';
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -31,6 +33,7 @@ const routes: Routes = [
     KonamiDirective,
     MenuComponent,
     WelcomeComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +51,8 @@ const routes: Routes = [
     CopyService,
     ExportService,
     PaletteService,
-    PlotOptionsService
+    PlotOptionsService,
+    AbstractProjectService
   ]
 })
 export class AppModule { }
