@@ -1,162 +1,179 @@
-<form (ngSubmit)="onSubmit()" #startForm="ngForm">
-  <div class="form-group">
-    <label for="t-test-start-output">
-      What do you want to know?
-      <button type="button" class="btn btn-secondary fa fa-question-circle"
-        (click)="onToggleHelp()"></button>
-    </label>
-    <select class="form-control" id="t-test-start-output"
-            required
-            [(ngModel)]="model.output" name="output">
-      <option></option>
-      <option value="power">Power</option>
-      <option value="n">Sample size</option>
-      <option value="delta">Detectable alternative</option>
-      <option value="nByCI">Sample size for 95% CI</option>
-    </select>
-  </div>
-  <!--
-  <div class="form-group" *ngIf="model.output">
-    <label for="t-test-start-design">Paired or independent?</label>
-    <select class="form-control" id="t-test-start-design"
-            required
-            [(ngModel)]="model.design" name="design">
-      <option></option>
-      <option>Paired</option>
-      <option>Independent</option>
-    </select>
-  </div>
-  -->
-  <div *ngIf="model.output">
-    <div class="form-group">
-      <label for="t-test-start-alpha">
-        Type I Error (&alpha;)
-        <i class="fa fa-info-circle" aria-hidden="true"
-          [ngbPopover]="alphaHelp" popoverTitle="Type I Error (&alpha;)"
-          placement="right" triggers="hover" container="body"></i>
-      </label>
-      <input class="form-control" id="t-test-start-alpha"
-             type="number" step="0.01" min="0.01" max="0.99"
-             required
-             [(ngModel)]="model.alpha" name="alpha">
-    </div>
-    <div class="form-group">
-      <label for="t-test-start-sigma">
-        Standard deviation (&sigma;)
-        <i class="fa fa-info-circle" aria-hidden="true"
-          [ngbPopover]="sigmaHelp" popoverTitle="Standard deviation (&sigma;)"
-          placement="right" triggers="hover" container="body"></i>
-      </label>
-      <input class="form-control" id="t-test-start-sigma"
-             type="number" step="0.1" min="0.1"
-             required
-             [(ngModel)]="model.sigma" name="sigma">
-    </div>
-    <div *ngIf="needDelta()" class="form-group">
-      <label for="t-test-start-delta">Difference in population means (&delta;)</label>
-      <input class="form-control" id="t-test-start-delta"
-             type="number" step="0.1"
-             required
-             [(ngModel)]="model.delta" name="delta">
-    </div>
-    <div *ngIf="needPower()" class="form-group">
-      <label for="t-test-start-power">
-        Power
-        <i class="fa fa-info-circle" aria-hidden="true"
-          [ngbPopover]="powerHelp" popoverTitle="Power"
-          placement="right" triggers="hover" container="body"></i>
-      </label>
-      <input class="form-control" id="t-test-start-power"
-             type="number" step="0.01" min="0.01" max="0.99"
-             required
-             [(ngModel)]="model.power" name="power">
-    </div>
-    <div *ngIf="needM()" class="form-group">
-      <label for="t-test-start-m">
-        Ratio of control/experimental subjects
-      </label>
-      <input class="form-control" id="t-test-start-m"
-             type="number" step="0.01" min="0.01"
-             required
-             [(ngModel)]="model.m" name="m">
-    </div>
-    <div *ngIf="needCI()" class="form-group">
-      <label for="t-test-start-ci">95% confidence interval width</label>
-      <input class="form-control" id="t-test-start-ci" type="number" required
-             [(ngModel)]="model.ci" name="ci">
-    </div>
-    <ng-template [ngIf]="needNOrCI()">
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input class="form-check-input" type="radio"
-                 name="ciMode" id="t-test-start-ciMode-false"
-                 [(ngModel)]="model.ciMode" [value]="false">
-          Sample size
-          <i class="fa fa-info-circle" aria-hidden="true"
-            [ngbPopover]="nHelp" popoverTitle="Sample size"
-            placement="right" triggers="hover" container="body"></i>
-        </label>
-        <label class="form-check-label">
-          <input class="form-check-input" type="radio"
-                 name="ciMode" id="t-test-start-ciMode-true"
-                 [(ngModel)]="model.ciMode" [value]="true">
-          95% confidence interval width
-        </label>
+<div class="d-flex flex-column h-100">
+  <form (ngSubmit)="onSubmit()" #startForm="ngForm">
+    <div class="d-flex flex-column form-controls">
+      <div class="form-group mt-2">
+        <div class="d-flex flex-row justify-content-between align-items-end w-100 mb-2">
+          <div class="d-flex flex-grow-1">
+            <label class="mb-0" for="t-test-start-output">
+              What do you want to know?
+              <button type="button" class="btn btn-secondary fa fa-question-circle p-1"
+                (click)="onToggleHelp()"></button>
+            </label>
+          </div>
+          <div class="d-flex flex-shrink-1">
+            <select #example class="form-control" id="t-test-start-example"
+              (change)="useExample(example.value)">
+              <option value="">Use an example:</option>
+              <option value="power">Power</option>
+            </select>
+          </div>
+        </div>
+        <select class="form-control" id="t-test-start-output"
+          required
+          [(ngModel)]="model.output" name="output">
+          <option></option>
+          <option value="power">Power</option>
+          <option value="n">Sample size</option>
+          <option value="delta">Detectable alternative</option>
+          <option value="nByCI">Sample size for 95% CI</option>
+        </select>
       </div>
-
-      <div class="form-group">
-        <input *ngIf="!model.ciMode"
-               class="form-control" id="t-test-start-n"
-               type="number" min="1"
-               required
-               [(ngModel)]="model.n" name="n">
-        <input *ngIf="model.ciMode"
-               class="form-control" id="t-test-start-ci"
-               type="number" min="1" step="0.1"
-               required
-               [(ngModel)]="model.ci" name="ci">
+      <!--
+      <div class="form-group" *ngIf="model.output">
+        <label for="t-test-start-design">Paired or independent?</label>
+        <select class="form-control" id="t-test-start-design"
+                required
+                [(ngModel)]="model.design" name="design">
+          <option></option>
+          <option>Paired</option>
+          <option>Independent</option>
+        </select>
       </div>
+      -->
+      <div *ngIf="model.output">
+        <div class="form-group">
+          <label for="t-test-start-alpha">
+            Type I Error (&alpha;)
+            <i class="fa fa-info-circle" aria-hidden="true"
+              [ngbPopover]="alphaHelp" popoverTitle="Type I Error (&alpha;)"
+              placement="right" triggers="hover" container="body"></i>
+          </label>
+          <input class="form-control" id="t-test-start-alpha"
+                 type="number" step="0.01" min="0.01" max="0.99"
+                 required
+                 [(ngModel)]="model.alpha" name="alpha">
+        </div>
+        <div class="form-group">
+          <label for="t-test-start-sigma">
+            Standard deviation (&sigma;)
+            <i class="fa fa-info-circle" aria-hidden="true"
+              [ngbPopover]="sigmaHelp" popoverTitle="Standard deviation (&sigma;)"
+              placement="right" triggers="hover" container="body"></i>
+          </label>
+          <input class="form-control" id="t-test-start-sigma"
+                 type="number" step="0.1" min="0.1"
+                 required
+                 [(ngModel)]="model.sigma" name="sigma">
+        </div>
+        <div *ngIf="needDelta()" class="form-group">
+          <label for="t-test-start-delta">Difference in population means (&delta;)</label>
+          <input class="form-control" id="t-test-start-delta"
+                 type="number" step="0.1"
+                 required
+                 [(ngModel)]="model.delta" name="delta">
+        </div>
+        <div *ngIf="needPower()" class="form-group">
+          <label for="t-test-start-power">
+            Power
+            <i class="fa fa-info-circle" aria-hidden="true"
+              [ngbPopover]="powerHelp" popoverTitle="Power"
+              placement="right" triggers="hover" container="body"></i>
+          </label>
+          <input class="form-control" id="t-test-start-power"
+                 type="number" step="0.01" min="0.01" max="0.99"
+                 required
+                 [(ngModel)]="model.power" name="power">
+        </div>
+        <div *ngIf="needM()" class="form-group">
+          <label for="t-test-start-m">
+            Ratio of control/experimental subjects
+          </label>
+          <input class="form-control" id="t-test-start-m"
+                 type="number" step="0.01" min="0.01"
+                 required
+                 [(ngModel)]="model.m" name="m">
+        </div>
+        <div *ngIf="needCI()" class="form-group">
+          <label for="t-test-start-ci">95% confidence interval width</label>
+          <input class="form-control" id="t-test-start-ci" type="number" required
+                 [(ngModel)]="model.ci" name="ci">
+        </div>
+        <ng-template [ngIf]="needNOrCI()">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio"
+                     name="ciMode" id="t-test-start-ciMode-false"
+                     [(ngModel)]="model.ciMode" [value]="false">
+              Sample size
+              <i class="fa fa-info-circle" aria-hidden="true"
+                [ngbPopover]="nHelp" popoverTitle="Sample size"
+                placement="right" triggers="hover" container="body"></i>
+            </label>
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio"
+                     name="ciMode" id="t-test-start-ciMode-true"
+                     [(ngModel)]="model.ciMode" [value]="true">
+              95% confidence interval width
+            </label>
+          </div>
 
-    </ng-template>
-    <ng-template [ngIf]="needPowerOrDelta()">
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input class="form-check-input" type="radio"
-                 name="deltaMode" id="t-test-start-deltaMode-false"
-                 [(ngModel)]="model.deltaMode" [value]="false">
-          Power
-          <i class="fa fa-info-circle" aria-hidden="true"
-            [ngbPopover]="powerHelp" popoverTitle="Power"
-            placement="right" triggers="hover" container="body"></i>
-        </label>
-        <label class="form-check-label">
-          <input class="form-check-input" type="radio"
-                 name="deltaMode" id="t-test-start-deltaMode-true"
-                 [(ngModel)]="model.deltaMode" [value]="true">
-          Difference in population means (&delta;)
-        </label>
+          <div class="form-group">
+            <input *ngIf="!model.ciMode"
+                   class="form-control" id="t-test-start-n"
+                   type="number" min="1"
+                   required
+                   [(ngModel)]="model.n" name="n">
+            <input *ngIf="model.ciMode"
+                   class="form-control" id="t-test-start-ci"
+                   type="number" min="1" step="0.1"
+                   required
+                   [(ngModel)]="model.ci" name="ci">
+          </div>
+
+        </ng-template>
+        <ng-template [ngIf]="needPowerOrDelta()">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio"
+                     name="deltaMode" id="t-test-start-deltaMode-false"
+                     [(ngModel)]="model.deltaMode" [value]="false">
+              Power
+              <i class="fa fa-info-circle" aria-hidden="true"
+                [ngbPopover]="powerHelp" popoverTitle="Power"
+                placement="right" triggers="hover" container="body"></i>
+            </label>
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio"
+                     name="deltaMode" id="t-test-start-deltaMode-true"
+                     [(ngModel)]="model.deltaMode" [value]="true">
+              Difference in population means (&delta;)
+            </label>
+          </div>
+
+          <div class="form-group">
+            <input *ngIf="!model.deltaMode"
+                   class="form-control" id="t-test-start-power"
+                   type="number" step="0.01" min="0.01" max="0.99"
+                   required
+                   [(ngModel)]="model.power" name="power">
+            <input *ngIf="model.deltaMode"
+                   class="form-control" id="t-test-start-delta"
+                   type="number" step="0.1"
+                   required
+                   [(ngModel)]="model.delta" name="delta">
+          </div>
+
+        </ng-template>
       </div>
-
-      <div class="form-group">
-        <input *ngIf="!model.deltaMode"
-               class="form-control" id="t-test-start-power"
-               type="number" step="0.01" min="0.01" max="0.99"
-               required
-               [(ngModel)]="model.power" name="power">
-        <input *ngIf="model.deltaMode"
-               class="form-control" id="t-test-start-delta"
-               type="number" step="0.1"
-               required
-               [(ngModel)]="model.delta" name="delta">
-      </div>
-
-    </ng-template>
-    <button type="submit" class="btn btn-success"
-            [disabled]="!startForm.form.valid">
-      Calculate
-    </button>
-  </div>
-</form>
+    </div>
+    <div *ngIf="showCalculateButton()" class="d-flex flex-row calculate-button">
+      <button type="submit" class="btn btn-success"
+              [disabled]="!startForm.form.valid">
+        Calculate
+      </button>
+    </div>
+  </form>
+</div>
 <ng-template #alphaHelp>
   The Type I error probability for a two sided test. This is the
   probability that we will falsely reject the null hypothesis.

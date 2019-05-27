@@ -61,4 +61,23 @@ export class StartComponent extends AbstractStartComponent implements OnInit {
       this.calculate.emit(project);
     });
   }
+
+  useExample(name: string): void {
+    switch (name) {
+      case "power":
+        this.model.output = "power";
+        this.model.alpha = 0.05;
+        this.model.delta = 5;
+        this.model.sigma = 10;
+        this.model.n = 33;
+        if (this.kind == TTestKind.Independent) {
+          this.model.m = 2;
+        }
+        break;
+    }
+  }
+
+  showCalculateButton(): boolean {
+    return this.model.output !== undefined;
+  }
 }
