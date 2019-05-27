@@ -12,7 +12,8 @@
         <div class="tabset">
           <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="startLink()" routerLinkActive="active">Start</a>
+              <a class="nav-link" [routerLink]="startLink()"
+                routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Start</a>
             </li>
             <li class="nav-item" *ngFor="let project of projects; index as i">
               <a class="nav-link" [routerLink]="projectLink(i)" routerLinkActive="active">{{tabTitle(i)}}</a>
