@@ -52,6 +52,7 @@ export class ProjectComponent extends AbstractProjectComponent implements OnInit
         this.selectedModel = undefined;
         this.router.navigate([ '..' ], { relativeTo: this.route });
       }
+      this.projectSwitched.emit(this.project);
     });
   }
 

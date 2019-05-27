@@ -36,6 +36,7 @@ export class MainComponent implements OnInit {
   selectedProject: AbstractProject;
   calcSub: Subscription;
   helpSub: Subscription;
+  switchedSub: Subscription;
   changedSub: Subscription;
 
   @ViewChild('plotOptionsDialog') plotOptionsDialog: DraggableDialogComponent;
@@ -150,8 +151,11 @@ export class MainComponent implements OnInit {
 
     } else if (component instanceof AbstractProjectComponent) {
       let projectComponent = component as AbstractProjectComponent;
+      this.switchedSub = projectComponent.projectSwitched.subscribe((project: AbstractProject) => {
+        this.selectedProject = project;
+      });
       this.changedSub = projectComponent.projectChanged.subscribe(() => {
-        this.redrawPlots()
+        this.redrawPlots();
       });
       this.showOutputPane = true;
     }
@@ -165,6 +169,10 @@ export class MainComponent implements OnInit {
     if (this.helpSub) {
       this.helpSub.unsubscribe();
       this.helpSub = undefined;
+    }
+    if (this.switchedSub) {
+      this.switchedSub.unsubscribe();
+      this.switchedSub = undefined;
     }
     if (this.changedSub) {
       this.changedSub.unsubscribe();
