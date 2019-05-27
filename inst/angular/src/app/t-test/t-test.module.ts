@@ -10,7 +10,6 @@ import { MainComponent } from '../main/main.component';
 import { ProjectType } from '../project-type';
 
 import { TTestService } from './t-test.service';
-import { ProjectService } from './project.service';
 
 import { StartComponent } from './start/start.component';
 import { ProjectComponent } from './project/project.component';
@@ -63,8 +62,7 @@ const routes: Routes = [
     AppCommonModule
   ],
   providers: [
-    TTestService,
-    ProjectService
+    TTestService
   ]
 })
 export class TTestModule { }
