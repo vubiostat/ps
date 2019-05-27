@@ -1,7 +1,6 @@
-import { Directive, TemplateRef, Component, OnInit, Input, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, UrlSegment, ParamMap } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 
 import { AbstractProjectService } from '../abstract-project.service';
 import { ResizeService } from '../resize.service';
