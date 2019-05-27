@@ -65,7 +65,9 @@ export class MainComponent implements OnInit {
       });
     });
     this.resizeService.onResize.subscribe(() => {
-      this.outputPane.resize();
+      if (this.outputPane) {
+        this.outputPane.resize();
+      }
     });
   }
 
