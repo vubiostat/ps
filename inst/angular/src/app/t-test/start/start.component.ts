@@ -13,6 +13,7 @@ import { Project } from '../project';
 })
 export class StartComponent extends AbstractStartComponent implements OnInit {
   model: TTest;
+  kind: TTestKind;
 
   constructor(
     private route: ActivatedRoute,
@@ -23,6 +24,7 @@ export class StartComponent extends AbstractStartComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.data.subscribe((data: any) => {
+      this.kind = data.kind;
       this.model = new TTest({ kind: data.kind });
     });
   }
