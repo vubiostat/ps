@@ -117,33 +117,26 @@ export class MenuComponent implements OnInit {
   }
 
   private urlChanged(url: string): void {
-    switch (url) {
-      case "/t-test/paired":
-      case "/t-test/ind":
-        this.state = MenuState.TTest;
+    if (/^\/t-test\//.test(url)) {
+      this.state = MenuState.TTest;
+      setTimeout(() => {
+        this.menuElement.nativeElement.style.width = 'auto';
+      }, 1000);
+    } else if (/^\/(z-test|dichot)/.test(url)) {
+      this.state = MenuState.Main;
+      if (this.popoverElement) {
+        this.popoverElement.close();
+      }
+    } else {
+      this.state = MenuState.Main;
+      if (!this.urlInitialized && this.popoverElement) {
         setTimeout(() => {
-          this.menuElement.nativeElement.style.width = 'auto';
-        }, 1000);
-        break;
-
-      case "/z-test":
-      case "/dichot":
-        this.state = MenuState.Main;
-        if (this.popoverElement) {
-          this.popoverElement.close();
-        }
-        break;
-
-      default:
-        this.state = MenuState.Main;
-        if (!this.urlInitialized && this.popoverElement) {
-          setTimeout(() => {
-            // this excessive checking is apparently necessary
-            if (this.popoverElement) {
-              this.popoverElement.open();
-            }
-          }, 200);
-        }
+          // this excessive checking is apparently necessary
+          if (this.popoverElement) {
+            this.popoverElement.open();
+          }
+        }, 200);
+      }
     }
 
     this.urlInitialized = true;
