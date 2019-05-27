@@ -1,29 +1,40 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
+import { AbstractStartComponent } from '../../abstract-start.component';
 import { Output as DichotOutput } from '../../output';
+import { DichotService } from '../dichot.service';
 import { Dichot, DichotMatched, DichotCase, DichotExpressed, DichotMethod } from '../dichot';
+import { Project } from '../project';
 
 @Component({
   selector: 'dichot-start',
   templateUrl: './start.component.html',
   styleUrls: ['./start.component.css']
 })
-export class StartComponent implements OnInit {
-  @Input() model: Dichot;
-  @Output() onCalculate = new EventEmitter();
-  @Output() onToggleHelp = new EventEmitter();
+export class StartComponent extends AbstractStartComponent implements OnInit {
+  model: Dichot;
 
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+    private dichotService: DichotService
+  ) {
+    super();
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.model = new Dichot();
   }
 
   onSubmit(): void {
-    this.onCalculate.emit();
+    let project = new Project(this.dichotService);
+    project.addModel(this.model).subscribe(() => {
+      this.calculate.emit(project);
+    });
   }
 
-  toggleHelp(): void {
-    this.onToggleHelp.emit();
+  onToggleHelp(): void {
+    this.toggleHelp.emit();
   }
 
   useExample(name: string): void {

@@ -13,10 +13,12 @@
           (tabChange)="onTabChange($event)">
           <ngb-tab *ngIf="newModel" title="Start" id="dichot-start">
             <ng-template ngbTabContent>
+              <!--
               <dichot-start [model]="newModel"
                 (onCalculate)="calculate()"
                 (onToggleHelp)="toggleHelp('dichot-start')">
               </dichot-start>
+              -->
             </ng-template>
           </ngb-tab>
           <ngb-tab *ngFor="let project of projects; let i = index"

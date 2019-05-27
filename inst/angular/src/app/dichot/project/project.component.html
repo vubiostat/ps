@@ -1,4 +1,4 @@
-<div class="grow-vert">
+<div *ngIf="project" class="grow-vert">
   <p *ngIf="project.getMatched() == 'matched'">
     Matched / {{project.describeCase()}}
   </p>

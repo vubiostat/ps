@@ -79,6 +79,9 @@ export class MainComponent implements OnInit {
         case ProjectType.ZTest:
           topic = 'z-test-start';
           break;
+        case ProjectType.Dichot:
+          topic = 'dichot-start';
+          break;
       }
     }
 
@@ -113,6 +116,9 @@ export class MainComponent implements OnInit {
         break;
       case ProjectType.ZTest:
         result += 'z-test ';
+        break;
+      case ProjectType.Dichot:
+        result += 'Dichot ';
         break;
     }
     result += ' #' + (index + 1).toString();

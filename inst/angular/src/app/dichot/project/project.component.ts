@@ -1,8 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
+import { ProjectType } from '../../project-type';
+import { AbstractProjectService } from '../../abstract-project.service';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
+import { AbstractProjectComponent } from '../../abstract-project.component';
 import { Project } from '../project';
 import { Dichot } from '../dichot';
 
@@ -11,21 +15,41 @@ import { Dichot } from '../dichot';
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.css']
 })
-export class ProjectComponent implements OnInit {
-  @Input() project: Project;
-  @Input() name: string;
-  @Output() projectChanged = new EventEmitter();
+export class ProjectComponent extends AbstractProjectComponent implements OnInit {
+  project: Project;
+  name: string;
   selectedModel: Dichot;
 
   @ViewChild('tabset') tabset: NgbTabset;
 
   constructor(
+    private projectService: AbstractProjectService,
     private plotOptions: PlotOptionsService,
-    private palette: PaletteService
-  ) { }
+    private palette: PaletteService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.selectedModel = this.project.getModel(this.project.selectedIndex);
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      let id = params.get('id');
+      if (id) {
+        let index = parseInt(id) - 1;
+        this.name = `${index}`;
+        this.project = this.projectService.getProject(ProjectType.Dichot, index) as Project;
+      } else {
+        this.project = undefined;
+      }
+
+      if (this.project) {
+        this.selectedModel = this.project.getModel(this.project.selectedIndex);
+      } else {
+        this.selectedModel = undefined;
+        this.router.navigate([ '..' ], { relativeTo: this.route });
+      }
+    });
   }
 
   changeOutput(value: string): void {

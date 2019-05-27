@@ -4,17 +4,26 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AppCommonModule } from '../app-common.module';
+import { MainComponent } from '../main/main.component';
+import { ProjectType } from '../project-type';
 
 import { DichotService } from './dichot.service';
-import { MainComponent } from './main/main.component';
-import { PlotOptionsComponent } from './plot-options/plot-options.component';
+import { StartComponent } from './start/start.component';
 import { ProjectComponent } from './project/project.component';
 import { ProjectModelComponent } from './project-model/project-model.component';
-import { StartComponent } from './start/start.component';
 
 const routes: Routes = [
-  { path: 'dichot', component: MainComponent },
+  {
+    path: 'dichot',
+    component: MainComponent,
+    data: { type: ProjectType.Dichot },
+    children: [
+      { path: '', component: StartComponent },
+      { path: ':id', component: ProjectComponent }
+    ]
+  },
 ];
 
 @NgModule({
@@ -28,10 +37,8 @@ const routes: Routes = [
   ],
   declarations: [
     StartComponent,
-    PlotOptionsComponent,
     ProjectComponent,
     ProjectModelComponent,
-    MainComponent
   ],
   providers: [
     DichotService
