@@ -73,7 +73,7 @@
     start-x-offset="5%" start-y-offset="55px"
     (drag-start)="onChildDragStarted()"
     (drag-end)="onChildDragEnded()">
-    <app-plot-options [project]="project"
+    <app-plot-options [project]="selectedProject"
       (optionChanged)="redrawPlots()"
       (projectChanged)="redrawPlots()"
       (reset)="redrawPlots()">
