@@ -22,6 +22,8 @@ import { environment } from '../environments/environment';
 import { MenuComponent } from './menu/menu.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { MainComponent } from './main/main.component';
+import { AbstractStartComponent } from './abstract-start.component';
+import { AbstractProjectComponent } from './abstract-project.component';
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -33,7 +35,9 @@ const routes: Routes = [
     KonamiDirective,
     MenuComponent,
     WelcomeComponent,
-    MainComponent
+    MainComponent,
+    AbstractStartComponent,
+    AbstractProjectComponent
   ],
   imports: [
     BrowserModule,
