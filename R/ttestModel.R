@@ -238,13 +238,13 @@ TTest <- setRefClass("TTest",
         power3 <- sapply(delta2, ttestCalculatePower, kind = kind, alpha = alpha, sigma = sigma, n = n, m = m)
         df <- data.frame(y = power3, x = delta2)
 
-        if (!(ranges$powerRange$min %in% df$power3)) {
-          delta3 <- ttestCalculateDelta(kind, alpha, sigma, n, ranges$powerRange$min, m)
-          extra <- data.frame(y = rep(ranges$powerRange$min, 2),
-                              x = c(-delta3, delta3))
-          df <- rbind(df, extra)
-          df <- df[order(df$x), ]
-        }
+        #if (!(ranges$powerRange$min %in% df$power3)) {
+          #delta3 <- ttestCalculateDelta(kind, alpha, sigma, n, ranges$powerRange$min, m)
+          #extra <- data.frame(y = rep(ranges$powerRange$min, 2),
+                              #x = c(-delta3, delta3))
+          #df <- rbind(df, extra)
+          #df <- df[order(df$x), ]
+        #}
 
         result$powerVsDelta <- df
 
