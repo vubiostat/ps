@@ -24,12 +24,6 @@ export class TTestLinePlotHandler extends LinePlotHandler {
     let dataKey = this.getDataKey(plotName);
     if (dataKey) {
       result = this.project.models.map(m => m[dataKey]);
-
-      // Move main data to front
-      if (this.project.selectedIndex > 0) {
-        let tmp = result.splice(this.project.selectedIndex, 1);
-        result.splice(0, 0, tmp[0]);
-      }
     }
 
     return result;
