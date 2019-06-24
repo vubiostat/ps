@@ -83,7 +83,7 @@ ttestCalculatePower <- function(kind, alpha, delta, sigma, n, m, ...) {
 
 # Calculate detectable alternative, given the other parameters
 ttestCalculateDelta <- function(kind, alpha, sigma, n, power, m, ...) {
-  #cat("alpha = ", alpha, " sigma = ", sigma, " n = ", n, " power = ", power, "\n", sep = "")
+  #cat("alpha = ", alpha, ", sigma = ", sigma, ", n = ", n, ", power = ", power, ", m = ", m, "\n", sep = "")
   if (kind == "paired") {
     result <- try(pwr.t.test(n = n, power = power, sig.level = alpha,
                              type = "paired", alternative = "two.sided"),
@@ -188,62 +188,107 @@ TTest <- setRefClass("TTest",
       }
       result
     },
+    plotRanges = function(ranges) {
+      # Calculate default plot ranges for missing categories
+      if (output == "n" || output == "nByCI") {
+        if (!("nRange" %in% names(ranges))) {
+          values <- sort(c(n * 0.5, n * 1.5))
+          ranges$nRange <- list(min = values[1], max = values[2])
+        }
+        if (!("powerRange" %in% names(ranges))) {
+          values <- sort(c(
+            ttestCalculatePower(kind, alpha, delta, sigma, ranges$nRange$min, m),
+            ttestCalculatePower(kind, alpha, delta, sigma, ranges$nRange$max, m)
+          ))
+          ranges$powerRange <- list(min = values[1], max = values[2])
+        }
+        if (!("deltaRange" %in% names(ranges))) {
+          values <- sort(c(
+            ttestCalculateDelta(kind, alpha, sigma, ranges$nRange$min, power, m),
+            ttestCalculateDelta(kind, alpha, sigma, ranges$nRange$max, power, m)
+          ))
+          ranges$deltaRange <- list(min = values[1], max = values[2])
+        }
+      } else if (output == "power") {
+        if (!("powerRange" %in% names(ranges))) {
+          ranges$powerRange <- list(min = 0.01, max = 1)
+        }
+        if (!("deltaRange" %in% names(ranges))) {
+          values <- sort(c(1.5 * sigma, -1.5 * sigma))
+          ranges$deltaRange <- list(min = values[1], max = values[2])
+        }
+        if (!("nRange" %in% names(ranges))) {
+          powerMin <- ranges$powerRange$min
+          nMin <- NA
+          while (is.na(nMin) && powerMin < 1) {
+            nMin <- ttestCalculateN(kind, alpha, delta, sigma, powerMin, m)
+            powerMin <- powerMin + 0.01
+          }
+          powerMax <- ranges$powerRange$max
+          nMax <- NA
+          while (is.na(nMax) && powerMax > 0) {
+            nMax <- ttestCalculateN(kind, alpha, delta, sigma, powerMax, m)
+            powerMax <- powerMax - 0.01
+          }
+          ranges$nRange <- list(min = nMin, max = nMax)
+        }
+      } else if (output == "delta") {
+        if (!("deltaRange" %in% names(ranges))) {
+          values <- sort(c(delta * 0.5, delta * 1.5))
+          ranges$deltaRange <- list(min = values[1], max = values[2])
+        }
+        if (!("nRange" %in% names(ranges))) {
+          values <- sort(c(
+            ttestCalculateN(kind, alpha, ranges$deltaRange$min, sigma, power, m),
+            ttestCalculateN(kind, alpha, ranges$deltaRange$max, sigma, power, m)
+          ))
+          ranges$nRange <- list(min = values[1], max = values[2])
+        }
+        if (!("powerRange" %in% names(ranges))) {
+          values <- sort(c(
+            ttestCalculatePower(kind, alpha, ranges$deltaRange$min, sigma, n, m),
+            ttestCalculatePower(kind, alpha, ranges$deltaRange$max, sigma, n, m)
+          ))
+          ranges$powerRange <- list(min = values[1], max = values[2])
+        }
+      }
+
+      if (!("pSpaceRange" %in% names(ranges))) {
+        # Pick 1.5 std deviations on each side
+        values <- sort(c(1.5 * sigma, -1.5 * sigma))
+
+        # Adjust limits as needed based on computed confidence interval
+        values2 <- c(delta - (ci / 2), delta + (ci / 2))
+        if (values2[1] < values[1]) {
+          values[1] <- values2[1] - abs(values2[1] * 0.5)
+        }
+        if (values2[2] > values[1]) {
+          values[2] <- values2[2] + abs(values2[2] * 0.5)
+        }
+
+        ranges$pSpaceRange <- list(min = values[1], max = values[2])
+      }
+      ranges
+    },
     plotData = function(ranges, points = 50) {
       result <- list()
       if (output == "n" || output == "nByCI") {
-        n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = points)
-        if (!(n %in% n2)) {
-          n2 <- sort(c(n2, n))
+        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = points)
+        if (!(power %in% power2)) {
+          power2 <- sort(c(power2, power))
         }
-
-        power2 <- sapply(n2, ttestCalculatePower, kind = kind, alpha = alpha, delta = delta, sigma = sigma, m = m)
+        n2 <- sapply(power2, ttestCalculateN, kind = kind, alpha = alpha, delta = delta, sigma = sigma, m = m)
         result$nVsPower <- data.frame(y = n2, x = power2)
 
-        if ("deltaRange" %in% names(ranges)) {
-          # calculate nVsDelta 'backwards' in order to properly show negative delta values
-          delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
-          n3 <- sapply(delta2, ttestCalculateN, kind = kind, alpha = alpha, sigma = sigma, power = power, m = m)
-          df <- data.frame(y = n3, x = delta2)
-
-          if (!(ranges$nRange$min %in% df$y)) {
-            delta3 <- ttestCalculateDelta(kind, alpha, sigma, ranges$nRange$min, power, m)
-            extra <- data.frame(y = rep(ranges$nRange$min, 2),
-                                x = c(-delta3, delta3))
-            df <- rbind(df, extra)
-            df <- df[order(df$x), ]
-          }
-
-          # exclude points that are off the plot (large values of n)
-          df[df$y > ranges$nRange$max, "y"] <- NA
-
-          result$nVsDelta <- df
-        } else {
-          delta2 <- sapply(n2, ttestCalculateDelta, kind = kind, alpha = alpha, sigma = sigma, power = power, m = m)
-          if (delta < 0) {
-            delta2 <- -delta2
-          }
-          result$nVsDelta <- data.frame(y = n2, x = delta2)
+        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
+        if (!(delta %in% delta2)) {
+          delta2 <- sort(c(delta2, delta))
         }
+        n3 <- sapply(delta2, ttestCalculateN, kind = kind, alpha = alpha, sigma = sigma, power = power, m = m)
+        result$nVsDelta <- data.frame(y = n3, x = delta2)
 
       } else if (output == "power") {
-        if ("nRange" %in% names(ranges)) {
-          n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = points)
-        } else {
-          powerMin <- ranges$powerRange$min
-          n2Min <- NA
-          while (is.na(n2Min) && powerMin < 1) {
-            n2Min <- ttestCalculateN(kind, alpha, delta, sigma, powerMin, m)
-            powerMin <- powerMin + 0.01
-          }
-
-          powerMax <- ranges$powerRange$max
-          n2Max <- NA
-          while (is.na(n2Max) && powerMax > 0) {
-            n2Max <- ttestCalculateN(kind, alpha, delta, sigma, powerMax, m)
-            powerMax <- powerMax - 0.01
-          }
-          n2 <- seq(n2Min, n2Max, length.out = points)
-        }
+        n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = points)
         if (!(n %in% n2)) {
           n2 <- sort(c(n2, n))
         }
@@ -251,23 +296,28 @@ TTest <- setRefClass("TTest",
         result$powerVsN <- data.frame(y = power2, x = n2)
 
         delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
+        if (!(delta %in% delta2)) {
+          delta2 <- sort(c(delta2, delta))
+        }
         power3 <- sapply(delta2, ttestCalculatePower, kind = kind, alpha = alpha, sigma = sigma, n = n, m = m)
         df <- data.frame(y = power3, x = delta2)
 
         result$powerVsDelta <- df
 
       } else if (output == "delta") {
-        # Calculate data for plots
-        deltaDiff <- delta * 2
-        delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
-        if (!(delta %in% delta2)) {
-          delta2 <- sort(c(delta2, delta))
+        n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = points)
+        if (!(n %in% n2)) {
+          n2 <- sort(c(n2, n))
         }
-
-        n2 <- sapply(delta2, ttestCalculateN, kind = kind, alpha = alpha, sigma = sigma, power = power, m = m)
-        power2 <- sapply(delta2, ttestCalculatePower, kind = kind, alpha = alpha, sigma = sigma, n = n, m = m)
-        result$deltaVsPower <- data.frame(y = delta2, x = power2)
+        delta2 <- sapply(n2, ttestCalculateDelta, kind = kind, alpha = alpha, sigma = sigma, power = power, m = m)
         result$deltaVsN <- data.frame(y = delta2, x = n2)
+
+        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = points)
+        if (!(power %in% power2)) {
+          power2 <- sort(c(power2, power))
+        }
+        delta3 <- sapply(power2, ttestCalculateDelta, kind = kind, alpha = alpha, sigma = sigma, n = n, m = m)
+        result$deltaVsPower <- data.frame(y = delta3, x = power2)
       }
 
       # Calculate data for bottom/tertiary graph
