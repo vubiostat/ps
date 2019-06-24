@@ -226,25 +226,33 @@ TTest <- setRefClass("TTest",
         }
 
       } else if (output == "power") {
-        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = points)
-        if (!(power %in% power2)) {
-          power2 <- sort(c(power2, power))
-        }
+        if ("nRange" %in% names(ranges)) {
+          n2 <- seq(ranges$nRange$min, ranges$nRange$max, length.out = points)
+        } else {
+          powerMin <- ranges$powerRange$min
+          n2Min <- NA
+          while (is.na(n2Min) && powerMin < 1) {
+            n2Min <- ttestCalculateN(kind, alpha, delta, sigma, powerMin, m)
+            powerMin <- powerMin + 0.01
+          }
 
-        n2 <- sapply(power2, ttestCalculateN, kind = kind, alpha = alpha, delta = delta, sigma = sigma, m = m)
+          powerMax <- ranges$powerRange$max
+          n2Max <- NA
+          while (is.na(n2Max) && powerMax > 0) {
+            n2Max <- ttestCalculateN(kind, alpha, delta, sigma, powerMax, m)
+            powerMax <- powerMax - 0.01
+          }
+          n2 <- seq(n2Min, n2Max, length.out = points)
+        }
+        if (!(n %in% n2)) {
+          n2 <- sort(c(n2, n))
+        }
+        power2 <- sapply(n2, ttestCalculatePower, kind = kind, alpha = alpha, delta = delta, sigma = sigma, m = m)
         result$powerVsN <- data.frame(y = power2, x = n2)
 
         delta2 <- seq(ranges$deltaRange$min, ranges$deltaRange$max, length.out = points)
         power3 <- sapply(delta2, ttestCalculatePower, kind = kind, alpha = alpha, sigma = sigma, n = n, m = m)
         df <- data.frame(y = power3, x = delta2)
-
-        #if (!(ranges$powerRange$min %in% df$power3)) {
-          #delta3 <- ttestCalculateDelta(kind, alpha, sigma, n, ranges$powerRange$min, m)
-          #extra <- data.frame(y = rep(ranges$powerRange$min, 2),
-                              #x = c(-delta3, delta3))
-          #df <- rbind(df, extra)
-          #df <- df[order(df$x), ]
-        #}
 
         result$powerVsDelta <- df
 

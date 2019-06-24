@@ -270,39 +270,6 @@ TTestPlotDataAction <- setRefClass("TTestPlotDataAction",
       output <- models[[1]]$output
       result <- lapply(models, function(m) m$plotData(ranges, points))
 
-      if (output == "power") {
-        maxN <-
-          if (!is.null(ranges$nRange)) {
-            ranges$nRange$max
-          } else {
-            do.call(max, lapply(result, function(r) {
-              n <- r$powerVsN$x
-              n[!is.na(n)]
-            }))
-          }
-
-        # recalculate if needed
-        for (i in 1:length(result)) {
-          model <- models[[i]]
-          powerVsN <- result[[i]]$powerVsN
-
-          if (!(maxN %in% powerVsN$x)) {
-            indices <- which(powerVsN$x < maxN)
-            rowIndex <- indices[length(indices)]
-            row <- powerVsN[rowIndex, ]
-
-            extraN <- seq(row$x, maxN, length.out = 10)
-            extraPower <- sapply(extraN, ttestCalculatePower, kind = "paired",
-                                 alpha = model$alpha, delta = model$delta,
-                                 sigma = model$sigma)
-            extra <- data.frame(x = extraN, y = extraPower)
-
-            powerVsN <- rbind(powerVsN[1:rowIndex, ], extra)
-            result[[i]]$powerVsN <- powerVsN
-          }
-        }
-      }
-
       list(data = result, points = unbox(points))
     }
   )
