@@ -54,15 +54,15 @@
         </ng-template>
         <ng-template #changeHistory>
           <ul class="log" #log>
-            <li *ngFor="let changes of project.getChangeHistory(); index as i">
+            <li *ngFor="let changes of project.getChangeHistory()">
               <ng-template [ngIf]="changes.type == 'add'">
-                Added model {{i + 1}}: <span class="code">{{ changes.params | json }}</span>
+                Added model {{changes.index + 1}}: <span class="code">{{ changes.params | json }}</span>
               </ng-template>
               <ng-template [ngIf]="changes.type == 'remove'">
-                Removed model {{i + 1}}
+                Removed model {{changes.index + 1}}
               </ng-template>
               <ng-template [ngIf]="changes.type == 'change'">
-                Changed <span class="code">{{changes.key}}</span> in model {{i + 1}}: <span class="code">{{changes.params | json }}</span>
+                Changed <span class="code">{{changes.key}}</span> in model {{changes.index + 1}}: <span class="code">{{changes.params | json }}</span>
               </ng-template>
             </li>
           </ul>
