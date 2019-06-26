@@ -56,7 +56,6 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
   topLeftDim: string = "640x480";
   topLeftWidth = 640;
   topLeftHeight = 480;
-  topLeftDropLines = true;
   topLeftTarget = true;
 
   includeTopRight = true;
@@ -64,7 +63,6 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
   topRightDim: string = "640x480";
   topRightWidth = 640;
   topRightHeight = 480;
-  topRightDropLines = true;
   topRightTarget = true;
 
   includeBottom = true;

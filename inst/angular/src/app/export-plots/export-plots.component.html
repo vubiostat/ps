@@ -21,15 +21,8 @@
               <div class="form-check">
                 <label class="form-check-label">
                   <input class="form-check-input" type="checkbox"
-                    [(ngModel)]="topLeftDropLines">
-                    Show drop lines
-                </label>
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox"
                     [(ngModel)]="topLeftTarget">
-                    Show target
+                    Show target and drop lines
                 </label>
               </div>
               <label>
@@ -62,7 +55,7 @@
             <app-line-plot #topLeftPlot name="top-left-export"
               [handler]="linePlotHandler" [hover-disabled]="true"
               [disable-drag]="true"
-              [hide-drop-lines]="!topLeftDropLines"
+              [hide-drop-lines]="!topLeftTarget"
               [hide-target]="!topLeftTarget"
               [fixed-width]="topLeftWidth" [fixed-height]="topLeftHeight"
               [legend-x-offset]="topLeftLegendXOffset"
@@ -85,15 +78,8 @@
               <div class="form-check">
                 <label class="form-check-label">
                   <input class="form-check-input" type="checkbox"
-                    [(ngModel)]="topRightDropLines">
-                    Show drop lines
-                </label>
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox"
                     [(ngModel)]="topRightTarget">
-                    Show target
+                    Show target and drop lines
                 </label>
               </div>
               <label>
@@ -126,7 +112,7 @@
             <app-line-plot #topRightPlot name="top-right-export"
               [handler]="linePlotHandler" [hover-disabled]="true"
               [disable-drag]="true"
-              [hide-drop-lines]="!topRightDropLines"
+              [hide-drop-lines]="!topRightTarget"
               [hide-target]="!topRightTarget"
               [fixed-width]="topRightWidth" [fixed-height]="topRightHeight"
               [legend-x-offset]="topRightLegendXOffset"
