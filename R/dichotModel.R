@@ -971,7 +971,6 @@ Dichot <- setRefClass("Dichot",
     calculate = function() {
       if (matched == "matched") {
         # case-control and prospective behave the same way
-        rArg <- phi
         if (output == "sampleSize") {
           n <<- dichotSSize(alpha, power, phi, p0, m, psi)
         } else if (output == "power") {
@@ -980,12 +979,6 @@ Dichot <- setRefClass("Dichot",
           detAlt <- dichotOddsRatio(alpha, power, phi, p0, n, m)
         }
       } else if (matched == "independent") {
-        if (case == "caseControl" && expressed == "oddsRatio") {
-          rArg <- psi
-        } else {
-          rArg <- r
-        }
-
         if (output == "sampleSize") {
           n <<- dichotIPSize(alpha, power, p0, p1, m, psi, r, case, expressed, method)
         }
@@ -1094,6 +1087,210 @@ Dichot <- setRefClass("Dichot",
       result
     },
 
+    plotRanges = function(ranges) {
+      # Calculate default plot ranges for missing categories
+      if (output == "sampleSize") {
+        if (!("sampleSize" %in% names(ranges))) {
+          values <- sort(c(n * 0.5, n * 1.5))
+          ranges$sampleSizeRange <- list(min = values[1], max = values[2])
+        }
+        nMin <- ranges$sampleSizeRange$min
+        nMax <- ranges$sampleSizeRange$max
+        if (!("powerRange" %in% names(ranges))) {
+          if (matched == "matched") {
+            values <- sort(c(
+              dichotPowFcn(alpha, nMin, phi, p0, m, psi),
+              dichotPowFcn(alpha, nMax, phi, p0, m, psi)
+            ))
+          } else if (matched == "independent") {
+            values <- sort(c(
+              dichotIPPower(alpha, p0, p1, nMin, m, psi, r, case, expressed, method),
+              dichotIPPower(alpha, p0, p1, nMax, m, psi, r, case, expressed, method)
+            ))
+          } else {
+            values <- NA
+          }
+          ranges$powerRange <- list(min = values[1], max = values[2])
+        }
+        if (!("detAltRange" %in% names(ranges))) {
+          if (matched == "matched") {
+            values <- sort(c(
+              dichotOddsRatio(alpha, power, phi, p0, nMin, m),
+              dichotOddsRatio(alpha, power, phi, p0, nMax, m)
+            ))
+          } else if (matched == "independent") {
+            values <- sort(c(
+              dichotIPRelRisk(alpha, power, p0, nMin, m, case, expressed, method),
+              dichotIPRelRisk(alpha, power, p0, nMax, m, case, expressed, method)
+            ))
+          } else {
+            values <- NA
+          }
+          # det. alt. functions can return up to 2 values
+          ranges$detAltRange <- list(min = values[1], max = values[length(values)])
+        }
+      } else if (output == "power") {
+        if (!("powerRange" %in% names(ranges))) {
+          ranges$powerRange <- list(min = 0.01, max = 1)
+        }
+        powerMin <- ranges$powerRange$min
+        powerMax <- ranges$powerRange$max
+        if (!("detAltRange" %in% names(ranges))) {
+          # always use 0.99 as the maximum power, might need to revisit this later
+          if (matched == "matched") {
+            values <- c(0, max(dichotOddsRatio(alpha, 0.99, phi, p0, n, m)))
+          } else if (matched == "independent") {
+            detAltMax <- max(dichotIPRelRisk(alpha, 0.99, p0, n, m, case, expressed, method))
+            if (expressed == "twoProportions") {
+              values <- c(p0 - (detAltMax - p0), detAltMax)
+            } else if (expressed == "relativeRisk" || expressed == "oddsRatio") {
+              values <- c(1 - (detAltMax - 1), detAltMax)
+            } else {
+              values <- NA
+            }
+          } else {
+            values <- NA
+          }
+          ranges$detAltRange <- list(min = values[1], max = values[2])
+        }
+        if (!("sampleSizeRange" %in% names(ranges))) {
+          if (matched == "matched") {
+            f <- function(power) dichotSSize(alpha, power, phi, p0, m, psi)
+          } else if (matched == "independent") {
+            f <- function(power) dichotIPSize(alpha, power, p0, p1, m, psi, r, case, expressed, method)
+          } else {
+            f <- NULL
+          }
+
+          if (is.null(f)) {
+            values <- NA
+          } else {
+            powerMin <- ranges$powerRange$min
+            nMin <- NA
+            while (is.na(nMin) && powerMin < 1) {
+              nMin <- f(powerMin)
+              powerMin <- powerMin + 0.01
+            }
+            powerMax <- ranges$powerRange$max
+            nMax <- NA
+            while (is.na(nMax) && powerMax > 0) {
+              nMax <- f(powerMax)
+              powerMax <- powerMax - 0.01
+            }
+            values <- c(nMin, nMax)
+          }
+          ranges$sampleSizeRange <- list(min = values[1], max = values[2])
+        }
+      } else if (output == "detAlt") {
+        if (!("detAltRange" %in% names(ranges))) {
+          if (case == "caseControl") {
+            if (detAltMode == "lower") {
+              values <- c(0.1, 0.9)
+            } else {
+              values <- c(1.1, psi + (psi - 1.0))
+            }
+          } else {
+            if (expressed == "relativeRisk") {
+              if (detAltMode == "lower") {
+                values <- c(0.1, 0.9)
+              } else {
+                values <- c(1.1, r + (r - 1.0))
+              }
+            } else if (expressed == "oddsRatio") {
+              if (detAltMode == "lower") {
+                values <- c(0.1, 0.9)
+              } else {
+                values <- c(1.1, psi + (psi - 1.0))
+              }
+            } else {
+              if (detAltMode == "lower") {
+                values <- c(p1Alt - (p0 - p1Alt), p0 - 0.1)
+              } else {
+                values <- c(p0 + 0.1, p1 + (p1 - p0))
+              }
+            }
+          }
+          ranges$detAltRange <- list(min = values[1], max = values[2])
+        }
+        detAltMin <- ranges$detAltRange$min
+        detAltMax <- ranges$detAltRange$max
+        if (!("sampleSizeRange" %in% names(ranges))) {
+          if (matched == "matched") {
+            values <- sort(c(
+              dichotSSize(alpha, power, phi, p0, m, detAltMin),
+              dichotSSize(alpha, power, phi, p0, m, detAltMax)
+            ))
+          } else if (matched == "independent") {
+            if (expressed == "twoProportions") {
+              values <- sort(c(
+                dichotIPSize(alpha, power, p0, detAltMin, m, psi, r, case, expressed, method),
+                dichotIPSize(alpha, power, p0, detAltMax, m, psi, r, case, expressed, method)
+              ))
+            } else if (expressed == "oddsRatio") {
+              values <- sort(c(
+                dichotIPSize(alpha, power, p0, p1, m, detAltMin, r, case, expressed, method),
+                dichotIPSize(alpha, power, p0, p1, m, detAltMax, r, case, expressed, method)
+              ))
+            } else if (expressed == "relativeRisk") {
+              values <- sort(c(
+                dichotIPSize(alpha, power, p0, p1, m, psi, detAltMin, case, expressed, method),
+                dichotIPSize(alpha, power, p0, p1, m, psi, detAltMax, case, expressed, method)
+              ))
+            } else {
+              values <- NA
+            }
+          } else {
+            values <- NA
+          }
+          ranges$sampleSizeRange <- list(min = values[1], max = values[2])
+        }
+        if (!("powerRange" %in% names(ranges))) {
+          if (matched == "matched") {
+            values <- sort(c(
+              dichotPowFcn(alpha, n, phi, p0, m, detAltMin),
+              dichotPowFcn(alpha, n, phi, p0, m, detAltMax)
+            ))
+          } else if (matched == "independent") {
+            if (expressed == "twoProportions") {
+              values <- sort(c(
+                dichotIPPower(alpha, p0, detAltMin, n, m, psi, r, case, expressed, method),
+                dichotIPPower(alpha, p0, detAltMax, n, m, psi, r, case, expressed, method)
+              ))
+            } else if (expressed == "oddsRatio") {
+              values <- sort(c(
+                dichotIPPower(alpha, p0, p1, n, m, detAltMin, r, case, expressed, method),
+                dichotIPPower(alpha, p0, p1, n, m, detAltMax, r, case, expressed, method)
+              ))
+            } else if (expressed == "relativeRisk") {
+              values <- sort(c(
+                dichotIPPower(alpha, p0, p1, n, m, psi, detAltMin, case, expressed, method),
+                dichotIPPower(alpha, p0, p1, n, m, psi, detAltMax, case, expressed, method)
+              ))
+            } else {
+              values <- NA
+            }
+          } else {
+            values <- NA
+          }
+          ranges$powerRange <- list(min = values[1], max = values[2])
+        }
+      }
+
+      if (!("pSpaceRange" %in% names(ranges))) {
+        # Use fixed range by default
+        values <- c(0.0, 7.0)
+        if (detAltMode == "lower") {
+          if (ciAlt[2] > values[2]) {
+            values[2] <- ciAlt[2]
+          }
+        } else if (ci[2] > values[2]) {
+          values[2] <- ci[2]
+        }
+        ranges$pSpaceRange <- list(min = values[1], max = values[2])
+      }
+      ranges
+    },
+
     plotData = function(ranges, points = 50) {
       result <- list()
 
@@ -1111,262 +1308,202 @@ Dichot <- setRefClass("Dichot",
 
       # Calculate plot data
       if (output == "sampleSize") {
-        range <- ranges$sampleSizeRange
-        n2 <- seq(range$min, range$max, length.out = points)
+        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = points)
+        if (!(power %in% power2)) {
+          power2 <- sort(c(power2, power))
+        }
+
+        detAlt2 <- seq(ranges$detAltRange$min, ranges$detAltRange$max, length.out = points)
+        if (!(detAltParamValue() %in% detAlt2)) {
+          detAlt2 <- sort(c(detAlt2, detAltParamValue()))
+        }
+
+        if (matched == "matched") {
+          # calculate sample size vs. power
+          n2 <- sapply(power2, dichotSSize, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
+
+          # calculate sample size vs. det. alt.
+          n3 <- sapply(detAlt2, dichotSSize, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
+        } else if (matched == "independent") {
+          # calculate sample size vs. power
+          n2 <- sapply(power2, dichotIPSize, alpha = alpha, p0 = p0, p1 = p1, m = m, psi = psi,
+                       r = r, case = case, expressed = expressed, method = method)
+
+          # calculate sample size vs. det. alt.
+          if (expressed == "twoProportions") {
+            # det. alt. is p1
+            n3 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, m = m,
+                         psi = psi, r = r, case = case, expressed = expressed, method = method)
+          } else if (expressed == "oddsRatio") {
+            # det. alt. is psi
+            n3 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, p1 = p1,
+                         m = m, r = r, case = case, expressed = expressed, method = method)
+          } else if (expressed == "relativeRisk") {
+            # det. alt. is r
+            n3 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power, p0 = p0, p1 = p1,
+                         m = m, psi = psi, case = case, expressed = expressed, method = method)
+          }
+        }
+
+        # NOTE: possibly filter out values out of sampleSizeRange
+        result$sampleSizeVsPower <- data.frame(y = n2, x = power2)
+        result$sampleSizeVsDetAlt <- data.frame(y = n3, x = detAlt2)
+
+      } else if (output == "power") {
+        n2 <- seq(ranges$sampleSizeRange$min, ranges$sampleSizeRange$max, length.out = points)
         if (!(n %in% n2)) {
           n2 <- sort(c(n2, n))
         }
 
-        if (matched == "matched") {
-          power2 <- sapply(n2, dichotPowFcn, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
-          detAlt2 <- sapply(n2, dichotOddsRatio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
-        } else if (matched == "independent") {
-          power2 <- sapply(n2, dichotIPPower, alpha = alpha, p0 = p0, p1 = p1,
-                           m = m, psi = psiArg, r = rArg, case = case,
-                           expressed = expressed, method = method)
-
-          detAlt2 <- sapply(n2, dichotIPRelRisk, alpha = alpha, power = power, p0 = p0, m = m, case = case, expressed = expressed, method = method)
+        detAlt2 <- seq(ranges$detAltRange$min, ranges$detAltRange$max, length.out = points)
+        if (!(detAltParamValue() %in% detAlt2)) {
+          detAlt2 <- sort(c(detAlt2, detAltParamValue()))
         }
 
-        result$sampleSizeVsPower <- data.frame(y = n2, x = power2)
+        if (matched == "matched") {
+          # calculate power vs. sample size
+          power2 <- sapply(n2, dichotPowFcn, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
 
-        # det. alt. functions can return up to 2 values
-        df <- data.frame(y = c(n2, n2), x = c(detAlt2[1,], detAlt2[2,]))
-        df <- df[!is.na(df$y) & !is.na(df$x),]
-        df <- df[order(df$x),]
-        result$sampleSizeVsDetAlt <- df
+          # calculate power vs. det. alt.
+          power3 <- sapply(detAlt2, dichotPowFcn, alpha = alpha, n = n, phi = phi, p0 = p0, m = m)
+        } else if (matched == "independent") {
+          # calculate power vs. sample size
+          power2 <- sapply(n2, function(n) {
+            result <- try(dichotIPPower(alpha, p0, p1, n, m, psi, r, case, expressed, method),
+                          silent = TRUE)
+            if (inherits(result, "try-error")) NA else result
+          })
 
-      } else if (output == "power") {
-        powerRange <- ranges$powerRange
-        power2 <- seq(powerRange$min, powerRange$max, length.out = points)
+          # calculate power vs. det. alt.
+          if (expressed == "twoProportions") {
+            # det. alt. is p1
+            powerFunc <- function(p1) dichotIPPower(alpha, p0, p1, n, m, psi, r, case, expressed, method)
+          } else if (expressed == "oddsRatio") {
+            # det. alt. is psi
+            powerFunc <- function(psi) dichotIPPower(alpha, p0, p1, n, m, psi, r, case, expressed, method)
+          } else if (expressed == "relativeRisk") {
+            # det. alt. is r
+            powerFunc <- function(r) dichotIPPower(alpha, p0, p1, n, m, psi, r, case, expressed, method)
+          }
+          power3 <- sapply(detAlt2, function(detAlt) {
+            result <- try(powerFunc(detAlt), silent = TRUE)
+            if (inherits(result, "try-error")) NA else result
+          })
+        }
+
+        result$powerVsSampleSize <- data.frame(y = power2, x = n2)
+        result$powerVsDetAlt <- subset(data.frame(y = power3, x = detAlt2),
+                                       y >= ranges$powerRange$min & y <= ranges$powerRange$max)
+
+      } else if (output == "detAlt") {
+        n2 <- seq(ranges$sampleSizeRange$min, ranges$sampleSizeRange$max, length.out = points)
+        if (!(n %in% n2)) {
+          n2 <- sort(c(n2, n))
+        }
+
+        power2 <- seq(ranges$powerRange$min, ranges$powerRange$max, length.out = points)
         if (!(power %in% power2)) {
           power2 <- sort(c(power2, power))
         }
 
         if (matched == "matched") {
-          n2 <- sapply(power2, dichotSSize, alpha = alpha, phi = phi, p0 = p0, m = m, psi = psi)
-
-          detAltRange <- ranges$detAltRange
-          if (is.null(detAltRange)) {
-            detAltRange <- list(min = 0, max = max(dichotOddsRatio(alpha, 0.99, phi, p0, n, m)))
-          }
-          detAlt2 <- seq(detAltRange$min, detAltRange$max, length.out = points)
-          power3 <- sapply(detAlt2, dichotPowFcn, alpha = alpha, n = n,
-                           phi = phi, p0 = p0, m = m)
-
-          df <- data.frame(x = detAlt2, y = power3)
-          if (!(power %in% df$y)) {
-            df <- rbind(df, list(x = psi, y = power))
-            df <- df[order(df$x),]
-          }
-          result$powerVsDetAlt <- df
+          detAlt2 <- sapply(n2, dichotOddsRatio, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
+          detAlt3 <- sapply(power2, dichotOddsRatio, alpha = alpha, phi = phi, p0 = p0, n = n, m = m)
         } else if (matched == "independent") {
-          # Calculate sample size data
-          n2 <- sapply(power2, dichotIPSize, alpha = alpha, p0 = p0, p1 = p1,
-                       m = m, psi = psiArg, r = rArg, case = case,
-                       expressed = expressed, method = method)
-
-          detAlt2Max <- max(dichotIPRelRisk(alpha, 0.99, p0, n, m, case, expressed, method))
-          if (expressed == "twoProportions") {
-            detAlt2 <- seq(
-              from = p0 - (detAlt2Max - p0),
-              to = detAlt2Max,
-              length.out = points
-            )
-            power3 <- sapply(detAlt2, function(p1Arg) {
-              result <- try(dichotIPPower(alpha, p0, p1Arg, n, m, psiArg, rArg,
-                                          case, expressed, method),
-                            silent = TRUE)
-              if (inherits(result, 'try-error')) {
-                NA
-              } else {
-                result
-              }
-            })
-
-            # Make sure current power and det. alt. is in the dataset
-            df <- data.frame(y = power3, x = detAlt2)
-            if (!(p1 %in% df$x)) {
-              df <- rbind(df, data.frame(y = power, x = p1))
-              df <- df[order(df$x),]
-            }
-          } else if (expressed == "relativeRisk") {
-            detAlt2 <- seq(
-              from = 1 - (detAlt2Max - 1),
-              to = detAlt2Max,
-              length.out = points
-            )
-
-            power3 <- sapply(detAlt2, function(rArg) {
-              result <- try(dichotIPPower(alpha, p0, p1, n, m, psiArg, rArg,
-                                          case, expressed, method),
-                            silent = TRUE)
-              if (inherits(result, 'try-error')) {
-                NA
-              } else {
-                result
-              }
-            })
-
-            # Make sure current power is in the dataset
-            df <- data.frame(y = power3, x = detAlt2)
-            if (!(power %in% df$y)) {
-              df <- rbind(df, data.frame(y = power, x = detAltParamValue()))
-              df <- df[order(df$x),]
-            }
-          } else if (expressed == "oddsRatio") {
-            detAlt2 <- seq(
-              from = 1 - (detAlt2Max - 1),
-              to = detAlt2Max,
-              length.out = points
-            )
-
-            power3 <- sapply(detAlt2, function(psiArg) {
-              result <- try(dichotIPPower(alpha, p0, p1, n, m, psiArg, rArg,
-                                          case, expressed, method),
-                            silent = TRUE)
-              if (inherits(result, 'try-error')) {
-                NA
-              } else {
-                result
-              }
-            })
-
-            # Make sure current power is in the dataset
-            df <- data.frame(y = power3, x = detAlt2)
-            if (!(power %in% df$y)) {
-              df <- rbind(df, data.frame(y = power, x = detAltParamValue()))
-              df <- df[order(df$x),]
-            }
-          }
-
-          # Only select values from the supplied range
-          result$powerVsDetAlt <- df[df$y >= powerRange$min & df$y <= powerRange$max,]
+          detAlt2 <- sapply(n2, dichotIPRelRisk, alpha = alpha,
+                            power = power, p0 = p0, m = m, case = case,
+                            expressed = expressed, method = method)
+          detAlt3 <- sapply(power2, dichotIPRelRisk, alpha = alpha,
+                            p0 = p0, n = n, m = m, case = case,
+                            expressed = expressed, method = method)
         }
 
-        result$powerVsSampleSize <- data.frame(y = power2, x = n2)
-
-      } else if (output == "detAlt") {
-        range <- ranges$detAltRange
-        detAlt2 <- seq(range$min, range$max, length.out = points)
-
-        # pick lower or upper value based on detAltMode
-        param <- detAltParamName()
+        # det. alt. functions can return up to 2 values
         if (detAltMode == "lower") {
-          param <- paste0(param, "Alt")
+          y2 <- detAlt2[1,]
+          y3 <- detAlt3[1,]
+        } else {
+          y2 <- detAlt2[2,]
+          y3 <- detAlt3[2,]
         }
-        val <- .self[[param]]
+        df <- data.frame(x = c(n2, n2), y = y2)
+        df <- df[!is.na(df$y) & !is.na(df$x),]
+        df <- df[order(df$x),]
+        result$detAltVsSampleSize <- df
 
-        if (!(val %in% detAlt2)) {
-          detAlt2 <- c(detAlt2, val)
-        }
-        detAlt2 <- sort(detAlt2)
-
-        if (matched == "matched") {
-          # det. alt. is psi
-          n2 <- sapply(detAlt2, dichotSSize, alpha = alpha, power = power, phi = phi, p0 = p0, m = m)
-          power2 <- sapply(detAlt2, dichotPowFcn, alpha = alpha, n = n, phi = phi, p0 = p0, m = m)
-        } else if (matched == "independent") {
-          if (expressed == "twoProportions") {
-            # det. alt. is p1
-            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power,
-                         p0 = p0, m = m, psi = psiArg, r = rArg, case = case,
-                         expressed = expressed, method = method)
-
-            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0,
-                             n = n, m = m, psi = psiArg, r = rArg, case = case,
-                             expressed = expressed, method = method)
-
-          } else if (expressed == "oddsRatio") {
-            # det. alt. is psi
-            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power,
-                         p0 = p0, p1 = p1, m = m, r = rArg, case = case,
-                         expressed = expressed, method = method)
-
-            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0,
-                             p1 = p1, n = n, m = m, r = rArg, case = case,
-                             expressed = expressed, method = method)
-
-          } else if (expressed == "relativeRisk") {
-            # det. alt. is r
-            n2 <- sapply(detAlt2, dichotIPSize, alpha = alpha, power = power,
-                         p0 = p0, p1 = p1, m = m, psi = psiArg, case = case,
-                         expressed = expressed, method = method)
-
-            power2 <- sapply(detAlt2, dichotIPPower, alpha = alpha, p0 = p0,
-                             p1 = p1, n = n, m = m, psi = psiArg, case = case,
-                             expressed = expressed, method = method)
-          }
-        }
-
-        result$detAltVsSampleSize <- data.frame(y = detAlt2, x = n2)
-        result$detAltVsPower <- data.frame(y = detAlt2, x = power2)
+        df <- data.frame(x = c(power2, power2), y = y3)
+        df <- df[!is.na(df$y) & !is.na(df$x),]
+        df <- df[order(df$x),]
+        result$detAltVsPower <- df
       }
 
       # Calculate data for bottom/tertiary graph
-      if ("pSpaceRange" %in% names(ranges)) {
-        if (matched == "matched") {
-          if (is.null(sampDist)) {
-            delta <- 0.01
-            p1 <<- dichotPOne(p0, psi, phi)
-            pdf <<- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
+      if (matched == "matched") {
+        if (is.null(sampDist)) {
+          delta <- 0.01
+          p1 <<- dichotPOne(p0, psi, phi)
+          pdf <<- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
 
-            # calculating CI requires calculating the sample distribution for
-            # matched studies
-            ciResult <- dichotCalcMatchedCI(pdf, psi, delta)
-            sampDist <<- ciResult$sampDist
-            ci <<- ciResult$ci
+          # calculating CI requires calculating the sample distribution for
+          # matched studies
+          ciResult <- dichotCalcMatchedCI(pdf, psi, delta)
+          sampDist <<- ciResult$sampDist
+          ci <<- ciResult$ci
 
-            if (output == "detAlt") {
-              p1Alt <<- dichotPOne(p0, psiAlt, phi)
-              pdfAlt <<- dichotMatchedSampDistPDF(p0, p1Alt, m, n, psiAlt, phi, delta)
+          if (output == "detAlt") {
+            p1Alt <<- dichotPOne(p0, psiAlt, phi)
+            pdfAlt <<- dichotMatchedSampDistPDF(p0, p1Alt, m, n, psiAlt, phi, delta)
 
-              ciResult <- dichotCalcMatchedCI(pdfAlt, psiAlt, delta)
-              sampDistAlt <<- ciResult$sampDist
-              ciAlt <<- ciResult$ci
-            }
+            ciResult <- dichotCalcMatchedCI(pdfAlt, psiAlt, delta)
+            sampDistAlt <<- ciResult$sampDist
+            ciAlt <<- ciResult$ci
           }
+        }
+
+        if (output == "detAlt" && detAltMode == "lower") {
+          result$sampDist <- sampDistAlt
+        } else {
           result$sampDist <- sampDist
+        }
 
-          # Calculate confidence interval/sample size pairs
-          if (output == "power") {
-            n2 <- ceiling(seq(n / 4, n * 4, length.out = points))
-            ci2 <- sapply(n2, function(n) {
-              pdf2 <- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
-              ciResult <- dichotCalcMatchedCI(pdf2, psi, delta)
-              ciResult$ci
-            })
-            df <- as.data.frame(cbind(n2, t(ci2)))
-            names(df) <- c("n", "lower", "upper")
-            result$ciValues <- df
+        # Calculate confidence interval/sample size pairs
+        if (output == "power") {
+          n2 <- ceiling(seq(n / 4, n * 4, length.out = points))
+          ci2 <- sapply(n2, function(n) {
+            pdf2 <- dichotMatchedSampDistPDF(p0, p1, m, n, psi, phi, delta)
+            ciResult <- dichotCalcMatchedCI(pdf2, psi, delta)
+            ciResult$ci
+          })
+          df <- as.data.frame(cbind(n2, t(ci2)))
+          names(df) <- c("n", "lower", "upper")
+          result$ciValues <- df
+        }
+      } else if (matched == "independent") {
+        pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
+
+        p1Arg <- p1
+        psiArg <- psi
+        rArg <- r
+        if (output == "detAlt" && detAltMode == "lower") {
+          p1Arg <- p1Alt
+          psiArg <- psiAlt
+          rArg <- rAlt
+        }
+
+        x <- dichotCalcIndSampDist(pSpace, p0, p1Arg, m, n, psiArg, rArg, case, expressed)
+        result$sampDist <- subset(data.frame(y = x, x = pSpace), !is.na(y))
+
+        # Calculate confidence interval/sample size pairs
+        if (output == "power") {
+          n2 <- ceiling(seq(n / 4, n * 4, length.out = points))
+          if (!(n %in% n2)) {
+            n2 <- sort(c(n2, n))
           }
-        } else if (matched == "independent") {
-          pSpace <- seq(ranges$pSpaceRange$min, ranges$pSpaceRange$max, length.out = points)
-
-          p1Arg <- p1
-          psiArg <- psi
-          rArg <- r
-          if (output == "detAlt" && detAltMode == "lower") {
-            p1Arg <- p1Alt
-            psiArg <- psiAlt
-            rArg <- rAlt
-          }
-
-          x <- dichotCalcIndSampDist(pSpace, p0, p1Arg, m, n, psiArg, rArg, case, expressed)
-          result$sampDist <- subset(data.frame(y = x, x = pSpace), !is.na(y))
-
-          # Calculate confidence interval/sample size pairs
-          if (output == "power") {
-            n2 <- ceiling(seq(n / 4, n * 4, length.out = points))
-            if (!(n %in% n2)) {
-              n2 <- sort(c(n2, n))
-            }
-            ci2 <- sapply(n2, dichotCalcIndCI, p0 = p0, p1 = p1, m = m,
-                          expressed = expressed)
-            df <- as.data.frame(cbind(n2, t(ci2)))
-            names(df) <- c("n", "lower", "upper")
-            result$ciValues <- df
-          }
+          ci2 <- sapply(n2, dichotCalcIndCI, p0 = p0, p1 = p1, m = m,
+                        expressed = expressed)
+          df <- as.data.frame(cbind(n2, t(ci2)))
+          names(df) <- c("n", "lower", "upper")
+          result$ciValues <- df
         }
       }
 

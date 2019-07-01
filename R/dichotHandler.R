@@ -390,7 +390,28 @@ DichotPlotDataAction <- setRefClass("DichotPlotDataAction",
       }
 
       models <- lapply(params$models, Dichot)
-      ranges <- params$ranges
+
+      # calculate maximum ranges over models
+      userRanges <- params$ranges
+      ranges <- list()
+      for (m in models) {
+        modelRanges <- m$plotRanges(userRanges)
+        for (rangeName in names(modelRanges)) {
+          modelRange <- modelRanges[[rangeName]]
+          if (rangeName %in% names(ranges)) {
+            range <- ranges[[rangeName]]
+            if (!is.na(modelRange$min) && (is.na(range$min) || modelRange$min < range$min)) {
+              ranges[[rangeName]]$min <- modelRange$min
+            }
+            if (!is.na(modelRange$max) && (is.na(range$max) || modelRange$max > range$max)) {
+              ranges[[rangeName]]$max <- modelRange$max
+            }
+          } else {
+            ranges[[rangeName]] <- modelRange
+          }
+        }
+      }
+
       points <- if (is.null(params$points)) defaultPoints else params$points
       output <- models[[1]]$output
       result <- lapply(models, function(m) m$plotData(ranges, points))
