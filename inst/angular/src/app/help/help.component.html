@@ -1,53 +1,86 @@
 <ng-template [ngIf]="topic == 'overview'">
   <h5>Introduction</h5>
   <p>
-    PS is a program for performing power and sample size calculations. You are
-    using a web-enabled beta-test version of the program, where we are actively
-    working on the interactive user interface. Currently, it can only be used
-    for paired t-tests but it will be expanded for use in studies with
-    dichotomous, continuous, survival response and other data.
+    PS is a program for performing power and sample size calculations. You 
+    are using a web-enabled beta-test version of the program, where we 
+    are actively working on the interactive user interface. Currently, it 
+    can only be used for t-tests, z-tests and tests with dichotomous 
+    outcomes. It will be expanded for use in studies with survival 
+    response and other data.
   </p>
   <h5>Program Output</h5>
   <p>
-    The program can determine the sample size needed to detect a specified
-    alternative hypothesis with the required power, the power with which a
-    specific alternative hypothesis can be detected with a given sample size,
-    or the specific alternative hypotheses that can be detected with a given
-    power and sample size. It also gives the 95% confidence interval for the
-    test statistic under the specified alternative hypothesis as a measure of
-    the precision of the test statistic.
+    The program can determine the sample size needed to detect a 
+    specified alternative hypothesis with the required power, the 
+    power with which a specific alternative hypothesis can be 
+    detected with a given sample size, or the specific alternative 
+    hypotheses that can be detected with a given power and sample 
+    size. It also gives the 95% confidence interval for the test 
+    statistic under the specified alternative hypothesis as a 
+    measure of the precision of the test statistic.
   </p>
   <h5>Interactive Help</h5>
   <p>
-    Click on any question-mark icon for help or pull-down menu to determine
-    the needed information. In the Start tab, choose one of sample size,
-    power, or detectable difference  and then complete the other fields that
-    appear. Hover over the i icon for information on what is needed in each
-    field. Then click the calculate button. A new tab will appear with
-    sliders for altering the input variables, the desired output variable and
-    various graphs.
+    Click on any question-mark icon or white i in a black circle for help 
+    to determine the needed information. In the <em>Start</em> tab, choose one of 
+    sample size, power, or detectable difference and then complete the 
+    other fields that appear. Hover over the i icon for information 
+    on what is needed in each field. Then click the <em>Calculate</em> button. A 
+    new tab will appear with sliders for altering the input variables, the 
+    desired output variable and various graphs. Alternately, choose 
+    an example from the upper-right pull-down menu for a pre-populated 
+    example and click on <em>Calculate</em>.
   </p>
   <h5>Graphical Output</h5>
   <p>
-    The graphs that can be generated are sample size vs. power, sample size
-    vs. the detectable alternative hypothesis, power vs. sample size, and
-    power vs. the detectable alternative hypothesis.  The y-axes of these
-    graphs are always show the output variable. In addition, a graph of
-    precision vs effect size is always given.  The red dot on the top two
-    graphs can be dragged to enhance the users intuition on how the input and
-    output variables interact.
+    The graphs that can be generated are sample size vs. power, sample 
+    size vs. the detectable alternative hypothesis, power vs. sample 
+    size, and power vs. the detectable alternative hypothesis. The 
+    y-axes of these graphs are always show the output variable. In 
+    addition, a graph of precision vs effect size is always given. The 
+    red dot on the top two graphs can be dragged to enhance the user’s 
+    intuition on how the input and output variables interact. The dot 
+    giving the effect size in the lower panel many also be dragged, 
+    as can the vertical bars indicating the limits of the 95% confidence 
+    interval when the output is not sample size.
   </p>
-  <h5>Interpretation</h5>
-  <p>
-    The output also includes text that describes the power or sample size
-    calculation in English, which may be a useful starting point for a
-    description in a grant application.
+
+  <h5>Add Line</h5>
+  <p>Clicking on <em>Add line</em> overlays a new set of graphs on top of the old 
+    ones. This new graph can then be modified to permit multiple graphs 
+    on each plot. A legend is automatically generated. The names of the 
+    curves can be modified by changing the Name field near the top of 
+    the dialog box. Clicking on the left-most tab (blue by default) gives 
+    access to the initial plot whose legend name may also be modified. The 
+    legend itself can be dragged to a suitable position on each graph.
   </p>
+  
+   
   <h5>Options gear wheel</h5>
   <p>
     Click on this icon to change the point size, line width and other graph
     options.
   </p>
+
+  <h5>Save icon</h5>
+  <p>Click on this icon to save graphs in one of several formats. Graphs 
+    in WMF format can be readily imported into Microsoft PowerPoint for further editing.</p>
+
+  <h5>Cube icon</h5>
+  <p>By default, hovering over a line on a graph will give you the 
+    values of the x- and y-axes at the point where you are hovering. Clicking 
+    on the <em>Cube</em> icon toggles this feature on or off.</p>
+
+  <h5>Interpretation</h5>
+  <p>The output also includes text that describes the power or sample size 
+    calculation in English, which may be a useful starting point for a 
+    description in a grant application.</p>
+
+  <h5>Log</h5>
+  <p>A terse description of the calculations performed is abailable by 
+  clicking on <em>Log</em> in the gray box. The log file may then be cut 
+    and pasted into other editors.</p>
+
   <p>
     <img src="assets/cc.png"> &copy; William D. Dupont, Jeffrey D. Blume, W.
     Dale Plummer, Jeremy Stephens 2017-2018
