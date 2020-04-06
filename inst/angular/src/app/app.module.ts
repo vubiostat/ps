@@ -44,7 +44,7 @@ const routes: Routes = [
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
-    NgbModule.forRoot(),
+    NgbModule,
     AppCommonModule,
     TTestModule,
     DichotModule

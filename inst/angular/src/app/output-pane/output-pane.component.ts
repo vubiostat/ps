@@ -42,11 +42,11 @@ export class OutputPaneComponent implements OnChanges {
   private copySub: Subscription;
   private updatingSub: Subscription;
 
-  @ViewChild('topLeft') topLeftPlot: LinePlotComponent;
-  @ViewChild('topRight') topRightPlot: LinePlotComponent;
-  @ViewChild('bottom') bottomPlot: CIPlotComponent;
-  @ViewChild('footerTabset') footerTabset: NgbTabset;
-  @ViewChild('log') logElt: ElementRef;
+  @ViewChild('topLeft', { static: true }) topLeftPlot: LinePlotComponent;
+  @ViewChild('topRight', { static: true }) topRightPlot: LinePlotComponent;
+  @ViewChild('bottom', { static: true }) bottomPlot: CIPlotComponent;
+  @ViewChild('footerTabset', { static: false }) footerTabset: NgbTabset;
+  @ViewChild('log', { static: false }) logElt: ElementRef;
 
   constructor(
     private modalService: NgbModal,

@@ -20,7 +20,7 @@ export class ProjectComponent extends AbstractProjectComponent implements OnInit
   name: string;
   selectedModel: Dichot;
 
-  @ViewChild('tabset') tabset: NgbTabset;
+  @ViewChild('tabset', { static: false }) tabset: NgbTabset;
 
   constructor(
     private projectService: AbstractProjectService,

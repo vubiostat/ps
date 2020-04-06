@@ -39,9 +39,9 @@ export class MainComponent implements OnInit {
   switchedSub: Subscription;
   changedSub: Subscription;
 
-  @ViewChild('plotOptionsDialog') plotOptionsDialog: DraggableDialogComponent;
-  @ViewChild('helpDialog') helpDialog: DraggableDialogComponent;
-  @ViewChild('outputPane') outputPane: OutputPaneComponent;
+  @ViewChild('plotOptionsDialog', { static: true }) plotOptionsDialog: DraggableDialogComponent;
+  @ViewChild('helpDialog', { static: true }) helpDialog: DraggableDialogComponent;
+  @ViewChild('outputPane', { static: false }) outputPane: OutputPaneComponent;
 
   constructor(
     private router: Router,

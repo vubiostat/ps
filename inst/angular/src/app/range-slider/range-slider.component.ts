@@ -44,11 +44,11 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
   private inputSubject: Subject<string> = new Subject();
   private dirty = false;
 
-  @ContentChild(RangeSliderLabel) rsLabelTpl: RangeSliderLabel;
-  @ContentChild(RangeSliderHelp) rsHelpTpl: RangeSliderHelp;
-  @ViewChild("errorPopover") errorPopover: NgbPopover;
-  @ViewChild("number") numberElement: ElementRef;
-  @ViewChild("range") rangeElement: ElementRef;
+  @ContentChild(RangeSliderLabel, { static: true }) rsLabelTpl: RangeSliderLabel;
+  @ContentChild(RangeSliderHelp, { static: true }) rsHelpTpl: RangeSliderHelp;
+  @ViewChild("errorPopover", { static: true }) errorPopover: NgbPopover;
+  @ViewChild("number", { static: true }) numberElement: ElementRef;
+  @ViewChild("range", { static: true }) rangeElement: ElementRef;
 
   ngOnInit(): void {
     this.inputSubject.pipe(

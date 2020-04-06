@@ -26,7 +26,7 @@ export abstract class AbstractPlotComponent implements AfterViewInit {
   innerWidth: number;
   innerHeight: number;
 
-  @ViewChild('plot') plotElement: ElementRef;
+  @ViewChild('plot', { static: true }) plotElement: ElementRef;
 
   constructor(
     public plotOptions: PlotOptionsService,

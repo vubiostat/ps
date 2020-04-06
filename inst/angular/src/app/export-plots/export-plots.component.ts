@@ -74,10 +74,10 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
   imageFormats: string[] = [];
   imageFormat: string;
 
-  @ViewChild('topLeftPlot') topLeftPlot: LinePlotComponent;
-  @ViewChild('topRightPlot') topRightPlot: LinePlotComponent;
-  @ViewChild('bottomPlot') bottomPlot: CIPlotComponent;
-  @ViewChild('downloadLink') downloadLink: ElementRef;
+  @ViewChild('topLeftPlot', { static: false }) topLeftPlot: LinePlotComponent;
+  @ViewChild('topRightPlot', { static: false }) topRightPlot: LinePlotComponent;
+  @ViewChild('bottomPlot', { static: false }) bottomPlot: CIPlotComponent;
+  @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
 
   constructor(
     private activeModal: NgbActiveModal,

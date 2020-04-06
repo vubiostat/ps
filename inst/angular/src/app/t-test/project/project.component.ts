@@ -21,7 +21,7 @@ export class ProjectComponent extends AbstractProjectComponent implements OnInit
   name: string;
   selectedModel: TTest;
 
-  @ViewChild('tabset') tabset: NgbTabset;
+  @ViewChild('tabset', { static: false }) tabset: NgbTabset;
 
   constructor(
     private projectService: AbstractProjectService,
