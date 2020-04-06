@@ -41,7 +41,7 @@ export class MainComponent implements OnInit {
 
   @ViewChild('plotOptionsDialog', { static: true }) plotOptionsDialog: DraggableDialogComponent;
   @ViewChild('helpDialog', { static: true }) helpDialog: DraggableDialogComponent;
-  @ViewChild('outputPane', { static: false }) outputPane: OutputPaneComponent;
+  @ViewChild('outputPane') outputPane: OutputPaneComponent;
 
   constructor(
     private router: Router,

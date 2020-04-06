@@ -63,6 +63,9 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
   lastDragEvent: any;
   targetDragging = false;
   needDraw = Draw.No;
+  setupTimeoutId: number;
+  setupCompleted = false;
+  attemptDraw = true;
 
   constructor(
     public plotOptions: PlotOptionsService,
@@ -72,18 +75,32 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    setTimeout(() => {
-      // give browser a tick to be ready
-      this.setup();
-    }, 1);
+    if (this.setupTimeoutId === undefined) {
+      console.log(`${this.name} setting timeout for setup`);
+      this.setupTimeoutId = setTimeout(() => {
+        // give browser a tick to be ready
+        this.setupCompleted = this.setup();
+        console.log(`${this.name} setup result (from ngOnChanges): ${this.setupCompleted}`);
+        this.setupTimeoutId = undefined;
+      }, 1);
+    }
   }
 
   ngAfterViewChecked(): void {
-    this.draw();
+    if (this.attemptDraw) {
+      try {
+        this.draw();
+      } catch(e) {
+        console.log(`${this.name} draw failed!`);
+        console.log(e);
+        this.attemptDraw = false;
+      }
+    }
   }
 
   redraw(): void {
-    this.setup();
+    this.setupCompleted = this.setup();
+    console.log(`${this.name} setup result (from redraw): ${this.setupCompleted}`);
   }
 
   hover(event: any, target?: Point): void {
@@ -349,6 +366,9 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
   }
 
   private draw(): void {
+    if (!this.setupCompleted) {
+      return;
+    }
     if (this.needDraw == Draw.No) {
       return;
     }

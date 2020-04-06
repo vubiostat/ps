@@ -66,7 +66,7 @@ export class MenuComponent implements OnInit {
   state: MenuState = MenuState.Main;
 
   @ViewChild('menu', { static: true }) menuElement: ElementRef;
-  @ViewChild(NgbPopover, { static: false }) popoverElement: NgbPopover;
+  @ViewChild(NgbPopover) popoverElement: NgbPopover;
 
   constructor(private router: Router) { }
 

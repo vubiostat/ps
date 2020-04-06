@@ -59,6 +59,10 @@ export class CIPlotComponent extends AbstractPlotComponent implements OnChanges,
   showLeftBarInfo = false;
   showRightBarInfo = false;
 
+  setupCompleted = false;
+  setupTimeoutId: number;
+  attemptDraw = true;
+
   constructor(
     public plotOptions: PlotOptionsService,
     public palette: PaletteService
@@ -67,17 +71,31 @@ export class CIPlotComponent extends AbstractPlotComponent implements OnChanges,
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    setTimeout(() => {
-      this.setup();
-    }, 1);
+    if (this.setupTimeoutId === undefined) {
+      console.log(`${this.name} setting timeout for setup`);
+      this.setupTimeoutId = setTimeout(() => {
+        this.setupCompleted = this.setup();
+        console.log(`${this.name} setup result (from ngOnChanges): ${this.setupCompleted}`);
+        this.setupTimeoutId = undefined;
+      }, 1);
+    }
   }
 
   ngAfterViewChecked(): void {
-    this.draw();
+    if (this.attemptDraw) {
+      try {
+        this.draw();
+      } catch(e) {
+        console.log(`${this.name} draw failed!`);
+        console.log(e);
+        this.attemptDraw = false;
+      }
+    }
   }
 
   redraw(): void {
-    this.setup();
+    this.setupCompleted = this.setup();
+    console.log(`${this.name} setup result (from redraw): ${this.setupCompleted}`);
   }
 
   toggleTargetInfo(value: boolean): void {
@@ -217,6 +235,9 @@ export class CIPlotComponent extends AbstractPlotComponent implements OnChanges,
   }
 
   private draw(): void {
+    if (!this.setupCompleted) {
+      return;
+    }
     if (this.needDraw == Draw.No) {
       return;
     }

@@ -20,7 +20,7 @@ export class DraggableDialogComponent implements OnInit {
   private lastX: number;
   private lastY: number;
 
-  @ViewChild('main', { static: false }) mainElement: ElementRef;
+  @ViewChild('main') mainElement: ElementRef;
 
   ngOnInit(): void {
     this.enabled = this.startEnabled;

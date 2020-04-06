@@ -3,7 +3,7 @@
   [attr.class]="name" [attr.width]="fixedWidth" [attr.height]="fixedHeight"
   [attr.viewBox]="viewBox">
 
-  <ng-template [ngIf]="x && y && handler">
+  <ng-container *ngIf="x && y && handler">
     <text text-anchor="middle"
       [attr.x]="innerWidth / 2 + leftMargin"
       [attr.y]="height - (getFontSize() / 2)">
@@ -45,7 +45,7 @@
       (mousemove)="hover($event)" />
 
     <g *ngIf="!hideTarget">
-      <ng-template [ngIf]="!hideDropLines">
+      <ng-container *ngIf="!hideDropLines">
         <g *ngFor="let path of dropPaths; index as dpIndex; trackBy: trackByIndex"
           [attr.transform]="translate(leftMargin, topMargin)">
           <path id="{{name}}-target-drop-{{dpIndex}}"
@@ -54,7 +54,7 @@
             stroke-dasharray="5, 5"
             fill="none" />
         </g>
-      </ng-template>
+      </ng-container>
       <circle id="{{name}}-target" class="target" r="5"
         [attr.transform]="translate(leftMargin, topMargin)"
         fill="red"
@@ -91,5 +91,5 @@
         <tspan style="white-space: pre">{{x.sym}}: {{hoverPoint.x | formatFixed:[hoverPoint.y]}}</tspan><tspan x="0" dy="1em" style="white-space: pre">{{y.sym}}: {{hoverPoint.y | formatFixed:[hoverPoint.x]}}</tspan>
       </text>
     </g>
-  </ng-template>
+  </ng-container>
 </svg>

@@ -45,8 +45,8 @@ export class OutputPaneComponent implements OnChanges {
   @ViewChild('topLeft', { static: true }) topLeftPlot: LinePlotComponent;
   @ViewChild('topRight', { static: true }) topRightPlot: LinePlotComponent;
   @ViewChild('bottom', { static: true }) bottomPlot: CIPlotComponent;
-  @ViewChild('footerTabset', { static: false }) footerTabset: NgbTabset;
-  @ViewChild('log', { static: false }) logElt: ElementRef;
+  @ViewChild('footerTabset') footerTabset: NgbTabset;
+  @ViewChild('log') logElt: ElementRef;
 
   constructor(
     private modalService: NgbModal,

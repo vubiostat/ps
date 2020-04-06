@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, Directive } from '@angular/core';
 import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
@@ -11,6 +11,7 @@ export enum Draw {
   Hover
 }
 
+@Directive()
 export abstract class AbstractPlotComponent implements AfterViewInit {
   /* User-specified properties */
   @Input() name: string;

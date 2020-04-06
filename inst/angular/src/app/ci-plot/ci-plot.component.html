@@ -3,7 +3,7 @@
   [attr.class]="name" [attr.width]="fixedWidth" [attr.height]="fixedHeight"
   [attr.viewBox]="viewBox">
 
-  <ng-template [ngIf]="handler && groups">
+  <ng-container *ngIf="handler && groups">
     <text text-anchor="middle"
       [attr.x]="innerWidth / 2 + leftMargin"
       [attr.y]="height - 5">
@@ -85,5 +85,5 @@
     </g>
 
     <g id="{{name}}-bottom-axis" [attr.transform]="translate(leftMargin, innerHeight + topMargin)"></g>
-  </ng-template>
+  </ng-container>
 </svg>
