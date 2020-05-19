@@ -38,7 +38,7 @@ NotFoundHandler <- setRefClass("NotFoundHandler",
       list(
         status = 404L,
         headers = list("Content-Type" = "application/json"),
-        body = jsonlite::toJSON(list(errors = list(base = "not found")))
+        body = convertToJSON(list(errors = list(base = "not found")))
       )
     }
   )

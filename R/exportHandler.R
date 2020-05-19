@@ -152,7 +152,7 @@ ExportHandler <- setRefClass("ExportHandler",
     fail = function(errors, status = 400L) {
       return(list(
         status = status,
-        body = toJSON(errors),
+        body = convertToJSON(errors),
         headers = list('Content-Type' = 'application/json')
       ))
     },
@@ -185,7 +185,7 @@ ExportHandler <- setRefClass("ExportHandler",
       # parse params from JSON
       if (route$method == "POST") {
         params <- try({
-          fromJSON(rawToChar(req$rook.input$read()), simplifyVector = FALSE)
+          jsonlite::fromJSON(rawToChar(req$rook.input$read()), simplifyVector = FALSE)
         }, silent = TRUE)
         if (inherits(params, "try-error")) {
           return(fail(list(errors = list(base = "invalid JSON"))))
@@ -208,7 +208,7 @@ ExportHandler <- setRefClass("ExportHandler",
       headers <- list()
       if (route$type == "json") {
         headers[["Content-Type"]] <- "application/json"
-        result <- toJSON(result)
+        result <- convertToJSON(result)
       }
       list(status = 200L, body = result, headers = headers)
     }

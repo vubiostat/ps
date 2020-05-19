@@ -447,7 +447,7 @@ DichotHandler <- setRefClass("DichotHandler",
     fail = function(errors, status = 400L) {
       return(list(
         status = status,
-        body = toJSON(errors),
+        body = convertToJSON(errors),
         headers = list('Content-Type' = 'application/json')
       ))
     },
@@ -479,7 +479,7 @@ DichotHandler <- setRefClass("DichotHandler",
 
       # parse params from JSON
       params <- try({
-        fromJSON(rawToChar(req$rook.input$read()), simplifyVector = FALSE)
+        jsonlite::fromJSON(rawToChar(req$rook.input$read()), simplifyVector = FALSE)
       }, silent = TRUE)
       if (inherits(params, "try-error")) {
         return(fail(list(errors = list(base = "invalid JSON"))))
@@ -501,7 +501,7 @@ DichotHandler <- setRefClass("DichotHandler",
         headers[["Content-Type"]] <- "image/png"
       } else if (route$type == "json") {
         headers[["Content-Type"]] <- "application/json"
-        result <- toJSON(result)
+        result <- convertToJSON(result)
       }
       list(status = 200L, body = result, headers = headers)
     }
