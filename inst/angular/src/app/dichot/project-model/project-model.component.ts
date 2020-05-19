@@ -34,6 +34,9 @@ export class ProjectModelComponent implements OnInit {
 
   changeModel(key: string, value: any): void {
     this.project.updateModel(this.index, key, value).subscribe(() => {
+      if (key == 'alpha') {
+        this.calculateAlphaRange();
+      }
       this.updateSliderRanges();
       this.modelChanged.emit();
     });
@@ -47,12 +50,20 @@ export class ProjectModelComponent implements OnInit {
     this.remove.emit();
   }
 
+  private calculateAlphaRange(): void {
+    let pow = Math.floor(Math.log10(this.model.alpha))
+    if (pow > -2) {
+      pow = -2;
+    }
+    this.min.alpha = Math.pow(10, pow);
+    this.max.alpha = 1 - this.min.alpha;
+  }
+
   private initializeSliderRanges(): void {
     this.min = new Dichot(this.model);
     this.max = new Dichot(this.model);
 
-    this.min.alpha = 0.01;
-    this.max.alpha = 0.99;
+    this.calculateAlphaRange();
 
     this.min.power = 0.01;
     this.max.power = 0.99;

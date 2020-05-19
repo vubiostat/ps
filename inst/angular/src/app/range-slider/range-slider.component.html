@@ -33,7 +33,7 @@
     <div class="col-sm-3">
       <div class="number">
         <input #number [class.error]="hasError" name="{{name}}" type="number"
-               step="{{step}}" [min]="hardMin" [max]="hardMax" [value]="value"
+               step="{{step}}" [value]="value"
                [disabled]="isOutput"
                (change)="numberChanged(number.value)"
                (input)="numberInput(number.value)"

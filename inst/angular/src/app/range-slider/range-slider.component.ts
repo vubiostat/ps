@@ -33,7 +33,9 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
   @Input() max: number;
   @Input() step = 0.01;
   @Input('hard-min') hardMin: number;
+  @Input('hard-min-inclusive') hardMinInclusive = true;
   @Input('hard-max') hardMax: number;
+  @Input('hard-max-inclusive') hardMaxInclusive = true;
   @Input('is-output') isOutput = false;
   @Input('help-tpl') helpTpl: TemplateRef<any>;
   @Input('label-tpl') labelTpl: TemplateRef<any>;
@@ -77,7 +79,7 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
       if (change.previousValue === true && change.currentValue === false) {
         // if isOutput changes from true to false, turn on the error message if
         // the value is out of bounds
-        if (this.value < this.hardMin || this.value > this.hardMax) {
+        if (this.valueOutOfBounds(this.value)) {
           this.hasError = true;
           this.errorPopover.open();
         }
@@ -86,14 +88,6 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
         this.errorPopover.close();
       }
     }
-  }
-
-  floor(n: number): number {
-    return Math.floor(n);
-  }
-
-  ceil(n: number): number {
-    return Math.ceil(n);
   }
 
   round(n: number, digits = 1): number {
@@ -147,9 +141,18 @@ export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit
     }
   }
 
+  valueOutOfBounds(value: number): boolean {
+    return (
+      ( this.hardMinInclusive && value <  this.hardMin) ||
+      (!this.hardMinInclusive && value <= this.hardMin) ||
+      ( this.hardMaxInclusive && value >  this.hardMax) ||
+      (!this.hardMaxInclusive && value >= this.hardMax)
+    );
+  }
+
   private trySetValue(newValue: string): void {
     let value = parseFloat(newValue);
-    if (value < this.hardMin || value > this.hardMax) {
+    if (this.valueOutOfBounds(value)) {
       this.hasError = true;
       this.errorPopover.open();
     } else {

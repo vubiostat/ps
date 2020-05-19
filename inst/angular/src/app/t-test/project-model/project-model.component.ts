@@ -34,8 +34,7 @@ export class ProjectModelComponent implements OnInit {
     this.min = new TTest(this.model);
     this.max = new TTest(this.model);
 
-    this.min.alpha = 0.01;
-    this.max.alpha = 0.99;
+    this.calculateAlphaRange();
 
     this.min.power = 0.01;
     this.max.power = 0.99;
@@ -58,6 +57,9 @@ export class ProjectModelComponent implements OnInit {
 
   changeModel(key: string, value: any): void {
     this.project.updateModel(this.index, key, value).subscribe(() => {
+      if (key == 'alpha') {
+        this.calculateAlphaRange();
+      }
       this.adjustMinMax();
       this.modelChanged.emit();
     });
@@ -91,6 +93,15 @@ export class ProjectModelComponent implements OnInit {
     } else if (this.model.ci > this.max.ci) {
       this.max.ci = Math.ceil(this.model.ci);
     }
+  }
+
+  private calculateAlphaRange(): void {
+    let pow = Math.floor(Math.log10(this.model.alpha))
+    if (pow > -2) {
+      pow = -2;
+    }
+    this.min.alpha = Math.pow(10, pow);
+    this.max.alpha = 1 - this.min.alpha;
   }
 
   private calculateSliderRange(name: string): void {

@@ -14,9 +14,10 @@
 <div class="grow-horiz">
   <div class="grow-vert range-slider">
     <app-range-slider name="alpha" label="Type I Error (&alpha;)"
-      [min]="min.alpha" [max]="max.alpha"
-      [hard-min]="min.alpha" [hard-max]="max.alpha"
-      [ngModel]="model.alpha | round" (ngModelChange)="changeModel('alpha', $event)">
+      [min]="min.alpha" [max]="max.alpha" [step]="min.alpha"
+      [hard-min]="0" [hard-min-inclusive]="false"
+      [hard-max]="1" [hard-max-inclusive]="false"
+      [ngModel]="model.alpha" (ngModelChange)="changeModel('alpha', $event)">
     </app-range-slider>
   </div>
 </div>
