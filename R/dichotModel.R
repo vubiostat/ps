@@ -1145,6 +1145,9 @@ Dichot <- setRefClass("Dichot",
               values <- c(p0 - (detAltMax - p0), detAltMax)
             } else if (expressed == "relativeRisk" || expressed == "oddsRatio") {
               values <- c(1 - (detAltMax - 1), detAltMax)
+              if (values[1] < 0) {
+                values[1] <- 0
+              }
             } else {
               values <- NA
             }
