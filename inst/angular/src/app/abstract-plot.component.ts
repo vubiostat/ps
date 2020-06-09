@@ -113,12 +113,34 @@ export abstract class AbstractPlotComponent implements AfterViewInit {
     let line = d3.line().
       x((d, i) => this.xScale(d[xName])).
       y((d, i) => this.yScale(d[yName])).
-      defined((d, i) => {
+      defined((d, i, data) => {
         let x = d[xName];
         let y = d[yName];
+        let xPrev, yPrev, xNext, yNext;
+        if (i > 0) {
+          // draw point even if it's out of the plot boundary when the previous
+          // point is in the plot boundary
+          xPrev = data[i - 1][xName];
+          yPrev = data[i - 1][yName];
+        }
+        if ((i + 1) < data.length) {
+          // draw point even if it's out of the plot boundary when the next
+          // point is in the plot boundary
+          xNext = data[i + 1][xName];
+          yNext = data[i + 1][yName];
+        }
+
         return typeof(x) === 'number' && typeof(y) == 'number' &&
-          x >= xScaleRange[0] && x <= xScaleRange[1] &&
-          y >= yScaleRange[0] && y <= yScaleRange[1];
+          (
+            (x >= xScaleRange[0] && x <= xScaleRange[1]) ||
+            (typeof(xPrev) === 'number' && xPrev >= xScaleRange[0] && xPrev <= xScaleRange[1]) ||
+            (typeof(xNext) === 'number' && xNext >= xScaleRange[0] && xNext <= xScaleRange[1])
+          ) &&
+          (
+            (y >= yScaleRange[0] && y <= yScaleRange[1]) ||
+            (typeof(yPrev) === 'number' && yPrev >= yScaleRange[0] && yPrev <= yScaleRange[1]) ||
+            (typeof(yNext) === 'number' && yNext >= yScaleRange[0] && yNext <= yScaleRange[1])
+          );
       });
     if (curve) {
       line = line.curve(d3.curveBasis);
