@@ -411,6 +411,7 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
     svg.select(`#${this.name}-x-axis`).
       transition(t).
       call(xAxis).
+      attr("fill", "white").
       attr("font-size", `${this.plotOptions.getAxisFontSize()}px`).
       attr("stroke-width", this.plotOptions.getAxisLineWidth());
 
@@ -418,6 +419,7 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
     svg.select(`#${this.name}-y-axis`).
       transition(t).
       call(yAxis).
+      attr("fill", "white").
       attr("font-size", `${this.plotOptions.getAxisFontSize()}px`).
       attr("stroke-width", this.plotOptions.getAxisLineWidth());
 
