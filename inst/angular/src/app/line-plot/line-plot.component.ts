@@ -235,8 +235,11 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
     }
 
     // Prepare main data for bisection during target point dragging.
+    let selectedIndex = this.handler.getSelectedIndex();
     this.mainData = stableSort(
-      this.plotData[0].filter(p => Number.isFinite(p.x) && Number.isFinite(p.y)),
+      this.plotData[selectedIndex].filter(p => {
+        return Number.isFinite(p.x) && Number.isFinite(p.y)
+      }),
       (a, b) => d3.ascending(a.x, b.x)
     );
     this.xBisector = d3.bisector(point => point.x).left;
