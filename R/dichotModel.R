@@ -667,7 +667,7 @@ dichotIPRelRisk <- function(alpha, power, p0, n, m,
 
     # Solve the equation for the lower solution.
     p1l <- try({
-      uniroot(dichotChiSqSize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = 1)$root
+      uniroot(dichotChiSqSize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = m)$root
     })
 
     # Set initial end points for high end point.
@@ -676,7 +676,7 @@ dichotIPRelRisk <- function(alpha, power, p0, n, m,
 
     # Solve the equation for the upper solution.
     p1h <- try({
-      uniroot(dichotChiSqSize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = 1)$root
+      uniroot(dichotChiSqSize, c(y1, y2), alpha = alpha, beta = beta, p0 = p0, n = n, m = m)$root
     })
   }
   else if (method == "fishers") {
