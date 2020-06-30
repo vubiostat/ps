@@ -482,10 +482,13 @@ export class Project extends AbstractProject {
                 values = [1.1, model.psi + (model.psi - 1.0)];
               }
             } else {
+              let diff;
               if (model.detAltMode === DetAltMode.Lower) {
-                values = [model.p1Alt - (model.p0 - model.p1Alt), model.p0 - 0.1];
+                diff = Math.pow(10, Math.floor(Math.log10(model.p0 - model.p1Alt)));
+                values = [model.p1Alt - diff, model.p0 - diff];
               } else {
-                values = [model.p0 + 0.1, model.p1 + (model.p1 - model.p0)];
+                diff = Math.pow(10, Math.floor(Math.log10(model.p1 - model.p0)));
+                values = [model.p0 + diff, model.p1 + diff];
               }
             }
           }
