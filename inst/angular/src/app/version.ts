@@ -1,3 +1,3 @@
-let commitHash: string = "359c517ace2ce34894a0f9c6c6a9ec8c09f4e150";
-let buildTimestamp: string = "2020-07-22T11:00:50-05:00";
+let commitHash: string = "f8ea41d60fdb153df6c569b12ec97b996ad611c8";
+let buildTimestamp: string = "2020-10-06T09:53:25-05:00";
 export { commitHash, buildTimestamp };
