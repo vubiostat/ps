@@ -14,7 +14,7 @@
             <select #example class="form-control" id="dichot-start-example"
               (change)="useExample(example.value)">
               <option value="">Use an example:</option>
-              <!--<option value="matched">Matched / Case Control</option>-->
+              <option value="matched">Matched / Case Control</option>
               <option value="ind-1">Indep. / Prospective / Two Prop.</option>
               <option value="ind-2">Indep. / Prospective / Rel. Risk</option>
               <option value="ind-3">Indep. / Case Control / Odds Ratio</option>
@@ -31,17 +31,12 @@
         </select>
       </div>
       <div class="form-group" *ngIf="model.output">
-        <label for="dichot-start-matched">
-          Matched or independent?
-          <i class="fa fa-info-circle" aria-hidden="true"
-            [ngbPopover]="matchedHelp" popoverTitle="Matched or Independent"
-            placement="right" triggers="hover" container="body" closeDelay="3000"></i>
-        </label>
+        <label for="dichot-start-matched">Matched or independent?</label>
         <select class="form-control" id="dichot-start-matched"
                 required
                 [(ngModel)]="model.matched" name="matched">
           <option></option>
-          <!--<option value="matched">Matched or paired</option>-->
+          <option value="matched">Matched or paired</option>
           <option value="independent">Independent</option>
         </select>
       </div>
@@ -171,8 +166,3 @@
     </div>
   </form>
 </div>
-<ng-template #matchedHelp>
-  Matched mode is temporarily disabled due to a calculation problem. Please use the
-  <a href="https://biostat.app.vumc.org/wiki/Main/PowerSampleSize">original PS program</a>
-  for matched mode.
-</ng-template>

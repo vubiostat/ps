@@ -39,19 +39,19 @@ export class StartComponent extends AbstractStartComponent implements OnInit {
 
   useExample(name: string): void {
     switch (name) {
-      //case "matched":
-        //this.model.output = DichotOutput.Power;
-        //this.model.matched = DichotMatched.Matched;
-        //this.model.case = DichotCase.CaseControl;
-        //this.model.expressed = undefined;
-        //this.model.method = undefined;
-        //this.model.alpha = 0.05;
-        //this.model.n = 400;
-        //this.model.p0 = 0.3;
-        //this.model.m = 1;
-        //this.model.phi = 0.7;
-        //this.model.psi = 2;
-        //break;
+      case "matched":
+        this.model.output = DichotOutput.Power;
+        this.model.matched = DichotMatched.Matched;
+        this.model.case = DichotCase.CaseControl;
+        this.model.expressed = undefined;
+        this.model.method = undefined;
+        this.model.alpha = 0.05;
+        this.model.n = 400;
+        this.model.p0 = 0.3;
+        this.model.m = 1;
+        this.model.phi = 0.7;
+        this.model.psi = 2;
+        break;
       case "ind-1":
         this.model.output = DichotOutput.Power;
         this.model.matched = DichotMatched.Independent;
