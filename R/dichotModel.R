@@ -93,38 +93,79 @@ dichotPOne <- function(p0, psi, phi) {
 #   This routine was written by Dale Plummer.
 #   Designed by Dr. William Dupont.
 dichotSSize <- function(alpha, power, phi, p0, m, psi) {
+  t <- vector("numeric", 1000)
+
   beta <- 1 - power
   zalpha <- dichotZcrValue(alpha / 2)
   zbeta <- dichotZcrValue(beta)
 
-  psi_value <- 1
-  mv <- dichotMeanVar(p0, phi, m, m, psi_value)
-  mean <- mv[1]
-  var <- mv[2]
+  # Calculate P1 = p_1.
+  p1 <- dichotPOne(p0, psi, phi)
 
-  # E1 = e_1 in equation (7)
-  # V1 = v_1 in equation (7)
-  e1 <- mean
-  v1 <- var
+  # Q1=q_1 Probability that a case patient is not exposed.
+  q1 <- 1 - p1
 
-  psi_value <- psi
-  mv <- dichotMeanVar(p0, phi, m, m, psi_value)
-  mean <- mv[1]
-  var <- mv[2]
+  # Q0=q_0 Probability that a control is not exposed.
+  q0 <- 1 - p0
 
-  # EPSI = e_{\PSI} in equation (7)
-  # VPSI = v_{\PSI} in equation (7)
-  epsi <- mean
-  vpsi <- var
+  # P01 = p_{o+}
+  # Probability that a control is exposed given that his matched case
+  # is exposed.
+  p01 <- p0 + phi * sqrt(q1 * p0 * q0 / p1)
+
+  # P00 = p_{o-}
+  # Probability that a control is exposed given that his matched case
+  # is NOT exposed.
+  p00 <- p0 - phi * sqrt(p1 * p0 * q0 / q1)
+  q01 <- 1 - p01
+  q00 <- 1 - p00
+  im <- m
+
+  c1 <- 1
+  c2 <- m
+
+  for (i in 1:im) {
+    t[i] <- p1 * c1 * (p01 ^ (i-1)) * (q01 ^ (im-i+1)) +
+      q1 * c2 * (p00 ^ i) * (q00 ^ (im-i))
+    c1 <- c2
+    c2 <- c2 * (m - i) / (i + 1)
+  }
+
+#
+# when psi==1
+#
+  one <- 1
+  e1 <- 0
+  for (i in 1:im) {
+    e1 <- e1 + ( (i * t[i] * one) / (i * one + m - i + 1) )
+  }
+
+  v1 <- 0
+  for (i in 1:im) {
+    v1 <- v1 + ( (i * t[i] * one * (m - i + 1)) / ((i * one + m - i + 1) ^ 2) )
+  }
+
+#
+# when psi~=1
+#
+  epsi <- 0
+  for (i in 1:im) {
+    epsi <- epsi + ( (i * t[i] * psi) / (i * psi + m - i + 1) )
+  }
+
+  vpsi <- 0
+  for (i in 1:im) {
+    vpsi <- vpsi + ( (i * t[i] * psi * (m - i + 1)) / ((i * psi + m - i + 1) ^ 2) )
+  }
 
   sqv1 <- sqrt(v1)
   sqvpsi <- sqrt(vpsi)
 
-  # NM is equation (7) in Dupont (Biometrics 1988).
   nm <- ((zbeta * sqvpsi + zalpha * sqv1) ^ 2) / ((epsi - e1) ^ 2)
   xn <- nm
   xn
 }
+
 
 #  When the alternaitve hypothesis is true this
 #  routine calculates e_{\psi} and v_{\psi}
@@ -173,12 +214,12 @@ dichotMeanVar <- function(p0, phi, m, rm, psi, mean, var) {
 
   mean <- 0
   for (i in 1:im) {
-    mean <- mean + (i * t[i] * psi / (i * psi + rm - i + 1))
+    mean <- mean + ( (i * t[i] * psi) / (i * psi + rm - i + 1) )
   }
 
   var <- 0
   for (i in 1:im) {
-    var <- var + (i * t[i] * psi * (rm - i + 1) / ((i * psi + rm - i + 1) ^ 2))
+    var <- var + ( (i * t[i] * psi * (rm - i + 1)) / ((i * psi + rm - i + 1) ^ 2) )
   }
 
   c(mean, var)
@@ -234,31 +275,71 @@ dichotCalcPhi <- function(z) {
 #   Designed by Dr. William Dupont.
 #   The LaTeX notation given in the comments is from:
 #   Dupont, Biometrics 1988;44:1157-68.
+
 dichotPowFcn <- function(alpha, n, phi, p0, m, psi) {
   zalpha <- dichotZcrValue(alpha / 2)
-  psi_value <- 1
-  mv <- dichotMeanVar(p0, phi, m, m, psi_value)
-  mean <- mv[1]
-  var <- mv[2]
 
-  # E1Y = e_1 in equation (6)
-  # V1 = v_1 in equation (7)
-  # S1 = s_1 in equation (6)
-  v1 <- var
-  e1y <- mean * n
-  s1 <- sqrt(n * var)
+  t <- vector("numeric", 1000)
 
-  psi_value <- psi
-  mv <- dichotMeanVar(p0, phi, m, m, psi_value)
-  mean <- mv[1]
-  var <- mv[2]
+  # Calculate P1 = p_1.
+  p1 <- dichotPOne(p0, psi, phi)
 
-  # EPSIY = E_{\psi} in equation (6)
-  # VPSI = v_{\psi} in equation (7)
-  # SPSI = s_{\psi} in qeuation (6)
-  epsiy <- mean * n
-  vpsi <- var
-  spsi <- sqrt(n * var)
+  # Q1=q_1 Probability that a case patient is not exposed.
+  q1 <- 1 - p1
+
+  # Q0=q_0 Probability that a control is not exposed.
+  q0 <- 1 - p0
+
+  # P01 = p_{o+}
+  # Probability that a control is exposed given that his matched case
+  # is exposed.
+  p01 <- p0 + phi * sqrt(q1 * p0 * q0 / p1)
+
+  # P00 = p_{o-}
+  # Probability that a control is exposed given that his matched case
+  # is NOT exposed.
+  p00 <- p0 - phi * sqrt(p1 * p0 * q0 / q1)
+  q01 <- 1 - p01
+  q00 <- 1 - p00
+  im <- m
+
+  c1 <- 1
+  c2 <- m
+
+  for (i in 1:im) {
+    t[i] <- n *
+          (
+          p1 * c1 * (p01 ^ (i-1)) * (q01 ^ (m-i+1)) +
+          q1 * c2 * (p00 ^ i)     * (q00 ^ (m-i))
+          )
+    c1 <- c2
+    c2 <- c2 * (m - i) / (i + 1)
+  }
+
+  temp <- 0
+  for (i in 1:m) {
+    temp <- temp+(i*t[i])
+  }
+  e1y <- (1/(m+1))*temp
+
+  temp <- 0
+  for (i in 1:m) {
+    temp <- temp+(i*t[i]*(m-i+1))
+  }
+  v1y <- (1/((m+1)^2)) * temp
+
+  s1 <- sqrt(v1y)
+
+  vpsiy <- 0
+  for (i in 1:m) {
+    vpsiy <- vpsiy + ( (i*t[i]*psi*(m-i+1)) / ((i*psi+m-i+1)^2) )
+  }
+  spsi <- sqrt(vpsiy)
+
+  epsiy <- 0
+  for (i in 1:m) {
+    epsiy <- epsiy + ( (i*t[i]*psi) / (i*psi+m-i+1) )
+  }
 
   zl <- (e1y - epsiy - zalpha * s1) / spsi
   zu <- (e1y - epsiy + zalpha * s1) / spsi
@@ -266,6 +347,7 @@ dichotPowFcn <- function(alpha, n, phi, p0, m, psi) {
   # The following is equation (6) in Dupont (Biometrics, 1988; 44:1157-1168)
   dichotCalcPhi(zl) + 1 - dichotCalcPhi(zu)
 }
+
 
 # bisection
 # This procedure evaluates a function at the end-points of a real interval.  An
