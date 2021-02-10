@@ -198,7 +198,7 @@
             (ngModelChange)="changeModel('detAltMode', $event)" />
           <label class="pl-1"
             for="dichot-project-model-{{index}}-det-alt-which-lower">
-            {{model.psiAlt}} (lower)
+            {{model.psiAlt | number : '1.2-2'}} (lower)
           </label>
         </div>
         <div>
@@ -206,7 +206,7 @@
             type="radio" value="upper" [(ngModel)]="model.detAltMode"
             (ngModelChange)="changeModel('detAltMode', $event)" />
           <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
-            {{model.psi}} (upper)
+            {{model.psi | number : '1.2-2'}} (upper)
           </label>
         </div>
       </div>

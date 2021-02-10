@@ -216,46 +216,46 @@ export class Dichot {
   interpretation(): string {
     let result = '';
 
-    let alpha = this.alpha.toString();
-    let power = this.power.toString();
-    let m = this.m.toString();
-    let n = this.n.toString();
+    let alpha = this.alpha.toFixed(2);
+    let power = this.power.toFixed(2);
+    let m = this.m.toFixed(0);
+    let n = this.n.toFixed(0);
     let n2 = Math.round(this.n * this.m).toString();
-    let p0 = this.p0.toString();
+    let p0 = this.p0.toFixed(2);
 
     let p1;
     if (this.p1) {
-      p1 = this.p1.toString();
+      p1 = this.p1.toFixed(2);
     }
 
     let p1Alt;
     if (this.p1Alt) {
-      p1Alt = this.p1Alt.toString();
+      p1Alt = this.p1Alt.toFixed(2);
     }
 
     let phi;
     if (this.phi) {
-      phi = this.phi.toString();
+      phi = this.phi.toFixed(2);
     }
 
     let psi;
     if (this.psi) {
-      psi = this.psi.toString();
+      psi = this.psi.toFixed(2);
     }
 
     let psiAlt;
     if (this.psiAlt) {
-      psiAlt = this.psiAlt.toString();
+      psiAlt = this.psiAlt.toFixed(2);
     }
 
     let r;
     if (this.r) {
-      r = this.r.toString();
+      r = this.r.toFixed(2);
     }
 
     let rAlt;
     if (this.rAlt) {
-      rAlt = this.rAlt.toString();
+      rAlt = this.rAlt.toFixed(2);
     }
 
     if (this.matched === DichotMatched.Matched) {
