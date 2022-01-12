@@ -1,7 +1,7 @@
 PS: Power and Sample Size Calculation
 =====================================
 
-PS is an interactive program for performing power and sample size calculations. It may be run from the internet at https://statcomp2.app.vumc.org/ps/ or downloaded for free. This version can be used for studies with dichotomous or continuous, response measures. A older version, which also handles other designs may be downloaded from http://biostat.mc.vanderbilt.edu/wiki/Main/PowerSampleSize. Work on expanding the new version to handle all of the designs from the older version are in progress.
+PS is an interactive program for performing power and sample size calculations. It may be run from the internet at https://statcomp2.app.vumc.org/ps/ or downloaded for free. This version can be used for studies with dichotomous or continuous, response measures. A older version, which also handles other designs may be downloaded from https://biostat.app.vumc.org/PowerSampleSize. Work on expanding the new version to handle all of the designs from the older version are in progress.
 
 The alternative hypothesis of interest may be specified either in terms of differing means, or in terms of relative risks or odds ratios. Studies with dichotomous or continuous outcomes may involve either a matched or independent study design. The program can determine the sample size needed to detect a specified alternative hypothesis with the required power, the power with which a specific alternative hypothesis can be detected with a given sample size, or the specific alternative hypotheses that can be detected with a given power and sample size.
 
