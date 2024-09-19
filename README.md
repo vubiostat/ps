@@ -7,6 +7,19 @@ The alternative hypothesis of interest may be specified either in terms of diffe
 
 The PS program can produce graphs to explore the relationships between power, sample size and detectable alternative hypotheses. It is often helpful to hold one of these variables constant and plot the other two against each other. The program can generate graphs of sample size versus power for a specific alternative hypothesis, sample size versus detectable alternative hypotheses for a specified power, or power versus detectable alternative hypotheses for a specified sample size. Multiple curves can be plotted on a single graphic.
 
+# Downloading and Installing
+
+The PS program runs on the Microsoft Windows operating systems (Windows XP and later). We have also installed the program on Linux and Macintosh computers using a program called Wine that facilitates running Windows software on other operating systems.
+
+## Windows
+
+![](./bin/PS_icon.png)[pssetup3.exe](./bin/pssetup3.exe)
+
+To obtain the software use the above link and instruct your browser to download the file to a folder on your computer. To avoid problems with the installation process, it is helpful if the target folder is empty. A file called pssetup3.exe will be downloaded to this location. Run pssetup3.exe to extract the needed files and install the program.
+To run the PS program after it has been installed, click the Start button, select Programs and then click PS. Click the Overview button for an introduction to the program and instruction on its use. PS is a self-documented program with extensive interactive help.
+
+Caution: We know of a bug in one of the third-party tools that we use that causes the program to malfunction when the Windows language is set to something other than English. We apologize for any inconvenience that this problem causes.
+
 # Feedback
 
 We are interested in feedback. If you have any questions or comments about our software please send email to dale.plummer@vumc.org. It will be appreciated.
