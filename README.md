@@ -13,7 +13,7 @@ The PS program runs on the Microsoft Windows operating systems (Windows XP and l
 
 ## Windows
 
-![](./bin/PS_icon.png)[pssetup3.exe](./bin/pssetup3.exe)
+![](./bin/PS_icon.png)[pssetup3.exe](https://github.com/vubiostat/ps/raw/refs/heads/master/bin/pssetup3.exe)
 
 To obtain the software use the above link and instruct your browser to download the file to a folder on your computer. To avoid problems with the installation process, it is helpful if the target folder is empty. A file called pssetup3.exe will be downloaded to this location. Run pssetup3.exe to extract the needed files and install the program.
 To run the PS program after it has been installed, click the Start button, select Programs and then click PS. Click the Overview button for an introduction to the program and instruction on its use. PS is a self-documented program with extensive interactive help.
