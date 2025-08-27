@@ -108,8 +108,8 @@ export abstract class AbstractPlotComponent implements AfterViewInit {
   }
 
   protected getPath(data: any[], xName = "x", yName = "y", curve = true): string {
-    let xScaleRange = stableSort(this.xScale.domain(), d3.ascending);
-    let yScaleRange = stableSort(this.yScale.domain(), d3.ascending);
+    let xScaleRange = stableSort(this.xScale.domain() as number[], d3.ascending);
+    let yScaleRange = stableSort(this.yScale.domain() as number[], d3.ascending);
     let line = d3.line().
       x((d, i) => this.xScale(d[xName])).
       y((d, i) => this.yScale(d[yName])).

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 import { ProjectType } from '../../project-type';
 import { AbstractProjectService } from '../../abstract-project.service';
@@ -9,18 +9,23 @@ import { PaletteService } from '../../palette.service';
 import { AbstractProjectComponent } from '../../abstract-project.component';
 import { Project } from '../project';
 import { Dichot } from '../dichot';
+import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
-  selector: 'dichot-project',
-  templateUrl: './project.component.html',
-  styleUrls: ['./project.component.css']
+    selector: 'dichot-project',
+    templateUrl: './project.component.html',
+    styleUrls: ['./project.component.css'],
+    standalone: false
 })
 export class ProjectComponent extends AbstractProjectComponent implements OnInit {
   project: Project;
   name: string;
   selectedModel: Dichot;
 
-  @ViewChild('tabset') tabset: NgbTabset;
+  activeTabId = 'topLeft';
+
+  @ViewChild('nav', {static: false}) nav: NgbNav;
 
   constructor(
     private projectService: AbstractProjectService,

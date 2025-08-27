@@ -14,20 +14,21 @@ import { PaletteService } from '../palette.service';
 import { CopyService } from '../copy.service';
 
 @Component({
-  selector: 'app-output-pane',
-  templateUrl: './output-pane.component.html',
-  styleUrls: ['./output-pane.component.css'],
-  animations: [
-    trigger('overlay', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('1s 0.8s', style({ opacity: 0.7 }))
-      ]),
-      transition(':leave', [
-        animate('0.5s', style({ opacity: 0 }))
-      ])
-    ])
-  ]
+    selector: 'app-output-pane',
+    templateUrl: './output-pane.component.html',
+    styleUrls: ['./output-pane.component.css'],
+    animations: [
+        trigger('overlay', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate('1s 0.8s', style({ opacity: 0.7 }))
+            ]),
+            transition(':leave', [
+                animate('0.5s', style({ opacity: 0 }))
+            ])
+        ])
+    ],
+    standalone: false
 })
 export class OutputPaneComponent implements OnChanges {
   @Input('project') project: AbstractProject;

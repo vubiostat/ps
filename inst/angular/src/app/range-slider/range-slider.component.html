@@ -1,45 +1,50 @@
 <div class="slider-group">
-  <ng-template [ngIf]="labelTpl" [ngIfElse]="standardLabel">
+  @if (labelTpl) {
     <ng-template [ngTemplateOutlet]="labelTpl"></ng-template>
-  </ng-template>
-  <ng-template #standardLabel>
-    <div class="label" *ngIf="label">
-      {{label}}
-      <span *ngIf="isOutput">(Computed value) </span>
-      <ng-template [ngIf]="helpTpl">
-        <i class="fa fa-info-circle" aria-hidden="true"
-          [ngbPopover]="rsHelp" popoverTitle="{{label}}"
+  } @else {
+    @if (label) {
+      <div class="label">
+        {{label}}
+        @if (isOutput) {
+          <span>(Computed value) </span>
+        }
+        @if (helpTpl) {
+          <i class="fa fa-info-circle" aria-hidden="true"
+            [ngbPopover]="rsHelp" popoverTitle="{{label}}"
           placement="right" triggers="hover" container="body"></i>
-        <ng-template #rsHelp>
-          <ng-template [ngTemplateOutlet]="helpTpl"></ng-template>
-        </ng-template>
-      </ng-template>
-      <i *ngIf="showDot" class="fa fa-circle dot"></i>
-    </div>
-  </ng-template>
+          <ng-template #rsHelp>
+            <ng-template [ngTemplateOutlet]="helpTpl"></ng-template>
+          </ng-template>
+        }
+        @if (showDot) {
+          <i class="fa fa-circle dot"></i>
+        }
+      </div>
+    }
+  }
   <div class="inputs row">
     <div class="col-sm-9">
       <div class="slider">
         <div class="min">{{round(min)}}</div>
         <input #range name="{{name}}" type="range" step="{{step}}"
-               min="{{min}}" max="{{max}}"
-               [value]="value"
-               [disabled]="isOutput"
-               (change)="rangeChanged(range.value)"
-               (input)="rangeInput(range.value)" />
+          min="{{min}}" max="{{max}}"
+          [value]="value"
+          [disabled]="isOutput"
+          (change)="rangeChanged(range.value)"
+          (input)="rangeInput(range.value)" />
         <div class="max">{{round(max)}}</div>
       </div>
     </div>
     <div class="col-sm-3">
       <div class="number">
         <input #number [class.error]="hasError" name="{{name}}" type="number"
-               step="{{step}}" [value]="value"
-               [disabled]="isOutput"
-               (change)="numberChanged(number.value)"
-               (input)="numberInput(number.value)"
-               (blur)="blurred()"
-               [ngbPopover]="errorMsg" triggers="manual"
-               container="body" #errorPopover="ngbPopover" />
+          step="{{step}}" [value]="value"
+          [disabled]="isOutput"
+          (change)="numberChanged(number.value)"
+          (input)="numberInput(number.value)"
+          (blur)="blurred()"
+          [ngbPopover]="errorMsg" triggers="manual"
+          container="body" #errorPopover="ngbPopover" />
         <ng-template #errorMsg>
           <span class="error">Value is out of range ({{hardMin}}, {{hardMax}}).</span><br/>
           Current value: {{value}}

@@ -9,6 +9,7 @@ import { CIPlotHandler } from '../ci-plot-handler';
 import { LinePlotComponent } from '../line-plot/line-plot.component';
 import { CIPlotComponent } from '../ci-plot/ci-plot.component';
 import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../export.service'
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 import * as stableSort from 'stable';
 
@@ -37,9 +38,16 @@ let platformPatterns: [Platform, RegExp][] = [
 ];
 
 @Component({
-  selector: 'app-export-plots',
-  templateUrl: './export-plots.component.html',
-  styleUrls: ['./export-plots.component.css']
+    selector: 'app-export-plots',
+    templateUrl: './export-plots.component.html',
+    styleUrls: ['./export-plots.component.css'],
+    standalone: false,
+    declarations: [
+      ExportPlotsComponent,
+    ],
+    imports: [
+      NgbNavModule,
+    ],
 })
 export class ExportPlotsComponent implements OnInit, AfterViewChecked {
   @Input('project') project: AbstractProject;

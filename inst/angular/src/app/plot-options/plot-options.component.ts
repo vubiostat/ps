@@ -18,9 +18,10 @@ enum RangeType {
 }
 
 @Component({
-  selector: 'app-plot-options',
-  templateUrl: './plot-options.component.html',
-  styleUrls: ['./plot-options.component.css']
+    selector: 'app-plot-options',
+    templateUrl: './plot-options.component.html',
+    styleUrls: ['./plot-options.component.css'],
+    standalone: false
 })
 export class PlotOptionsComponent implements OnInit, OnChanges {
   @Input('project') project: AbstractProject;

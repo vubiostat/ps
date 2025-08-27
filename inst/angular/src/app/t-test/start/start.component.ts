@@ -7,9 +7,10 @@ import { TTestService } from '../t-test.service';
 import { Project } from '../project';
 
 @Component({
-  selector: 't-test-start',
-  templateUrl: './start.component.html',
-  styleUrls: ['./start.component.css']
+    selector: 't-test-start',
+    templateUrl: './start.component.html',
+    styleUrls: ['./start.component.css'],
+    standalone: false
 })
 export class StartComponent extends AbstractStartComponent implements OnInit {
   model: TTest;

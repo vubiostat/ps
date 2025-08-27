@@ -54,8 +54,5 @@ import { PlotOptionsComponent } from './plot-options/plot-options.component';
     OutputPaneComponent,
     PlotOptionsComponent
   ],
-  entryComponents: [
-    ExportPlotsComponent
-  ]
 })
 export class AppCommonModule { }

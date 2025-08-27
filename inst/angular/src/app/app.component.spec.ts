@@ -4,7 +4,10 @@ import { Component } from '@angular/core';
 
 import { AppComponent } from './app.component';
 
-@Component({selector: 'app-menu', template: ''})
+@Component({
+    selector: 'app-menu', template: '',
+    standalone: false
+})
 class MenuStubComponent {}
 
 describe('app.AppComponent', () => {

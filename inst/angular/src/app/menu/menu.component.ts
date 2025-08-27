@@ -13,53 +13,56 @@ enum MenuState {
 }
 
 @Component({
-  selector: 'app-menu',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css'],
-  animations: [
-    trigger('mainState', [
-      state('main, maininit', style({ opacity: 1, transform: 'translateX(0)' })),
-      transition('main => mainttest', [
-        animate('200ms', style({
-          opacity: 0,
-          transform: 'translateX(-100%)'
-        }))
-      ]),
-      transition('void => main', [
-        style({
-          opacity: 0,
-          transform: 'translateX(-100%)'
-        }),
-        animate('200ms')
-      ])
-    ]),
-    trigger('ttestState', [
-      state('ttest', style({
-        opacity: 1,
-        transform: 'translateX(0)',
-        flexGrow: 0
-      })),
-      state('ttestinit', style({
-        opacity: 1,
-        transform: 'translateX(0)',
-        flexGrow: 1
-      })),
-      transition('ttest => ttestmain', [
-        animate('200ms', style({
-          opacity: 0,
-          transform: 'translateX(-100%)'
-        }))
-      ]),
-      transition('ttestinit => ttest', animate('200ms')),
-      transition('void => ttest', [
-        style({
-          opacity: 0,
-          transform: 'translateX(-100%)'
-        }),
-        animate('200ms')
-      ])
-    ])
-  ]
+    selector: 'app-menu',
+    templateUrl: './menu.component.html',
+    styleUrls: ['./menu.component.css'],
+    declarations: [MenuComponent],
+    exports: [MenuComponent],
+    animations: [
+        trigger('mainState', [
+            state('main, maininit', style({ opacity: 1, transform: 'translateX(0)' })),
+            transition('main => mainttest', [
+                animate('200ms', style({
+                    opacity: 0,
+                    transform: 'translateX(-100%)'
+                }))
+            ]),
+            transition('void => main', [
+                style({
+                    opacity: 0,
+                    transform: 'translateX(-100%)'
+                }),
+                animate('200ms')
+            ])
+        ]),
+        trigger('ttestState', [
+            state('ttest', style({
+                opacity: 1,
+                transform: 'translateX(0)',
+                flexGrow: 0
+            })),
+            state('ttestinit', style({
+                opacity: 1,
+                transform: 'translateX(0)',
+                flexGrow: 1
+            })),
+            transition('ttest => ttestmain', [
+                animate('200ms', style({
+                    opacity: 0,
+                    transform: 'translateX(-100%)'
+                }))
+            ]),
+            transition('ttestinit => ttest', animate('200ms')),
+            transition('void => ttest', [
+                style({
+                    opacity: 0,
+                    transform: 'translateX(-100%)'
+                }),
+                animate('200ms')
+            ])
+        ])
+    ],
+    standalone: false
 })
 export class MenuComponent implements OnInit {
   urlInitialized = false;

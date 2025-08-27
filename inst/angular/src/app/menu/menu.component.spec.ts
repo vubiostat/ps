@@ -5,7 +5,10 @@ import { Router } from '@angular/router';
 
 import { MenuComponent } from './menu.component';
 
-@Directive({selector: '[routerLink]'})
+@Directive({
+    selector: '[routerLink]',
+    standalone: false
+})
 class RouterLinkStubDirective {
   @Input() routerLink: any;
   @Input() routerLinkActive: any;

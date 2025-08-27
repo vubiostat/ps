@@ -1,9 +1,10 @@
 import { Component, Directive, Input, Output, EventEmitter, ViewChild, TemplateRef, ElementRef, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-draggable-dialog',
-  templateUrl: './draggable-dialog.component.html',
-  styleUrls: ['./draggable-dialog.component.css']
+    selector: 'app-draggable-dialog',
+    templateUrl: './draggable-dialog.component.html',
+    styleUrls: ['./draggable-dialog.component.css'],
+    standalone: false
 })
 export class DraggableDialogComponent implements OnInit {
   @Input() title: string;

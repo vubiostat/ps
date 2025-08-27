@@ -1,232 +1,240 @@
-<div *ngIf="plotOptions && project" class="content">
-  <fieldset>
-    <legend>Global</legend>
-    <div class="form-group">
-      <label for="plot-font-family">Font family</label>
-      <select #fontFamily id="plot-font-family" class="form-control"
-        [value]="plotOptions.fontFamily"
-        (change)="changeAttribute('fontFamily', fontFamily.value)">
-        <option value="">Default</option>
-        <option value="serif">Serif</option>
-        <option value="sans">Sans-serif</option>
-        <option value="monospace">Monospace</option>
-        <option>Bungee Shade</option>
-        <option>Sancreek</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="plot-palette-theme">Color palette</label>
-      <select #paletteTheme id="plot-palette-theme" class="form-control"
-        [value]="plotOptions.paletteTheme"
-        (change)="changeAttribute('paletteTheme', paletteTheme.value)">
-        <option value="typical">Default</option>
-        <option value="plasma">Plasma</option>
-        <option value="viridis">Viridis</option>
-        <option value="magma">Magma</option>
-        <option value="pattern">Pattern</option>
-      </select>
-    </div>
-    <div class="row">
-      <div class="col-sm-6">
-        <label for="plot-font-size">Font size: {{plotOptions.fontSize}}</label>
-        <div class="input-group">
-          <input #fontSize id="plot-font-size" class="form-control"
-            type="range" min="0.1" max="2" step="0.1"
-            [value]="plotOptions.fontSize"
-            (change)="changeNumberAttribute('fontSize', fontSize.value)"
-            (input)="changeNumberAttribute('fontSize', fontSize.value)" />
-        </div>
+@if (plotOptions && project) {
+  <div class="content">
+    <fieldset>
+      <legend>Global</legend>
+      <div class="form-group">
+        <label for="plot-font-family">Font family</label>
+        <select #fontFamily id="plot-font-family" class="form-control"
+          [value]="plotOptions.fontFamily"
+          (change)="changeAttribute('fontFamily', fontFamily.value)">
+          <option value="">Default</option>
+          <option value="serif">Serif</option>
+          <option value="sans">Sans-serif</option>
+          <option value="monospace">Monospace</option>
+          <option>Bungee Shade</option>
+          <option>Sancreek</option>
+        </select>
       </div>
-      <div class="col-sm-6">
-        <label for="plot-axis-font-size">Axis font size: {{plotOptions.axisFontSize}}</label>
-        <div class="input-group">
-          <input #axisFontSize id="plot-axis-font-size" class="form-control"
-            type="range" min="0.1" max="2" step="0.1"
-            [value]="plotOptions.axisFontSize"
-            (change)="changeNumberAttribute('axisFontSize', axisFontSize.value)"
-            (input)="changeNumberAttribute('axisFontSize', axisFontSize.value)" />
-        </div>
+      <div class="form-group">
+        <label for="plot-palette-theme">Color palette</label>
+        <select #paletteTheme id="plot-palette-theme" class="form-control"
+          [value]="plotOptions.paletteTheme"
+          (change)="changeAttribute('paletteTheme', paletteTheme.value)">
+          <option value="typical">Default</option>
+          <option value="plasma">Plasma</option>
+          <option value="viridis">Viridis</option>
+          <option value="magma">Magma</option>
+          <option value="pattern">Pattern</option>
+        </select>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6">
-        <label for="plot-line-width">Line width: {{plotOptions.lineWidth}}</label>
-        <div class="input-group">
-          <input #lineWidth id="plot-line-width" class="form-control"
-            type="range" min="0.1" max="2" step="0.1"
-            [value]="plotOptions.lineWidth"
-            (change)="changeNumberAttribute('lineWidth', lineWidth.value)"
-            (input)="changeNumberAttribute('lineWidth', lineWidth.value)" />
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <label for="plot-axis-line-width">Axis line width: {{plotOptions.axisLineWidth}}</label>
-        <div class="input-group">
-          <input #axisLineWidth id="plot-axis-line-width" class="form-control"
-            type="range" min="0.1" max="2" step="0.1"
-            [value]="plotOptions.axisLineWidth"
-            (change)="changeNumberAttribute('axisLineWidth', axisLineWidth.value)"
-            (input)="changeNumberAttribute('axisLineWidth', axisLineWidth.value)" />
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="plot-line-style">Line style</label>
-      <select #lineStyle id="plot-line-style" class="form-control"
-        [value]="plotOptions.lineStyle"
-        (change)="changeAttribute('lineStyle', lineStyle.value)">
-        <option value="solid">Solid</option>
-        <option value="short-dash">Short Dash</option>
-        <option value="medium-dash">Medium Dash</option>
-        <option value="long-dash">Long Dash</option>
-        <option value="dot">Dotted</option>
-      </select>
-    </div>
-    <div class="form-check">
-      <label class="form-check-label">
-        <input #showLegendBox class="form-check-input" type="checkbox"
-          [checked]="plotOptions.showLegendBox"
-          (change)="changeAttribute('showLegendBox', showLegendBox.checked)"
-          (input)="changeAttribute('showLegendBox', showLegendBox.checked)" />
-        Display legend background
-      </label>
-    </div>
-  </fieldset>
-  <fieldset>
-    <legend>Project</legend>
-    <app-range-slider name="projectPointsPerPlot" label="Points per plot"
-      [min]="50" [max]="200" [hard-min]="50" [hard-max]="200" [step]="1"
-      [ngModel]="pointsPerPlot"
-      (ngModelChange)="setProjectAttribute('pointsPerPlot', $event)">
-      <ng-template rsHelp>
-        The number of points to use when drawing plots. More is slower. The
-        number of points to use by default is calculated based on host speed.
-      </ng-template>
-    </app-range-slider>
-    <div class="form-check" *ngIf="fixedPSpace !== FixedPSpace.NA">
-      <label class="form-check-label">
-        <input #fixedPSpaceBox class="form-check-input" type="checkbox"
-          [checked]="fixedPSpace === FixedPSpace.Fixed"
-          (change)="setProjectAttribute('fixedPSpace', fixedPSpaceBox.checked)" />
-        Fixed parameter space
-      </label>
-    </div>
-    <div class="form-check">
-      <label class="form-check-label">
-        <input #customRangesBox class="form-check-input" type="checkbox"
-          [checked]="customRanges"
-          (change)="setProjectAttribute('customRanges', customRangesBox.checked)" />
-        Custom plot ranges
-      </label>
-    </div>
-
-    <div class="ranges" [class.disabled]="!customRanges">
-      <h4>{{topYRange.description}}</h4>
-      <div class="row mb-4">
-        <div class="col-sm">
-          <label for="plot-top-y-min">Minimum</label>
-          <div class="input-group">
-            <input #topYRangeMin *ngIf="topYRange" class="form-control"
-              [disabled]="!customRanges"
-              type="number" step="0.01" [max]="(topYRange.max - 0.01) | round"
-              [value]="topYRange.min | round"
-              (change)="setProjectRange('topYRange', 'min', topYRangeMin.value)"
-              (input)="setProjectRange('topYRange', 'min', topYRangeMin.value, true)"/>
-          </div>
-        </div>
-        <div class="col-sm">
-          <label for="plot-top-y-max">Maximum</label>
-          <div class="input-group">
-            <input #topYRangeMax *ngIf="topYRange" class="form-control"
-              [disabled]="!customRanges"
-              type="number" step="0.01" [min]="(topYRange.min + 0.01) | round"
-              [value]="topYRange.max | round"
-              (change)="setProjectRange('topYRange', 'max', topYRangeMax.value)"
-              (input)="setProjectRange('topYRange', 'max', topYRangeMax.value, true)"/>
-          </div>
-        </div>
-      </div>
-
-      <h4>{{topLeftXRange.description}}</h4>
-      <div class="row mb-4">
-        <div class="col-sm">
-          <label for="plot-top-left-x-min">X minimum</label>
-          <div class="input-group">
-            <input #topLeftXRangeMin *ngIf="topLeftXRange" class="form-control"
-              [disabled]="!customRanges"
-              type="number" step="0.01" [max]="(topLeftXRange.max - 0.01) | round"
-              [value]="topLeftXRange.min | round"
-              (change)="setProjectRange('topLeftXRange', 'min', topLeftXRangeMin.value)"
-              (input)="setProjectRange('topLeftXRange', 'min', topLeftXRangeMin.value, true)"/>
-          </div>
-        </div>
-        <div class="col-sm">
-          <label for="plot-top-left-x-max">X maximum</label>
-          <div class="input-group">
-            <input #topLeftXRangeMax *ngIf="topLeftXRange" class="form-control"
-              [disabled]="!customRanges"
-              type="number" step="0.01" [min]="(topLeftXRange.min + 0.01) | round"
-              [value]="topLeftXRange.max | round"
-              (change)="setProjectRange('topLeftXRange', 'max', topLeftXRangeMax.value)"
-              (input)="setProjectRange('topLeftXRange', 'max', topLeftXRangeMax.value, true)"/>
-          </div>
-        </div>
-      </div>
-
-      <h4>{{topRightXRange.description}}</h4>
-      <div class="row mb-4">
-        <div class="col-sm">
-          <label for="plot-top-right-x-min">X minimum</label>
-          <div class="input-group">
-            <input #topRightXRangeMin class="form-control"
-              [disabled]="!customRanges"
-              type="number" step="0.01" [max]="(topRightXRange.max - 1) | round"
-              [value]="topRightXRange.min | round"
-              (change)="setProjectRange('topRightXRange', 'min', topRightXRangeMin.value)"
-              (input)="setProjectRange('topRightXRange', 'min', topRightXRangeMin.value, true)"/>
-          </div>
-        </div>
-        <div class="col-sm">
-          <label for="plot-top-right-x-max">X maximum</label>
-          <div class="input-group">
-            <input #topRightXRangeMax class="form-control"
-              [disabled]="!customRanges"
-              type="number" step="0.01" [min]="(topRightXRange.min - 1) | round"
-              [value]="topRightXRange.max | round"
-              (change)="setProjectRange('topRightXRange', 'max', topRightXRangeMax.value)"
-              (input)="setProjectRange('topRightXRange', 'max', topRightXRangeMax.value, true)"/>
-          </div>
-        </div>
-      </div>
-
-      <h4>{{bottomXRange.description}}</h4>
       <div class="row">
-        <div class="col-sm">
-          <label for="plot-bottom-x-min">X minimum</label>
+        <div class="col-sm-6">
+          <label for="plot-font-size">Font size: {{plotOptions.fontSize}}</label>
           <div class="input-group">
-            <input #bottomXRangeMin class="form-control"
-              [disabled]="!customRanges"
-              type="number" step="0.01" [max]="(bottomXRange.max - 1) | round"
-              [value]="bottomXRange.min | round"
-              (change)="setProjectRange('bottomXRange', 'min', bottomXRangeMin.value)"
-              (input)="setProjectRange('bottomXRange', 'min', bottomXRangeMin.value, true)"/>
+            <input #fontSize id="plot-font-size" class="form-control"
+              type="range" min="0.1" max="2" step="0.1"
+              [value]="plotOptions.fontSize"
+              (change)="changeNumberAttribute('fontSize', fontSize.value)"
+              (input)="changeNumberAttribute('fontSize', fontSize.value)" />
           </div>
         </div>
-        <div class="col-sm">
-          <label for="plot-bottom-x-max">X maximum</label>
+        <div class="col-sm-6">
+          <label for="plot-axis-font-size">Axis font size: {{plotOptions.axisFontSize}}</label>
           <div class="input-group">
-            <input #bottomXRangeMax class="form-control"
-              [disabled]="!customRanges"
-              type="number" step="0.01" [min]="(bottomXRange.min + 1) | round"
-              [value]="bottomXRange.max | round"
-              (change)="setProjectRange('bottomXRange', 'max', bottomXRangeMax.value)"
-              (input)="setProjectRange('bottomXRange', 'max', bottomXRangeMax.value, true)"/>
+            <input #axisFontSize id="plot-axis-font-size" class="form-control"
+              type="range" min="0.1" max="2" step="0.1"
+              [value]="plotOptions.axisFontSize"
+              (change)="changeNumberAttribute('axisFontSize', axisFontSize.value)"
+              (input)="changeNumberAttribute('axisFontSize', axisFontSize.value)" />
           </div>
         </div>
       </div>
-    </div>
-  </fieldset>
-  <button type="button" class="btn btn-primary" (click)="doReset()">
-    Reset all settings
-  </button>
-</div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="plot-line-width">Line width: {{plotOptions.lineWidth}}</label>
+          <div class="input-group">
+            <input #lineWidth id="plot-line-width" class="form-control"
+              type="range" min="0.1" max="2" step="0.1"
+              [value]="plotOptions.lineWidth"
+              (change)="changeNumberAttribute('lineWidth', lineWidth.value)"
+              (input)="changeNumberAttribute('lineWidth', lineWidth.value)" />
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <label for="plot-axis-line-width">Axis line width: {{plotOptions.axisLineWidth}}</label>
+          <div class="input-group">
+            <input #axisLineWidth id="plot-axis-line-width" class="form-control"
+              type="range" min="0.1" max="2" step="0.1"
+              [value]="plotOptions.axisLineWidth"
+              (change)="changeNumberAttribute('axisLineWidth', axisLineWidth.value)"
+              (input)="changeNumberAttribute('axisLineWidth', axisLineWidth.value)" />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="plot-line-style">Line style</label>
+        <select #lineStyle id="plot-line-style" class="form-control"
+          [value]="plotOptions.lineStyle"
+          (change)="changeAttribute('lineStyle', lineStyle.value)">
+          <option value="solid">Solid</option>
+          <option value="short-dash">Short Dash</option>
+          <option value="medium-dash">Medium Dash</option>
+          <option value="long-dash">Long Dash</option>
+          <option value="dot">Dotted</option>
+        </select>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input #showLegendBox class="form-check-input" type="checkbox"
+            [checked]="plotOptions.showLegendBox"
+            (change)="changeAttribute('showLegendBox', showLegendBox.checked)"
+            (input)="changeAttribute('showLegendBox', showLegendBox.checked)" />
+          Display legend background
+        </label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Project</legend>
+      <app-range-slider name="projectPointsPerPlot" label="Points per plot"
+        [min]="50" [max]="200" [hard-min]="50" [hard-max]="200" [step]="1"
+        [ngModel]="pointsPerPlot"
+        (ngModelChange)="setProjectAttribute('pointsPerPlot', $event)">
+        <ng-template rsHelp>
+          The number of points to use when drawing plots. More is slower. The
+          number of points to use by default is calculated based on host speed.
+        </ng-template>
+      </app-range-slider>
+      @if (fixedPSpace !== FixedPSpace.NA) {
+        <div class="form-check">
+          <label class="form-check-label">
+            <input #fixedPSpaceBox class="form-check-input" type="checkbox"
+              [checked]="fixedPSpace === FixedPSpace.Fixed"
+              (change)="setProjectAttribute('fixedPSpace', fixedPSpaceBox.checked)" />
+            Fixed parameter space
+          </label>
+        </div>
+      }
+      <div class="form-check">
+        <label class="form-check-label">
+          <input #customRangesBox class="form-check-input" type="checkbox"
+            [checked]="customRanges"
+            (change)="setProjectAttribute('customRanges', customRangesBox.checked)" />
+          Custom plot ranges
+        </label>
+      </div>
+      <div class="ranges" [class.disabled]="!customRanges">
+        <h4>{{topYRange.description}}</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-y-min">Minimum</label>
+            <div class="input-group">
+              @if (topYRange) {
+                <input #topYRangeMin class="form-control"
+                  [disabled]="!customRanges"
+                  type="number" step="0.01" [max]="(topYRange.max - 0.01) | round"
+                  [value]="topYRange.min | round"
+                  (change)="setProjectRange('topYRange', 'min', topYRangeMin.value)"
+                  (input)="setProjectRange('topYRange', 'min', topYRangeMin.value, true)"/>
+              }
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-y-max">Maximum</label>
+            <div class="input-group">
+              @if (topYRange) {
+                <input #topYRangeMax class="form-control"
+                  [disabled]="!customRanges"
+                  type="number" step="0.01" [min]="(topYRange.min + 0.01) | round"
+                  [value]="topYRange.max | round"
+                  (change)="setProjectRange('topYRange', 'max', topYRangeMax.value)"
+                  (input)="setProjectRange('topYRange', 'max', topYRangeMax.value, true)"/>
+              }
+            </div>
+          </div>
+        </div>
+        <h4>{{topLeftXRange.description}}</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-left-x-min">X minimum</label>
+            <div class="input-group">
+              @if (topLeftXRange) {
+                <input #topLeftXRangeMin class="form-control"
+                  [disabled]="!customRanges"
+                  type="number" step="0.01" [max]="(topLeftXRange.max - 0.01) | round"
+                  [value]="topLeftXRange.min | round"
+                  (change)="setProjectRange('topLeftXRange', 'min', topLeftXRangeMin.value)"
+                  (input)="setProjectRange('topLeftXRange', 'min', topLeftXRangeMin.value, true)"/>
+              }
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-left-x-max">X maximum</label>
+            <div class="input-group">
+              @if (topLeftXRange) {
+                <input #topLeftXRangeMax class="form-control"
+                  [disabled]="!customRanges"
+                  type="number" step="0.01" [min]="(topLeftXRange.min + 0.01) | round"
+                  [value]="topLeftXRange.max | round"
+                  (change)="setProjectRange('topLeftXRange', 'max', topLeftXRangeMax.value)"
+                  (input)="setProjectRange('topLeftXRange', 'max', topLeftXRangeMax.value, true)"/>
+              }
+            </div>
+          </div>
+        </div>
+        <h4>{{topRightXRange.description}}</h4>
+        <div class="row mb-4">
+          <div class="col-sm">
+            <label for="plot-top-right-x-min">X minimum</label>
+            <div class="input-group">
+              <input #topRightXRangeMin class="form-control"
+                [disabled]="!customRanges"
+                type="number" step="0.01" [max]="(topRightXRange.max - 1) | round"
+                [value]="topRightXRange.min | round"
+                (change)="setProjectRange('topRightXRange', 'min', topRightXRangeMin.value)"
+                (input)="setProjectRange('topRightXRange', 'min', topRightXRangeMin.value, true)"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-top-right-x-max">X maximum</label>
+            <div class="input-group">
+              <input #topRightXRangeMax class="form-control"
+                [disabled]="!customRanges"
+                type="number" step="0.01" [min]="(topRightXRange.min - 1) | round"
+                [value]="topRightXRange.max | round"
+                (change)="setProjectRange('topRightXRange', 'max', topRightXRangeMax.value)"
+                (input)="setProjectRange('topRightXRange', 'max', topRightXRangeMax.value, true)"/>
+            </div>
+          </div>
+        </div>
+        <h4>{{bottomXRange.description}}</h4>
+        <div class="row">
+          <div class="col-sm">
+            <label for="plot-bottom-x-min">X minimum</label>
+            <div class="input-group">
+              <input #bottomXRangeMin class="form-control"
+                [disabled]="!customRanges"
+                type="number" step="0.01" [max]="(bottomXRange.max - 1) | round"
+                [value]="bottomXRange.min | round"
+                (change)="setProjectRange('bottomXRange', 'min', bottomXRangeMin.value)"
+                (input)="setProjectRange('bottomXRange', 'min', bottomXRangeMin.value, true)"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="plot-bottom-x-max">X maximum</label>
+            <div class="input-group">
+              <input #bottomXRangeMax class="form-control"
+                [disabled]="!customRanges"
+                type="number" step="0.01" [min]="(bottomXRange.min + 1) | round"
+                [value]="bottomXRange.max | round"
+                (change)="setProjectRange('bottomXRange', 'max', bottomXRangeMax.value)"
+                (input)="setProjectRange('bottomXRange', 'max', bottomXRangeMax.value, true)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <button type="button" class="btn btn-primary" (click)="doReset()">
+      Reset all settings
+    </button>
+  </div>
+}

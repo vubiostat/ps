@@ -1,15 +1,16 @@
-<div *ngIf="project.models.length > 1" class="form-inline justify-content-between mb-2">
-  <div class="form-group">
-    <label for="t-test-project-{{name}}-model-{{index}}-name" class="mr-2">Name:</label>
-    <input id="t-test-project-{{name}}-model-{{index}}-name" class="form-control"
-      name="name" type="text" [(ngModel)]="model.name" />
+@if (project.models.length > 1) {
+  <div class="form-inline justify-content-between mb-2">
+    <div class="form-group">
+      <label for="t-test-project-{{name}}-model-{{index}}-name" class="mr-2">Name:</label>
+      <input id="t-test-project-{{name}}-model-{{index}}-name" class="form-control"
+        name="name" type="text" [(ngModel)]="model.name" />
+    </div>
+    <button type="button" class="btn btn-secondary"
+      (click)="onRemoveButtonClicked()">
+      <i class="fa fa-minus-circle"></i> Remove
+    </button>
   </div>
-
-  <button type="button" class="btn btn-secondary"
-    (click)="onRemoveButtonClicked()">
-    <i class="fa fa-minus-circle"></i> Remove
-  </button>
-</div>
+}
 
 <div class="grow-horiz">
   <div class="grow-vert range-slider">
@@ -41,16 +42,18 @@
   </div>
 </div>
 
-<div class="grow-horiz" *ngIf="model.kind == 'ind'">
-  <div class="grow-vert range-slider">
-    <app-range-slider name="m" label="Ratio of control/experimental subjects"
-      [min]="min.m" [max]="max.m" [hard-min]="0.01"
-      [ngModel]="model.m | round" (ngModelChange)="changeModel('m', $event)">
-    </app-range-slider>
+@if (model.kind == 'ind') {
+  <div class="grow-horiz">
+    <div class="grow-vert range-slider">
+      <app-range-slider name="m" label="Ratio of control/experimental subjects"
+        [min]="min.m" [max]="max.m" [hard-min]="0.01"
+        [ngModel]="model.m | round" (ngModelChange)="changeModel('m', $event)">
+      </app-range-slider>
+    </div>
   </div>
-</div>
+}
 
-<ng-template [ngIf]="!isOutput('nByCI')" [ngIfElse]="nByCI">
+@if (!isOutput('nByCI')) {
   <div class="grow-horiz" [class.output]="isOutput('delta')">
     <div class="grow-vert range-slider">
       <app-range-slider name="delta" label="Difference in population means (&delta;)"
@@ -60,7 +63,6 @@
       </app-range-slider>
     </div>
   </div>
-
   <div class="grow-horiz" [class.output]="isOutput('power')">
     <div class="grow-vert range-slider">
       <app-range-slider name="power" label="Power"
@@ -71,7 +73,6 @@
       </app-range-slider>
     </div>
   </div>
-
   <div class="grow-horiz" [class.output]="isOutput('n')">
     <div class="grow-vert range-slider">
       <app-range-slider name="n" label="Sample size"
@@ -88,8 +89,7 @@
       </app-range-slider>
     </div>
   </div>
-</ng-template>
-<ng-template #nByCI>
+} @else {
   <div class="grow-horiz">
     <div class="grow-vert range-slider">
       <app-range-slider name="ci" label="95% confidence interval width"
@@ -98,7 +98,6 @@
       </app-range-slider>
     </div>
   </div>
-
   <div class="grow-horiz output">
     <div class="grow-vert range-slider">
       <app-range-slider name="n" label="Sample size"
@@ -109,14 +108,12 @@
       </app-range-slider>
     </div>
   </div>
-
   <div class="grow-horiz order-2 alt">
     <div class="grow-vert range-slider">
       <app-range-slider name="delta" label="Difference in population means (&delta;)"
         [min]="min.delta" [max]="max.delta" step="0.1" [help-tpl]="deltaHelp"
         [ngModel]="model.delta | round:1" (ngModelChange)="changeModel('delta', $event)">
       </app-range-slider>
-
       <app-range-slider name="power" label="Power"
         [min]="min.power" [max]="max.power"
         [hard-min]="min.power" [hard-max]="max.power"
@@ -125,7 +122,7 @@
       </app-range-slider>
     </div>
   </div>
-</ng-template>
+}
 <ng-template #deltaHelp>
   Delta (δ) is the difference in population means under the alternative hypothesis.
 </ng-template>

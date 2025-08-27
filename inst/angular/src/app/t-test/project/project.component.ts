@@ -12,9 +12,10 @@ import { Project } from '../project';
 import { TTest } from '../t-test';
 
 @Component({
-  selector: 't-test-project',
-  templateUrl: './project.component.html',
-  styleUrls: ['./project.component.css']
+    selector: 't-test-project',
+    templateUrl: './project.component.html',
+    styleUrls: ['./project.component.css'],
+    standalone: false
 })
 export class ProjectComponent extends AbstractProjectComponent implements OnInit {
   project: Project;

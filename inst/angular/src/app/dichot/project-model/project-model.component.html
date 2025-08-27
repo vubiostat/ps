@@ -1,15 +1,16 @@
-<div *ngIf="project.models.length > 1" class="form-inline justify-content-between mb-2">
-  <div class="form-group">
-    <label for="dichot-project-model-{{index}}-name" class="mr-2">Name:</label>
-    <input id="dichot-project-model-{{index}}-name" class="form-control"
-      name="name" type="text" [(ngModel)]="model.name" />
+@if (project.models.length > 1) {
+  <div class="form-inline justify-content-between mb-2">
+    <div class="form-group">
+      <label for="dichot-project-model-{{index}}-name" class="mr-2">Name:</label>
+      <input id="dichot-project-model-{{index}}-name" class="form-control"
+        name="name" type="text" [(ngModel)]="model.name" />
+    </div>
+    <button type="button" class="btn btn-secondary"
+      (click)="onRemoveButtonClicked()">
+      <i class="fa fa-minus-circle"></i> Remove
+    </button>
   </div>
-
-  <button type="button" class="btn btn-secondary"
-    (click)="onRemoveButtonClicked()">
-    <i class="fa fa-minus-circle"></i> Remove
-  </button>
-</div>
+}
 
 <div class="grow-horiz">
   <div class="grow-vert range-slider">
@@ -50,58 +51,68 @@
       [min]="min.p0" [max]="max.p0" [hard-min]="0.01"
       [ngModel]="model.p0 | round" (ngModelChange)="changeModel('p0', $event)">
       <ng-template rsLabel>
-        <div *ngIf="model.case == 'caseControl'" class="label">
-          Probability of exposure in controls (<i>p<sub>0</sub></i>)
-        </div>
-        <div *ngIf="model.case == 'prospective'" class="label">
-          Probability of the outcome for a control patient (<i>p<sub>0</sub></i>)
-        </div>
+        @if (model.case == 'caseControl') {
+          <div class="label">
+            Probability of exposure in controls (<i>p<sub>0</sub></i>)
+          </div>
+        }
+        @if (model.case == 'prospective') {
+          <div class="label">
+            Probability of the outcome for a control patient (<i>p<sub>0</sub></i>)
+          </div>
+        }
       </ng-template>
     </app-range-slider>
   </div>
 </div>
 
-<div *ngIf="model.matched == 'independent' && model.expressed == 'twoProportions'"
-  class="grow-horiz">
-  <div *ngIf="!isOutput('detAlt')" class="grow-vert range-slider">
-    <app-range-slider name="p1"
-      [min]="min.p1" [max]="max.p1" [hard-min]="0.01"
-      [ngModel]="model.p1 | round" (ngModelChange)="changeModel('p1', $event)">
-      <ng-template rsLabel>
-        <div class="label">
-          Probability of the outcome for an experimental patient (<i>p<sub>1</sub></i>)
-        </div>
-      </ng-template>
-    </app-range-slider>
-  </div>
-  <div *ngIf="isOutput('detAlt')" class="grow-vert output">
-    <div class="det-alt p-1">
-      <div class="label">
-        Probability of the outcome for an experimental patient (<i>p<sub>1</sub></i>)
-        <strong>(Computed value)</strong>
+@if (model.matched == 'independent' && model.expressed == 'twoProportions') {
+  <div
+    class="grow-horiz">
+    @if (!isOutput('detAlt')) {
+      <div class="grow-vert range-slider">
+        <app-range-slider name="p1"
+          [min]="min.p1" [max]="max.p1" [hard-min]="0.01"
+          [ngModel]="model.p1 | round" (ngModelChange)="changeModel('p1', $event)">
+          <ng-template rsLabel>
+            <div class="label">
+              Probability of the outcome for an experimental patient (<i>p<sub>1</sub></i>)
+            </div>
+          </ng-template>
+        </app-range-slider>
       </div>
-      <div class="d-flex flex-row mt-2">
-        <div class="ml-2 mr-4">
-          <input id="dichot-project-model-{{index}}-det-alt-which-lower"
-            type="radio" value="lower" [(ngModel)]="model.detAltMode"
-            (ngModelChange)="changeModel('detAltMode', $event)" />
-          <label class="pl-1"
-            for="dichot-project-model-{{index}}-det-alt-which-lower">
-            {{model.p1Alt}} (lower)
-          </label>
-        </div>
-        <div>
-          <input id="dichot-project-model-{{index}}-det-alt-which-upper"
-            type="radio" value="upper" [(ngModel)]="model.detAltMode"
-            (ngModelChange)="changeModel('detAltMode', $event)" />
-          <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
-            {{model.p1}} (upper)
-          </label>
+    }
+    @if (isOutput('detAlt')) {
+      <div class="grow-vert output">
+        <div class="det-alt p-1">
+          <div class="label">
+            Probability of the outcome for an experimental patient (<i>p<sub>1</sub></i>)
+            <strong>(Computed value)</strong>
+          </div>
+          <div class="d-flex flex-row mt-2">
+            <div class="ml-2 mr-4">
+              <input id="dichot-project-model-{{index}}-det-alt-which-lower"
+                type="radio" value="lower" [(ngModel)]="model.detAltMode"
+                (ngModelChange)="changeModel('detAltMode', $event)" />
+              <label class="pl-1"
+                for="dichot-project-model-{{index}}-det-alt-which-lower">
+                {{model.p1Alt}} (lower)
+              </label>
+            </div>
+            <div>
+              <input id="dichot-project-model-{{index}}-det-alt-which-upper"
+                type="radio" value="upper" [(ngModel)]="model.detAltMode"
+                (ngModelChange)="changeModel('detAltMode', $event)" />
+              <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
+                {{model.p1}} (upper)
+              </label>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    }
   </div>
-</div>
+}
 
 <div class="grow-horiz">
   <div class="grow-vert range-slider">
@@ -117,99 +128,113 @@
   </div>
 </div>
 
-<div *ngIf="model.matched == 'independent' && model.expressed == 'relativeRisk'"
-  class="grow-horiz">
-  <div *ngIf="!isOutput('detAlt')" class="grow-vert range-slider">
-    <app-range-slider name="r"
-      [min]="min.r" [max]="max.r" [hard-min]="0.01"
-      [ngModel]="model.r | round" (ngModelChange)="changeModel('r', $event)">
-      <ng-template rsLabel>
-        <div class="label">
-          Relative risk of failure for experimental subjects relative to controls (<i>R</i>)
+@if (model.matched == 'independent' && model.expressed == 'relativeRisk') {
+  <div
+    class="grow-horiz">
+    @if (!isOutput('detAlt')) {
+      <div class="grow-vert range-slider">
+        <app-range-slider name="r"
+          [min]="min.r" [max]="max.r" [hard-min]="0.01"
+          [ngModel]="model.r | round" (ngModelChange)="changeModel('r', $event)">
+          <ng-template rsLabel>
+            <div class="label">
+              Relative risk of failure for experimental subjects relative to controls (<i>R</i>)
+            </div>
+          </ng-template>
+        </app-range-slider>
+      </div>
+    }
+    @if (isOutput('detAlt')) {
+      <div class="grow-vert output">
+        <div class="det-alt p-1">
+          <div class="label">
+            Relative risk of failure for experimental subjects relative to controls (<i>R</i>)
+            <strong>(Computed value)</strong>
+          </div>
+          <div class="d-flex flex-row mt-2">
+            <div class="ml-2 mr-4">
+              <input id="dichot-project-model-{{index}}-det-alt-which-lower"
+                type="radio" value="lower" [(ngModel)]="model.detAltMode"
+                (ngModelChange)="changeModel('detAltMode', $event)" />
+              <label class="pl-1"
+                for="dichot-project-model-{{index}}-det-alt-which-lower">
+                {{model.rAlt}} (lower)
+              </label>
+            </div>
+            <div>
+              <input id="dichot-project-model-{{index}}-det-alt-which-upper"
+                type="radio" value="upper" [(ngModel)]="model.detAltMode"
+                (ngModelChange)="changeModel('detAltMode', $event)" />
+              <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
+                {{model.r}} (upper)
+              </label>
+            </div>
+          </div>
         </div>
-      </ng-template>
-    </app-range-slider>
+      </div>
+    }
   </div>
-  <div *ngIf="isOutput('detAlt')" class="grow-vert output">
-    <div class="det-alt p-1">
-      <div class="label">
-        Relative risk of failure for experimental subjects relative to controls (<i>R</i>)
-        <strong>(Computed value)</strong>
-      </div>
-      <div class="d-flex flex-row mt-2">
-        <div class="ml-2 mr-4">
-          <input id="dichot-project-model-{{index}}-det-alt-which-lower"
-            type="radio" value="lower" [(ngModel)]="model.detAltMode"
-            (ngModelChange)="changeModel('detAltMode', $event)" />
-          <label class="pl-1"
-            for="dichot-project-model-{{index}}-det-alt-which-lower">
-            {{model.rAlt}} (lower)
-          </label>
-        </div>
-        <div>
-          <input id="dichot-project-model-{{index}}-det-alt-which-upper"
-            type="radio" value="upper" [(ngModel)]="model.detAltMode"
-            (ngModelChange)="changeModel('detAltMode', $event)" />
-          <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
-            {{model.r}} (upper)
-          </label>
-        </div>
-      </div>
+}
+
+@if (model.matched == 'matched') {
+  <div class="grow-horiz">
+    <div class="grow-vert range-slider">
+      <app-range-slider name="phi"
+        [min]="min.phi" [max]="max.phi" [hard-min]="0.01"
+        [ngModel]="model.phi | round" (ngModelChange)="changeModel('phi', $event)">
+        <ng-template rsLabel>
+          <div class="label">
+            Correlation coefficient for exposure (&phi;)
+          </div>
+        </ng-template>
+      </app-range-slider>
     </div>
   </div>
-</div>
+}
 
-<div *ngIf="model.matched == 'matched'" class="grow-horiz">
-  <div class="grow-vert range-slider">
-    <app-range-slider name="phi"
-      [min]="min.phi" [max]="max.phi" [hard-min]="0.01"
-      [ngModel]="model.phi | round" (ngModelChange)="changeModel('phi', $event)">
-      <ng-template rsLabel>
-        <div class="label">
-          Correlation coefficient for exposure (&phi;)
-        </div>
-      </ng-template>
-    </app-range-slider>
-  </div>
-</div>
-
-<div *ngIf="model.matched == 'matched' || (model.case == 'caseControl' && model.expressed == 'oddsRatio')"
-  class="grow-horiz">
-  <div *ngIf="!isOutput('detAlt')" class="grow-vert range-slider">
-    <app-range-slider name="psi"
-      [min]="min.psi" [max]="max.psi" [hard-min]="0.01"
-      [ngModel]="model.psi | round" (ngModelChange)="changeModel('psi', $event)">
-      <ng-template rsLabel>
-        <div class="label">
-          Odds ratio of exposure (&psi;)
-        </div>
-      </ng-template>
-    </app-range-slider>
-  </div>
-  <div *ngIf="isOutput('detAlt')" class="grow-vert output">
-    <div class="det-alt p-1">
-      <div class="label">
-        Odds ratio of exposure (&psi;) <strong>(Computed value)</strong>
+@if (model.matched == 'matched' || (model.case == 'caseControl' && model.expressed == 'oddsRatio')) {
+  <div
+    class="grow-horiz">
+    @if (!isOutput('detAlt')) {
+      <div class="grow-vert range-slider">
+        <app-range-slider name="psi"
+          [min]="min.psi" [max]="max.psi" [hard-min]="0.01"
+          [ngModel]="model.psi | round" (ngModelChange)="changeModel('psi', $event)">
+          <ng-template rsLabel>
+            <div class="label">
+              Odds ratio of exposure (&psi;)
+            </div>
+          </ng-template>
+        </app-range-slider>
       </div>
-      <div class="d-flex flex-row mt-2">
-        <div class="ml-2 mr-4">
-          <input id="dichot-project-model-{{index}}-det-alt-which-lower"
-            type="radio" value="lower" [(ngModel)]="model.detAltMode"
-            (ngModelChange)="changeModel('detAltMode', $event)" />
-          <label class="pl-1"
-            for="dichot-project-model-{{index}}-det-alt-which-lower">
-            {{model.psiAlt | number : '1.2-2'}} (lower)
-          </label>
-        </div>
-        <div>
-          <input id="dichot-project-model-{{index}}-det-alt-which-upper"
-            type="radio" value="upper" [(ngModel)]="model.detAltMode"
-            (ngModelChange)="changeModel('detAltMode', $event)" />
-          <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
-            {{model.psi | number : '1.2-2'}} (upper)
-          </label>
+    }
+    @if (isOutput('detAlt')) {
+      <div class="grow-vert output">
+        <div class="det-alt p-1">
+          <div class="label">
+            Odds ratio of exposure (&psi;) <strong>(Computed value)</strong>
+          </div>
+          <div class="d-flex flex-row mt-2">
+            <div class="ml-2 mr-4">
+              <input id="dichot-project-model-{{index}}-det-alt-which-lower"
+                type="radio" value="lower" [(ngModel)]="model.detAltMode"
+                (ngModelChange)="changeModel('detAltMode', $event)" />
+              <label class="pl-1"
+                for="dichot-project-model-{{index}}-det-alt-which-lower">
+                {{model.psiAlt | number : '1.2-2'}} (lower)
+              </label>
+            </div>
+            <div>
+              <input id="dichot-project-model-{{index}}-det-alt-which-upper"
+                type="radio" value="upper" [(ngModel)]="model.detAltMode"
+                (ngModelChange)="changeModel('detAltMode', $event)" />
+              <label class="pl-1" for="dichot-project-model-{{index}}-det-alt-which-upper">
+                {{model.psi | number : '1.2-2'}} (upper)
+              </label>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    }
   </div>
-</div>
+}

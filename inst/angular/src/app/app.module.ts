@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppCommonModule } from './app-common.module';
 import { TTestModule } from './t-test/t-test.module';
@@ -25,6 +26,7 @@ import { MainComponent } from './main/main.component';
 import { AbstractStartComponent } from './abstract-start.component';
 import { AbstractProjectComponent } from './abstract-project.component';
 
+
 const routes: Routes = [
   { path: '', component: WelcomeComponent },
 ];
@@ -37,7 +39,9 @@ const routes: Routes = [
     WelcomeComponent,
     MainComponent,
     AbstractStartComponent,
-    AbstractProjectComponent
+    AbstractProjectComponent,
+    ExportPlotsComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +51,9 @@ const routes: Routes = [
     NgbModule,
     AppCommonModule,
     TTestModule,
-    DichotModule
+    DichotModule,
+    NgbNavModule,
+    MenuModule
   ],
   bootstrap: [ AppComponent ],
   providers: [

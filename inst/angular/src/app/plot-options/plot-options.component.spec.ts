@@ -5,7 +5,10 @@ import { RoundPipe } from '../../round.pipe';
 import { PlotOptionsService } from '../../plot-options.service';
 import { PlotOptionsComponent } from './plot-options.component';
 
-@Component({selector: 'app-range-slider', template: ''})
+@Component({
+    selector: 'app-range-slider', template: '',
+    standalone: false
+})
 class RangeSliderStubComponent {
   @Input() min: number;
   @Input() max: number;

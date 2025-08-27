@@ -13,11 +13,13 @@
           <ul class="nav nav-tabs">
             <li class="nav-item">
               <a class="nav-link" [routerLink]="startLink()"
-                routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Start</a>
+              routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Start</a>
             </li>
-            <li class="nav-item" *ngFor="let project of projects; index as i">
-              <a class="nav-link" [routerLink]="projectLink(i)" routerLinkActive="active">{{tabTitle(i)}}</a>
-            </li>
+            @for (project of projects; track project; let i = $index) {
+              <li class="nav-item">
+                <a class="nav-link" [routerLink]="projectLink(i)" routerLinkActive="active">{{tabTitle(i)}}</a>
+              </li>
+            }
           </ul>
           <div class="tab-content">
             <div class="tab-pane active">
@@ -39,7 +41,7 @@
       </div>
     </div>
     <div class="col-8">
-      <ng-template [ngIf]="showOutputPane">
+      @if (showOutputPane) {
         <div class="plot-buttons">
           <button class="btn btn-secondary" (click)="togglePlotOptions()" title="Toggle plot options">
             <i class="fa fa-cog"></i>
@@ -58,7 +60,7 @@
           [disable-drag-ci-bounds]="selectedProject?.isCIBoundsDraggable()"
           (modelChanged)="redrawPlots()">
         </app-output-pane>
-      </ng-template>
+      }
     </div>
   </div>
   <app-draggable-dialog #helpDialog

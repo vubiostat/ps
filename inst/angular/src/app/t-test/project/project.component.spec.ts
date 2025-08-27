@@ -7,7 +7,10 @@ import { PaletteService } from '../../palette.service';
 import { Project } from '../project';
 import { ProjectComponent } from './project.component';
 
-@Component({selector: 't-test-project-model', template: ''})
+@Component({
+    selector: 't-test-project-model', template: '',
+    standalone: false
+})
 class ProjectModelStubComponent {
   @Input() project: Project;
   @Input() index: number;

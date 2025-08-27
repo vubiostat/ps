@@ -21,10 +21,11 @@ enum CIBar {
 };
 
 @Component({
-  selector: 'app-ci-plot',
-  templateUrl: './ci-plot.component.html',
-  styleUrls: ['./ci-plot.component.css'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-ci-plot',
+    templateUrl: './ci-plot.component.html',
+    styleUrls: ['./ci-plot.component.css'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CIPlotComponent extends AbstractPlotComponent implements OnChanges, AfterViewChecked {
   @Input('handler') handler: CIPlotHandler;
@@ -386,7 +387,7 @@ export class CIPlotComponent extends AbstractPlotComponent implements OnChanges,
   private dragTarget(event: any): void {
     if (this.disableDragTarget) return;
 
-    let mouseX = d3.event.x - this.leftMargin;
+    let mouseX = event.x - this.leftMargin;
     let x = this.xScale.invert(mouseX);
     if (x >= 0 && x < 0.1) {
       x = 0.1;
@@ -422,7 +423,7 @@ export class CIPlotComponent extends AbstractPlotComponent implements OnChanges,
   private dragBar(which: CIBar, event: any): void {
     if (this.disableDragCI) return;
 
-    let mouseX = d3.event.x - this.leftMargin;
+    let mouseX = event.x - this.leftMargin;
     let x = this.xScale.invert(mouseX);
 
     // If the primary group contains a discrete list of CI value pairs, find the
