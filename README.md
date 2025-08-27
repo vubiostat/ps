@@ -1,11 +1,58 @@
 PS: Power and Sample Size Calculation
 =====================================
 
-PS is an interactive program for performing power and sample size calculations. It may be run from the internet at https://statcomp2.app.vumc.org/ps/ or downloaded for free. This version can be used for studies with dichotomous or continuous, response measures. A older version, which also handles other designs may be downloaded from https://biostat.app.vumc.org/PowerSampleSize. Work on expanding the new version to handle all of the designs from the older version are in progress.
+PS is an interactive program for performing power and sample size calculations. It may be run from the internet at https://cqsclinical.app.vumc.org/ps/ or downloaded for free. This version can be used for studies with dichotomous or continuous, response measures. Work on expanding the new version to handle all of the designs from the older version is in progress.
 
 The alternative hypothesis of interest may be specified either in terms of differing means, or in terms of relative risks or odds ratios. Studies with dichotomous or continuous outcomes may involve either a matched or independent study design. The program can determine the sample size needed to detect a specified alternative hypothesis with the required power, the power with which a specific alternative hypothesis can be detected with a given sample size, or the specific alternative hypotheses that can be detected with a given power and sample size.
 
 The PS program can produce graphs to explore the relationships between power, sample size and detectable alternative hypotheses. It is often helpful to hold one of these variables constant and plot the other two against each other. The program can generate graphs of sample size versus power for a specific alternative hypothesis, sample size versus detectable alternative hypotheses for a specified power, or power versus detectable alternative hypotheses for a specified sample size. Multiple curves can be plotted on a single graphic.
+
+# Downloading and Installing
+
+The PS program runs on the Microsoft Windows operating systems (Windows XP and later). We have also installed the program on Linux and Macintosh computers using a program called Wine that facilitates running Windows software on other operating systems.
+
+## Windows
+
+![](./bin/PS_icon.png)[pssetup3.exe](https://github.com/vubiostat/ps/raw/refs/heads/master/bin/pssetup3.exe)
+
+To obtain the software use the above link and instruct your browser to download the file to a folder on your computer. To avoid problems with the installation process, it is helpful if the target folder is empty. A file called pssetup3.exe will be downloaded to this location. Run pssetup3.exe to extract the needed files and install the program.
+To run the PS program after it has been installed, click the Start button, select Programs and then click PS. Click the Overview button for an introduction to the program and instruction on its use. PS is a self-documented program with extensive interactive help.
+
+Caution: We know of a bug in one of the third-party tools that we use that causes the program to malfunction when the Windows language is set to something other than English. We apologize for any inconvenience that this problem causes.
+
+## Macintosh
+
+See [Play_PS_software.pdf](./bin/Play_PS_software.pdf) for instruction to show how to install PS software step-by-step, especially for beginners who are not familiar with Terminal on Mac. Thanks to Sheau-Chiann Chen for this excellent documentation.
+
+## Linux
+
+In the past we have tried to supply installation packages that allowed the installation of the PS program in one step. For a number of reasons, this has been a troublesome approach. There are many Linux distributions in use. It is difficult to make an installer that works correctly on all of these.
+Our current recommendation is to use the Wine graphical front end program PlayOnLinux (for Linux). PlayOnLinux is free software that simplifies the installation and use of Windows software on other platforms.
+The process for installing PS involves 3 steps:
+Download and install PlayOnLinux from the site linked above.
+Download the PS installer (pssetup3.exe)
+Run PlayOnLinux to install and use the PS program on your computer.
+PlayOnLinux inspects the software to be installed and attempts to also install other packages and tools that are necessary for the PS program to run correctly.
+
+Wine (originally an acronym for "Wine Is Not an Emulator") is a compatibility layer capable of running Windows applications on several POSIX-compliant operating systems, such as Linux, Mac OSX, & BSD.
+There are a number Wine implementations and Wine front ends available. Our recommendation is not the only approach. Suggestions are welcome.
+
+# Web-based Program
+
+A web-based version of this program has been posted [here](https://cqsclinical.app.vumc.org/ps). It has a brand-new interface that is far more interactive than the original. Its use is fairly self-explanatory. However, we have posted the following YouTube tutorials on features of the new program. These are:
+
+* [Introduction](https://youtu.be/6haTV0_dJPs)
+* [Drawing multiple curves on the same graph](https://youtu.be/3IVxbQv8d9E)
+* [Customizing graphs](https://youtu.be/dHwV59aepD8)
+* [Exporting graphs](https://youtu.be/ioozjDhOCo8)
+* [Changing the aspect ratio of graphs showing only high-powered alternatives](https://youtu.be/j-Vetkevz18)
+
+The program was designed to produce publication-quality graphs as well as to help students understand how sample size, power, and within-group dispersion are interrelated.
+
+## Authorship and Feedback
+
+The new PS interface was designed and written by Jeremy Stephens, W. Dale Plummer, Jeffrey D. Blume and William D. Dupont from the Department of Biostatistics and Vanderbilt University School of Medicine.
+The web-based version of this program is still in beta-test mode. As of January 2020, it and can only handle designs with continuous or dichotomous response measures. Additional modules will be added as time permits.
 
 # Feedback
 
@@ -52,6 +99,10 @@ or
 
 **Dupont WD, Plummer WD: 'Power and Sample Size Calculations for studies Involving Linear Regression', Controlled Clinical Trials 1998; 19:589-601.**
 
+# Release Notes
+
+[Release Notes](./RELEASE-NOTES.md)
+
 # Acknowledgements
 
 This work was supported in part through a grant from Vanderbilt University's Clinical and Translational Science Award (CTSA) program (grant UL1 RR024975 from the NCRR/NIH).
@@ -60,4 +111,4 @@ We are grateful to Gordon R. Bernard for his support and to Yuwei Zhu for her as
 
 # Creative Commons License
 
-PS: Power and Sample Size Calculation by William D. Dupont is licensed under a Creative Commons Attribution-NonCommercial-NoDerivs 3.0 United States License.
+PS: Power and Sample Size Calculation by William D. Dupont is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivs 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/us/) United States License.
