@@ -1,3 +1,3 @@
 library(devtools)
 load_all(".")
-runPS("backend")
+runPS("backend", host="0.0.0.0")

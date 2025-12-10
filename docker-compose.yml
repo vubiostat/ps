@@ -1,0 +1,19 @@
+services:
+  ps_backend:
+    image: cqsrepo.app.vumc.org/powersamplesize
+    container_name: ps_backend
+    restart: always
+    expose:
+      - 7788
+
+  apache:
+    image: httpd:2.4
+    container_name: apache
+    restart: always
+    volumes:
+      - ./misc/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./inst/angular/dist:/usr/local/apache2/htdocs
+    ports:
+      - 8080:80
+    profiles:
+      - dev
