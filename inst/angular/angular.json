@@ -13,6 +13,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "baseHref": "/ps/",
+            "deployUrl": "/ps/",
             "aot": true,
             "outputPath": "dist/ps",
             "index": "src/index.html",
@@ -71,21 +73,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ps:build",
-            "baseHref": "/ps/",
-            "deployUrl": "/ps/"
+            "buildTarget": "ps:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ps:build:production"
+              "buildTarget": "ps:build:production"
             },
             "demo": {
               "browserTarget": "ps:build:demo",
               "host": "0.0.0.0"
             }
           }
-        },
-        "extract-i18n": {
+        }, "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "ps:build"
@@ -145,7 +144,6 @@
       }
     }
   },
-  "defaultProject": "ps",
   "cli": {
     "analytics": false
   }
