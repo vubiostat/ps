@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, Input, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import { NgbModal, NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbNav } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 
 import { AbstractProject } from '../abstract-project';
@@ -46,7 +46,7 @@ export class OutputPaneComponent implements OnChanges {
   @ViewChild('topLeft', { static: true }) topLeftPlot: LinePlotComponent;
   @ViewChild('topRight', { static: true }) topRightPlot: LinePlotComponent;
   @ViewChild('bottom', { static: true }) bottomPlot: CIPlotComponent;
-  @ViewChild('footerTabset') footerTabset: NgbTabset;
+  @ViewChild('footerTabset') footerTabset: NgbNav;
   @ViewChild('log') logElt: ElementRef;
 
   constructor(

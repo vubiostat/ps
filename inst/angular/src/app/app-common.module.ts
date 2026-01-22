@@ -21,7 +21,8 @@ import { PlotOptionsComponent } from './plot-options/plot-options.component';
   imports: [
     CommonModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    ExportPlotsComponent  // Standalone component imported here
   ],
   declarations: [
     RoundPipe,
@@ -36,7 +37,6 @@ import { PlotOptionsComponent } from './plot-options/plot-options.component';
     LinePlotComponent,
     CIPlotComponent,
     OutputPaneComponent,
-    ExportPlotsComponent,
     PlotOptionsComponent
   ],
   exports: [
@@ -52,6 +52,7 @@ import { PlotOptionsComponent } from './plot-options/plot-options.component';
     LinePlotComponent,
     CIPlotComponent,
     OutputPaneComponent,
+    ExportPlotsComponent,  // Can still export it for other modules to use
     PlotOptionsComponent
   ],
 })

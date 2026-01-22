@@ -16,8 +16,6 @@ enum MenuState {
     selector: 'app-menu',
     templateUrl: './menu.component.html',
     styleUrls: ['./menu.component.css'],
-    declarations: [MenuComponent],
-    exports: [MenuComponent],
     animations: [
         trigger('mainState', [
             state('main, maininit', style({ opacity: 1, transform: 'translateX(0)' })),
@@ -62,7 +60,7 @@ enum MenuState {
             ])
         ])
     ],
-    standalone: false
+    standalone: true
 })
 export class MenuComponent implements OnInit {
   urlInitialized = false;

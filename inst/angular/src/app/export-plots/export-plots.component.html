@@ -6,10 +6,10 @@
 </div>
 <div id="export-plots-modal-body" class="modal-body grow-vert h-100">
   <div class="d-flex flex-column h-100">
-    <ngb-nav [(activeId)]="activeTabId" [destroyOnHide]="false" #nav>
-      <ngb-nav-item id="topLeft">
-        <ng-template ngbNavItemTitle>{{topLeftTitle || 'Top Left Plot' }}</ng-template>
-        <ng-template ngbTabContent>
+    <ul ngbNav #nav="ngbNav" [(activeId)]="activeTabId" [destroyOnHide]="false" class="nav-tabs">
+      <li [ngbNavItem]="'topLeft'">
+        <button ngbNavLink>{{topLeftTitle || 'Top Left Plot' }}</button>
+        <ng-template ngbNavContent>
           <div class="left">
             <div class="form-check">
               <label class="form-check-label">
@@ -68,10 +68,10 @@
             </app-line-plot>
           </div>
         </ng-template>
-      </ngb-nav-item>
-      <ngb-nav-item id="topRight">
-        <ng-template ngbNavItemTitle>{{ topRightTitle || 'Top RIght Plot' }}</ng-template>
-        <ng-template ngbTabContent>
+      </li>
+      <li [ngbNavItem]="'topRight'">
+        <button ngbNavLink>{{ topRightTitle || 'Top Right Plot' }}</button>
+        <ng-template ngbNavContent>
           <div class="left">
             <div class="form-check">
               <label class="form-check-label">
@@ -130,9 +130,10 @@
             </app-line-plot>
           </div>
         </ng-template>
-      </ngb-nav-item>
-      <ngb-nav-item [title]="bottomTitle || 'Bottom Plot'">
-        <ng-template ngbTabContent>
+      </li>
+      <li [ngbNavItem]="'bottom'">
+        <button ngbNavLink>{{bottomTitle || 'Bottom Plot'}}</button>
+        <ng-template ngbNavContent>
           <div class="left">
             <div class="form-check">
               <label class="form-check-label">
@@ -180,8 +181,9 @@
             </app-ci-plot>
           </div>
         </ng-template>
-      </ngb-nav-item>
-    </ngb-nav>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
   </div>
 </div>
 <div class="modal-footer">

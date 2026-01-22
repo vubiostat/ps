@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -25,6 +27,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { MainComponent } from './main/main.component';
 import { AbstractStartComponent } from './abstract-start.component';
 import { AbstractProjectComponent } from './abstract-project.component';
+import { ExportPlotsComponent } from './export-plots/export-plots.component';
 
 
 const routes: Routes = [
@@ -35,25 +38,25 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     KonamiDirective,
-    MenuComponent,
     WelcomeComponent,
     MainComponent,
     AbstractStartComponent,
     AbstractProjectComponent,
-    ExportPlotsComponent,
-    MenuComponent,
   ],
   imports: [
     BrowserModule,
+    CommonModule,
+    FormsModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
     NgbModule,
+    NgbNavModule,
     AppCommonModule,
     TTestModule,
     DichotModule,
-    NgbNavModule,
-    MenuModule
+    MenuComponent,          // CHANGED: Import standalone component
+    ExportPlotsComponent,   // CHANGED: Import standalone component
   ],
   bootstrap: [ AppComponent ],
   providers: [

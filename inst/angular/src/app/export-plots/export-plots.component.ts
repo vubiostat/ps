@@ -1,6 +1,8 @@
 import { Component, Input, ViewChild, ElementRef, OnInit, AfterViewChecked } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AbstractProject } from '../abstract-project';
 import { AbstractPlotComponent } from '../abstract-plot.component';
@@ -9,11 +11,11 @@ import { CIPlotHandler } from '../ci-plot-handler';
 import { LinePlotComponent } from '../line-plot/line-plot.component';
 import { CIPlotComponent } from '../ci-plot/ci-plot.component';
 import { ExportService, PlotInfo, FormatsResponse, PlotsResponse } from '../export.service'
-import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 import * as stableSort from 'stable';
 
-enum Platform {
+enum Platform
+{
   iOS,
   WP,
   Android,
@@ -38,23 +40,25 @@ let platformPatterns: [Platform, RegExp][] = [
 ];
 
 @Component({
-    selector: 'app-export-plots',
-    templateUrl: './export-plots.component.html',
-    styleUrls: ['./export-plots.component.css'],
-    standalone: false,
-    declarations: [
-      ExportPlotsComponent,
-    ],
-    imports: [
-      NgbNavModule,
-    ],
+  selector: 'app-export-plots',
+  templateUrl: './export-plots.component.html',
+  styleUrls: ['./export-plots.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgbNavModule,
+  ],
 })
-export class ExportPlotsComponent implements OnInit, AfterViewChecked {
+export class ExportPlotsComponent implements OnInit, AfterViewChecked
+{
   @Input('project') project: AbstractProject;
   @Input('top-left-legend-x-offset') topLeftLegendXOffset: number;
   @Input('top-left-legend-y-offset') topLeftLegendYOffset: number;
   @Input('top-right-legend-x-offset') topRightLegendXOffset: number;
   @Input('top-right-legend-y-offset') topRightLegendYOffset: number;
+
+  activeTabId: string = 'topLeft';
 
   linePlotHandler: LinePlotHandler;
   ciPlotHandler: CIPlotHandler;
@@ -92,9 +96,11 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
     private exportService: ExportService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
     let platform = this.detectPlatform();
-    switch (platform) {
+    switch (platform)
+    {
       case Platform.Windows:
         this.imageFormat = "WMF";
         break;
@@ -109,12 +115,15 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
         break;
     }
 
-    this.exportService.formats().subscribe(response => {
+    this.exportService.formats().subscribe(response =>
+    {
       this.imageFormats = response.formats;
-      let formatOk = this.imageFormats.some(format => {
+      let formatOk = this.imageFormats.some(format =>
+      {
         return this.imageFormat == format;
       })
-      if (!formatOk) {
+      if (!formatOk)
+      {
         // PNG will always be supported
         this.imageFormat = "PNG";
       }
@@ -124,30 +133,40 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
     this.ciPlotHandler = this.project.getCIPlotHandler();
   }
 
-  ngAfterViewChecked(): void {
-    if (!this.topLeftTitle || !this.topRightTitle || !this.bottomTitle) {
-      setTimeout(() => {
-        if (this.topLeftPlot) {
+  ngAfterViewChecked(): void
+  {
+    if (!this.topLeftTitle || !this.topRightTitle || !this.bottomTitle)
+    {
+      setTimeout(() =>
+      {
+        if (this.topLeftPlot)
+        {
           this.topLeftTitle = this.topLeftPlot.title;
         }
 
-        if (this.topRightPlot) {
+        if (this.topRightPlot)
+        {
           this.topRightTitle = this.topRightPlot.title;
         }
 
-        if (this.bottomPlot) {
+        if (this.bottomPlot)
+        {
           this.bottomTitle = this.bottomPlot.title;
         }
       }, 1);
     }
   }
 
-  detectPlatform(): Platform {
-    if (navigator) {
+  detectPlatform(): Platform
+  {
+    if (navigator)
+    {
       let ua = navigator.userAgent;
-      for (var i = 0, ilen = platformPatterns.length; i < ilen; i++) {
+      for (var i = 0, ilen = platformPatterns.length; i < ilen; i++)
+      {
         let pattern = platformPatterns[i];
-        if (ua.match(pattern[1])) {
+        if (ua.match(pattern[1]))
+        {
           return pattern[0];
         }
       }
@@ -156,22 +175,27 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
     return Platform.Other;
   }
 
-  setDim(which: string, value: string): void {
-    if (value != 'other') {
+  setDim(which: string, value: string): void
+  {
+    if (value != 'other')
+    {
       let arr = value.split("x");
       this[`${which}Width`] = parseInt(arr[0]);
       this[`${which}Height`] = parseInt(arr[1]);
     }
   }
 
-  serializePlot(plot: AbstractPlotComponent): string {
+  serializePlot(plot: AbstractPlotComponent): string
+  {
     let serializer = new XMLSerializer();
     return serializer.serializeToString(plot.plotElement.nativeElement);
   }
 
-  save(): void {
+  save(): void
+  {
     let plots: PlotInfo[] = [];
-    if (this.includeTopLeft) {
+    if (this.includeTopLeft)
+    {
       plots.push({
         name: this.topLeftTitle,
         width: this.topLeftWidth,
@@ -179,7 +203,8 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
         svg: this.serializePlot(this.topLeftPlot)
       } as PlotInfo);
     }
-    if (this.includeTopRight) {
+    if (this.includeTopRight)
+    {
       plots.push({
         name: this.topRightTitle,
         width: this.topRightWidth,
@@ -187,7 +212,8 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
         svg: this.serializePlot(this.topRightPlot)
       } as PlotInfo);
     }
-    if (this.includeBottom) {
+    if (this.includeBottom)
+    {
       plots.push({
         name: this.bottomTitle,
         width: this.bottomWidth,
@@ -196,11 +222,13 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
       } as PlotInfo);
     }
 
-    this.exportService.plots(this.imageFormat, plots).subscribe(response => {
+    this.exportService.plots(this.imageFormat, plots).subscribe(response =>
+    {
       let data = atob(response.data);
       var buf = new ArrayBuffer(data.length);
       var arr = new Uint8Array(buf);
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < data.length; i++)
+      {
         arr[i] = data.charCodeAt(i);
       }
 
@@ -215,7 +243,8 @@ export class ExportPlotsComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  cancel(): void {
+  cancel(): void
+  {
     this.activeModal.close();
   }
 }
