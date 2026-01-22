@@ -7,7 +7,7 @@
 <div id="export-plots-modal-body" class="modal-body grow-vert h-100">
   <div class="d-flex flex-column h-100">
     <ul ngbNav #nav="ngbNav" [(activeId)]="activeTabId" [destroyOnHide]="false" class="nav-tabs">
-      <li [ngbNavItem]="'topLeft'">
+      <li ngbNavItem="topLeft">
         <a ngbNavLink>{{topLeftTitle || 'Top Left Plot' }}</a>
         <ng-template ngbNavContent>
           <div class="left">
@@ -69,7 +69,7 @@
           </div>
         </ng-template>
       </li>
-      <li [ngbNavItem]="'topRight'">
+      <li ngbNavItem="topRight">
         <a ngbNavLink>{{ topRightTitle || 'Top Right Plot' }}</a>
         <ng-template ngbNavContent>
           <div class="left">
@@ -131,7 +131,7 @@
           </div>
         </ng-template>
       </li>
-      <li [ngbNavItem]="'bottom'">
+      <li ngbNavItem="bottom">
         <a ngbNavLink>{{bottomTitle || 'Bottom Plot'}}</a>
         <ng-template ngbNavContent>
           <div class="left">
