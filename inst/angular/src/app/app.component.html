@@ -3,9 +3,11 @@
 
   <app-menu></app-menu>
 
-  <audio *ngIf="konami" autoplay (ended)="audioEnded()">
-    <source src="assets/contra.mp3" type="audio/mpeg">
-  </audio>
+  @if (konami) {
+    <audio autoplay (ended)="audioEnded()">
+      <source src="assets/contra.mp3" type="audio/mpeg">
+    </audio>
+  }
 
   <router-outlet></router-outlet>
 </div>

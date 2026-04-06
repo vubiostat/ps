@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { NgbTabset, NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNav, NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { zip } from 'rxjs';
 
 import { ProjectType } from '../../project-type';
@@ -12,16 +12,17 @@ import { Project } from '../project';
 import { TTest } from '../t-test';
 
 @Component({
-  selector: 't-test-project',
-  templateUrl: './project.component.html',
-  styleUrls: ['./project.component.css']
+    selector: 't-test-project',
+    templateUrl: './project.component.html',
+    styleUrls: ['./project.component.css'],
+    standalone: false
 })
 export class ProjectComponent extends AbstractProjectComponent implements OnInit {
   project: Project;
   name: string;
   selectedModel: TTest;
 
-  @ViewChild('tabset') tabset: NgbTabset;
+  @ViewChild('tabset') tabset: NgbNav;
 
   constructor(
     private projectService: AbstractProjectService,

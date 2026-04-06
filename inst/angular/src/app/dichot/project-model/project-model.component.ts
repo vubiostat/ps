@@ -7,9 +7,10 @@ import { Dichot, DichotMatched, DichotExpressed } from '../dichot';
 import { PaletteService } from '../../palette.service';
 
 @Component({
-  selector: 'dichot-project-model',
-  templateUrl: './project-model.component.html',
-  styleUrls: ['./project-model.component.css']
+    selector: 'dichot-project-model',
+    templateUrl: './project-model.component.html',
+    styleUrls: ['./project-model.component.css'],
+    standalone: false
 })
 export class ProjectModelComponent implements OnInit {
   @Input() project: Project;

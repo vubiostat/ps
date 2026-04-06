@@ -8,7 +8,10 @@ import { FormatFixedPipe } from '../../format-fixed.pipe';
 import { Project } from '../project';
 import { ExportPlotsComponent } from './export-plots.component';
 
-@Component({selector: 'app-line-plot', template: ''})
+@Component({
+    selector: 'app-line-plot', template: '',
+    standalone: false
+})
 class LinePlotStubComponent {
   @Input() handler: any;
   @Input('hover-disabled') hoverDisabled: boolean;
@@ -21,7 +24,10 @@ class LinePlotStubComponent {
   @Input('legend-y-offset') legendYOffset: number;
 }
 
-@Component({selector: 't-test-bottom-plot', template: ''})
+@Component({
+    selector: 't-test-bottom-plot', template: '',
+    standalone: false
+})
 class BottomPlotStubComponent {
   @Input() project: Project;
   @Input('disable-drag-target') disableDragTarget: boolean;

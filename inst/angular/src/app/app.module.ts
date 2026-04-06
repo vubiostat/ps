@@ -1,9 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppCommonModule } from './app-common.module';
 import { TTestModule } from './t-test/t-test.module';
@@ -24,6 +27,8 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { MainComponent } from './main/main.component';
 import { AbstractStartComponent } from './abstract-start.component';
 import { AbstractProjectComponent } from './abstract-project.component';
+import { ExportPlotsComponent } from './export-plots/export-plots.component';
+
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -33,21 +38,25 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     KonamiDirective,
-    MenuComponent,
     WelcomeComponent,
     MainComponent,
     AbstractStartComponent,
-    AbstractProjectComponent
+    AbstractProjectComponent,
   ],
   imports: [
     BrowserModule,
+    CommonModule,
+    FormsModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
     NgbModule,
+    NgbNavModule,
     AppCommonModule,
     TTestModule,
-    DichotModule
+    DichotModule,
+    MenuComponent,          // CHANGED: Import standalone component
+    ExportPlotsComponent,   // CHANGED: Import standalone component
   ],
   bootstrap: [ AppComponent ],
   providers: [

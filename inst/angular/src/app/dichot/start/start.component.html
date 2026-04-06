@@ -7,7 +7,7 @@
             <label class="mb-0" for="dichot-start-output">
               What do you want to know?
               <button type="button" class="btn btn-secondary fa fa-question-circle p-1"
-                (click)="onToggleHelp()"></button>
+              (click)="onToggleHelp()"></button>
             </label>
           </div>
           <div class="d-flex flex-shrink-1">
@@ -22,147 +22,179 @@
           </div>
         </div>
         <select class="form-control" id="dichot-start-output"
-                required
-                [(ngModel)]="model.output" name="output">
+          required
+          [(ngModel)]="model.output" name="output">
           <option></option>
           <option value="power">Power</option>
           <option value="sampleSize">Sample size</option>
           <option value="detAlt">Detectable alternative</option>
         </select>
       </div>
-      <div class="form-group" *ngIf="model.output">
-        <label for="dichot-start-matched">Matched or independent?</label>
-        <select class="form-control" id="dichot-start-matched"
-                required
-                [(ngModel)]="model.matched" name="matched">
-          <option></option>
-          <option value="matched">Matched or paired</option>
-          <option value="independent">Independent</option>
-        </select>
-      </div>
-      <div class="form-group" *ngIf="model.output">
-        <label for="dichot-start-case">Case control?</label>
-        <select class="form-control" id="dichot-start-case"
-                required
-                [(ngModel)]="model.case" name="case">
-          <option></option>
-          <option value="caseControl">Case control</option>
-          <option value="prospective">Prospective</option>
-        </select>
-      </div>
-      <div class="form-group" *ngIf="model.output && model.matched == 'independent'">
-        <label for="dichot-start-expressed">How is the alternative hypothesis expressed?</label>
-        <select class="form-control" id="dichot-start-expressed"
-                required
-                [(ngModel)]="model.expressed" name="expressed">
-          <option></option>
-          <option value="twoProportions">Two proportions</option>
-          <option *ngIf="model.case == 'caseControl'" value="oddsRatio">Odds ratio</option>
-          <option *ngIf="model.case == 'prospective'" value="relativeRisk">Relative risk</option>
-        </select>
-      </div>
-      <div class="form-group" *ngIf="model.output && model.matched == 'independent'">
-        <label for="dichot-start-method">Uncorrected chi-square or Fisher's exact test?</label>
-        <select class="form-control" id="dichot-start-method"
-                required
-                [(ngModel)]="model.method" name="method">
-          <option></option>
-          <option value="chiSquare">Uncorrected chi-square test</option>
-          <option value="fishers">Fisher's exact test</option>
-        </select>
-      </div>
-      <div *ngIf="model.output && model.matched && model.case && (model.matched == 'matched' || (model.expressed && model.method))">
+      @if (model.output) {
         <div class="form-group">
-          <label for="dichot-start-alpha">
-            Type I Error (&alpha;)
-          </label>
-          <input class="form-control" id="dichot-start-alpha"
-                 type="number" step="0.01" min="0.01" max="0.99"
-                 required
-                 [(ngModel)]="model.alpha" name="alpha">
+          <label for="dichot-start-matched">Matched or independent?</label>
+          <select class="form-control" id="dichot-start-matched"
+            required
+            [(ngModel)]="model.matched" name="matched">
+            <option></option>
+            <option value="matched">Matched or paired</option>
+            <option value="independent">Independent</option>
+          </select>
         </div>
-        <div *ngIf="model.output != 'power'" class="form-group">
-          <label for="dichot-start-power">
-            Power
-          </label>
-          <input class="form-control" id="dichot-start-power"
-                 type="number" step="0.01" min="0.01" max="0.99"
-                 required
-                 [(ngModel)]="model.power" name="power">
-        </div>
-        <div *ngIf="model.output != 'sampleSize'" class="form-group">
-          <label for="dichot-start-n">
-            Sample size (<i>n</i>)
-          </label>
-          <input class="form-control" id="dichot-start-n"
-                 type="number" min="1"
-                 required
-                 [(ngModel)]="model.n" name="n">
-        </div>
+      }
+      @if (model.output) {
         <div class="form-group">
-          <label *ngIf="model.case == 'caseControl'" for="dichot-start-p0">
-            Probability of exposure in controls (<i>p<sub>0</sub></i>)
-          </label>
-          <label *ngIf="model.case == 'prospective'" for="dichot-start-p0">
-            Probability of the outcome for a control patient (<i>p<sub>0</sub></i>)
-          </label>
-          <input class="form-control" id="dichot-start-p0"
-                 type="number" min="0.01"
-                 required
-                 [(ngModel)]="model.p0" name="p0">
+          <label for="dichot-start-case">Case control?</label>
+          <select class="form-control" id="dichot-start-case"
+            required
+            [(ngModel)]="model.case" name="case">
+            <option></option>
+            <option value="caseControl">Case control</option>
+            <option value="prospective">Prospective</option>
+          </select>
         </div>
-        <div *ngIf="model.output != 'detAlt' && model.matched == 'independent' && model.expressed == 'twoProportions'" class="form-group">
-          <label for="dichot-start-p1">
-            Probability of the outcome for an experimental patient (<i>p<sub>1</sub></i>)
-          </label>
-          <input class="form-control" id="dichot-start-p1"
-                 type="number" min="0.01"
-                 required
-                 [(ngModel)]="model.p1" name="p1">
-        </div>
+      }
+      @if (model.output && model.matched == 'independent') {
         <div class="form-group">
-          <label for="dichot-start-m">
-            Ratio of control/experimental subjects (<i>m</i>)
-          </label>
-          <input class="form-control" id="dichot-start-m"
-                 type="number" step="0.01" min="0.01"
-                 required
-                 [(ngModel)]="model.m" name="m">
+          <label for="dichot-start-expressed">How is the alternative hypothesis expressed?</label>
+          <select class="form-control" id="dichot-start-expressed"
+            required
+            [(ngModel)]="model.expressed" name="expressed">
+            <option></option>
+            <option value="twoProportions">Two proportions</option>
+            @if (model.case == 'caseControl') {
+              <option value="oddsRatio">Odds ratio</option>
+            }
+            @if (model.case == 'prospective') {
+              <option value="relativeRisk">Relative risk</option>
+            }
+          </select>
         </div>
-        <div *ngIf="model.output != 'detAlt' && model.matched == 'independent' && model.case == 'prospective' && model.expressed == 'relativeRisk'" class="form-group">
-          <label for="dichot-start-r">
-            Relative risk of failure for experimental subjects relative to controls (<i>R</i>)
-          </label>
-          <input class="form-control" id="dichot-start-r"
-                 type="number" min="0.01"
-                 required
-                 [(ngModel)]="model.r" name="r">
+      }
+      @if (model.output && model.matched == 'independent') {
+        <div class="form-group">
+          <label for="dichot-start-method">Uncorrected chi-square or Fisher's exact test?</label>
+          <select class="form-control" id="dichot-start-method"
+            required
+            [(ngModel)]="model.method" name="method">
+            <option></option>
+            <option value="chiSquare">Uncorrected chi-square test</option>
+            <option value="fishers">Fisher's exact test</option>
+          </select>
         </div>
-        <div *ngIf="model.matched == 'matched'" class="form-group">
-          <label for="dichot-start-phi">
-            Correlation coefficient for exposure (&phi;)
-          </label>
-          <input class="form-control" id="dichot-start-phi"
-                 type="number" min="0"
-                 required
-                 [(ngModel)]="model.phi" name="phi">
+      }
+      @if (model.output && model.matched && model.case && (model.matched == 'matched' || (model.expressed && model.method))) {
+        <div>
+          <div class="form-group">
+            <label for="dichot-start-alpha">
+              Type I Error (&alpha;)
+            </label>
+            <input class="form-control" id="dichot-start-alpha"
+              type="number" step="0.01" min="0.01" max="0.99"
+              required
+              [(ngModel)]="model.alpha" name="alpha">
+          </div>
+          @if (model.output != 'power') {
+            <div class="form-group">
+              <label for="dichot-start-power">
+                Power
+              </label>
+              <input class="form-control" id="dichot-start-power"
+                type="number" step="0.01" min="0.01" max="0.99"
+                required
+                [(ngModel)]="model.power" name="power">
+            </div>
+          }
+          @if (model.output != 'sampleSize') {
+            <div class="form-group">
+              <label for="dichot-start-n">
+                Sample size (<i>n</i>)
+              </label>
+              <input class="form-control" id="dichot-start-n"
+                type="number" min="1"
+                required
+                [(ngModel)]="model.n" name="n">
+            </div>
+          }
+          <div class="form-group">
+            @if (model.case == 'caseControl') {
+              <label for="dichot-start-p0">
+                Probability of exposure in controls (<i>p<sub>0</sub></i>)
+              </label>
+            }
+            @if (model.case == 'prospective') {
+              <label for="dichot-start-p0">
+                Probability of the outcome for a control patient (<i>p<sub>0</sub></i>)
+              </label>
+            }
+            <input class="form-control" id="dichot-start-p0"
+              type="number" min="0.01"
+              required
+              [(ngModel)]="model.p0" name="p0">
+          </div>
+          @if (model.output != 'detAlt' && model.matched == 'independent' && model.expressed == 'twoProportions') {
+            <div class="form-group">
+              <label for="dichot-start-p1">
+                Probability of the outcome for an experimental patient (<i>p<sub>1</sub></i>)
+              </label>
+              <input class="form-control" id="dichot-start-p1"
+                type="number" min="0.01"
+                required
+                [(ngModel)]="model.p1" name="p1">
+            </div>
+          }
+          <div class="form-group">
+            <label for="dichot-start-m">
+              Ratio of control/experimental subjects (<i>m</i>)
+            </label>
+            <input class="form-control" id="dichot-start-m"
+              type="number" step="0.01" min="0.01"
+              required
+              [(ngModel)]="model.m" name="m">
+          </div>
+          @if (model.output != 'detAlt' && model.matched == 'independent' && model.case == 'prospective' && model.expressed == 'relativeRisk') {
+            <div class="form-group">
+              <label for="dichot-start-r">
+                Relative risk of failure for experimental subjects relative to controls (<i>R</i>)
+              </label>
+              <input class="form-control" id="dichot-start-r"
+                type="number" min="0.01"
+                required
+                [(ngModel)]="model.r" name="r">
+            </div>
+          }
+          @if (model.matched == 'matched') {
+            <div class="form-group">
+              <label for="dichot-start-phi">
+                Correlation coefficient for exposure (&phi;)
+              </label>
+              <input class="form-control" id="dichot-start-phi"
+                type="number" min="0"
+                required
+                [(ngModel)]="model.phi" name="phi">
+            </div>
+          }
+          @if (model.output != 'detAlt' && (model.matched == 'matched' || (model.case == 'caseControl' && model.expressed == 'oddsRatio'))) {
+            <div class="form-group">
+              <label for="dichot-start-psi">
+                Odds ratio of exposure (&psi;)
+              </label>
+              <input class="form-control" id="dichot-start-psi"
+                type="number" min="0"
+                required
+                [(ngModel)]="model.psi" name="psi">
+            </div>
+          }
         </div>
-        <div *ngIf="model.output != 'detAlt' && (model.matched == 'matched' || (model.case == 'caseControl' && model.expressed == 'oddsRatio'))" class="form-group">
-          <label for="dichot-start-psi">
-            Odds ratio of exposure (&psi;)
-          </label>
-          <input class="form-control" id="dichot-start-psi"
-                 type="number" min="0"
-                 required
-                 [(ngModel)]="model.psi" name="psi">
-        </div>
-      </div>
+      }
     </div>
-    <div *ngIf="showCalculateButton()" class="d-flex flex-row calculate-button">
-      <button type="submit" class="btn btn-success"
-              [disabled]="!startForm.form.valid">
-        Calculate
-      </button>
-    </div>
+    @if (showCalculateButton()) {
+      <div class="d-flex flex-row calculate-button">
+        <button type="submit" class="btn btn-success"
+          [disabled]="!startForm.form.valid">
+          Calculate
+        </button>
+      </div>
+    }
   </form>
 </div>

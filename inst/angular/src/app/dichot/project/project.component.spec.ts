@@ -6,7 +6,10 @@ import { PlotOptionsService } from '../../plot-options.service';
 import { PaletteService } from '../../palette.service';
 import { ProjectComponent } from './project.component';
 
-@Component({selector: 'dichot-project-model', template: ''})
+@Component({
+    selector: 'dichot-project-model', template: '',
+    standalone: false
+})
 class DichotProjectModelStubComponent {
   @Input('project') project: any;
   @Input('index') index: any;

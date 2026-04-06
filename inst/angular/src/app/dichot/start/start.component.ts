@@ -8,9 +8,10 @@ import { Dichot, DichotMatched, DichotCase, DichotExpressed, DichotMethod } from
 import { Project } from '../project';
 
 @Component({
-  selector: 'dichot-start',
-  templateUrl: './start.component.html',
-  styleUrls: ['./start.component.css']
+    selector: 'dichot-start',
+    templateUrl: './start.component.html',
+    styleUrls: ['./start.component.css'],
+    standalone: false
 })
 export class StartComponent extends AbstractStartComponent implements OnInit {
   model: Dichot;

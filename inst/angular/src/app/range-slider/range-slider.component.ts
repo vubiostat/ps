@@ -4,27 +4,34 @@ import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 
-@Directive({selector: 'ng-template[rsLabel]'})
+@Directive({
+    selector: 'ng-template[rsLabel]',
+    standalone: false
+})
 export class RangeSliderLabel {
   constructor(public templateRef: TemplateRef<any>) {}
 }
 
-@Directive({selector: 'ng-template[rsHelp]'})
+@Directive({
+    selector: 'ng-template[rsHelp]',
+    standalone: false
+})
 export class RangeSliderHelp {
   constructor(public templateRef: TemplateRef<any>) {}
 }
 
 @Component({
-  selector: 'app-range-slider',
-  templateUrl: './range-slider.component.html',
-  styleUrls: ['./range-slider.component.css'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => RangeSliderComponent),
-      multi: true
-    }
-  ]
+    selector: 'app-range-slider',
+    templateUrl: './range-slider.component.html',
+    styleUrls: ['./range-slider.component.css'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => RangeSliderComponent),
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class RangeSliderComponent implements OnInit, OnChanges, AfterContentInit, ControlValueAccessor {
   @Input() label: string;

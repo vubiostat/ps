@@ -39,3 +39,4 @@ Thumbs.db
 
 # config files
 src/environments/environment.demo.ts
+.angular/

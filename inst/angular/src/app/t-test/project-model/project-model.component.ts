@@ -9,9 +9,10 @@ import * as d3 from 'd3';
 import * as stableSort from 'stable';
 
 @Component({
-  selector: 't-test-project-model',
-  templateUrl: './project-model.component.html',
-  styleUrls: ['./project-model.component.css']
+    selector: 't-test-project-model',
+    templateUrl: './project-model.component.html',
+    styleUrls: ['./project-model.component.css'],
+    standalone: false
 })
 export class ProjectModelComponent implements OnInit {
   @Input() project: Project;

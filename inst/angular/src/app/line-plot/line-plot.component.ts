@@ -26,9 +26,10 @@ enum HoverInfo {
 }
 
 @Component({
-  selector: 'app-line-plot',
-  templateUrl: './line-plot.component.html',
-  styleUrls: ['./line-plot.component.css']
+    selector: 'app-line-plot',
+    templateUrl: './line-plot.component.html',
+    styleUrls: ['./line-plot.component.css'],
+    standalone: false
 })
 export class LinePlotComponent extends AbstractPlotComponent implements OnChanges, AfterViewChecked {
   @Input() handler: LinePlotHandler;
@@ -485,7 +486,7 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
   }
 
   private dragTarget(event: any): void {
-    let x = this.xScale.invert(d3.event.x - this.leftMargin);
+    let x = this.xScale.invert(event.x - this.leftMargin);
     if (x < this.x.range.min) {
       x = this.x.range.min;
     } else if (x > this.x.range.max) {
@@ -522,9 +523,9 @@ export class LinePlotComponent extends AbstractPlotComponent implements OnChange
     }
   }
 
-  private dragLegend(): void {
-    this.legendXOffset += d3.event.dx;
-    this.legendYOffset += d3.event.dy;
+  private dragLegend(event: any): void {
+    this.legendXOffset += event.dx;
+    this.legendYOffset += event.dy;
   }
 
   // from https://bl.ocks.org/mbostock/3916621

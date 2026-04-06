@@ -2,10 +2,11 @@ import { Directive, Input, Output, EventEmitter } from '@angular/core';
 import { environment } from '../environments/environment';
 
 @Directive({
-  selector: '[appKonami]',
-  host: {
-    '(document:keydown)': 'onKeyDown($event)'
-  }
+    selector: '[appKonami]',
+    host: {
+        '(document:keydown)': 'onKeyDown($event)'
+    },
+    standalone: false
 })
 export class KonamiDirective {
   @Output() konami = new EventEmitter();
