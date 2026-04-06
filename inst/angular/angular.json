@@ -13,7 +13,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "autoCsp": true,
             "baseHref": "/ps/",
             "deployUrl": "/ps/",
             "aot": true,
@@ -28,7 +27,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/bootstrap/dist/css/bottstrap.min.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": []
           },
