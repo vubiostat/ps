@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, RouterLink, RouterOutlet } from '@angular/router';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { filter } from 'rxjs/operators';
 import { trigger, state, style, animate, transition, keyframes } from '@angular/animations';
@@ -16,6 +16,7 @@ enum MenuState {
     selector: 'app-menu',
     templateUrl: './menu.component.html',
     styleUrls: ['./menu.component.css'],
+    imports: [RouterLink, RouterOutlet],
     animations: [
         trigger('mainState', [
             state('main, maininit', style({ opacity: 1, transform: 'translateX(0)' })),
