@@ -9,4 +9,4 @@ fs.writeFileSync("src/app/version.ts",
   "let buildTimestamp: string = \"" + timestamp + "\";\n" +
   "export { commitHash, buildTimestamp };\n");
 
-child_process.execSync("ng build --prod", { stdio: "inherit" });
+child_process.execSync("ng build", { stdio: "inherit" });
